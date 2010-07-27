@@ -1,5 +1,8 @@
-#ifndef __RECT_H__
-#define __RECT_H__
+#ifndef RECT_H
+#define RECT_H
+
+#include "../general.h"
+
 
 namespace OSS {
 	namespace Math {
@@ -77,5 +80,6 @@ namespace OSS {
 	typedef Math::Rect<float> rectf;
 	typedef Math::Rect<double> rectd;
 }
+
 
 #endif

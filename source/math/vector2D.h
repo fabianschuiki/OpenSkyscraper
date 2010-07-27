@@ -1,5 +1,8 @@
-#ifndef __VECTOR2D_H__
-#define __VECTOR2D_H__
+#ifndef VECTOR2D_H
+#define VECTOR2D_H
+
+#include "../general.h"
+
 
 namespace OSS {
 	namespace Math {
@@ -93,5 +96,6 @@ namespace OSS {
 	typedef Math::Vector2D<float> float2;
 	typedef Math::Vector2D<double> double2;
 }
+
 
 #endif
