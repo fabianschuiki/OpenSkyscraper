@@ -21,6 +21,7 @@
 		1F21FD92120030B7000A8AC3 /* storeitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FD91120030B7000A8AC3 /* storeitem.cpp */; };
 		1F21FDFA12003389000A8AC3 /* openskyscraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FDF912003389000A8AC3 /* openskyscraper.cpp */; };
 		1F21FE09120035CA000A8AC3 /* towerscene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FE08120035CA000A8AC3 /* towerscene.cpp */; };
+		1F21FE84120044AF000A8AC3 /* tower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FE83120044AF000A8AC3 /* tower.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
 		1FD0E9F411FF5831004F4D4E /* language.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0E9F311FF5831004F4D4E /* language.cpp */; };
 		1FD0EA6C11FF69CE004F4D4E /* inputtask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EA6B11FF69CE004F4D4E /* inputtask.cpp */; };
@@ -79,6 +80,8 @@
 		1F21FE07120035CA000A8AC3 /* towerscene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = towerscene.h; sourceTree = "<group>"; };
 		1F21FE08120035CA000A8AC3 /* towerscene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = towerscene.cpp; sourceTree = "<group>"; };
 		1F21FE0D12003671000A8AC3 /* scenes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scenes.h; sourceTree = "<group>"; };
+		1F21FE82120044AF000A8AC3 /* tower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tower.h; sourceTree = "<group>"; };
+		1F21FE83120044AF000A8AC3 /* tower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tower.cpp; sourceTree = "<group>"; };
 		1FD010C111FA3E330062C093 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1FD0E9F211FF5831004F4D4E /* language.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = language.h; sourceTree = "<group>"; };
 		1FD0E9F311FF5831004F4D4E /* language.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = language.cpp; sourceTree = "<group>"; };
@@ -219,6 +222,8 @@
 				1F21FDF812003389000A8AC3 /* openskyscraper.h */,
 				1F21FDF912003389000A8AC3 /* openskyscraper.cpp */,
 				1F21FE061200359B000A8AC3 /* scenes */,
+				1F21FE82120044AF000A8AC3 /* tower.h */,
+				1F21FE83120044AF000A8AC3 /* tower.cpp */,
 			);
 			path = game;
 			sourceTree = "<group>";
@@ -384,6 +389,7 @@
 				1F21FD92120030B7000A8AC3 /* storeitem.cpp in Sources */,
 				1F21FDFA12003389000A8AC3 /* openskyscraper.cpp in Sources */,
 				1F21FE09120035CA000A8AC3 /* towerscene.cpp in Sources */,
+				1F21FE84120044AF000A8AC3 /* tower.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

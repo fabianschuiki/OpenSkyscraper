@@ -32,6 +32,9 @@ OpenSkyscraper::~OpenSkyscraper()
 
 void OpenSkyscraper::onPrepare()
 {
+	//Create an empty tower
+	towerScene->tower = new Tower;
+	
 	//Switch to the tower scene
 	Engine::shared()->switchToScene(towerScene);
 }
