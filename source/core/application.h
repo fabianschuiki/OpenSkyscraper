@@ -21,6 +21,10 @@ namespace OSS {
 		
 		//Shutdown
 		void quit();
+		
+		//Notifications (useful when subclassing Application)
+		virtual void onPrepare() {}
+		virtual void onCleanUp() {}
 	};
 }
 

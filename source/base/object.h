@@ -20,7 +20,7 @@ namespace OSS {
 		
 		//Memory Management
 		void retain();
-		void release();
+		virtual void release();
 		
 		//Runtime Type Information
 		virtual std::string className();

@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "core.h"
+#include "../resources/resources.h"
 
 using namespace OSS;
 
@@ -23,10 +24,16 @@ Engine::Engine() {
 	renderingDone_frameTime = 0;
 	freq_lowerLimit = 15;
 	freq_upperLimit = 100;
+	
+	//Initialize the stores
+	stores.push_back(new TextureStore);
 }
 
 Engine::~Engine() {
 	switchToScene(NULL);
+	
+	//Get rid of the stores
+	stores.clear();
 }
 
 
@@ -79,6 +86,7 @@ void Engine::runloopCycle()
 	inputTask.update();
 	simulationTask.update();
 	renderTask.update();
+	loaderTask.update();
 	
 	//Take the time now that we're done rendering
 	timingRenderingDone();
@@ -100,6 +108,7 @@ bool Engine::handleEvent(CoreEvent * event)
 	if (inputTask.handleEvent(event)) return true;
 	if (simulationTask.handleEvent(event)) return true;
 	if (renderTask.handleEvent(event)) return true;
+	if (loaderTask.handleEvent(event)) return true;
 	return CoreObject::handleEvent(event);
 }
 

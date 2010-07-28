@@ -48,6 +48,9 @@ void Application::prepare()
 	//Prepare the singletons
 	OpenGLCanvas::shared()->eventPrepare();
 	Engine::shared()->eventPrepare();
+	
+	//Give subclasses a chance to prepare
+	onPrepare();
 }
 
 void Application::run()
@@ -60,6 +63,9 @@ void Application::run()
 
 void Application::cleanUp()
 {
+	//Give subclasses a chance to clean up before we get to work
+	onCleanUp();
+	
 	//Give the singletons the possibility to perform any post-run cleanup
 	Engine::shared()->eventCleanUp();
 	OpenGLCanvas::shared()->eventCleanUp();

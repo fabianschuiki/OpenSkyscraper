@@ -2,6 +2,7 @@
 #define ENGINE_H
 #include "../general.h"
 #include "../base/base.h"
+#include "../resources/resources.h"
 #include "tasks/tasks.h"
 
 namespace OSS {	
@@ -20,15 +21,17 @@ namespace OSS {
 		 * own Events and sending them down the pipe. The simulation task advances the state of the
 		 * current scene. The render task is responsible for rendering the current scene. This means
 		 * redrawing its video output and updating any audio output to match the scene's current
-		 * state.
+		 * state. The loader task works down the loading and unloading queues of the various stores.
 		 */
 		friend class InputTask;
 		friend class SimulationTask;
 		friend class RenderTask;
+		friend class LoaderTask;
 		
 		InputTask inputTask;
 		SimulationTask simulationTask;
 		RenderTask renderTask;
+		LoaderTask loaderTask;
 		
 		
 		/**
@@ -100,6 +103,14 @@ namespace OSS {
 		
 		void timingFrameStart();
 		void timingRenderingDone();
+		
+		
+		/**
+		 * Uncategorized
+		 */
+	public:
+		typedef std::vector< Pointer<AbstractStore> > StoreList;
+		StoreList stores;
 	};
 }
 

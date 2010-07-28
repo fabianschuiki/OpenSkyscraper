@@ -1,9 +1,9 @@
 #include "general.h"
-#include "core/application.h"
+#include "game/openskyscraper.h"
 
 int main(int argc, char *argv[])
 {
-	OSS::Application app;
+	OSS::OpenSkyscraper app;
 	
 	app.prepare();
 	app.run();
