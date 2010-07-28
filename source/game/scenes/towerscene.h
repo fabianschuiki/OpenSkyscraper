@@ -16,12 +16,21 @@ namespace OSS {
 		rectd visibleRect;
 		recti visibleCells;
 		
+		//Visible items
+		std::set<unsigned int> visibleFacilities;
+		std::set<unsigned int> visibleTransports;
+		
 		//The tower currently being played
 		Pointer<Tower> tower;
 		
 		
+		//Simulation
+		void advance(double dt);
+		
 		//Rendering
 		void render();
+		void renderFacilities();
+		void renderTransports();
 		
 		//OpenGL State
 		void onMoveOnScreen();

@@ -6,6 +6,39 @@ using namespace OSS;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void TowerScene::advance(double dt)
+{
+	//Update the visible rect
+	int2 canvasSize = OpenGLCanvas::shared()->currentMode.resolution;
+	visibleRect.origin = POI - canvasSize / 2;
+	visibleRect.size = canvasSize;
+	
+	//Calculate the visible cells rect
+	visibleCells = tower->convertWorldToCellRect(visibleRect);
+	
+	//Find the items to draw
+	visibleFacilities.clear();
+	visibleTransports.clear();
+	for (int x = visibleCells.minX(); x < visibleCells.maxX(); x++) {
+		for (int y = visibleCells.minY(); y < visibleCells.maxY(); y++) {
+			Tower::Cell * cell = tower->getCell(int2(x, y));
+			if (!cell) continue;
+			
+			visibleFacilities.insert(cell->facility);
+			visibleTransports.insert(cell->transport);
+		}
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Rendering
 //----------------------------------------------------------------------------------------------------
 
@@ -16,26 +49,11 @@ void TowerScene::render()
 	glLoadIdentity();
 	
 	//Translate modelview matrix so that the POI is centered on screen
-	int2 canvasSize = OpenGLCanvas::shared()->currentMode.resolution;
-	visibleRect.origin = POI - canvasSize / 2;
-	visibleRect.size = canvasSize;
 	glTranslated(-visibleRect.origin.x, -visibleRect.origin.y, 0);
 	
-	//Calculate the visible cells rect
-	visibleCells = tower->convertWorldToCellRect(visibleRect);
-	
-	//Find the items to draw
-	std::set<unsigned int> facilities;
-	std::set<unsigned int> transports;
-	for (int x = visibleCells.minX(); x < visibleCells.maxX(); x++) {
-		for (int y = visibleCells.minY(); y < visibleCells.maxY(); y++) {
-			Tower::Cell * cell = tower->getCell(int2(x, y));
-			if (!cell) continue;
-			
-			facilities.insert(cell->facility);
-			transports.insert(cell->transport);
-		}
-	}
+	//Render the items
+	renderFacilities();
+	renderTransports();
 	
 	//Draw a red cross at the origin of the world
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
@@ -48,6 +66,14 @@ void TowerScene::render()
 	glEnd();
 	
 	OpenGLCanvas::shared()->swapBuffers();
+}
+
+void TowerScene::renderFacilities()
+{
+}
+
+void TowerScene::renderTransports()
+{
 }
 
 
