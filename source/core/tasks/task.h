@@ -1,5 +1,5 @@
-#ifndef TASK_H
-#define TASK_H
+#ifndef OSS_TASK_H
+#define OSS_TASK_H
 
 #include "../../general.h"
 #include "../coreobject.h"

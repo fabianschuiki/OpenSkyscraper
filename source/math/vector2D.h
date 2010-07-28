@@ -1,5 +1,5 @@
-#ifndef VECTOR2D_H
-#define VECTOR2D_H
+#ifndef OSS_VECTOR2D_H
+#define OSS_VECTOR2D_H
 
 #include "../general.h"
 

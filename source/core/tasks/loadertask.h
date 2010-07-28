@@ -1,5 +1,5 @@
-#ifndef LOADERTASK_H
-#define LOADERTASK_H
+#ifndef OSS_LOADERTASK_H
+#define OSS_LOADERTASK_H
 
 #include "../../general.h"
 #include "task.h"

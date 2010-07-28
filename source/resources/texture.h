@@ -1,5 +1,5 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef OSS_TEXTURE_H
+#define OSS_TEXTURE_H
 
 #include "../general.h"
 #include "store.h"

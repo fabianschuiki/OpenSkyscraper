@@ -1,5 +1,5 @@
-#ifndef SINGLETON_H
-#define SINGLETON_H
+#ifndef OSS_SINGLETON_H
+#define OSS_SINGLETON_H
 
 #include "../general.h"
 #include "object.h"

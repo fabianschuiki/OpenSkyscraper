@@ -1,5 +1,5 @@
-#ifndef STOREITEM_H
-#define STOREITEM_H
+#ifndef OSS_STOREITEM_H
+#define OSS_STOREITEM_H
 
 #include "../general.h"
 #include "../base/base.h"

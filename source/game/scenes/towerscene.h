@@ -1,5 +1,5 @@
-#ifndef TOWERSCENE_H
-#define TOWERSCENE_H
+#ifndef OSS_TOWERSCENE_H
+#define OSS_TOWERSCENE_H
 
 #include "../../general.h"
 #include "../../core/scene.h"

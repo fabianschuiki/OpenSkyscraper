@@ -1,5 +1,5 @@
-#ifndef EVENT_H
-#define EVENT_H
+#ifndef OSS_EVENT_H
+#define OSS_EVENT_H
 
 #include "../general.h"
 

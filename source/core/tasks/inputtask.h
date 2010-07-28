@@ -1,5 +1,5 @@
-#ifndef INPUTTASK_H
-#define INPUTTASK_H
+#ifndef OSS_INPUTTASK_H
+#define OSS_INPUTTASK_H
 
 #include "../../general.h"
 #include "task.h"

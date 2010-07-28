@@ -1,5 +1,5 @@
-#ifndef RENDERTASK_H
-#define RENDERTASK_H
+#ifndef OSS_RENDERTASK_H
+#define OSS_RENDERTASK_H
 
 #include "../../general.h"
 #include "task.h"

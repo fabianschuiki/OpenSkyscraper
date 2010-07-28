@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __OSS_POINTER_H__
-#define __OSS_POINTER_H__
+#ifndef OSS_POINTER_H
+#define OSS_POINTER_H
 
 namespace OSS {
 	template <class T>

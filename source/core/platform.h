@@ -1,5 +1,5 @@
-#ifndef PLATFORM_H
-#define PLATFORM_H
+#ifndef OSS_PLATFORM_H
+#define OSS_PLATFORM_H
 
 #include "../general.h"
 #include "../base/base.h"
@@ -11,6 +11,10 @@ namespace OSS {
 		//Timing
 		double getTimeElapsed();
 		void sleep(double seconds);
+		
+		//Paths
+		std::string resourcesPath();
+		std::string pathToResource(std::string resourceName);
 	};
 }
 

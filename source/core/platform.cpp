@@ -1,10 +1,6 @@
 #include "platform.h"
 
-
 using namespace OSS;
-
-
-
 
 
 //----------------------------------------------------------------------------------------------------
@@ -19,4 +15,18 @@ double Platform::getTimeElapsed()
 void Platform::sleep(double seconds)
 {
 	SDL_Delay(seconds * 1000);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Paths
+//----------------------------------------------------------------------------------------------------
+
+std::string Platform::pathToResource(std::string resourceName)
+{
+	return resourcesPath() + "/" + resourceName;
 }

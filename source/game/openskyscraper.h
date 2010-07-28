@@ -1,5 +1,5 @@
-#ifndef OPENSKYSCRAPER_H
-#define OPENSKYSCRAPER_H
+#ifndef OSS_OPENSKYSCRAPER_H
+#define OSS_OPENSKYSCRAPER_H
 
 #include "../general.h"
 #include "../core/core.h"

@@ -1,5 +1,5 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef OSS_APPLICATION_H
+#define OSS_APPLICATION_H
 
 #include "../general.h"
 #include "../base/singleton.h"

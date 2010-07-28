@@ -1,5 +1,5 @@
-#ifndef LANGUAGE_H
-#define LANGUAGE_H
+#ifndef OSS_LANGUAGE_H
+#define OSS_LANGUAGE_H
 
 #include "../general.h"
 #include "../base/base.h"

@@ -1,5 +1,5 @@
-#ifndef TOWER_H
-#define TOWER_H
+#ifndef OSS_TOWER_H
+#define OSS_TOWER_H
 
 #include "../general.h"
 #include "../base/base.h"

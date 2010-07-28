@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef __OSS_FUNCTOR_H__
-#define __OSS_FUNCTOR_H__
+#ifndef OSS_FUNCTOR_H
+#define OSS_FUNCTOR_H
 #include "object.h"
 
 namespace OSS {

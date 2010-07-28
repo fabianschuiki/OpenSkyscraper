@@ -1,5 +1,5 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef OSS_SCENE_H
+#define OSS_SCENE_H
 
 #include "../general.h"
 #include "coreobject.h"

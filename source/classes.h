@@ -2,3 +2,5 @@
 #include "base/base.h"
 #include "core/core.h"
 #include "core/tasks/tasks.h"
+#include "game/game.h"
+#include "game/scenes/scenes.h"

@@ -1,5 +1,5 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef OSS_TYPES_H
+#define OSS_TYPES_H
 
 #include "general.h"
 

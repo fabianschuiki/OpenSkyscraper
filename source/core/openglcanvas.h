@@ -1,5 +1,5 @@
-#ifndef OPENGLCANVAS_H
-#define OPENGLCANVAS_H
+#ifndef OSS_OPENGLCANVAS_H
+#define OSS_OPENGLCANVAS_H
 
 #include "../general.h"
 #include "../base/base.h"

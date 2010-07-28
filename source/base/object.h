@@ -1,5 +1,5 @@
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef OSS_OBJECT_H
+#define OSS_OBJECT_H
 
 #include "../general.h"
 #include "event.h"

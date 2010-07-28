@@ -1,5 +1,5 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#ifndef OSS_ENGINE_H
+#define OSS_ENGINE_H
 #include "../general.h"
 #include "../base/base.h"
 #include "../resources/resources.h"

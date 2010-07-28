@@ -1,5 +1,5 @@
-#ifndef RECT_H
-#define RECT_H
+#ifndef OSS_RECT_H
+#define OSS_RECT_H
 
 #include "../general.h"
 

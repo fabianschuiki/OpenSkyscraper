@@ -1,5 +1,5 @@
-#ifndef COREEVENT_H
-#define COREEVENT_H
+#ifndef OSS_COREEVENT_H
+#define OSS_COREEVENT_H
 
 #include "../general.h"
 #include "../base/event.h"
