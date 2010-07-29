@@ -71,10 +71,10 @@ void Tower::renderBackground(rectd visibleRect)
 	groundTexture->bind();
 	glColor3f(1, 1, 1);
 	glBegin(GL_QUADS);
-	glTexCoord2d(0, 0); glVertex2d(visibleRect.minX(), visibleRect.minY());
-	glTexCoord2d(groundTexture->size.x, 0); glVertex2d(visibleRect.maxX(), visibleRect.minY());
-	glTexCoord2d(groundTexture->size.x, groundTexture->size.y); glVertex2d(visibleRect.maxX(), visibleRect.maxY());
-	glTexCoord2d(0, groundTexture->size.y); glVertex2d(visibleRect.minX(), visibleRect.maxY());
+	glTexCoord2d(0, 0); glVertex2d(groundRect.minX(), groundRect.minY());
+	glTexCoord2d(groundTexture->size.x, 0); glVertex2d(groundRect.maxX(), groundRect.minY());
+	glTexCoord2d(groundTexture->size.x, groundTexture->size.y); glVertex2d(groundRect.maxX(), groundRect.maxY());
+	glTexCoord2d(0, groundTexture->size.y); glVertex2d(groundRect.minX(), groundRect.maxY());
 	glEnd();
 }
 
