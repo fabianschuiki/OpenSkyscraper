@@ -91,7 +91,7 @@
 		1F21FF1312007D1F000A8AC3 /* simtower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simtower.h; sourceTree = "<group>"; };
 		1F21FF1412007D1F000A8AC3 /* simtower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = simtower.cpp; sourceTree = "<group>"; };
 		1F21FF1B12007DEC000A8AC3 /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
-		1F21FF2612007E4C000A8AC3 /* SIMTOWER.EXE */ = {isa = PBXFileReference; lastKnownFileType = file; name = SIMTOWER.EXE; path = /Volumes/BOOTCAMP/SIMTOWER/SIMTOWER.EXE; sourceTree = "<absolute>"; };
+		1F21FF2612007E4C000A8AC3 /* SIMTOWER.EXE */ = {isa = PBXFileReference; lastKnownFileType = file; name = SIMTOWER.EXE; path = /Users/fabian/Desktop/SIMTOWER.EXE; sourceTree = "<absolute>"; };
 		1F21FF3B12008057000A8AC3 /* platform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platform.mm; sourceTree = "<group>"; };
 		1F8B57BD1201F7470080E30C /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../resources/textures; sourceTree = "<group>"; };
 		1F8B57CE1201F8D70080E30C /* bitmap-png.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "bitmap-png.cpp"; sourceTree = "<group>"; };

@@ -31,6 +31,7 @@ bool Bitmap::loadPNGFile(std::string path)
 		OSSObjectError << "unable to png_create_read_struct" << std::endl;
 		return false;
 	}
+	png_set_expand(png_ptr);
 	
 	//create png info struct
 	png_infop info_ptr = png_create_info_struct(png_ptr);
@@ -82,6 +83,7 @@ bool Bitmap::loadPNGFile(std::string path)
 	
 	// Update the png info struct.
 	png_read_update_info(png_ptr, info_ptr);
+	alpha = (color_type == PNG_COLOR_TYPE_RGB_ALPHA);
 	
 	// Row size in bytes.
 	int rowbytes = png_get_rowbytes(png_ptr, info_ptr);

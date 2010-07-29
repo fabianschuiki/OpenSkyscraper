@@ -10,6 +10,7 @@ namespace OSS {
 	public:
 		int2 size;
 		void * data;
+		bool alpha;
 		
 		//Convenience constructors which immediately calls loadFile
 		Bitmap(std::string path);

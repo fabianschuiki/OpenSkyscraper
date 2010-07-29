@@ -44,6 +44,7 @@ void Texture::load()
 	//Read the bitmap
 	temporaryBitmap = new Bitmap(path);
 	size = temporaryBitmap->size;
+	OSSObjectLog << "    size = " << size.description() << std::endl;
 }
 
 void Texture::finalize()
@@ -56,11 +57,13 @@ void Texture::finalize()
 	
 	//Actually create the OpenGL texture from the temporary bitmap
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureID);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, temporaryBitmap->data);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, size.x, size.y, 0,
+				 (temporaryBitmap->alpha ? GL_RGBA : GL_RGB), GL_UNSIGNED_BYTE, temporaryBitmap->data);
 	
 	//Some texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 	//Get rid of the temporary bitmap
 	temporaryBitmap = NULL;
