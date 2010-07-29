@@ -71,6 +71,17 @@ namespace OSS {
 				return res;
 			}
 			void unify(Rect<T> &r) { *this = unionRect(r); }
+			
+			Rect<T> intersectionRect(Rect<T> &r) {
+				Rect<T> res(std::max<T>(minX(), r.minX()),
+							std::max<T>(minY(), r.minY()),
+							std::min<T>(maxX(), r.maxX()),
+							std::min<T>(maxY(), r.maxY()));
+				res.size.x -= res.origin.x;
+				res.size.y -= res.origin.y;
+				return res;
+			}
+			void intersect(Rect<T> &r) { *this = intersectionRect(r); }
 		};
 		
 	}

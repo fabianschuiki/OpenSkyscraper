@@ -15,6 +15,8 @@ namespace OSS {
 		//Paths
 		std::string resourcesPath();
 		std::string pathToResource(std::string resourceName);
+		std::string pathToResource(std::string resourceGroup, std::string resourceName);
+		std::string pathToResource(std::string resourceGroup, std::string resourceName, std::string resourceType);
 	};
 }
 

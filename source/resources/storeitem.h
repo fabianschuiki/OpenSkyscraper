@@ -7,8 +7,7 @@
 #define OSSStoreItemStoreAccess(_itemclass_) \
 static Store<_itemclass_> * store;\
 static _itemclass_ * named(std::string name) { return store->itemNamed(name); }\
-AbstractStore * getStore() { return _itemclass_::store; }\
-_itemclass_(std::string name) : StoreItem(name) {}
+AbstractStore * getStore() { return _itemclass_::store; }
 
 
 namespace OSS {

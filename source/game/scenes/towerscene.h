@@ -29,6 +29,7 @@ namespace OSS {
 		
 		//Rendering
 		void render();
+		void renderBackground();
 		void renderFacilities();
 		void renderTransports();
 		

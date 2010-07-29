@@ -3,6 +3,7 @@
 
 #include "../general.h"
 #include "../base/base.h"
+#include "../resources/resources.h"
 
 
 namespace OSS {
@@ -10,6 +11,7 @@ namespace OSS {
 	public:
 		//Initialization
 		Tower();
+		
 		
 		/**
 		 * Dimensions
@@ -24,6 +26,14 @@ namespace OSS {
 		//Coordinates
 		int2 convertWorldToCellCoordinates(double2 coordinates);
 		double2 convertCellToWorldCoordinates(int2 coordinates);
+		
+		
+		/**
+		 * Rendering
+		 */
+		
+		Pointer<Texture> groundTexture;
+		void renderBackground(rectd visibleRect);
 		
 		
 		/**

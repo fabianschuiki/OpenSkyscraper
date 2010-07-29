@@ -28,5 +28,15 @@ void Platform::sleep(double seconds)
 
 std::string Platform::pathToResource(std::string resourceName)
 {
-	return resourcesPath() + "/" + resourceName;
+	return resourcesPath() + PATH_SEGMENTER + resourceName;
+}
+
+std::string Platform::pathToResource(std::string resourceGroup, std::string resourceName)
+{
+	return pathToResource(resourceGroup) + PATH_SEGMENTER + resourceName;
+}
+
+std::string Platform::pathToResource(std::string resourceGroup, std::string resourceName, std::string resourceType)
+{
+	return pathToResource(resourceGroup, resourceName) + "." + resourceType;
 }

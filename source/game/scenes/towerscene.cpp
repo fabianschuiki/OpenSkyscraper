@@ -51,6 +51,9 @@ void TowerScene::render()
 	//Translate modelview matrix so that the POI is centered on screen
 	glTranslated(-visibleRect.origin.x, -visibleRect.origin.y, 0);
 	
+	//Render the background
+	tower->renderBackground(visibleRect);
+	
 	//Render the items
 	renderFacilities();
 	renderTransports();

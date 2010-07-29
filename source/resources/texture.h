@@ -4,11 +4,17 @@
 #include "../general.h"
 #include "store.h"
 #include "storeitem.h"
+#include "../misc/bitmap.h"
 
 
 namespace OSS {
 	class Texture : public StoreItem {
-	public:
+	public:		
+		//Initialization
+		Texture(std::string name);
+		~Texture();
+		
+		//Store
 		OSSStoreItemStoreAccess(Texture)
 		
 		//Loading
@@ -18,6 +24,12 @@ namespace OSS {
 		//Unloading
 		void unfinalize();
 		void unload();
+		
+		//Texture
+		Pointer<Bitmap> temporaryBitmap;
+		GLuint textureID;
+		int2 size;
+		void bind();
 	};
 	
 	typedef Store<Texture> TextureStore;

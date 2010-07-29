@@ -1,4 +1,5 @@
 #include "tower.h"
+#include "../classes.h"
 
 using namespace OSS;
 
@@ -44,6 +45,32 @@ int2 Tower::convertWorldToCellCoordinates(double2 coordinates)
 double2 Tower::convertCellToWorldCoordinates(int2 coordinates)
 {
 	return double2(coordinates.x * cellSize.x, coordinates.y * cellSize.y);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Rendering
+//----------------------------------------------------------------------------------------------------
+
+void Tower::renderBackground(rectd visibleRect)
+{
+	//Calculate the rectangles
+	rectd groundRect = visibleRect;
+	groundRect.size.y = -groundRect.origin.y;
+	rectd skyRect = visibleRect;
+	skyRect.size.y += skyRect.origin.y;
+	skyRect.origin.y = 0;
+	
+	if (!groundTexture)
+		groundTexture = Texture::named("ground");
+	
+	groundTexture->bind();
+	//glColor3f(1, 1, 1);
+	//glEnd();
 }
 
 
