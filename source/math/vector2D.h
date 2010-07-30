@@ -45,6 +45,14 @@ namespace OSS {
 			}
 			Vector2D<T> operator- ()	{ return Vector2D<T>(-x, -y); }
 			
+			//Boolean operators
+			bool operator ==(Vector2D<T> v) {
+				return (x == v.x && y == v.y);
+			}
+			bool operator !=(Vector2D<T> v) {
+				return (x != v.x || y != v.y);
+			}
+			
 			//Vector-Vector
 			Vector2D<T> operator+ (Vector2D<T> v)	{ return Vector2D<T>(x+v.x, y+v.y); }
 			Vector2D<T> operator- (Vector2D<T> v)	{ return Vector2D<T>(x-v.x, y-v.y); }

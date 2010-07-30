@@ -44,6 +44,14 @@ namespace OSS {
 			}
 			inline Rect<T> operator -() { return Rect<T>(-origin, -size); }
 			
+			//Boolean operators
+			inline bool operator ==(Rect<T> &r) {
+				return (origin == r.origin && size == r.size);
+			}
+			inline bool operator !=(Rect<T> &r) {
+				return (origin != r.origin || size != r.size);
+			}
+			
 			//Convenience coordinate accessors
 			inline T minX() { return origin.x; }
 			inline T minY() { return origin.y; }
@@ -82,6 +90,13 @@ namespace OSS {
 				return res;
 			}
 			void intersect(Rect<T> &r) { *this = intersectionRect(r); }
+			
+			void inset(T x, T y) {
+				origin.x += x;
+				origin.y += y;
+				size.x -= 2*x;
+				size.y -= 2*y;
+			}
 		};
 		
 	}
