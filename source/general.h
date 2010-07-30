@@ -40,6 +40,9 @@
 //libPNG
 #include <png.h>
 
+//DevIL
+#include <IL/il.h>
+
 //OpenGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

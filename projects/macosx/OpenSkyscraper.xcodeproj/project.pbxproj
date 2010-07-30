@@ -25,6 +25,7 @@
 		1F21FF1512007D1F000A8AC3 /* simtower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF1412007D1F000A8AC3 /* simtower.cpp */; };
 		1F21FF3C12008057000A8AC3 /* platform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF3B12008057000A8AC3 /* platform.mm */; };
 		1F3824501202BBE800C1E2B0 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38244F1202BBE800C1E2B0 /* sprite.cpp */; };
+		1F38258E1202F3DF00C1E2B0 /* libIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F38258D1202F3DF00C1E2B0 /* libIL.a */; };
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1F8B57D11201F8D70080E30C /* bitmap-png.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F8B57CE1201F8D70080E30C /* bitmap-png.cpp */; };
 		1F8B57D21201F8D70080E30C /* bitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F8B57CF1201F8D70080E30C /* bitmap.cpp */; };
@@ -95,6 +96,7 @@
 		1F38244E1202BBE800C1E2B0 /* sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sprite.h; sourceTree = "<group>"; };
 		1F38244F1202BBE800C1E2B0 /* sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sprite.cpp; sourceTree = "<group>"; };
 		1F38253D1202ED5000C1E2B0 /* gameevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameevent.h; sourceTree = "<group>"; };
+		1F38258D1202F3DF00C1E2B0 /* libIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIL.a; path = /usr/local/lib/libIL.a; sourceTree = "<absolute>"; };
 		1F8B57BD1201F7470080E30C /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../resources/textures; sourceTree = "<group>"; };
 		1F8B57CE1201F8D70080E30C /* bitmap-png.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "bitmap-png.cpp"; sourceTree = "<group>"; };
 		1F8B57CF1201F8D70080E30C /* bitmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmap.cpp; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */,
 				1F0D406611FED68E00C6D787 /* libpng.a in Frameworks */,
 				1F0D409111FEF2EB00C6D787 /* SDL.framework in Frameworks */,
+				1F38258E1202F3DF00C1E2B0 /* libIL.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,6 +335,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				1F38258D1202F3DF00C1E2B0 /* libIL.a */,
 			);
 			name = OpenSkyscraper;
 			sourceTree = "<group>";

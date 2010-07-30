@@ -25,6 +25,9 @@ Engine::Engine() {
 	freq_lowerLimit = 15;
 	freq_upperLimit = 100;
 	
+	//Initialize DevIL
+	ilInit();
+	
 	//Initialize the stores
 	stores.push_back(new TextureStore);
 }
