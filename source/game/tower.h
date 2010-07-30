@@ -33,6 +33,7 @@ namespace OSS {
 		 */
 		
 		Pointer<Sprite> groundSprite;
+		Pointer<Sprite> skySprites[10];
 		void renderBackground(rectd visibleRect);
 		
 		

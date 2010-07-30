@@ -65,17 +65,30 @@ void Tower::renderBackground(rectd visibleRect)
 	skyRect.size.y += skyRect.origin.y;
 	skyRect.origin.y = 0;
 	
-	//Load the sprite if necessary
+	//Load the ground sprite if necessary
 	if (!groundSprite) {
 		groundSprite = new Sprite;
-		groundSprite->texture = Texture::named("ground");
-		groundSprite->rect = groundRect;
+		groundSprite->texture = Texture::named("049.bmp");
+		groundSprite->rect = rectd(-800, -360, 1600, 360);
 		groundSprite->textureMode = Sprite::TextureModeRepeat;
 		groundSprite->autoTexRectX = true;
 		groundSprite->autoTexRectY = true;
 	}
-	
 	groundSprite->draw(visibleRect);
+	
+	//Load the sky sprites if necessary
+	for (int i = 0; i < 10; i++) {
+		if (!skySprites[i]) {		
+			char n[16];
+			sprintf(n, "%03i.bmp", i + 50);
+			skySprites[i] = new Sprite;
+			skySprites[i]->texture = Texture::named(n);
+			skySprites[i]->rect = rectd(-800, i * 360, 1600, 360);
+			skySprites[i]->textureMode = Sprite::TextureModeRepeat;
+			skySprites[i]->autoTexRectX = true;
+		}
+		skySprites[i]->draw(visibleRect);
+	}
 }
 
 

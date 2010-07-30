@@ -26,7 +26,7 @@ namespace OSS {
 		void unload();
 		
 		//Texture
-		Pointer<Bitmap> temporaryBitmap;
+		ILuint tempImage;
 		GLuint textureID;
 		int2 size;
 		
