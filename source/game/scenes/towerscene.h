@@ -38,7 +38,9 @@ namespace OSS {
 		void onMoveOffScreen();
 		
 		//Events
-		virtual bool handleEvent(CoreEvent * event);
+		bool handleEvent(CoreEvent * event);
+		bool eventKeyDown(SDL_Event * event);
+		bool eventMouseDown(SDL_Event * event);
 	};
 }
 

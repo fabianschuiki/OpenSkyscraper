@@ -121,3 +121,30 @@ bool Object::handleEvent(Event * event)
 	}
 	return false;
 }
+
+bool Object::eventSDL(SDL_Event * event)
+{
+	if ((SDL_EVENTMASK(event->type) & SDL_KEYEVENTMASK) && eventKey(event)) return true;
+	if ((SDL_EVENTMASK(event->type) & SDL_MOUSEEVENTMASK) && eventMouse(event)) return true;
+	return false;
+}
+
+bool Object::eventKey(SDL_Event * event)
+{
+	if (event->type == SDL_KEYDOWN && eventKeyDown(event)) return true;
+	if (event->type == SDL_KEYUP && eventKeyUp(event)) return true;
+	return false;
+}
+
+bool Object::eventMouse(SDL_Event * event)
+{
+	if (event->type == SDL_MOUSEMOTION && eventMouseMoved(event)) return true;
+	if (event->type == SDL_MOUSEBUTTONDOWN && eventMouseDown(event)) return true;
+	if (event->type == SDL_MOUSEBUTTONUP && eventMouseUp(event)) return true;
+	
+	//Fortunately SDL 1.3 supports mouse wheel events with different wheel speeds...
+#if SDL_VERSION_ATLEAST(1, 3, 0)
+	if (event->type == SDL_MOUSEWHEEL && eventMouseWheel(event)) return true;
+#endif
+	return false;
+}

@@ -41,9 +41,19 @@ void Application::prepare()
 	//Initialize the SDL
 	error = SDL_Init(SDL_INIT_VIDEO);
 	
+	//Make sure we received keyboard repeat events
+	SDL_EnableKeyRepeat(250, 50);
+	
 	//Prepare OpenGL
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, true);
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+	
+	//Initialize DevIL
+	ilInit();
+	
+	//Tell the DevIL how all loaded images should be oriented
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 	
 	//Prepare the singletons
 	OpenGLCanvas::shared()->eventPrepare();

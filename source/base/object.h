@@ -59,7 +59,17 @@ namespace OSS {
 		 * by calling the parent's implementation of handleEvent() and only proceeding to its
 		 * children if the parent returned false.
 		 */
-		virtual bool eventSDL(SDL_Event * event)	{ return false; }
+		virtual bool eventSDL(SDL_Event * event);
+		
+		virtual bool eventKey(SDL_Event * event);
+		virtual bool eventKeyDown(SDL_Event * event)	{ return false; }
+		virtual bool eventKeyUp(SDL_Event * event)		{ return false; }
+		
+		virtual bool eventMouse(SDL_Event * event);
+		virtual bool eventMouseDown(SDL_Event * event)	{ return false; }
+		virtual bool eventMouseMoved(SDL_Event * event)	{ return false; }
+		virtual bool eventMouseUp(SDL_Event * event)	{ return false; }
+		virtual bool eventMouseWheel(SDL_Event * event)	{ return false; }
 	};
 }
 

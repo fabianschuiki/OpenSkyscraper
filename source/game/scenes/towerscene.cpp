@@ -120,3 +120,23 @@ bool TowerScene::handleEvent(CoreEvent * event)
 	if (tower && tower->handleEvent(event)) return true;
 	return Scene::handleEvent(event);
 }
+
+bool TowerScene::eventKeyDown(SDL_Event * event)
+{
+	double factor = (event->key.keysym.mod & KMOD_SHIFT ? 10 : 1);
+	switch (event->key.keysym.sym) {
+		case SDLK_UP:		POI.y += 10 * factor; return true; break;
+		case SDLK_DOWN:		POI.y -= 10 * factor; return true; break;
+	}
+	return false;
+}
+
+bool TowerScene::eventMouseDown(SDL_Event * event)
+{
+	OSSObjectLog << event->button.x << " x " << event->button.y << std::endl;
+	switch (event->button.button) {
+		case SDL_BUTTON_WHEELUP:	POI.y += 10; return true; break;
+		case SDL_BUTTON_WHEELDOWN:	POI.y -= 10; return true; break;
+	}
+	return false;
+}

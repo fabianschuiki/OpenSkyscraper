@@ -25,13 +25,6 @@ Engine::Engine() {
 	freq_lowerLimit = 15;
 	freq_upperLimit = 100;
 	
-	//Initialize DevIL
-	ilInit();
-	
-	//Tell the DevIL how all loaded images should be oriented
-	ilEnable(IL_ORIGIN_SET);
-	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-	
 	//Initialize the stores
 	stores.push_back(new TextureStore);
 }
