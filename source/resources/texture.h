@@ -4,7 +4,6 @@
 #include "../general.h"
 #include "store.h"
 #include "storeitem.h"
-#include "../misc/bitmap.h"
 
 
 namespace OSS {
