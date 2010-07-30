@@ -6,3 +6,4 @@
 #include "openglcanvas.h"
 #include "platform.h"
 #include "scene.h"
+#include "sprite.h"

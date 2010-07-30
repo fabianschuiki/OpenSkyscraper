@@ -17,11 +17,15 @@ namespace OSS {
 		 */
 		
 		//Birth and death
-		virtual bool eventPrepare()	{ return false; }
-		virtual bool eventCleanUp()	{ return false; }
+		virtual void eventPrepare()	{}
+		virtual void eventCleanUp()	{}
 		
 		//Video Mode
-		virtual bool eventVideoModeChanged()	{ return false; }
+		virtual void eventVideoModeChanged()	{}
+		
+		//Scene
+		virtual void eventSceneMovedOnScreen(Scene * scene)		{}
+		virtual void eventSceneMovedOffScreen(Scene * scene)	{}
 	};
 }
 

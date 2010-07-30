@@ -3,11 +3,11 @@
 
 #include "../general.h"
 #include "../base/base.h"
-#include "../resources/resources.h"
+#include "../core/core.h"
 
 
 namespace OSS {
-	class Tower : public Object {
+	class Tower : public CoreObject {
 	public:
 		//Initialization
 		Tower();
@@ -32,7 +32,7 @@ namespace OSS {
 		 * Rendering
 		 */
 		
-		Pointer<Texture> groundTexture;
+		Pointer<Sprite> groundSprite;
 		void renderBackground(rectd visibleRect);
 		
 		

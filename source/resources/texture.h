@@ -29,7 +29,10 @@ namespace OSS {
 		Pointer<Bitmap> temporaryBitmap;
 		GLuint textureID;
 		int2 size;
+		
+		//Binding
 		void bind();
+		static void unbind();
 	};
 	
 	typedef Store<Texture> TextureStore;

@@ -36,6 +36,9 @@ namespace OSS {
 		//OpenGL State
 		void onMoveOnScreen();
 		void onMoveOffScreen();
+		
+		//Events
+		virtual bool handleEvent(CoreEvent * event);
 	};
 }
 

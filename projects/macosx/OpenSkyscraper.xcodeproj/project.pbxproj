@@ -23,8 +23,8 @@
 		1F21FE09120035CA000A8AC3 /* towerscene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FE08120035CA000A8AC3 /* towerscene.cpp */; };
 		1F21FE84120044AF000A8AC3 /* tower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FE83120044AF000A8AC3 /* tower.cpp */; };
 		1F21FF1512007D1F000A8AC3 /* simtower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF1412007D1F000A8AC3 /* simtower.cpp */; };
-		1F21FF2712007E4C000A8AC3 /* SIMTOWER.EXE in Resources */ = {isa = PBXBuildFile; fileRef = 1F21FF2612007E4C000A8AC3 /* SIMTOWER.EXE */; };
 		1F21FF3C12008057000A8AC3 /* platform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF3B12008057000A8AC3 /* platform.mm */; };
+		1F3824501202BBE800C1E2B0 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38244F1202BBE800C1E2B0 /* sprite.cpp */; };
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1F8B57D11201F8D70080E30C /* bitmap-png.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F8B57CE1201F8D70080E30C /* bitmap-png.cpp */; };
 		1F8B57D21201F8D70080E30C /* bitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F8B57CF1201F8D70080E30C /* bitmap.cpp */; };
@@ -91,8 +91,10 @@
 		1F21FF1312007D1F000A8AC3 /* simtower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simtower.h; sourceTree = "<group>"; };
 		1F21FF1412007D1F000A8AC3 /* simtower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = simtower.cpp; sourceTree = "<group>"; };
 		1F21FF1B12007DEC000A8AC3 /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
-		1F21FF2612007E4C000A8AC3 /* SIMTOWER.EXE */ = {isa = PBXFileReference; lastKnownFileType = file; name = SIMTOWER.EXE; path = /Users/fabian/Desktop/SIMTOWER.EXE; sourceTree = "<absolute>"; };
 		1F21FF3B12008057000A8AC3 /* platform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platform.mm; sourceTree = "<group>"; };
+		1F38244E1202BBE800C1E2B0 /* sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sprite.h; sourceTree = "<group>"; };
+		1F38244F1202BBE800C1E2B0 /* sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sprite.cpp; sourceTree = "<group>"; };
+		1F38253D1202ED5000C1E2B0 /* gameevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameevent.h; sourceTree = "<group>"; };
 		1F8B57BD1201F7470080E30C /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../resources/textures; sourceTree = "<group>"; };
 		1F8B57CE1201F8D70080E30C /* bitmap-png.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "bitmap-png.cpp"; sourceTree = "<group>"; };
 		1F8B57CF1201F8D70080E30C /* bitmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmap.cpp; sourceTree = "<group>"; };
@@ -203,6 +205,8 @@
 				1F0D418511FF00D700C6D787 /* platform.cpp */,
 				1FD0EB1811FF930F004F4D4E /* scene.h */,
 				1FD0EB1C11FF96FC004F4D4E /* scene.cpp */,
+				1F38244E1202BBE800C1E2B0 /* sprite.h */,
+				1F38244F1202BBE800C1E2B0 /* sprite.cpp */,
 				1FD0EA6511FF68CA004F4D4E /* tasks */,
 			);
 			path = core;
@@ -235,6 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				1F21FF1B12007DEC000A8AC3 /* game.h */,
+				1F38253D1202ED5000C1E2B0 /* gameevent.h */,
 				1F21FDF812003389000A8AC3 /* openskyscraper.h */,
 				1F21FDF912003389000A8AC3 /* openskyscraper.cpp */,
 				1F21FE061200359B000A8AC3 /* scenes */,
@@ -345,7 +350,6 @@
 			isa = PBXGroup;
 			children = (
 				1F8B57BD1201F7470080E30C /* textures */,
-				1F21FF2612007E4C000A8AC3 /* SIMTOWER.EXE */,
 				1FFFCBF911FCDDC3005D8446 /* openttd.png */,
 				8D1107310486CEB800E47090 /* OpenSkyscraper-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -409,7 +413,6 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				1FFFCBFA11FCDDC3005D8446 /* openttd.png in Resources */,
-				1F21FF2712007E4C000A8AC3 /* SIMTOWER.EXE in Resources */,
 				1F8B57BF1201F7470080E30C /* textures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -444,6 +447,7 @@
 				1F21FF3C12008057000A8AC3 /* platform.mm in Sources */,
 				1F8B57D11201F8D70080E30C /* bitmap-png.cpp in Sources */,
 				1F8B57D21201F8D70080E30C /* bitmap.cpp in Sources */,
+				1F3824501202BBE800C1E2B0 /* sprite.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

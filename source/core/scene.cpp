@@ -24,11 +24,10 @@ void Scene::updateProjection()
 	glMatrixMode(GL_MODELVIEW);
 }
 
-bool Scene::eventVideoModeChanged()
+void Scene::eventVideoModeChanged()
 {
 	updateViewport();
 	updateProjection();
-	return true;
 }
 
 

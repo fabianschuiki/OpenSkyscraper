@@ -9,7 +9,7 @@ namespace OSS {
 	/**
 	 * Core events
 	 */
-	typedef enum {
+	enum {
 		//Birth and death
 		kCoreEventPrepare = kNumEventsBase,
 		kCoreEventCleanUp,

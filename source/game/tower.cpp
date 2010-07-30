@@ -65,17 +65,17 @@ void Tower::renderBackground(rectd visibleRect)
 	skyRect.size.y += skyRect.origin.y;
 	skyRect.origin.y = 0;
 	
-	if (!groundTexture)
-		groundTexture = Texture::named("ground");
+	//Load the sprite if necessary
+	if (!groundSprite) {
+		groundSprite = new Sprite;
+		groundSprite->texture = Texture::named("ground");
+		groundSprite->rect = groundRect;
+		groundSprite->textureMode = Sprite::TextureModeRepeat;
+		groundSprite->autoTexRectX = true;
+		groundSprite->autoTexRectY = true;
+	}
 	
-	groundTexture->bind();
-	glColor3f(1, 1, 1);
-	glBegin(GL_QUADS);
-	glTexCoord2d(0, 0); glVertex2d(groundRect.minX(), groundRect.minY());
-	glTexCoord2d(groundTexture->size.x, 0); glVertex2d(groundRect.maxX(), groundRect.minY());
-	glTexCoord2d(groundTexture->size.x, groundTexture->size.y); glVertex2d(groundRect.maxX(), groundRect.maxY());
-	glTexCoord2d(0, groundTexture->size.y); glVertex2d(groundRect.minX(), groundRect.maxY());
-	glEnd();
+	groundSprite->draw(visibleRect);
 }
 
 

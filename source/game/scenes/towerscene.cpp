@@ -105,3 +105,18 @@ void TowerScene::onMoveOffScreen()
 	
 	Scene::onMoveOffScreen();
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+bool TowerScene::handleEvent(CoreEvent * event)
+{
+	if (tower && tower->handleEvent(event)) return true;
+	return Scene::handleEvent(event);
+}

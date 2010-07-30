@@ -38,7 +38,7 @@ namespace OSS {
 		virtual void updateViewport();
 		virtual void updateProjection();
 		
-		virtual bool eventVideoModeChanged();
+		virtual void eventVideoModeChanged();
 		
 		/**
 		 * Notifications. Very useful are the moveOnScreen and moveOffScreen notifications which are

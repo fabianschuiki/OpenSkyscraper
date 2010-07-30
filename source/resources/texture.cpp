@@ -87,10 +87,15 @@ void Texture::unload()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Texture
+#pragma mark Binding
 //----------------------------------------------------------------------------------------------------
 
 void Texture::bind()
 {
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureID);
+}
+
+void Texture::unbind()
+{
+	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
 }

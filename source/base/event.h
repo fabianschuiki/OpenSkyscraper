@@ -9,7 +9,7 @@ namespace OSS {
 	 * Base events. This list may be extended by other parts of the engine
 	 * by using their own enum starting from kNumEventsBase.
 	 */
-	typedef enum {
+	enum {
 		kEventNone = 0,
 		kEventSDL,
 		
