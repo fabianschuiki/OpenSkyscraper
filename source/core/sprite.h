@@ -12,8 +12,8 @@ namespace OSS {
 	public:
 		//Texture modes
 		enum {
-			TextureModeRepeat,
-			TextureModeRect
+			kRepeatTextureMode,
+			kRectTextureMode
 		};
 		
 		//Basic
