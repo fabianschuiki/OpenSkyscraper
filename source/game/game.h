@@ -1,3 +1,5 @@
+#include "gameevent.h"
+#include "item.h"
 #include "openskyscraper.h"
 #include "tower.h"
 #include "simtower.h"

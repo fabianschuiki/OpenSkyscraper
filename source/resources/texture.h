@@ -12,6 +12,7 @@ namespace OSS {
 		//Initialization
 		Texture(std::string name);
 		~Texture();
+		virtual std::string instanceName();
 		
 		//Store
 		OSSStoreItemStoreAccess(Texture)

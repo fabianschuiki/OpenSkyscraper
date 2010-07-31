@@ -34,6 +34,11 @@ Texture::~Texture()
 	}
 }
 
+std::string Texture::instanceName()
+{
+	return this->className() + " " + name;
+}
+
 
 
 

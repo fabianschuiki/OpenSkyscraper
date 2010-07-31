@@ -59,16 +59,34 @@ namespace OSS {
 		unsigned int itemID;
 		Descriptor * descriptor;
 		recti rect;
+		rectd worldRect;
+		
+		//Basic Sprites
+		Pointer<Sprite> ceilingSprite;
+		Pointer<Sprite> backgroundSprite;
+		
+		//Construction Process
+		Pointer<Sprite> constructionSprite;
+		unsigned int constructionState;
+		double constructionProgress;
+		void switchToConstructionState(unsigned int state);
 		
 		//Initialization
 		static Item * createNew(Descriptor * descriptor, recti rect, unsigned int itemID);
+		Item();
 		~Item();
 		
 		//Descriptors
 		static Descriptor * descriptorForItemType(Type itemType);
 		
+		//Simulation
+		virtual void advance(double dt);
+		
 		//Rendering
-		virtual void draw();
+		virtual void draw(rectd visibleRect);
+		
+		//Notifications
+		virtual void onPrepare();
 	};
 }
 

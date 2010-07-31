@@ -4,6 +4,7 @@
 #include "../../general.h"
 #include "../../core/scene.h"
 #include "../tower.h"
+#include "../item.h"
 
 
 namespace OSS {
@@ -11,6 +12,11 @@ namespace OSS {
 	public:
 		//Point of interest, i.e. the point in the world that's centered on-screen
 		double2 POI;
+		
+		//Mouse location inside the world
+		double2 previousWorldMouse;
+		double2 worldMouse;
+		bool mouseMoved;
 		
 		//Calculated culling values
 		rectd visibleRect;
@@ -22,7 +28,7 @@ namespace OSS {
 		
 		//The tower currently being played
 		Pointer<Tower> tower;
-		
+	
 		
 		//Simulation
 		void advance(double dt);
@@ -41,6 +47,22 @@ namespace OSS {
 		bool handleEvent(CoreEvent * event);
 		bool eventKeyDown(SDL_Event * event);
 		bool eventMouseDown(SDL_Event * event);
+		bool eventMouseUp(SDL_Event * event);
+		
+		
+		/**
+		 * Construction
+		 */
+		Item::Descriptor * constructionItemDescriptor;
+		recti constructionTemplate;
+		
+		bool isDraggingConstruction;
+		recti previousConstructionTemplate;
+		
+		void updateConstruction();
+		void startConstruction();
+		void endConstruction();
+		bool constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect);
 	};
 }
 

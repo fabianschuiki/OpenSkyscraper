@@ -4,6 +4,7 @@
 #include "../general.h"
 #include "../base/base.h"
 #include "../core/core.h"
+#include "item.h"
 
 
 namespace OSS {
@@ -18,6 +19,7 @@ namespace OSS {
 		 */
 		
 		int2 cellSize;
+		int ceilingHeight;
 		
 		//Rects
 		recti convertWorldToCellRect(rectd rect);
@@ -29,12 +31,31 @@ namespace OSS {
 		
 		
 		/**
+		 * Simulation
+		 */
+		void advance(double dt);
+		
+		
+		/**
 		 * Rendering
 		 */
-		
 		Pointer<Sprite> groundSprite;
 		Pointer<Sprite> skySprites[10];
 		void renderBackground(rectd visibleRect);
+		
+		
+		/**
+		 * Items
+		 */
+		/*Item * getFacility(unsigned int itemID, bool createIfInexistent = false);
+		Item * getTransport(unsigned int itemID, bool createIfInexistent = false);
+		
+	protected:*/
+		typedef std::map< unsigned int, Pointer<Item> > ItemMap;
+		ItemMap facilityItems;
+		ItemMap transportItems;
+		
+		unsigned int nextItemID();
 		
 		
 		/**
