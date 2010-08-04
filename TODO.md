@@ -12,7 +12,7 @@ Tower
 -----
 
 ### Drawing
-- Reorganize tower stuff into *game/tower" directory
+- Reorganize tower stuff into *game/tower* directory
 - Draw the fire ladders on the far left and right of each floor; also on the lobby floor. (they're in 075)
 - Add clouds to the sky
 - Add *funds*, *star rating*, *time* and *date* to the `Tower` class and animate them
