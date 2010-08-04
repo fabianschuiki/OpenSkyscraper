@@ -72,11 +72,13 @@ void Sprite::draw(rectd visibleRect)
 					//Calculate the width of the texture subrect
 					textureSubrect.size.x = std::min<double>(ceil(textureSubrect.origin.x + 1e-2) - textureSubrect.origin.x, 1);
 					textureSubrect.size.x -= std::max<double>(textureSubrect.maxX() - transformedTextureRect.maxX(), 0);
+					if (textureSubrect.size.x < 1e-6) break;
 					
 					for (textureSubrect.origin.y = transformedTextureRect.minY(); textureSubrect.origin.y < transformedTextureRect.maxY(); textureSubrect.origin.y += textureSubrect.size.y) {
 						//Calculate the height of the texture subrect
 						textureSubrect.size.y = std::min<double>(ceil(textureSubrect.origin.y + 1e-2) - textureSubrect.origin.y, 1);
 						textureSubrect.size.y -= std::max<double>(textureSubrect.maxY() - transformedTextureRect.maxY(), 0);
+						if (textureSubrect.size.y < 1e-6) break;
 						
 						//Calculate the tile rect for the given texture subrect
 						rectd tileRect = textureSubrect;
