@@ -13,8 +13,6 @@ Tower
 
 ### Drawing
 - Reorganize tower stuff into *game/tower" directory
-- Add the little crane from SimTower. Whenever the Tower's height changes, the crane is positioned at the left edge of the item that caused the height increase.
-- Add the city background (it's in 065)
 - Draw the fire ladders on the far left and right of each floor; also on the lobby floor. (they're in 075)
 - Add clouds to the sky
 - Add *funds*, *star rating*, *time* and *date* to the `Tower` class and animate them
@@ -30,7 +28,6 @@ Items
 Lobby
 -----
 
-- The `Lobby` needs it's entrance decorations on the left and right side to be drawn
 - Multiple unconnected lobbies on the ground floor allowed. This should *not* be the case!
 - `Lobby` shouldn't show construction step bitmap 212
 - `Lobby` needs a texture (don't know where to find it though…)
