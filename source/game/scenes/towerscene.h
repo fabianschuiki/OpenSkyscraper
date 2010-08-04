@@ -62,7 +62,6 @@ namespace OSS {
 		void updateConstruction();
 		void startConstruction();
 		void endConstruction();
-		bool constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect);
 	};
 }
 

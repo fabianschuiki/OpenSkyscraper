@@ -68,7 +68,7 @@ void TowerScene::render()
 	glTranslated(-visibleRect.origin.x, -visibleRect.origin.y, 0);
 	
 	//Render the background
-	tower->renderBackground(visibleRect);
+	renderBackground();
 	
 	//Render the items
 	renderFacilities();
@@ -109,6 +109,12 @@ void TowerScene::render()
 	OpenGLCanvas::shared()->swapBuffers();
 }
 
+void TowerScene::renderBackground()
+{
+	//Render the background
+	tower->renderBackground(visibleRect);
+}
+
 void TowerScene::renderFacilities()
 {
 	//OSSObjectLog << "rendering " << visibleFacilities.size() << " facilities..." << std::endl;
@@ -144,10 +150,14 @@ void TowerScene::onMoveOnScreen()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	constructionItemDescriptor = Item::descriptorForItemType(Item::kLobbyType);
+	
+	tower->onMoveOnScreen();
 }
 
 void TowerScene::onMoveOffScreen()
 {
+	tower->onMoveOffScreen();
+	
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	
@@ -218,7 +228,7 @@ void TowerScene::updateConstruction()
 	
 	//If we're dragging a construction at the moment, construct the next segment
 	if (isDraggingConstruction && (constructionTemplate != previousConstructionTemplate)) {
-		constructFlexibleWidthItem(constructionItemDescriptor, constructionTemplate, previousConstructionTemplate);
+		tower->constructFlexibleWidthItem(constructionItemDescriptor, constructionTemplate, previousConstructionTemplate);
 		previousConstructionTemplate = constructionTemplate;
 	}
 }
@@ -229,7 +239,7 @@ void TowerScene::startConstruction()
 	if (constructionItemDescriptor->attributes & Item::kFlexibleWidthAttribute) {		
 		//Do the initial build
 		previousConstructionTemplate = constructionTemplate;
-		bool success = constructFlexibleWidthItem(constructionItemDescriptor, constructionTemplate, previousConstructionTemplate);
+		bool success = tower->constructFlexibleWidthItem(constructionItemDescriptor, constructionTemplate, previousConstructionTemplate);
 		
 		//If the build was successful, start the dragging
 		if (success)
@@ -243,136 +253,4 @@ void TowerScene::startConstruction()
 void TowerScene::endConstruction()
 {
 	isDraggingConstruction = false;
-}
-
-bool TowerScene::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect)
-{
-	OSSObjectLog << "attempting construction of " << descriptor->type << " from " << previousRect.description() << " to " << currentRect.description() << std::endl;
-	
-	//Check whether the basic construction limitations are given
-	if ((descriptor->attributes & Item::kEvery15thFloorAttribute) && (currentRect.origin.y % 15) != 0) {
-		OSSObjectError << "failed because only every 15th floor" << std::endl;
-		return false;
-	}
-	
-	//Calculate the union rect for the current and previous rect
-	recti rect = currentRect.unionRect(previousRect);
-	OSSObjectLog << "scanning rect " << rect.description() << "..." << std::endl;
-	
-	//Decide where and in which direction to start scanning
-	int scanStep = (previousRect.origin.x < currentRect.origin.x ? 1 : -1);
-	int2 scanOrigin(scanStep == 1 ? rect.minX() : rect.maxX() - 1, rect.minY());
-	
-	//Scan the facility entries until we find the first occupied or impossible slot
-	int i;
-	unsigned int floorCellsRequired = 0;
-	unsigned int itemCellsRequired = 0;
-	std::set<Item *> facilitiesHit;
-	for (i = 0; i < rect.size.x; i++) {
-		int2 pos = scanOrigin + int2(i * scanStep, 0);
-		int2 posBelow = pos - int2(0, 1);
-		Tower::Cell * cell = tower->getCell(pos);
-		Tower::Cell * cellBelow = tower->getCell(posBelow);
-		
-		//The cell below must have a built facility in some way
-		if (rect.origin.y > 0 && (!cellBelow || cellBelow->facility == 0)) {
-			OSSObjectError << "cell below invalid" << std::endl;
-			break;
-		}
-		
-		//The cell must be either empty, a floor or the same as the item
-		if (cell) {
-			//Check whether the cell has a facility that is not the floor facility (1)
-			if (cell->facility > 1) {
-				//Fetch the facility already placed in this cell
-				Item * facility = tower->facilityItems[cell->facility];
-				if (facility) {
-					//If it is valid, check whether it is not of our type, which would be a dealbreaker
-					if (facility->descriptor->type != descriptor->type) {
-						OSSObjectError << "floor is already occupied by something else" << std::endl;
-						break;
-					} else {
-						//Note the facility we just hit, since we need to remove it later and expand
-						//the item we're building to cover this facility's area too.
-						facilitiesHit.insert(facility);
-					}
-				}
-			} else {
-				//Since there's no facility there yet we need to build one
-				itemCellsRequired++;
-			}
-			
-			//If there's no facility in this cell, we need to build a floor
-			if (cell->facility == 0)
-				floorCellsRequired++;
-		} else {
-			//Since there's nothing here we need to build both the floor and the item
-			floorCellsRequired++;
-			itemCellsRequired++;
-		}
-	}
-	
-	//Calculate the last valid position
-	int2 lastValidPosition = scanOrigin;
-	lastValidPosition.x += ((i - 1) * scanStep);
-	
-	OSSObjectLog << "scan started at " << scanOrigin.description() << " and lastet for " << i << " cells" << std::endl;
-	OSSObjectLog << floorCellsRequired << " floor cells required, " << itemCellsRequired << " item cells required" << std::endl;
-	
-	//We won't continue if the number of valid cells is smaller than the minUnit size
-	if (i < descriptor->minUnit.x) return false;
-	
-	//Calculate the cost of this construction
-	double cost = floorCellsRequired * Item::descriptorForItemType(Item::kFloorType)->price;
-	cost += itemCellsRequired * descriptor->price;
-	
-	//Check whether the money is available...
-	OSSObjectLog << "construction costs " << cost << std::endl;
-	
-	//Calculate the valid rect
-	recti validRect(std::min<int>(scanOrigin.x, lastValidPosition.x), scanOrigin.y, abs(scanOrigin.x - lastValidPosition.x) + 1, 1);
-	OSSObjectLog << "the item's valid rect is " << validRect.description() << std::endl;
-	
-	//Fetch the item ID we will assign the new item
-	unsigned int itemID = tower->nextItemID();
-	
-	//Add adjacent facilities of the same type to the list of hit facilities, so they get collapsed
-	Tower::Cell * cellLeft = tower->getCell(int2(validRect.minX() - 1, validRect.minY()));
-	Tower::Cell * cellRight = tower->getCell(int2(validRect.maxX(), validRect.minY()));
-	if (cellLeft && cellLeft->facility > 1) {
-		Item * facilityLeft = tower->facilityItems[cellLeft->facility];
-		if (facilityLeft->descriptor->type == descriptor->type) {
-			OSSObjectLog << "adding adjacent facility " << facilityLeft->itemID << " on the left" << std::endl;
-			facilitiesHit.insert(facilityLeft);
-		}
-	}
-	if (cellRight && cellRight->facility > 1) {
-		Item * facilityRight = tower->facilityItems[cellRight->facility];
-		if (facilityRight->descriptor->type == descriptor->type) {
-			OSSObjectLog << "adding adjacent facility " << facilityRight->itemID << " on the right" << std::endl;
-			facilitiesHit.insert(facilityRight);
-		}
-	}
-	
-	//Calculate the item rect which actually is a union of the validRect and all the hit facilities.
-	//We also need to get rid of the hit facilities themselves
-	recti itemRect = validRect;
-	std::set<Item *>::iterator it;
-	for (it = facilitiesHit.begin(); it != facilitiesHit.end(); it++) {
-		itemRect.unify((*it)->rect);
-		tower->facilityItems.erase((*it)->itemID);
-	}
-	OSSObjectLog << "the item rect is " << itemRect.description() << std::endl;
-	
-	//Make the cells the item covers point at it
-	for (int x = itemRect.minX(); x < itemRect.maxX(); x++) {
-		Tower::Cell * cell = tower->getCell(int2(x, itemRect.origin.y), true);
-		cell->facility = itemID;
-	}
-	
-	//Create the new item and add it to the tower's facilities
-	Item * item = Item::createNew(descriptor, itemRect, itemID);
-	tower->facilityItems[itemID] = item;
-	
-	return true;
 }

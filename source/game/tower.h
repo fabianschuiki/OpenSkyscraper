@@ -20,6 +20,7 @@ namespace OSS {
 		
 		int2 cellSize;
 		int ceilingHeight;
+		recti bounds;
 		
 		//Rects
 		recti convertWorldToCellRect(rectd rect);
@@ -28,6 +29,13 @@ namespace OSS {
 		//Coordinates
 		int2 convertWorldToCellCoordinates(double2 coordinates);
 		double2 convertCellToWorldCoordinates(int2 coordinates);
+		
+		
+		/**
+		 * Notifications
+		 */
+		void onMoveOnScreen();
+		void onMoveOffScreen();
 		
 		
 		/**
@@ -41,6 +49,9 @@ namespace OSS {
 		 */
 		Pointer<Sprite> groundSprite;
 		Pointer<Sprite> skySprites[10];
+		Pointer<Sprite> citySprite;
+		Pointer<Sprite> craneSprite;
+		void prepareBackground();
 		void renderBackground(rectd visibleRect);
 		
 		
@@ -75,6 +86,12 @@ namespace OSS {
 		
 	public:
 		std::map<int, std::map<int, Cell> > cells;
+		
+		
+		/**
+		 * Construction
+		 */
+		bool constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect);
 	};
 }
 
