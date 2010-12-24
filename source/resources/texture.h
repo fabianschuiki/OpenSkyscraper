@@ -33,6 +33,10 @@ namespace OSS {
 		//Binding
 		void bind();
 		static void unbind();
+		
+		//Post-processing
+		color3d transparencyColor;
+		bool useTransparencyColor;
 	};
 	
 	typedef Store<Texture> TextureStore;
