@@ -13,6 +13,7 @@ Tower::Tower()
 {
 	ceilingHeight = 12;
 	cellSize = int2(8, 24 + ceilingHeight);
+	constructionsHalted = false;
 }
 
 
@@ -106,7 +107,7 @@ void Tower::prepareBackground()
 {
 	//Initialize the ground sprite
 	groundSprite = new Sprite;
-	groundSprite->texture = Texture::named("049.bmp");
+	groundSprite->texture = Texture::named("simtower/049.bmp");
 	groundSprite->rect = rectd(-800, -360, 1600, 360);
 	groundSprite->textureMode = Sprite::kRepeatTextureMode;
 	groundSprite->autoTexRectX = true;
@@ -115,7 +116,7 @@ void Tower::prepareBackground()
 	//Initialize the sky sprites
 	for (int i = 0; i < 10; i++) {	
 		char n[16];
-		sprintf(n, "%03i.bmp", i + 50);
+		sprintf(n, "simtower/%03i.bmp", i + 50);
 		skySprites[i] = new Sprite;
 		skySprites[i]->texture = Texture::named(n);
 		skySprites[i]->rect = rectd(-800, i * 360, 1600, 360);
@@ -125,14 +126,14 @@ void Tower::prepareBackground()
 	
 	//Initialize the city sprite
 	citySprite = new Sprite;
-	citySprite->texture = Texture::named("065.bmp");
+	citySprite->texture = Texture::named("simtower/065.bmp");
 	citySprite->rect = rectd(-800, 0, 1600, 55);
 	citySprite->textureMode = Sprite::kRepeatTextureMode;
 	citySprite->autoTexRectX = true;
 	
 	//Initialize the crane sprite
 	craneSprite = new Sprite;
-	craneSprite->texture = Texture::named("068.bmp");
+	craneSprite->texture = Texture::named("simtower/068.bmp");
 	craneSprite->rect.size = double2(36, 36);
 }
 
@@ -184,6 +185,16 @@ unsigned int Tower::nextItemID()
 		if (facilityItems.count(i) == 0 && transportItems.count(i) == 0)
 			return i;
 	return UINT_MAX;
+}
+
+void Tower::setConstructionsHalted(bool halted)
+{
+	constructionsHalted = halted;
+}
+
+bool Tower::getConstructionsHalted()
+{
+	return constructionsHalted;
 }
 
 
@@ -338,6 +349,8 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	
 	//Create the new item and add it to the tower's facilities
 	Item * item = Item::createNew(descriptor, itemRect, itemID);
+	item->setTower(this);
+	item->setUnderConstruction(true);
 	facilityItems[itemID] = item;
 	
 	//If the item expands the tower's bounds vertically, reposition the crane

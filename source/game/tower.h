@@ -68,6 +68,13 @@ namespace OSS {
 		
 		unsigned int nextItemID();
 		
+	private:
+		bool constructionsHalted;
+	public:
+		void setConstructionsHalted(bool halted);
+		bool getConstructionsHalted();
+		
+		
 		
 		/**
 		 * Cells

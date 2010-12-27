@@ -236,10 +236,15 @@ void TowerScene::updateConstruction()
 void TowerScene::startConstruction()
 {	
 	//Is this a draggable item like the lobby or a floor?
-	if (constructionItemDescriptor->attributes & Item::kFlexibleWidthAttribute) {		
+	if (constructionItemDescriptor->attributes & Item::kFlexibleWidthAttribute) {
+		//Disable the constructions
+		tower->setConstructionsHalted(true);
+		
 		//Do the initial build
 		previousConstructionTemplate = constructionTemplate;
-		bool success = tower->constructFlexibleWidthItem(constructionItemDescriptor, constructionTemplate, previousConstructionTemplate);
+		bool success = tower->constructFlexibleWidthItem(constructionItemDescriptor,
+														 constructionTemplate,
+														 previousConstructionTemplate);
 		
 		//If the build was successful, start the dragging
 		if (success)
@@ -253,4 +258,7 @@ void TowerScene::startConstruction()
 void TowerScene::endConstruction()
 {
 	isDraggingConstruction = false;
+	
+	//Resume the constructions
+	tower->setConstructionsHalted(false);
 }

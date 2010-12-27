@@ -18,6 +18,29 @@ Texture::Texture(std::string name) : StoreItem(name)
 	tempImage = 0;
 	useTransparencyColor = true;
 	transparencyColor = (color3d){1, 1, 1};
+	
+	getStore()->registerItem(this);
+}
+
+Texture::Texture(std::string name, ILenum type, const void * data, ILuint length) : StoreItem(name)
+{
+	textureID = 0;
+	useTransparencyColor = true;
+	transparencyColor = (color3d){1, 1, 1};
+	
+	//Generate the temporary image
+	tempImage = ilGenImage();
+	ilBindImage(tempImage);
+	
+	//Load the image from the data
+	ILboolean success = ilLoadL(type, data, length);
+	ilBindImage(0);
+	if (!success) {
+		ilDeleteImage(tempImage);
+		tempImage = 0;
+	}
+	
+	getStore()->registerItem(this);
 }
 
 Texture::~Texture()
@@ -52,17 +75,30 @@ std::string Texture::instanceName()
 
 void Texture::load()
 {
-	//Assemble the path to the texture PNG
-	std::string path = Platform::shared()->pathToResource("textures", name);
-	OSSObjectLog << "Loading '" << path << "'..." << std::endl;
+	//If the temporary image doesn't exist already (supplied by the constructor), load it from disk
+	ILboolean success = false;
+	if (!tempImage) {
+		//Assemble the path to the texture PNG
+		std::string path = Platform::shared()->pathToResource("textures", name);
+		//OSSObjectLog << "Loading '" << path << "'..." << std::endl;
+		
+		//Create a new IL image
+		tempImage = ilGenImage();
+		ilBindImage(tempImage);
+		
+		//Load the image
+		success = ilLoadImage(path.c_str());
+		if (!success)
+			OSSObjectError << "unable to load image via ilLoadImage() from " << path << std::endl;
+	}
 	
-	//Create a new IL image
-	assert(tempImage == 0);
-	ilGenImages(1, &tempImage);
-	ilBindImage(tempImage);
+	//Otherwise just bind the temp image we already have
+	else {
+		ilBindImage(tempImage);
+		success = true;
+	}
 	
-	//Load the image
-	ILboolean success = ilLoadImage(path.c_str());
+	//Process the image
 	if (success) {
 		//Remember the texture size
 		size.x = ilGetInteger(IL_IMAGE_WIDTH);
@@ -84,16 +120,14 @@ void Texture::load()
 				}
 			}
 		}
-	} else {
-		OSSObjectError << "unable to load image via ilLoadImage() from " << path << std::endl;
 	}
 	
-	//Unbind the image (to prevent any errors that might occur)
+	//Unbind the image (to prevent any errors)
 	ilBindImage(0);
 	
 	//Delete the image if anything went wrong
 	if (!success) {
-		ilDeleteImages(1, &tempImage);
+		ilDeleteImage(tempImage);
 		tempImage = 0;
 	}
 }
@@ -101,10 +135,11 @@ void Texture::load()
 void Texture::finalize()
 {
 	assert(textureID == 0);
-	OSSObjectLog << "Finalizing '" << name << "'..." << std::endl;
+	//OSSObjectLog << "Finalizing '" << name << "'..." << std::endl;
 	
 	//Only proceed if we have a valid image
-	if (!tempImage) return;
+	if (!tempImage)
+		return;
 	ilBindImage(tempImage);
 	
 	//Create the texture

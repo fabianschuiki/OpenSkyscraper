@@ -11,6 +11,7 @@ namespace OSS {
 	public:		
 		//Initialization
 		Texture(std::string name);
+		Texture(std::string name, ILenum type, const void * data, ILuint length);
 		~Texture();
 		virtual std::string instanceName();
 		

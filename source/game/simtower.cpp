@@ -48,7 +48,7 @@ void SimTower::reloadResources()
 		
 		//Bitmap
 		if (memcmp(buffer, (uint8_t []){0x28, 0x00, 0x00, 0x00}, 4) == 0) {
-			OSSObjectLog << "found BMP at " << offset << std::endl;
+			//OSSObjectLog << "found BMP at " << offset << std::endl;
 			
 			//Extract the image length in bytes
 			uint32_t imageLength = *(uint32_t *)(buffer + 20);
@@ -79,6 +79,11 @@ void SimTower::reloadResources()
 			fseek(f, offset + 0x200, SEEK_SET);
 			
 			
+			//Create a texture resource from it
+			char name[512]; sprintf(name, "simtower/%03i.bmp", bitmapIndex);
+			/*OSS::Texture * texture =*/ new OSS::Texture(name, IL_BMP, bmp, bmpLength);
+			
+			
 			//Dump the BMP file
 			char path[512]; sprintf(path, "%s/%03i.bmp", imagePath.c_str(), bitmapIndex++);
 			FILE * dump = fopen(path, "w");
@@ -88,7 +93,7 @@ void SimTower::reloadResources()
 		
 		//Wave Sound
 		if (memcmp(buffer, "RIFF", 4) == 0 && memcmp(buffer + 8, "WAVE", 4) == 0) {
-			OSSObjectLog << "found WAV at " << offset << std::endl;
+			//OSSObjectLog << "found WAV at " << offset << std::endl;
 			
 			//Extract the length of the file
 			uint32_t waveLength = *(uint32_t *)(buffer + 4);

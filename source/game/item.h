@@ -7,6 +7,8 @@
 
 
 namespace OSS {
+	class Tower;
+	
 	class Item : public CoreObject {
 	public:
 		//Item Types
@@ -55,6 +57,12 @@ namespace OSS {
 		} Descriptor;
 		
 		
+		//Tower
+	private:
+		Tower * tower;
+	public:
+		void setTower(Tower * tower);
+		
 		//Attributes
 		unsigned int itemID;
 		Descriptor * descriptor;
@@ -66,10 +74,13 @@ namespace OSS {
 		Pointer<Sprite> backgroundSprite;
 		
 		//Construction Process
+	private:
 		Pointer<Sprite> constructionSprite;
-		unsigned int constructionState;
 		double constructionProgress;
-		void switchToConstructionState(unsigned int state);
+		bool underConstruction;
+		bool drawFlexibleConstruction;
+	public:
+		void setUnderConstruction(bool uc);
 		
 		//Initialization
 		static Item * createNew(Descriptor * descriptor, recti rect, unsigned int itemID);

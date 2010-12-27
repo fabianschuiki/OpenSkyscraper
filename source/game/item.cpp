@@ -1,5 +1,6 @@
 #include "item.h"
 #include "items.h"
+#include "tower.h"
 
 using namespace OSS;
 
@@ -48,7 +49,6 @@ Item * Item::createNew(Item::Descriptor * descriptor, recti rect, unsigned int i
 
 Item::Item()
 {
-	constructionProgress = 0;
 }
 
 Item::~Item()
@@ -87,15 +87,10 @@ Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
 void Item::advance(double dt)
 {
 	//Simulate the construction
-	if (constructionProgress < 1.0) {
+	if (constructionProgress < 1.0 && !tower->getConstructionsHalted()) {
 		constructionProgress += dt * 1.0;
-		
-		if (constructionProgress < 0.1)
-			switchToConstructionState(0);
-		else if (constructionProgress < 1.0)
-			switchToConstructionState(1);
-		else
-			switchToConstructionState(2);
+		if (constructionProgress >= 1.0)
+			setUnderConstruction(false);
 	}
 }
 
@@ -119,17 +114,14 @@ void Item::draw(rectd visibleRect)
 	
 	//Draw the construction
 	if (constructionSprite) {
-		if (constructionState == 0)
-			constructionSprite->rect = worldRect;
-		else
-			constructionSprite->rect = backgroundSprite->rect;
+		constructionSprite->rect = (drawFlexibleConstruction ? worldRect : backgroundSprite->rect);
 		constructionSprite->draw(visibleRect);
 	}
 	
 	//Draw the sprites
-	if (constructionState >= 2)
+	if (!underConstruction)
 		backgroundSprite->draw(visibleRect);
-	if (constructionState >= 1)
+	if (!underConstruction || !drawFlexibleConstruction)
 		ceilingSprite->draw(visibleRect);
 }
 
@@ -143,11 +135,7 @@ void Item::draw(rectd visibleRect)
 //----------------------------------------------------------------------------------------------------
 
 void Item::onPrepare()
-{
-	//Initialize the construction sprite
-	constructionState = 1;
-	switchToConstructionState(0);
-	
+{	
 	//Initialize the background sprite
 	backgroundSprite = new Sprite;
 	
@@ -164,30 +152,50 @@ void Item::onPrepare()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Notifications
+#pragma mark Uncategorized
 //----------------------------------------------------------------------------------------------------
 
-void Item::switchToConstructionState(unsigned int state)
+void Item::setUnderConstruction(bool uc)
 {
-	if (constructionState == state) return;
+	//Ignore if the construction state didn't change
+	//if (underConstruction == uc) return;
+	underConstruction = uc;
 	
-	if (!constructionSprite) {
-		constructionSprite = new Sprite;
-		constructionSprite->textureMode = Sprite::kRepeatTextureMode;
-		constructionSprite->autoTexRectX = true;
+	//Switch to construction mode
+	if (underConstruction) {
+		//Setup the construction sprite if required
+		if (!constructionSprite) {
+			constructionSprite = new Sprite;
+			constructionSprite->textureMode = Sprite::kRepeatTextureMode;
+			constructionSprite->autoTexRectX = true;
+			
+			//Depending on whether the item is draggable the construction sprite differs
+			drawFlexibleConstruction = (this->descriptor->attributes & kFlexibleWidthAttribute);
+			constructionSprite->texture = Texture::named(drawFlexibleConstruction
+														 ? "simtower/211.bmp" : "simtower/212.bmp");
+		}
+		
+		//Setup the construction
+		constructionProgress = 0;
 	}
 	
-	switch (state) {
-		case 0: {
-			constructionSprite->texture = Texture::named("211.bmp");
-		} break;
-		case 1: {
-			constructionSprite->texture = Texture::named("212.bmp");
-		} break;
-		case 2: {
-			constructionSprite = NULL;
-		} break;
+	//Switch to constructed mode
+	else {
+		constructionSprite = NULL;
+		constructionProgress = 1.0;
 	}
-	
-	constructionState = state;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Accessors
+//----------------------------------------------------------------------------------------------------
+
+void Item::setTower(Tower * tower)
+{
+	this->tower = tower;
 }

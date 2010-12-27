@@ -39,7 +39,7 @@ OpenSkyscraper::~OpenSkyscraper()
 void OpenSkyscraper::onPrepare()
 {
 	//Reload the resources of the SimTower singleton
-	//SimTower::shared()->reloadResources();
+	SimTower::shared()->reloadResources();
 	
 	//Create an empty tower
 	towerScene->tower = new Tower;
