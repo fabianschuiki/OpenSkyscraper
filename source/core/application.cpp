@@ -55,6 +55,12 @@ void Application::prepare()
 	ilEnable(IL_ORIGIN_SET);
 	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 	
+	//DEBUG: Setup some OpenAL context so we can at least play sounds
+	ALCdevice * device = alcOpenDevice(NULL);
+	OSSObjectLog << "initializing audio device " << alcGetString(device, ALC_DEVICE_SPECIFIER) << std::endl;
+	ALCcontext * context = alcCreateContext(device, NULL);
+	alcMakeContextCurrent(context);
+	
 	//Prepare the singletons
 	OpenGLCanvas::shared()->eventPrepare();
 	Engine::shared()->eventPrepare();

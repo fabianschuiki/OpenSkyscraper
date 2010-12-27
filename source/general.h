@@ -48,6 +48,13 @@
 #include <OpenGL/gl.h>
 #endif
 
+//OpenAL
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+//#include <OpenAL/alc.h>
+#include "os/macosx/alc.h" //required since alc.h in OS X uses typedef'd void for empty param list -> C++ sucks!
+#endif
+
 
 /**
  * Common OpenSkyscraper headers

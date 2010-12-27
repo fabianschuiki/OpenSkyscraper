@@ -99,6 +99,12 @@ namespace OSS {
 		 * Construction
 		 */
 		bool constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect);
+		
+		
+		/**
+		 * Uncategorized
+		 */
+		ALuint buildSoundSource;
 	};
 }
 

@@ -7,6 +7,7 @@ using namespace OSS;
 //Store
 TextureStore * Texture::store;
 
+
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
 #pragma mark Initialization

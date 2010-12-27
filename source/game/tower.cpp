@@ -62,6 +62,9 @@ void Tower::onMoveOnScreen()
 {
 	//Prepare the background
 	prepareBackground();
+	
+	//DEBUG: Load the build sound
+	alGenSources(1, &buildSoundSource);
 }
 
 void Tower::onMoveOffScreen()

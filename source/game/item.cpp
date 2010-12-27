@@ -89,7 +89,7 @@ void Item::advance(double dt)
 	//Simulate the construction
 	if (constructionProgress < 1.0 && !tower->getConstructionsHalted()) {
 		constructionProgress += dt * 1.0;
-		if (constructionProgress >= 1.0)
+		if (constructionProgress >= 1.0 || drawFlexibleConstruction)
 			setUnderConstruction(false);
 	}
 }
@@ -130,7 +130,7 @@ void Item::draw(rectd visibleRect)
 
 
 //----------------------------------------------------------------------------------------------------
-#pragma mark -
+#pragma mark -87
 #pragma mark Notifications
 //----------------------------------------------------------------------------------------------------
 
