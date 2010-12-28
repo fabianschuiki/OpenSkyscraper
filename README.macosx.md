@@ -25,6 +25,11 @@ According to http://cocoawithlove.com/2009/09/building-for-earlier-os-versions-i
 *See below for a fix!*
 
 
+Building libpng
+---------------
+Very simple. Just setup the environment for universal binaries and use the additional `--disable-shared` configure option.
+
+
 Building DevIL
 --------------
 Prepare the environment so that build occurs for the three architectures and against the 10.5 SDK.
