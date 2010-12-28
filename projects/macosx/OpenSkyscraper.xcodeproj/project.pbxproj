@@ -31,6 +31,8 @@
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1FAD1B3812C8E094004E5286 /* sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD1B3712C8E094004E5286 /* sound.cpp */; };
 		1FAD1B8412C8E362004E5286 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAD1B8312C8E362004E5286 /* OpenAL.framework */; };
+		1FC821C912CA1B0C00168481 /* toolboxwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC821C812CA1B0C00168481 /* toolboxwindow.cpp */; };
+		1FC821CC12CA1B6400168481 /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC821CB12CA1B6400168481 /* window.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
 		1FD0E9F411FF5831004F4D4E /* language.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0E9F311FF5831004F4D4E /* language.cpp */; };
 		1FD0EA6C11FF69CE004F4D4E /* inputtask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EA6B11FF69CE004F4D4E /* inputtask.cpp */; };
@@ -109,6 +111,11 @@
 		1FAD1B3712C8E094004E5286 /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sound.cpp; sourceTree = "<group>"; };
 		1FAD1B8312C8E362004E5286 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		1FAD1B9812C8E4AE004E5286 /* alc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alc.h; sourceTree = "<group>"; };
+		1FC821C712CA1B0C00168481 /* toolboxwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = toolboxwindow.h; sourceTree = "<group>"; };
+		1FC821C812CA1B0C00168481 /* toolboxwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = toolboxwindow.cpp; sourceTree = "<group>"; };
+		1FC821CA12CA1B6400168481 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
+		1FC821CB12CA1B6400168481 /* window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = window.cpp; sourceTree = "<group>"; };
+		1FC821D012CA1C1100168481 /* gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gui.h; sourceTree = "<group>"; };
 		1FD010C111FA3E330062C093 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1FD0E9F211FF5831004F4D4E /* language.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = language.h; sourceTree = "<group>"; };
 		1FD0E9F311FF5831004F4D4E /* language.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = language.cpp; sourceTree = "<group>"; };
@@ -311,6 +318,11 @@
 		1FC821C312CA1A9C00168481 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				1FC821C712CA1B0C00168481 /* toolboxwindow.h */,
+				1FC821C812CA1B0C00168481 /* toolboxwindow.cpp */,
+				1FC821CA12CA1B6400168481 /* window.h */,
+				1FC821CB12CA1B6400168481 /* window.cpp */,
+				1FC821D012CA1C1100168481 /* gui.h */,
 			);
 			path = gui;
 			sourceTree = "<group>";
@@ -476,6 +488,8 @@
 				1F38276812032C2400C1E2B0 /* item.cpp in Sources */,
 				1F38278D1203562700C1E2B0 /* lobbyitem.cpp in Sources */,
 				1FAD1B3812C8E094004E5286 /* sound.cpp in Sources */,
+				1FC821C912CA1B0C00168481 /* toolboxwindow.cpp in Sources */,
+				1FC821CC12CA1B6400168481 /* window.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

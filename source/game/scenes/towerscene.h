@@ -5,6 +5,7 @@
 #include "../../core/scene.h"
 #include "../tower.h"
 #include "../item.h"
+#include "../gui/toolboxwindow.h"
 
 
 namespace OSS {
@@ -38,6 +39,7 @@ namespace OSS {
 		void renderBackground();
 		void renderFacilities();
 		void renderTransports();
+		void renderGUI();
 		
 		//OpenGL State
 		void onMoveOnScreen();
@@ -83,6 +85,8 @@ namespace OSS {
 	public:
 		void setTool(Tool tool);
 		void setConstructionTool(Item::Type itemType);
+		
+		ToolboxWindow toolboxWindow;
 	};
 }
 

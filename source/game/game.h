@@ -3,3 +3,4 @@
 #include "openskyscraper.h"
 #include "tower.h"
 #include "simtower.h"
+#include "gui/gui.h"

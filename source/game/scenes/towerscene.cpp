@@ -106,6 +106,10 @@ void TowerScene::render()
 	glVertex2f(worldMouse.x + 0.5, worldMouse.y + 10.5);
 	glEnd();
 	
+	//Draw the GUI
+	glLoadIdentity();
+	renderGUI();
+	
 	OpenGLCanvas::shared()->swapBuffers();
 }
 
@@ -129,6 +133,12 @@ void TowerScene::renderFacilities()
 
 void TowerScene::renderTransports()
 {
+}
+
+void TowerScene::renderGUI()
+{
+	//Draw the toolbox window
+	toolboxWindow.draw(visibleRect);
 }
 
 
