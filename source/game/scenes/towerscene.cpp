@@ -9,6 +9,24 @@ using namespace OSS;
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
+TowerScene::TowerScene()
+{
+	constructionItemDescriptor = NULL;
+	
+	isDraggingConstruction = false;
+	
+	tool = kInspectTool;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
 void TowerScene::advance(double dt)
 {
 	//Update the visible rect

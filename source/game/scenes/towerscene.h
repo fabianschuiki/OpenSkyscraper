@@ -11,6 +11,8 @@
 namespace OSS {
 	class TowerScene : public Scene {
 	public:
+		TowerScene();
+		
 		//Point of interest, i.e. the point in the world that's centered on-screen
 		double2 POI;
 		

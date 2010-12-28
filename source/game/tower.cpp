@@ -118,7 +118,7 @@ void Tower::prepareBackground()
 	
 	//Initialize the sky sprites
 	for (int i = 0; i < 10; i++) {	
-		char n[16];
+		char n[32];
 		sprintf(n, "simtower/%03i.bmp", i + 50);
 		skySprites[i] = new Sprite;
 		skySprites[i]->texture = Texture::named(n);
@@ -150,17 +150,21 @@ void Tower::renderBackground(rectd visibleRect)
 	skyRect.origin.y = 0;
 	
 	//Draw tge ground sprite
-	groundSprite->draw(visibleRect);
+	if (groundSprite)
+		groundSprite->draw(visibleRect);
 	
 	//Draw the sky sprites
 	for (int i = 0; i < 10; i++)
-		skySprites[i]->draw(visibleRect);
+		if (skySprites[i])
+			skySprites[i]->draw(visibleRect);
 	
 	//Draw the city sprite
-	citySprite->draw(visibleRect);
+	if (citySprite)
+		citySprite->draw(visibleRect);
 	
 	//Draw the crane sprite
-	craneSprite->draw(visibleRect);
+	if (craneSprite)
+		craneSprite->draw(visibleRect);
 }
 
 
@@ -360,7 +364,8 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	if (itemRect.minY() >= bounds.maxY()) {
 		int2 origin = itemRect.origin;
 		origin.y += 1;
-		craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);
+		if (craneSprite)
+			craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);
 	}
 	
 	//Make the bounds cover the newly built item too

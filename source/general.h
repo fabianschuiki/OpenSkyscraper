@@ -37,11 +37,15 @@
 #include <SDL/SDL.h>
 #endif
 
-//libPNG
-#include <png.h>
+//libpng
+#ifdef __APPLE__
+#include <libpng/png.h>
+#endif
 
 //DevIL
-#include <IL/il.h>
+#ifdef __APPLE__
+#include <libIL/il.h>
+#endif
 
 //OpenGL
 #ifdef __APPLE__

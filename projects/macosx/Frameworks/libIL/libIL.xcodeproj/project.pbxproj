@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F83256112CA9A87004DBBAE /* il.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F83255712CA9A87004DBBAE /* il.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1FC9AAC212CA6DCB003D1D2A /* altivec_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FC9AA7512CA6DCB003D1D2A /* altivec_common.c */; };
 		1FC9AAC312CA6DCB003D1D2A /* altivec_typeconversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FC9AA7612CA6DCB003D1D2A /* altivec_typeconversion.c */; };
 		1FC9AAC412CA6DCB003D1D2A /* il_alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FC9AA7712CA6DCB003D1D2A /* il_alloc.c */; };
@@ -92,19 +93,29 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 1FC9AB7D12CA6F00003D1D2A /* libpng.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* libpng.framework */;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = libpng;
 		};
 		1FC9AB8612CA6F0D003D1D2A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1FC9AB7D12CA6F00003D1D2A /* libpng.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* libpng */;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = libpng;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1F83255312CA9A87004DBBAE /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		1F83255412CA9A87004DBBAE /* config.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.h.in; sourceTree = "<group>"; };
+		1F83255512CA9A87004DBBAE /* devil_cpp_wrapper.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = devil_cpp_wrapper.hpp; sourceTree = "<group>"; };
+		1F83255612CA9A87004DBBAE /* devil_internal_exports.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = devil_internal_exports.h; sourceTree = "<group>"; };
+		1F83255712CA9A87004DBBAE /* il.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = il.h; sourceTree = "<group>"; };
+		1F83255812CA9A87004DBBAE /* ilu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilu.h; sourceTree = "<group>"; };
+		1F83255912CA9A87004DBBAE /* ilu_region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilu_region.h; sourceTree = "<group>"; };
+		1F83255A12CA9A87004DBBAE /* ilut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilut.h; sourceTree = "<group>"; };
+		1F83255B12CA9A87004DBBAE /* ilut_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ilut_config.h; sourceTree = "<group>"; };
+		1F83255C12CA9A87004DBBAE /* stamp-h1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "stamp-h1"; sourceTree = "<group>"; };
 		1FC9AA7512CA6DCB003D1D2A /* altivec_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivec_common.c; sourceTree = "<group>"; };
 		1FC9AA7612CA6DCB003D1D2A /* altivec_typeconversion.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = altivec_typeconversion.c; sourceTree = "<group>"; };
 		1FC9AA7712CA6DCB003D1D2A /* il_alloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = il_alloc.c; sourceTree = "<group>"; };
@@ -210,6 +221,7 @@
 		0867D691FE84028FC02AAC07 /* libIL */ = {
 			isa = PBXGroup;
 			children = (
+				1F83255212CA9A87004DBBAE /* IL */,
 				1FC9AA7412CA6DCB003D1D2A /* src */,
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
@@ -232,6 +244,24 @@
 				8DC2EF5A0486A6940098B216 /* Info.plist */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		1F83255212CA9A87004DBBAE /* IL */ = {
+			isa = PBXGroup;
+			children = (
+				1F83255312CA9A87004DBBAE /* config.h */,
+				1F83255412CA9A87004DBBAE /* config.h.in */,
+				1F83255512CA9A87004DBBAE /* devil_cpp_wrapper.hpp */,
+				1F83255612CA9A87004DBBAE /* devil_internal_exports.h */,
+				1F83255712CA9A87004DBBAE /* il.h */,
+				1F83255812CA9A87004DBBAE /* ilu.h */,
+				1F83255912CA9A87004DBBAE /* ilu_region.h */,
+				1F83255A12CA9A87004DBBAE /* ilut.h */,
+				1F83255B12CA9A87004DBBAE /* ilut_config.h */,
+				1F83255C12CA9A87004DBBAE /* stamp-h1 */,
+			);
+			name = IL;
+			path = include/IL;
 			sourceTree = "<group>";
 		};
 		1FC9AA7412CA6DCB003D1D2A /* src */ = {
@@ -333,6 +363,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F83256112CA9A87004DBBAE /* il.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

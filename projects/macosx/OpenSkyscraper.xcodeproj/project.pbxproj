@@ -52,28 +52,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 1FC9ABC012CA713D003D1D2A /* libIL.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* libIL.framework */;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = libIL;
 		};
 		1FC9ABC712CA7147003D1D2A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1FC9ABC012CA713D003D1D2A /* libIL.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* libIL */;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = libIL;
 		};
 		1FC9ABDE12CA71C8003D1D2A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1FC9ABDA12CA71C8003D1D2A /* libpng.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* libpng.framework */;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = libpng;
 		};
 		1FC9ABE012CA71CB003D1D2A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1FC9ABDA12CA71C8003D1D2A /* libpng.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* libpng */;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = libpng;
 		};
 /* End PBXContainerItemProxy section */
@@ -642,6 +642,7 @@
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "OpenSkyscraper-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = OpenSkyscraper;
 			};
 			name = Debug;
@@ -661,6 +662,7 @@
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "OpenSkyscraper-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_CFLAGS = "";
 				PRODUCT_NAME = OpenSkyscraper;
 			};
 			name = Release;
@@ -669,7 +671,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -683,7 +684,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
