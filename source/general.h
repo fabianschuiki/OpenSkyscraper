@@ -38,14 +38,10 @@
 #endif
 
 //libpng
-#ifdef __APPLE__
-#include <libpng/png.h>
-#endif
+#include <png.h>
 
 //DevIL
-#ifdef __APPLE__
-#include <libIL/il.h>
-#endif
+#include <IL/il.h>
 
 //OpenGL
 #ifdef __APPLE__
