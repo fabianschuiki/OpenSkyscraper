@@ -7,12 +7,7 @@ Universal Binaries
 ------------------
 Ideally you build the required stuff as static libraries universally, i.e. for i386, x86 and x86_64. Doing so can be easy or with some libraries rather annoying.
 
-The easy way: `export CFLAGS="-arch i386 -arch x86_64 -arch ppc"` and use `--disable-dependency-tracking` upon configure.
-
-The hard way:
-
-### DevIL
-Also do the export thingy but tell DevIL upon `configure` to `--enable-x86 --enable-x86_64 --enable-ppc`.
+`export CFLAGS="-arch i386 -arch x86_64 -arch ppc"` and use `--disable-dependency-tracking` upon configure.
 
 
 SDK Incompatibilities
@@ -38,4 +33,5 @@ Prepare the environment so that build occurs for the three architectures and aga
 
 Configure the DevIL appropriately:
 `./configure --disable-shared --enable-x86 --enable-x86_64 --enable-ppc --disable-asm --disable-dependency-tracking`
+
 Note that you have to create a symlink MacOSX10.5.sdk/usr/local/include that points at /usr/local/include or the build will fail since png.h is required. You could also add another include path during configuration: `CFLAGS="$CFLAGS -I /usr/local/include"`.
