@@ -149,7 +149,8 @@ void TowerScene::onMoveOnScreen()
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	constructionItemDescriptor = Item::descriptorForItemType(Item::kLobbyType);
+	//constructionItemDescriptor = Item::descriptorForItemType(Item::kLobbyType);
+	setConstructionTool(Item::kLobbyType);
 	
 	tower->onMoveOnScreen();
 }
@@ -196,7 +197,14 @@ bool TowerScene::eventMouseDown(SDL_Event * event)
 		case SDL_BUTTON_WHEELUP:	POI.y += 10; return true; break;
 		case SDL_BUTTON_WHEELDOWN:	POI.y -= 10; return true; break;
 			
-		case SDL_BUTTON_LEFT: startConstruction(); return true; break;
+		case SDL_BUTTON_LEFT: {
+			switch (tool) {
+				case kConstructionTool: {
+					startConstruction();
+					return true;
+				} break;
+			}
+		} break;
 	}
 	return false;
 }
@@ -204,7 +212,14 @@ bool TowerScene::eventMouseDown(SDL_Event * event)
 bool TowerScene::eventMouseUp(SDL_Event * event)
 {
 	switch (event->button.button) {
-		case SDL_BUTTON_LEFT: endConstruction(); return true; break;
+		case SDL_BUTTON_LEFT: {
+			switch (tool) {
+				case kConstructionTool: {
+					endConstruction();
+					return true;
+				} break;
+			}
+		} break;
 	}
 	return false;
 }
@@ -220,6 +235,9 @@ bool TowerScene::eventMouseUp(SDL_Event * event)
 
 void TowerScene::updateConstruction()
 {
+	if (!constructionItemDescriptor)
+		return;
+	
 	//Update the construction template
 	constructionTemplate.size = constructionItemDescriptor->minUnit;
 	constructionTemplate.origin.x = round(worldMouse.x / tower->cellSize.x - (double)constructionTemplate.size.x / 2);
@@ -235,6 +253,9 @@ void TowerScene::updateConstruction()
 
 void TowerScene::startConstruction()
 {	
+	if (!constructionItemDescriptor)
+		return;
+	
 	//Is this a draggable item like the lobby or a floor?
 	if (constructionItemDescriptor->attributes & Item::kFlexibleWidthAttribute) {
 		//Disable the constructions
@@ -261,4 +282,30 @@ void TowerScene::endConstruction()
 	
 	//Resume the constructions
 	tower->setConstructionsHalted(false);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Uncategorized
+//----------------------------------------------------------------------------------------------------
+
+void TowerScene::setTool(Tool tool)
+{
+	this->tool = tool;
+}
+
+void TowerScene::setConstructionTool(Item::Type itemType)
+{
+	setTool(kConstructionTool);
+	
+	//Skip if the item didn't change
+	if (constructionItemDescriptor && itemType == constructionItemDescriptor->type)
+		return;
+	
+	//Store the item
+	constructionItemDescriptor = Item::descriptorForItemType(itemType);
 }

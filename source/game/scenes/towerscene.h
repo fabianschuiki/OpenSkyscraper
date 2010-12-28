@@ -52,7 +52,8 @@ namespace OSS {
 		
 		/**
 		 * Construction
-		 */
+		 */		
+	private:
 		Item::Descriptor * constructionItemDescriptor;
 		recti constructionTemplate;
 		
@@ -62,6 +63,26 @@ namespace OSS {
 		void updateConstruction();
 		void startConstruction();
 		void endConstruction();
+		
+		
+		/**
+		 * Uncategorized
+		 */
+	public:
+		//Tools
+		typedef enum {
+			kBulldozerTool,
+			kHandTool,
+			kInspectTool,
+			kConstructionTool
+		} Tool;
+		
+	private:
+		Tool tool;
+		
+	public:
+		void setTool(Tool tool);
+		void setConstructionTool(Item::Type itemType);
 	};
 }
 

@@ -15,8 +15,46 @@ namespace OSS {
 		typedef enum {
 			kNoneType = 0,
 			
+			//Structure
 			kLobbyType,
-			kFloorType
+			kFloorType,
+			kStairsType,
+			kEscalatorType,
+			
+			//Elevator
+			kElevatorType,
+			kServiceElevatorType,
+			kExpressElevatorType,
+			
+			//Office
+			kOfficeType,
+			
+			//Hotel
+			kSingleRoomType,
+			kDoubleRoomType,
+			kSuiteType,
+			
+			//Condo
+			kCondoType,
+			
+			//Entertainment
+			kFastFoodType,
+			kRestaurantType,
+			kShopType,
+			kCinemaType,
+			kPartyHall,
+			
+			//Infrastructure
+			kParkingRampType,
+			kParkingType,
+			kRecyclingCenterType,
+			kMetroType,
+			
+			//Services
+			kCathedrakType,
+			kSecurityType,
+			kMedicalCareType,
+			kHousekeepingType
 		} Type;
 		
 		//Item Groups

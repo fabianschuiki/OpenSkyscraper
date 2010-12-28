@@ -256,6 +256,7 @@
 			children = (
 				1F21FF1B12007DEC000A8AC3 /* game.h */,
 				1F38253D1202ED5000C1E2B0 /* gameevent.h */,
+				1FC821C312CA1A9C00168481 /* gui */,
 				1F38276612032C2400C1E2B0 /* item.h */,
 				1F38276712032C2400C1E2B0 /* item.cpp */,
 				1F38278A1203562000C1E2B0 /* items */,
@@ -305,6 +306,13 @@
 				1F38278C1203562700C1E2B0 /* lobbyitem.cpp */,
 			);
 			path = items;
+			sourceTree = "<group>";
+		};
+		1FC821C312CA1A9C00168481 /* gui */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = gui;
 			sourceTree = "<group>";
 		};
 		1FD010C511FA3E500062C093 /* source */ = {
