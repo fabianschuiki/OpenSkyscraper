@@ -16,9 +16,11 @@ namespace OSS {
 		OpenSkyscraper();
 		~OpenSkyscraper();
 		
+		//Events
+		virtual bool handleEvent(CoreEvent * event);
+		
 		//Birth and death
 		virtual void eventPrepare();
-		virtual void eventCleanUp();
 	};
 }
 

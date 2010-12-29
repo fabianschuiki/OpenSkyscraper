@@ -33,6 +33,21 @@ OpenSkyscraper::~OpenSkyscraper()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+bool OpenSkyscraper::handleEvent(CoreEvent * event)
+{
+	if (towerScene && towerScene->handleEvent(event)) return true;
+	return Application::handleEvent(event);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Birth and death
 //----------------------------------------------------------------------------------------------------
 
@@ -44,13 +59,6 @@ void OpenSkyscraper::eventPrepare()
 	//Load an empty tower
 	towerScene->tower = new Tower;
 	
-	//Prepare the scenes
-	towerScene->eventPrepare();
-	
 	//Switch to the tower scene
 	Engine::shared()->switchToScene(towerScene);
-}
-
-void OpenSkyscraper::eventCleanUp()
-{
 }

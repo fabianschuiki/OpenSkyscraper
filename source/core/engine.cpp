@@ -107,7 +107,8 @@ void Engine::runloopCycle()
 
 bool Engine::handleEvent(CoreEvent * event)
 {
-	if (scene && scene->handleEvent(event)) return true;
+	if (event->type != kCoreEventPrepare && event->type != kCoreEventCleanUp) //we're not responsible for this
+		if (scene && scene->handleEvent(event)) return true;
 	
 	if (inputTask.handleEvent(event)) return true;
 	if (simulationTask.handleEvent(event)) return true;
