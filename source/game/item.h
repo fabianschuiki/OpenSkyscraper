@@ -46,14 +46,14 @@ namespace OSS {
 			
 			//Infrastructure
 			kParkingRampType,
-			kParkingType,
+			kParkingSpaceType,
 			kRecyclingCenterType,
 			kMetroType,
 			
 			//Services
 			kCathedrakType,
 			kSecurityType,
-			kMedicalCareType,
+			kMedicalCenterType,
 			kHousekeepingType
 		} Type;
 		
