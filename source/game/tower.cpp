@@ -110,7 +110,7 @@ void Tower::prepareBackground()
 {
 	//Initialize the ground sprite
 	groundSprite = new Sprite;
-	groundSprite->texture = Texture::named("simtower/049.bmp");
+	groundSprite->texture = Texture::named("simtower/background/ground");
 	groundSprite->rect = rectd(-800, -360, 1600, 360);
 	groundSprite->textureMode = Sprite::kRepeatTextureMode;
 	groundSprite->autoTexRectX = true;
@@ -119,7 +119,7 @@ void Tower::prepareBackground()
 	//Initialize the sky sprites
 	for (int i = 0; i < 10; i++) {	
 		char n[32];
-		sprintf(n, "simtower/%03i.bmp", i + 50);
+		sprintf(n, "simtower/background/sky%i", i);
 		skySprites[i] = new Sprite;
 		skySprites[i]->texture = Texture::named(n);
 		skySprites[i]->rect = rectd(-800, i * 360, 1600, 360);
@@ -129,14 +129,14 @@ void Tower::prepareBackground()
 	
 	//Initialize the city sprite
 	citySprite = new Sprite;
-	citySprite->texture = Texture::named("simtower/065.bmp");
+	citySprite->texture = Texture::named("simtower/background/city");
 	citySprite->rect = rectd(-800, 0, 1600, 55);
 	citySprite->textureMode = Sprite::kRepeatTextureMode;
 	citySprite->autoTexRectX = true;
 	
 	//Initialize the crane sprite
 	craneSprite = new Sprite;
-	craneSprite->texture = Texture::named("simtower/068.bmp");
+	craneSprite->texture = Texture::named("simtower/decoration/crane");
 	craneSprite->rect.size = double2(36, 36);
 }
 

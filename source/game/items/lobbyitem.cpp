@@ -64,7 +64,7 @@ void LobbyItem::onPrepare()
 	if (rect.origin.y == 0) {
 		for (int i = 0; i < 2; i++) {
 			entranceSprites[i] = new Sprite;
-			entranceSprites[i]->texture = Texture::named("simtower/067.bmp");
+			entranceSprites[i]->texture = Texture::named("simtower/decoration/entrance");
 			entranceSprites[i]->textureRect = rectd(0, 0, 0.5, 1);
 			entranceSprites[i]->rect = rectd(0, 0, 56, 36);
 		}
