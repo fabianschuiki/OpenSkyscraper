@@ -131,6 +131,9 @@ void Texture::finalize()
 	assert(textureID == 0);
 	//OSSObjectLog << "Finalizing '" << name << "'..." << std::endl;
 	
+	if (name == "simtower/003.bmp")
+		OSSObjectLog << "finalizing simtower 003" << std::endl;
+	
 	//Only proceed if we have a valid image
 	if (!tempImage)
 		return;
@@ -158,8 +161,8 @@ void Texture::finalize()
 	
 	//Get rid of the temporary image
 	ilBindImage(0);
-	ilDeleteImages(1, &tempImage);
-	tempImage = 0;
+	/*ilDeleteImages(1, &tempImage);
+	tempImage = 0;*/
 }
 
 

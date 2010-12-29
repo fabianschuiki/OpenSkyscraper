@@ -18,7 +18,7 @@ namespace OSS {
 		
 		virtual void queueItemForLoading(StoreItem * item) = 0;
 		virtual void queueItemForUnloading(StoreItem * item) = 0;
-		virtual void queueAllItemsForRefinalizing() {}
+		virtual void queueAllItemsForRefinalizing() = 0;
 	};
 	
 	template <typename T> class Store : public AbstractStore {
@@ -75,8 +75,9 @@ namespace OSS {
 			T * item = itemsToLoad.front();
 			//OSSObjectLog << item->description() << std::endl;
 			item->load();
-			itemsToFinalize.push_back(item);
+			//itemsToFinalize.push_back(item);
 			itemsToLoad.pop_front();
+			loadedItems.insert(item);
 			return true;
 		}
 		bool finalizeNext() {
@@ -85,6 +86,7 @@ namespace OSS {
 			//OSSObjectLog << item->description() << std::endl;
 			item->finalize();
 			itemsToFinalize.pop_front();
+			finalizedItems.insert(item);
 			return true;
 		}
 		
@@ -94,8 +96,9 @@ namespace OSS {
 			T * item = itemsToUnfinalize.front();
 			//OSSObjectLog << item->description() << std::endl;
 			item->unfinalize();
-			itemsToUnload.push_back(item);
+			//itemsToUnload.push_back(item);
 			itemsToUnfinalize.pop_front();
+			finalizedItems.erase(item);
 			return true;
 		}
 		bool unloadNext() {
@@ -104,6 +107,7 @@ namespace OSS {
 			//OSSObjectLog << item->description() << std::endl;
 			item->unload();
 			itemsToUnload.pop_front();
+			loadedItems.erase(item);
 			return true;
 		}
 		
@@ -111,17 +115,20 @@ namespace OSS {
 		void queueItemForLoading(StoreItem * item) {
 			//OSSObjectLog << item->description() << std::endl;
 			itemsToLoad.push_back((T*)item);
+			itemsToFinalize.push_back((T*)item);
 		}
 		void queueItemForUnloading(StoreItem * item) {
 			//OSSObjectLog << item->description() << std::endl;
 			itemsToUnfinalize.push_back((T*)item);
+			itemsToUnload.push_back((T*)item);
 		}
 		void queueAllItemsForRefinalizing() {
 			OSSObjectLog << std::endl;
-			typename std::map< std::string, Pointer<T> >::iterator item;
-			for (item = items.begin(); item != items.end(); item++) {
-				itemsToUnfinalize.push_back(item->second);
-				itemsToFinalize.push_back(item->second);
+			typename std::set< Pointer<T> >::iterator item;
+			for (item = finalizedItems.begin(); item != finalizedItems.end(); item++) {
+				OSSObjectLog << "refinalizing " << (*item)->description() << std::endl;
+				itemsToUnfinalize.push_back(*item);
+				itemsToFinalize.push_back(*item);
 			}
 		}
 		
@@ -133,6 +140,10 @@ namespace OSS {
 		//Unloading
 		std::deque< Pointer<T> > itemsToUnfinalize;
 		std::deque< Pointer<T> > itemsToUnload;
+		
+		//Sets
+		std::set< Pointer<T> > loadedItems;
+		std::set< Pointer<T> > finalizedItems;
 	};
 }
 

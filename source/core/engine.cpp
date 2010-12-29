@@ -141,6 +141,10 @@ void Engine::eventVideoModeChanged()
 {
 	//DEBUG: Since SDL throws away all textures, we have to refinalize them
 	Texture::store->queueAllItemsForRefinalizing();
+	
+	//DEBUG: Restore state too
+	if (scene)
+		scene->onMoveOnScreen();
 }
 
 
