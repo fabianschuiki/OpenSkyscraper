@@ -376,5 +376,144 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 
 bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 {
+	//Check whether the rect meets the descriptor's requirements
+	if (!checkIfRectMeetsDescriptorRequirements(descriptor, rect))
+		return false;
+	
+	//Perform a cell analysis
+	int numEmptyCells, numOccupiedCells, numOccupiedCellsBelow, numOccupiedCellsAbove;
+	analyzeCellsInRect(rect, &numEmptyCells, NULL, &numOccupiedCells,
+					   &numOccupiedCellsBelow, &numOccupiedCellsAbove);
+	
+	//If the item is being built above ground the number of occupied cells below must match the
+	//rect's width.
+	if (rect.minY() >= 0 && numOccupiedCellsBelow != rect.size.x) {
+		OSSObjectError << "cells below not valid" << std::endl;
+		return false;
+	}
+	
+	//If the item is being built below ground, vice versa.
+	if (rect.maxY() <= 0 && numOccupiedCellsAbove != rect.size.x) {
+		OSSObjectError << "cells above not valid" << std::endl;
+		return false;
+	}
+	
+	//There must not be any occupied cells inside the rect
+	if (numOccupiedCells) {
+		OSSObjectError << "occupied by other facilities" << std::endl;
+		return false;
+	}
+	
+	//Now the number of floor cells that have to be paid is known
+	OSSObjectLog << "construction of " << numEmptyCells << " floor cells required" << std::endl;
+	
+	//Insert the new item
+	insertNewItem(descriptor, rect);
+	
+	//Withdraw funds...
+	//Play construction sound...
+	
 	return true;
+}
+
+bool Tower::checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor, recti rect)
+{
+	if (!(descriptor->attributes & Item::kAllowedOnGroundAttribute) &&
+		rect.maxY() >= 1 && rect.minY() <= 0) {
+		OSSObjectError << "not allowed on ground level" << std::endl;
+		return false;
+	}
+	if ((descriptor->attributes & Item::kNotAboveGroundAttribute) && rect.maxY() > 0) {
+		OSSObjectError << "above ground not allowed" << std::endl;
+		return false;
+	}
+	if ((descriptor->attributes & Item::kNotBelowGroundAttribute) && rect.minY() < 0) {
+		OSSObjectError << "below ground not allowed" << std::endl;
+		return false;
+	}
+	if ((descriptor->attributes & Item::kEvery15thFloorAttribute) && (rect.origin.y % 15) != 0) {
+		OSSObjectError << "only every 15th floor allowed" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+/**
+ * Counts various cell types inside a rect. Handy if you have to decide whether a given rect is
+ * valid for construction.
+ */
+void Tower::analyzeCellsInRect(recti rect,
+							   int * numEmptyCells, int * numFloorCells, int * numOccupiedCells,
+							   int * numOccupiedCellsBelow, int * numOccupiedCellsAbove)
+{
+	int emptyCells = 0, floorCells = 0, occupiedCells = 0;
+	int occupiedCellsBelow = 0, occupiedCellsAbove = 0;
+	
+	//Iterate through the item rect horizontally
+	for (int x = rect.minX(); x < rect.maxX(); x++) {
+		
+		//Count occupied cells below
+		Cell * cellBelow = getCell(int2(x, rect.minY() - 1), false);
+		if (cellBelow && cellBelow->facility)
+			occupiedCellsBelow++;
+		
+		//Count occupied cells above
+		Cell * cellAbove = getCell(int2(x, rect.maxY()), false);
+		if (cellAbove && cellAbove->facility)
+			occupiedCellsAbove++;
+		
+		//Count cells inside
+		for (int y = rect.minY(); y < rect.maxY(); y++) {
+			Cell * cell = getCell(int2(x, y), false);
+			if (!cell || !cell->facility)
+				emptyCells++;
+			else if (facilityItems[cell->facility]->descriptor->type == Item::kFloorType)
+				floorCells++;
+			else
+				occupiedCells++;
+		}
+	}
+	
+	//Return the result
+	if (numEmptyCells) *numEmptyCells = emptyCells;
+	if (numFloorCells) *numFloorCells = floorCells;
+	if (numOccupiedCells) *numOccupiedCells = occupiedCells;
+	if (numOccupiedCellsBelow) *numOccupiedCellsBelow = occupiedCellsBelow;
+	if (numOccupiedCellsAbove) *numOccupiedCellsAbove = occupiedCellsAbove;
+}
+
+/**
+ * Inserts a new item into the tower at the given location. Only the insertion is done, none of the
+ * construction-related stuff like validation, funds transfer, etc. is accomplished. Use the
+ * construct* functions instead.
+ */
+void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
+{
+	//Fetch a new item ID
+	unsigned int itemID = nextItemID();
+	
+	//Make the cells the item covers point at it
+	for (int x = rect.minX(); x < rect.maxX(); x++) {
+		for (int y = rect.minY(); y < rect.maxY(); y++) {
+			Cell * cell = getCell(int2(x, y), true);
+			cell->facility = itemID;
+		}
+	}
+	
+	//Create the new item and add it to the tower's facilities
+	Item * item = Item::createNew(descriptor, rect, itemID);
+	item->setTower(this);
+	item->setUnderConstruction(true);
+	facilityItems[itemID] = item;
+	
+	//If the item expands the tower's bounds vertically, reposition the crane
+	if (rect.minY() >= bounds.maxY()) {
+		int2 origin = rect.origin;
+		origin.y += 1;
+		if (craneSprite)
+			craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);
+	}
+	
+	//Make the bounds cover the newly built item too
+	bounds.unify(rect);
 }

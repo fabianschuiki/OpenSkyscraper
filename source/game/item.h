@@ -82,7 +82,8 @@ namespace OSS {
 			kFlexibleWidthAttribute		= (1 << 0),
 			kEvery15thFloorAttribute	= (1 << 1),
 			kNotAboveGroundAttribute	= (1 << 2),
-			kNotBelowGroundAttribute	= (1 << 3)
+			kNotBelowGroundAttribute	= (1 << 3),
+			kAllowedOnGroundAttribute	= (1 << 4)
 		};
 		
 		//Item Descriptor
