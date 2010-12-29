@@ -53,12 +53,8 @@ void Texture::assignLoadedData(ILenum type, const void * data, ILuint length)
 	ilBindImage(tempImage);
 	
 	//Load the image from the data
-	ILboolean success = ilLoadL(type, data, length);
+	ilLoadL(type, data, length);
 	ilBindImage(0);
-	if (!success) {
-		ilDeleteImage(tempImage);
-		tempImage = 0;
-	}
 }
 
 
@@ -105,15 +101,16 @@ void Texture::load()
 		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
 		if (!success)
 			OSSObjectError << "unable to convert image " << tempImage << " to IL_RGBA and IL_UNSIGNED_BYTE" << std::endl;
-		
-		//Post-process the image (apply transparency based on a color)
-		if (useTransparencyColor) {
-			ILubyte * imageData = ilGetData();
-			for (unsigned int i = 0; i < ilGetInteger(IL_IMAGE_SIZE_OF_DATA); i += ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL)) {
-				if (imageData[i + 0] == transparencyColor.c.r * 255 &&
-					imageData[i + 1] == transparencyColor.c.g * 255 &&
-					imageData[i + 2] == transparencyColor.c.b * 255) {
-					imageData[i + 3] = 0.0;
+		else {
+			//Post-process the image (apply transparency based on a color)
+			if (useTransparencyColor) {
+				ILubyte * imageData = ilGetData();
+				for (unsigned int i = 0; i < ilGetInteger(IL_IMAGE_SIZE_OF_DATA); i += ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL)) {
+					if (imageData[i + 0] == transparencyColor.c.r * 255 &&
+						imageData[i + 1] == transparencyColor.c.g * 255 &&
+						imageData[i + 2] == transparencyColor.c.b * 255) {
+						imageData[i + 3] = 0.0;
+					}
 				}
 			}
 		}
