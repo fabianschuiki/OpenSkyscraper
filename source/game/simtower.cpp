@@ -1,124 +1,140 @@
 #include "simtower.h"
-#include "../classes.h"
 
-#ifdef WIN32 /* why can't windows be the same as unix */
-#include <direct.h>
-#define mkdir(a) _mkdir(a)
-#else
-#include <sys/stat.h>
-#define mkdir(a) mkdir(a, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-#endif
+#include "../core/platform.h"
+
 
 using namespace OSS;
 
 
-typedef struct {
-	uint16_t length;
-	uint16_t id;
-	uint8_t * data;
-} SimTowerResource;
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Loading
+//----------------------------------------------------------------------------------------------------
 
-
-void SimTower::reloadResources()
+void SimTower::loadResources()
 {
-	std::string path = Platform::shared()->pathToResource("SIMTOWER.EXE");
-	OSSObjectLog << path << std::endl;
+	//Get rid of the old resources
+	resources.clear();
 	
-	FILE * f = fopen(path.c_str(), "rb");
-	if (!f) {
-		OSSObjectError << "unable to open file" << std::endl;
+	//Get the path to the SimTower instance
+	std::string path = Platform::shared()->pathToResource("SIMTOWER.EXE");
+	
+	//Open the file
+	FILE * fsimtower = fopen(path.c_str(), "rb");
+	if (!fsimtower) {
+		OSSObjectError << "unable to open SimTower at " << path << std::endl;
 		return;
 	}
 	
-	std::string basePath = "/tmp/SimTower Extraction";
-	mkdir(basePath.c_str());
+	//Seek forward to the segmented EXE header offset
+	uint32_t shoffset;
+	fseek(fsimtower, 0x3C, SEEK_SET);
+	fread(&shoffset, 1, sizeof(shoffset), fsimtower);
+	shoffset = SDL_SwapLE32(shoffset);
 	
-	std::string soundPath = basePath + "/sounds";
-	std::string imagePath = basePath + "/images";
-	mkdir(soundPath.c_str());
-	mkdir(imagePath.c_str());
+	//Read the resource table offset
+	uint16_t rtoffset;
+	fseek(fsimtower, shoffset + 0x24, SEEK_SET);
+	fread(&rtoffset, 1, sizeof(rtoffset), fsimtower);
+	rtoffset = SDL_SwapLE16(rtoffset);
 	
-	uint8_t buffer[0x200];
-	long offset;
-	int bitmapIndex = 0;
-	int waveIndex = 0;
-	while (1) {
-		offset = ftell(f);
-		if (fread(buffer, 1, 0x200, f) < 1) break;
+	//Read the logical sector offset shift
+	uint16_t lsashift;
+	fseek(fsimtower, shoffset + 0x32, SEEK_SET);
+	fread(&lsashift, 1, sizeof(lsashift), fsimtower);
+	lsashift = SDL_SwapLE16(lsashift);
+	
+	//Seek forward to the resource table
+	fseek(fsimtower, shoffset + rtoffset + 2, SEEK_SET);
+	
+	//Go through the resource table
+	while (!feof(fsimtower)) {
+		//Read the resource type and number of entries
+		uint16_t resourceType, numberOfResources;
+		fread(&resourceType, 1, sizeof(resourceType), fsimtower);
+		fread(&numberOfResources, 1, sizeof(numberOfResources), fsimtower);
+		resourceType = SDL_SwapLE16(resourceType) & 0x7FFF;
+		numberOfResources = SDL_SwapLE16(numberOfResources);
 		
-		//Bitmap
-		if (memcmp(buffer, (uint8_t []){0x28, 0x00, 0x00, 0x00}, 4) == 0) {
-			//OSSObjectLog << "found BMP at " << offset << std::endl;
-			
-			//Extract the image length in bytes
-			uint32_t imageLength = *(uint32_t *)(buffer + 20);
-			
-			//Create the file header
-			struct {
-				uint16_t type; //should be 'BM'
-				uint32_t size;
-				uint32_t _reserved;
-				uint32_t offBits;
-			} __attribute__((__packed__)) fileHeader = {0x4D42, 0, 0, 0x436};
-			fileHeader.size = imageLength + fileHeader.offBits;
-			
-			//Allocate a buffer large enough to hold the entire BMP
-			int bmpLength = fileHeader.size;
-			uint8_t * bmp = (uint8_t *)malloc(bmpLength);
-			
-			//Copy the file header into the bmp
-			memcpy(bmp, &fileHeader, sizeof(fileHeader));
-			int bmpOffset = sizeof(fileHeader);
-			
-			//Copy the already read buffer into bmp
-			memcpy(bmp + bmpOffset, buffer, 0x200);
-			bmpOffset += 0x200;
-			
-			//Read the rest of the buffer
-			fread(bmp + bmpOffset, 1, fileHeader.size - sizeof(fileHeader) - 0x200, f);
-			fseek(f, offset + 0x200, SEEK_SET);
-			
-			
-			//Create a texture resource from it
-			char name[512]; sprintf(name, "simtower/%03i.bmp", bitmapIndex);
-			OSS::Texture * t = OSS::Texture::named(name);
-			t->assignLoadedData(IL_BMP, bmp, bmpLength);
-			t->useTransparencyColor = true;
-			
-			
-			//Dump the BMP file
-			char path[512]; sprintf(path, "%s/%03i.bmp", imagePath.c_str(), bitmapIndex++);
-			FILE * dump = fopen(path, "w");
-			fwrite(bmp, 1, bmpLength, dump);
-			fclose(dump);
-		}
+		//A resource type of 0 marks the end of the list
+		if (resourceType == 0)
+			break;
 		
-		//Wave Sound
-		if (memcmp(buffer, "RIFF", 4) == 0 && memcmp(buffer + 8, "WAVE", 4) == 0) {
-			//OSSObjectLog << "found WAV at " << offset << std::endl;
+		//Skip ahead to the first resource
+		fseek(fsimtower, 4, SEEK_CUR);
+		
+		//Read the individual resources
+		for (int i = 0; i < numberOfResources; i++) {
+			//Read the offset and length
+			uint16_t resourceOffset, resourceLength;
+			fread(&resourceOffset, 1, sizeof(resourceOffset), fsimtower);
+			fread(&resourceLength, 1, sizeof(resourceLength), fsimtower);
+			resourceOffset = SDL_SwapLE16(resourceOffset);
+			resourceLength = SDL_SwapLE16(resourceLength);
 			
-			//Extract the length of the file
-			uint32_t waveLength = *(uint32_t *)(buffer + 4);
-			waveLength += 8;
+			//Read the resource ID
+			uint16_t resourceID;
+			fseek(fsimtower, 2, SEEK_CUR);
+			fread(&resourceID, 1, sizeof(resourceID), fsimtower);
+			resourceID = SDL_SwapLE16(resourceID) & 0x7FFF;
 			
-			//Create a buffer capable of holding the entire file
-			uint8_t * wave = (uint8_t *)malloc(waveLength);
+			//Skip reserved bytes
+			fseek(fsimtower, 4, SEEK_CUR);
 			
-			//Copy the laready read buffer
-			memcpy(wave, buffer, 0x200);
+			//Calculate the actual offset and length in bytes
+			unsigned int byteOffset = resourceOffset;
+			unsigned int byteLength = resourceLength;
+			byteOffset <<= lsashift;
+			byteLength <<= lsashift;
 			
-			//Read the rest of the buffer
-			fread(wave + 0x200, 1, waveLength - 0x200, f);
-			fseek(f, offset + 0x200, SEEK_SET);
+			//Backup the current location in the executable
+			long location = ftell(fsimtower);
 			
+			//Initialize memory for the resource
+			void * buffer = malloc(byteLength);
 			
-			//Dump the WAV file
-			char path[512]; sprintf(path, "%s/%03i.wav", soundPath.c_str(), waveIndex++);
-			FILE * dump = fopen(path, "w");
-			fwrite(wave, 1, waveLength, dump);
-			fclose(dump);
+			//Seek to the resource and read its data
+			fseek(fsimtower, byteOffset, SEEK_SET);
+			fread(buffer, 1, byteLength, fsimtower);
+			
+			//Restore the old location
+			fseek(fsimtower, location, SEEK_SET);
+			
+			//Create a new resource instance
+			Resource * resource = new Resource;
+			resource->type = resourceType;
+			resource->id = resourceID;
+			resource->length = byteLength;
+			resource->data = buffer;
+			
+			//Add the resource
+			resources.push_back(resource);
 		}
 	}
 	
-	fclose(f);
+	//Close the SimTower file
+	fclose(fsimtower);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Extraction
+//----------------------------------------------------------------------------------------------------
+
+void SimTower::extractAll()
+{
+	extractTextures();
+	extractSounds();
+}
+
+void SimTower::extractTextures()
+{
+}
+
+void SimTower::extractSounds()
+{
 }

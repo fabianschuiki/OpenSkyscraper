@@ -56,7 +56,8 @@ bool OpenSkyscraper::handleEvent(CoreEvent * event)
 void OpenSkyscraper::eventPrepare()
 {	
 	//Reload the resources of the SimTower singleton
-	SimTower::shared()->reloadResources();
+	SimTower::shared()->loadResources();
+	SimTower::shared()->extractAll();
 	
 	//Load an empty tower
 	towerScene->tower = new Tower;
