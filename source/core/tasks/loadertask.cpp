@@ -15,10 +15,10 @@ void LoaderTask::update()
 		bool workDone = true;
 		while (workDone && (now - start < BREAKOUT_TIME)) {
 			now = Platform::shared()->getTimeElapsed();
-			if ((*store)->loadNext()) continue;
-			if ((*store)->finalizeNext()) continue;
 			if ((*store)->unfinalizeNext()) continue;
 			if ((*store)->unloadNext()) continue;
+			if ((*store)->loadNext()) continue;
+			if ((*store)->finalizeNext()) continue;
 			workDone = false;
 		}
 	}

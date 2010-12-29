@@ -1,4 +1,5 @@
 #include "openglcanvas.h"
+#include "application.h"
 
 
 using namespace OSS;
@@ -29,8 +30,13 @@ OpenGLCanvas::OpenGLCanvas()
 bool OpenGLCanvas::activateMode()
 {
 	bool success = switchToMode(&desiredMode);
-	if (success)
+	if (success) {
 		currentMode = desiredMode;
+		
+		CoreEvent vmc;
+		vmc.type = kCoreEventVideoModeChanged;
+		Application::shared()->handleEvent(&vmc);
+	}
 	return success;
 }
 

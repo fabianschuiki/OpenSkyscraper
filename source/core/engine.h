@@ -76,6 +76,9 @@ namespace OSS {
 		//SDL
 		bool eventSDL(SDL_Event * event);
 		
+		//Video Mode
+		void eventVideoModeChanged();
+		
 		
 	protected:
 		/**

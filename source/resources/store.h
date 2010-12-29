@@ -3,11 +3,12 @@
 
 #include "../general.h"
 #include "../base/base.h"
+#include "../core/coreobject.h"
 #include "storeitem.h"
 
 
 namespace OSS {
-	class AbstractStore : public Object {
+	class AbstractStore : public CoreObject {
 	public:		
 		virtual bool loadNext() = 0;
 		virtual bool finalizeNext() = 0;
@@ -17,9 +18,10 @@ namespace OSS {
 		
 		virtual void queueItemForLoading(StoreItem * item) = 0;
 		virtual void queueItemForUnloading(StoreItem * item) = 0;
+		virtual void queueAllItemsForRefinalizing() {}
 	};
 	
-	template <class T> class Store : public AbstractStore {
+	template <typename T> class Store : public AbstractStore {
 	public:		
 		//Initialization
 		Store() {
@@ -105,14 +107,22 @@ namespace OSS {
 			return true;
 		}
 		
-	protected:
+	public:
 		void queueItemForLoading(StoreItem * item) {
 			//OSSObjectLog << item->description() << std::endl;
 			itemsToLoad.push_back((T*)item);
 		}
 		void queueItemForUnloading(StoreItem * item) {
 			//OSSObjectLog << item->description() << std::endl;
-			itemsToUnload.push_back((T*)item);
+			itemsToUnfinalize.push_back((T*)item);
+		}
+		void queueAllItemsForRefinalizing() {
+			OSSObjectLog << std::endl;
+			typename std::map< std::string, Pointer<T> >::iterator item;
+			for (item = items.begin(); item != items.end(); item++) {
+				itemsToUnfinalize.push_back(item->second);
+				itemsToFinalize.push_back(item->second);
+			}
 		}
 		
 	private:

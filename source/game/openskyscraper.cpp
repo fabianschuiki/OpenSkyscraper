@@ -38,7 +38,9 @@ OpenSkyscraper::~OpenSkyscraper()
 
 bool OpenSkyscraper::handleEvent(CoreEvent * event)
 {
-	if (towerScene && towerScene->handleEvent(event)) return true;
+	if (event->type == kCoreEventPrepare || event->type == kCoreEventCleanUp) {
+		if (towerScene && towerScene->handleEvent(event)) return true;
+	}
 	return Application::handleEvent(event);
 }
 
