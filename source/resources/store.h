@@ -71,7 +71,7 @@ namespace OSS {
 		bool loadNext() {
 			if (itemsToLoad.empty()) return false;
 			T * item = itemsToLoad.front();
-			OSSObjectLog << item->description() << std::endl;
+			//OSSObjectLog << item->description() << std::endl;
 			item->load();
 			itemsToFinalize.push_back(item);
 			itemsToLoad.pop_front();
@@ -80,7 +80,7 @@ namespace OSS {
 		bool finalizeNext() {
 			if (itemsToFinalize.empty()) return false;
 			T * item = itemsToFinalize.front();
-			OSSObjectLog << item->description() << std::endl;
+			//OSSObjectLog << item->description() << std::endl;
 			item->finalize();
 			itemsToFinalize.pop_front();
 			return true;
@@ -90,7 +90,7 @@ namespace OSS {
 		bool unfinalizeNext() {
 			if (itemsToUnfinalize.empty()) return false;
 			T * item = itemsToUnfinalize.front();
-			OSSObjectLog << item->description() << std::endl;
+			//OSSObjectLog << item->description() << std::endl;
 			item->unfinalize();
 			itemsToUnload.push_back(item);
 			itemsToUnfinalize.pop_front();
@@ -99,7 +99,7 @@ namespace OSS {
 		bool unloadNext() {
 			if (itemsToUnload.empty()) return false;
 			T * item = itemsToUnload.front();
-			OSSObjectLog << item->description() << std::endl;
+			//OSSObjectLog << item->description() << std::endl;
 			item->unload();
 			itemsToUnload.pop_front();
 			return true;
@@ -107,11 +107,11 @@ namespace OSS {
 		
 	protected:
 		void queueItemForLoading(StoreItem * item) {
-			OSSObjectLog << item->description() << std::endl;
+			//OSSObjectLog << item->description() << std::endl;
 			itemsToLoad.push_back((T*)item);
 		}
 		void queueItemForUnloading(StoreItem * item) {
-			OSSObjectLog << item->description() << std::endl;
+			//OSSObjectLog << item->description() << std::endl;
 			itemsToUnload.push_back((T*)item);
 		}
 		

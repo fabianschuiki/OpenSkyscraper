@@ -26,6 +26,7 @@ void Scene::updateProjection()
 
 void Scene::eventVideoModeChanged()
 {
+	OSSObjectLog;
 	updateViewport();
 	updateProjection();
 }
