@@ -315,7 +315,7 @@ void TowerScene::startConstruction()
 			isDraggingConstruction = true;
 	} else {
 		//Simply build the item
-		//constructItem(constructionItemDescriptor, constructionTemplate);
+		tower->constructItem(constructionItemDescriptor, constructionTemplate);
 	}
 }
 

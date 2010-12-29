@@ -99,6 +99,7 @@ namespace OSS {
 		 * Construction
 		 */
 		bool constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect);
+		bool constructItem(Item::Descriptor * descriptor, recti rect);
 		
 		
 		/**

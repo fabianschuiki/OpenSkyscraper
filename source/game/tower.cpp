@@ -373,3 +373,8 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	
 	return true;
 }
+
+bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
+{
+	return true;
+}
