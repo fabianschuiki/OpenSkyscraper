@@ -42,6 +42,7 @@
 		1FD0EAE911FF8F5B004F4D4E /* rendertask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EAE811FF8F5B004F4D4E /* rendertask.cpp */; };
 		1FD0EB1D11FF96FC004F4D4E /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EB1C11FF96FC004F4D4E /* scene.cpp */; };
 		1FF348F012CB993E0077DF1B /* office.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF348EF12CB993E0077DF1B /* office.cpp */; };
+		1FFDB2E412CBE5260054BEA3 /* simtower-names.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -149,6 +150,7 @@
 		1FD0EB1C11FF96FC004F4D4E /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene.cpp; sourceTree = "<group>"; };
 		1FF348EE12CB993E0077DF1B /* office.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = office.h; sourceTree = "<group>"; };
 		1FF348EF12CB993E0077DF1B /* office.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = office.cpp; sourceTree = "<group>"; };
+		1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "simtower-names.cpp"; sourceTree = "<group>"; };
 		1FFFCBC911FCD629005D8446 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		256AC3F00F4B6AF500CF3369 /* OpenSkyscraper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSkyscraper_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -288,6 +290,7 @@
 				1F21FE83120044AF000A8AC3 /* tower.cpp */,
 				1F21FF1312007D1F000A8AC3 /* simtower.h */,
 				1F21FF1412007D1F000A8AC3 /* simtower.cpp */,
+				1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */,
 			);
 			path = game;
 			sourceTree = "<group>";
@@ -506,6 +509,7 @@
 				1FC821C912CA1B0C00168481 /* toolboxwindow.cpp in Sources */,
 				1FC821CC12CA1B6400168481 /* window.cpp in Sources */,
 				1FF348F012CB993E0077DF1B /* office.cpp in Sources */,
+				1FFDB2E412CBE5260054BEA3 /* simtower-names.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
