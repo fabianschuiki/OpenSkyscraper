@@ -17,9 +17,6 @@ namespace OSS {
 		
 		virtual void queueItemForLoading(StoreItem * item) = 0;
 		virtual void queueItemForUnloading(StoreItem * item) = 0;
-		
-		//Adds a loaded item to the store's map and queues it for loading
-		virtual void registerItem(StoreItem * item) = 0;
 	};
 	
 	template <class T> class Store : public AbstractStore {
@@ -52,13 +49,13 @@ namespace OSS {
 			if (item)
 				return item;
 			
-			//If the item is not in the map, create one
-			return new T(itemName);
-		}
-		
-		void registerItem(StoreItem * item) {
-			items[item->name] = (T*)item;
+			//If the item is not in the map, create one and store in the items map
+			item = new T(itemName);
+			items[itemName] = item;
+			
+			//Queue the item for loading and return it
 			queueItemForLoading(item);
+			return item;
 		}
 		
 	private:

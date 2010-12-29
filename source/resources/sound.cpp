@@ -15,7 +15,6 @@ SoundStore * Sound::store;
 
 Sound::Sound(std::string name) : StoreItem(name)
 {
-	getStore()->registerItem(this);
 }
 
 Sound::~Sound()

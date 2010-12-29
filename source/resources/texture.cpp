@@ -13,14 +13,16 @@ TextureStore * Texture::store;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
+/**
+ * Invoked by the TextureStore automatically, do not call on your own. Use Texture::named to obtain
+ * a named texture instance for modification. Lazy loading breaks upon violation of this pattern!
+ */
 Texture::Texture(std::string name) : StoreItem(name)
 {
 	textureID = 0;
 	tempImage = 0;
 	useTransparencyColor = true;
 	transparencyColor = (color3d){1, 1, 1};
-	
-	getStore()->registerItem(this);
 }
 
 Texture::~Texture()
