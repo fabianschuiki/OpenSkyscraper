@@ -54,7 +54,9 @@ namespace OSS {
 			kCathedrakType,
 			kSecurityType,
 			kMedicalCenterType,
-			kHousekeepingType
+			kHousekeepingType,
+			
+			kMaxType
 		} Type;
 		
 		//Item Groups

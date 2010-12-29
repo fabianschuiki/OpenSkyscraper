@@ -89,6 +89,8 @@ namespace OSS {
 		void setConstructionTool(Item::Type itemType);
 		
 		Pointer<ToolboxWindow> toolboxWindow;
+		Sprite debugConstructionToolSprite;
+		unsigned char debugItemType;
 		
 		virtual void eventPrepare();
 	};

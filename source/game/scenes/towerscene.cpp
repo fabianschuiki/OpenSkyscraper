@@ -16,6 +16,13 @@ TowerScene::TowerScene()
 	isDraggingConstruction = false;
 	
 	tool = kInspectTool;
+	
+	//DEBUG: Setup the debugging construction tool visualization sprite
+	debugConstructionToolSprite.texture = Texture::named("simtower/ui/toolbox/construction/normal");
+	debugConstructionToolSprite.rect = recti(0, 0, 32, 32);
+	debugConstructionToolSprite.textureRect.size.x = 1.0 / 8;
+	debugConstructionToolSprite.textureRect.size.y = 1.0 / 4;
+	debugItemType = Item::kLobbyType;
 }
 
 
@@ -155,6 +162,9 @@ void TowerScene::renderTransports()
 
 void TowerScene::renderGUI()
 {
+	//DEBUG: draw the current construction tool
+	debugConstructionToolSprite.draw(visibleRect);
+	
 	//Draw the toolbox window
 	toolboxWindow->draw(visibleRect);
 }
@@ -215,6 +225,10 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 	switch (event->key.keysym.sym) {
 		case SDLK_UP:		POI.y += 10 * factor; return true; break;
 		case SDLK_DOWN:		POI.y -= 10 * factor; return true; break;
+			
+			//DEBUG: Enable construction tool change using page up/down keys
+		case SDLK_PAGEUP:	setConstructionTool((Item::Type)(++debugItemType)); return true; break;
+		case SDLK_PAGEDOWN:	setConstructionTool((Item::Type)(--debugItemType)); return true; break;
 	}
 	return false;
 }
@@ -337,6 +351,10 @@ void TowerScene::setConstructionTool(Item::Type itemType)
 	
 	//Store the item
 	constructionItemDescriptor = Item::descriptorForItemType(itemType);
+	
+	//DEBUG: Change the icon shown by the debug construction tool sprite
+	debugConstructionToolSprite.textureRect.origin.x = ((itemType - 1) % 8) * debugConstructionToolSprite.textureRect.size.x;
+	debugConstructionToolSprite.textureRect.origin.y = (3 - (itemType - 1) / 8) * debugConstructionToolSprite.textureRect.size.y;
 }
 
 void TowerScene::eventPrepare()
