@@ -21,7 +21,7 @@ Texture::Texture(std::string name) : StoreItem(name)
 {
 	textureID = 0;
 	tempImage = 0;
-	useTransparencyColor = true;
+	useTransparencyColor = false;
 	transparencyColor = (color3d){1, 1, 1};
 }
 
