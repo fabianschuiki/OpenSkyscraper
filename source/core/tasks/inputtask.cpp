@@ -12,6 +12,6 @@ void InputTask::update()
 		EventSDL * sdl = &e.base.sdl;
 		sdl->type = kEventSDL;
 		sdl->event = &event;
-		Engine::shared()->handleEvent(&e);
+		Application::shared()->handleEvent(&e);
 	}
 }

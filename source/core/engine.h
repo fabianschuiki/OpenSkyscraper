@@ -18,6 +18,12 @@ namespace OSS {
 		
 	public:
 		/**
+		 * Application
+		 *
+		 * The engine keeps a reference to the application instanced which created it.
+		 */
+		
+		/**
 		 * Tasks
 		 *
 		 * The input task is responsible for polling SDL events, wrapping them up in the engine's

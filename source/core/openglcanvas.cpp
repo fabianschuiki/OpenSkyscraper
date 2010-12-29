@@ -66,6 +66,20 @@ bool OpenGLCanvas::switchToMode(VideoMode * mode)
 #pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
+bool OpenGLCanvas::eventSDL(SDL_Event * event)
+{
+	//The user resized the game window, switch to the new video mode.
+	if (SDL_EVENTMASK(event->type) & SDL_VIDEORESIZEMASK) {
+		OSSObjectLog << "video resize to " << event->resize.w << " x " << event->resize.h << std::endl;
+		
+		desiredMode.resolution.x = event->resize.w;
+		desiredMode.resolution.y = event->resize.h;
+		assert(activateMode());
+		return true;
+	}
+	return false;
+}
+
 void OpenGLCanvas::eventPrepare()
 {
 	//TODO: read the desired and safe modes from the user defaults...

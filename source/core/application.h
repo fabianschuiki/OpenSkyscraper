@@ -27,6 +27,9 @@ namespace OSS {
 		//Notifications (useful when subclassing Application)
 		virtual void onPrepare() {}
 		virtual void onCleanUp() {}
+		
+		//Events
+		virtual bool handleEvent(CoreEvent * event);
 	};
 }
 

@@ -50,6 +50,9 @@ namespace OSS {
 		 * Events
 		 */
 		
+		//SDL events
+		bool eventSDL(SDL_Event * event);
+		
 		//Birth and death
 		void eventPrepare();
 		void eventCleanUp();

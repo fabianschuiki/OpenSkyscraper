@@ -64,8 +64,8 @@ void Application::prepare()
 	alcMakeContextCurrent(context);
 	
 	//Prepare the singletons
-	OpenGLCanvas::shared()->sendPrepare();
-	Engine::shared()->sendPrepare();
+	//OpenGLCanvas::shared()->sendPrepare();
+	//Engine::shared()->sendPrepare();
 	
 	//Give subclasses a chance to prepare
 	sendPrepare();
@@ -85,8 +85,8 @@ void Application::cleanUp()
 	sendCleanUp();
 	
 	//Give the singletons the possibility to perform any post-run cleanup
-	Engine::shared()->sendCleanUp();
-	OpenGLCanvas::shared()->sendCleanUp();
+	//Engine::shared()->sendCleanUp();
+	//OpenGLCanvas::shared()->sendCleanUp();
 	
 	//Shutdown the SDL
 	SDL_Quit();
@@ -104,4 +104,20 @@ void Application::cleanUp()
 void Application::quit()
 {
 	keepRunning = false;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+bool Application::handleEvent(CoreEvent * event)
+{
+	if (OpenGLCanvas::shared()->handleEvent(event)) return true;
+	if (Engine::shared() && Engine::shared()->handleEvent(event)) return true;
+	return CoreObject::handleEvent(event);
 }
