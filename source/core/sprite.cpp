@@ -26,6 +26,8 @@ Sprite::Sprite() : CoreObject()
 	textureScale = 1;
 	autoTexRectX = false;
 	autoTexRectY = false;
+	autoTexRelativeX = false;
+	autoTexRelativeY = false;
 }
 
 Sprite::~Sprite()
@@ -59,6 +61,10 @@ void Sprite::draw(rectd visibleRect)
 	if (texture != NULL) {
 		switch (textureMode) {
 			case kRepeatTextureMode: {
+				/*if (autoTexRelativeX) {
+					sqrt(9);
+				}*/
+				
 				//Move the texture rect into a positive coordinate space to simplify the rest of the process
 				rectd transformedTextureRect = textureRect;
 				if (transformedTextureRect.origin.x < 0)
@@ -137,11 +143,17 @@ void Sprite::autogenerateTextureRect()
 {
 	//Autocalculate the texture rect where requested
 	if (autoTexRectX) {
-		textureRect.origin.x = rect.origin.x / texture->size.x * textureScale;
+		if (autoTexRelativeX)
+			textureRect.origin.x = 0;
+		else
+			textureRect.origin.x = rect.origin.x / texture->size.x * textureScale;
 		textureRect.size.x = rect.size.x / texture->size.x * textureScale;
 	}
 	if (autoTexRectY) {
-		textureRect.origin.y = rect.origin.y / texture->size.y * textureScale;
+		if (autoTexRelativeY)
+			textureRect.origin.y = 0;
+		else
+			textureRect.origin.y = rect.origin.y / texture->size.y * textureScale;
 		textureRect.size.y = rect.size.y / texture->size.y * textureScale;
 	}
 }

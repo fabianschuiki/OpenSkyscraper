@@ -120,6 +120,7 @@ void Item::draw(rectd visibleRect)
 	//Draw the construction
 	if (constructionSprite) {
 		constructionSprite->rect = (drawFlexibleConstruction ? worldRect : backgroundSprite->rect);
+		constructionSprite->autoTexRelativeX = !drawFlexibleConstruction;
 		constructionSprite->draw(visibleRect);
 	}
 	

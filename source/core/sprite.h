@@ -29,6 +29,8 @@ namespace OSS {
 		//Autogenerating Texture Rect
 		bool autoTexRectX;
 		bool autoTexRectY;
+		bool autoTexRelativeX;	//whether the texture coordinates should be relative to the sprite
+		bool autoTexRelativeY;
 		
 		//Initialization
 		Sprite();
