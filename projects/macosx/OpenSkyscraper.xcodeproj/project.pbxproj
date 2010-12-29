@@ -25,7 +25,7 @@
 		1F21FF3C12008057000A8AC3 /* platform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF3B12008057000A8AC3 /* platform.mm */; };
 		1F3824501202BBE800C1E2B0 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38244F1202BBE800C1E2B0 /* sprite.cpp */; };
 		1F38276812032C2400C1E2B0 /* item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38276712032C2400C1E2B0 /* item.cpp */; };
-		1F38278D1203562700C1E2B0 /* lobbyitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38278C1203562700C1E2B0 /* lobbyitem.cpp */; };
+		1F38278D1203562700C1E2B0 /* lobby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38278C1203562700C1E2B0 /* lobby.cpp */; };
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1F8BBC9F12CAA4D700892C16 /* libIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBC9E12CAA4D700892C16 /* libIL.a */; };
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
@@ -41,6 +41,7 @@
 		1FD0EAD911FF8E6A004F4D4E /* simulationtask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EAD811FF8E6A004F4D4E /* simulationtask.cpp */; };
 		1FD0EAE911FF8F5B004F4D4E /* rendertask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EAE811FF8F5B004F4D4E /* rendertask.cpp */; };
 		1FD0EB1D11FF96FC004F4D4E /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EB1C11FF96FC004F4D4E /* scene.cpp */; };
+		1FF348F012CB993E0077DF1B /* office.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF348EF12CB993E0077DF1B /* office.cpp */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -113,8 +114,8 @@
 		1F38253D1202ED5000C1E2B0 /* gameevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameevent.h; sourceTree = "<group>"; };
 		1F38276612032C2400C1E2B0 /* item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item.h; sourceTree = "<group>"; };
 		1F38276712032C2400C1E2B0 /* item.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = item.cpp; sourceTree = "<group>"; };
-		1F38278B1203562700C1E2B0 /* lobbyitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lobbyitem.h; sourceTree = "<group>"; };
-		1F38278C1203562700C1E2B0 /* lobbyitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lobbyitem.cpp; sourceTree = "<group>"; };
+		1F38278B1203562700C1E2B0 /* lobby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lobby.h; sourceTree = "<group>"; };
+		1F38278C1203562700C1E2B0 /* lobby.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lobby.cpp; sourceTree = "<group>"; };
 		1F3827911203574300C1E2B0 /* items.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = items.h; sourceTree = "<group>"; };
 		1F8B57BD1201F7470080E30C /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../resources/textures; sourceTree = "<group>"; };
 		1F8BBC9E12CAA4D700892C16 /* libIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIL.a; path = /usr/local/lib/libIL.a; sourceTree = "<absolute>"; };
@@ -146,6 +147,8 @@
 		1FD0EAE811FF8F5B004F4D4E /* rendertask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rendertask.cpp; sourceTree = "<group>"; };
 		1FD0EB1811FF930F004F4D4E /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scene.h; sourceTree = "<group>"; };
 		1FD0EB1C11FF96FC004F4D4E /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene.cpp; sourceTree = "<group>"; };
+		1FF348EE12CB993E0077DF1B /* office.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = office.h; sourceTree = "<group>"; };
+		1FF348EF12CB993E0077DF1B /* office.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = office.cpp; sourceTree = "<group>"; };
 		1FFFCBC911FCD629005D8446 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		256AC3F00F4B6AF500CF3369 /* OpenSkyscraper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSkyscraper_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -320,8 +323,10 @@
 			isa = PBXGroup;
 			children = (
 				1F3827911203574300C1E2B0 /* items.h */,
-				1F38278B1203562700C1E2B0 /* lobbyitem.h */,
-				1F38278C1203562700C1E2B0 /* lobbyitem.cpp */,
+				1F38278B1203562700C1E2B0 /* lobby.h */,
+				1F38278C1203562700C1E2B0 /* lobby.cpp */,
+				1FF348EE12CB993E0077DF1B /* office.h */,
+				1FF348EF12CB993E0077DF1B /* office.cpp */,
 			);
 			path = items;
 			sourceTree = "<group>";
@@ -496,10 +501,11 @@
 				1F21FF3C12008057000A8AC3 /* platform.mm in Sources */,
 				1F3824501202BBE800C1E2B0 /* sprite.cpp in Sources */,
 				1F38276812032C2400C1E2B0 /* item.cpp in Sources */,
-				1F38278D1203562700C1E2B0 /* lobbyitem.cpp in Sources */,
+				1F38278D1203562700C1E2B0 /* lobby.cpp in Sources */,
 				1FAD1B3812C8E094004E5286 /* sound.cpp in Sources */,
 				1FC821C912CA1B0C00168481 /* toolboxwindow.cpp in Sources */,
 				1FC821CC12CA1B6400168481 /* window.cpp in Sources */,
+				1FF348F012CB993E0077DF1B /* office.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

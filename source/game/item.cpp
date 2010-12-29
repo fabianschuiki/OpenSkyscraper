@@ -33,6 +33,9 @@ Item * Item::createNew(Item::Descriptor * descriptor, recti rect, unsigned int i
 	switch (descriptor->type) {
 			//Structure
 		case Item::kLobbyType:		instance = new LobbyItem; break;
+			
+			//Office
+		case Item::kOfficeType:		instance = new OfficeItem; break;
 	}
 	
 	//Catch errors
@@ -71,6 +74,8 @@ Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
 	switch (itemType) {
 		case Item::kLobbyType:	return &LobbyItem::descriptor; break;
 		case Item::kFloorType:	return &floorItemDescriptor; break;
+			
+		case Item::kOfficeType:	return &OfficeItem::descriptor; break;
 	}
 	return NULL;
 }

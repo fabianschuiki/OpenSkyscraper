@@ -1,5 +1,5 @@
-#ifndef OSS_LOBBYITEM_H
-#define OSS_LOBBYITEM_H
+#ifndef OSS_LOBBY_H
+#define OSS_LOBBY_H
 
 #include "../../general.h"
 #include "../item.h"

@@ -3,7 +3,8 @@
 
 #include "../general.h"
 #include "../base/base.h"
-#include "../core/core.h"
+#include "../core/coreobject.h"
+#include "../core/sprite.h"
 
 
 namespace OSS {

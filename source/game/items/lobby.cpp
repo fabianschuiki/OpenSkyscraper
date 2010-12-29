@@ -1,4 +1,4 @@
-#include "lobbyitem.h"
+#include "lobby.h"
 
 using namespace OSS;
 
