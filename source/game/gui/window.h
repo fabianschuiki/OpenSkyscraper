@@ -7,7 +7,7 @@
 
 
 namespace OSS {
-	class Window : public Object {
+	class Window : public CoreObject {
 	private:
 		recti frame;
 	public:

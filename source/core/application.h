@@ -2,10 +2,12 @@
 #define OSS_APPLICATION_H
 
 #include "../general.h"
-#include "../base/singleton.h"
+#include "../base/base.h"
+#include "coreobject.h"
+
 
 namespace OSS {
-	class Application : public Singleton<Application, Object> {
+	class Application : public Singleton<Application, CoreObject> {
 	private:
 		bool keepRunning;
 		

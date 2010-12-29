@@ -36,18 +36,21 @@ OpenSkyscraper::~OpenSkyscraper()
 #pragma mark Birth and death
 //----------------------------------------------------------------------------------------------------
 
-void OpenSkyscraper::onPrepare()
-{
+void OpenSkyscraper::eventPrepare()
+{	
 	//Reload the resources of the SimTower singleton
 	SimTower::shared()->reloadResources();
 	
-	//Create an empty tower
+	//Load an empty tower
 	towerScene->tower = new Tower;
+	
+	//Prepare the scenes
+	towerScene->eventPrepare();
 	
 	//Switch to the tower scene
 	Engine::shared()->switchToScene(towerScene);
 }
 
-void OpenSkyscraper::onCleanUp()
+void OpenSkyscraper::eventCleanUp()
 {
 }

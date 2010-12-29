@@ -1,9 +1,12 @@
 #ifndef OSS_ENGINE_H
 #define OSS_ENGINE_H
+
 #include "../general.h"
 #include "../base/base.h"
-#include "../resources/resources.h"
+#include "coreobject.h"
+
 #include "tasks/tasks.h"
+
 
 namespace OSS {	
 	enum EngineState {

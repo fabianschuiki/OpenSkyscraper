@@ -8,7 +8,7 @@
 namespace OSS {
 	class ToolboxWindow : public Window {
 	public:
-		ToolboxWindow();
+		void eventPrepare();
 	};
 }
 

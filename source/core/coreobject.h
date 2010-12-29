@@ -13,6 +13,12 @@ namespace OSS {
 		virtual bool handleEvent(CoreEvent * event);
 		
 		/**
+		 * Event Senders
+		 */
+		void sendPrepare();
+		void sendCleanUp();
+		
+		/**
 		 * Event Handlers
 		 */
 		

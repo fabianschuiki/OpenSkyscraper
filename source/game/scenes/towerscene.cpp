@@ -156,7 +156,7 @@ void TowerScene::renderTransports()
 void TowerScene::renderGUI()
 {
 	//Draw the toolbox window
-	toolboxWindow.draw(visibleRect);
+	toolboxWindow->draw(visibleRect);
 }
 
 
@@ -204,6 +204,7 @@ void TowerScene::onMoveOffScreen()
 
 bool TowerScene::handleEvent(CoreEvent * event)
 {
+	if (toolboxWindow && toolboxWindow->handleEvent(event)) return true;
 	if (tower && tower->handleEvent(event)) return true;
 	return Scene::handleEvent(event);
 }
@@ -336,4 +337,10 @@ void TowerScene::setConstructionTool(Item::Type itemType)
 	
 	//Store the item
 	constructionItemDescriptor = Item::descriptorForItemType(itemType);
+}
+
+void TowerScene::eventPrepare()
+{
+	toolboxWindow = new ToolboxWindow;
+	toolboxWindow->eventPrepare();
 }

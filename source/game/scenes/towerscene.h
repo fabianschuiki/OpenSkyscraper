@@ -88,7 +88,9 @@ namespace OSS {
 		void setTool(Tool tool);
 		void setConstructionTool(Item::Type itemType);
 		
-		ToolboxWindow toolboxWindow;
+		Pointer<ToolboxWindow> toolboxWindow;
+		
+		virtual void eventPrepare();
 	};
 }
 

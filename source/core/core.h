@@ -1,6 +1,7 @@
-#include "application.h"
 #include "coreevent.h"
 #include "coreobject.h"
+
+#include "application.h"
 #include "engine.h"
 #include "language.h"
 #include "openglcanvas.h"

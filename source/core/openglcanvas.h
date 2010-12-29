@@ -3,10 +3,11 @@
 
 #include "../general.h"
 #include "../base/base.h"
+#include "coreobject.h"
 
 
 namespace OSS {
-	class OpenGLCanvas : public Singleton<OpenGLCanvas, Object> {
+	class OpenGLCanvas : public Singleton<OpenGLCanvas, CoreObject> {
 	public:
 		OpenGLCanvas();
 		

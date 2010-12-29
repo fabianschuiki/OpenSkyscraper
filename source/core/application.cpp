@@ -1,5 +1,7 @@
 #include "application.h"
-#include "core.h"
+#include "engine.h"
+#include "openglcanvas.h"
+#include "platform.h"
 
 using namespace OSS;
 
@@ -62,11 +64,11 @@ void Application::prepare()
 	alcMakeContextCurrent(context);
 	
 	//Prepare the singletons
-	OpenGLCanvas::shared()->eventPrepare();
-	Engine::shared()->eventPrepare();
+	OpenGLCanvas::shared()->sendPrepare();
+	Engine::shared()->sendPrepare();
 	
 	//Give subclasses a chance to prepare
-	onPrepare();
+	sendPrepare();
 }
 
 void Application::run()
@@ -78,13 +80,13 @@ void Application::run()
 }
 
 void Application::cleanUp()
-{
+{	
 	//Give subclasses a chance to clean up before we get to work
-	onCleanUp();
+	sendCleanUp();
 	
 	//Give the singletons the possibility to perform any post-run cleanup
-	Engine::shared()->eventCleanUp();
-	OpenGLCanvas::shared()->eventCleanUp();
+	Engine::shared()->sendCleanUp();
+	OpenGLCanvas::shared()->sendCleanUp();
 	
 	//Shutdown the SDL
 	SDL_Quit();

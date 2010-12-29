@@ -1,6 +1,10 @@
+#include "application.h"
 #include "engine.h"
-#include "core.h"
+#include "platform.h"
+#include "scene.h"
+
 #include "../resources/resources.h"
+
 
 using namespace OSS;
 

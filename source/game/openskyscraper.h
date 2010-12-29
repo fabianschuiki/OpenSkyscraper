@@ -12,14 +12,13 @@ namespace OSS {
 		//Scenes
 		Pointer<TowerScene> towerScene;
 		
-		
 		//Initialization
 		OpenSkyscraper();
 		~OpenSkyscraper();
 		
 		//Birth and death
-		void onPrepare();
-		void onCleanUp();
+		virtual void eventPrepare();
+		virtual void eventCleanUp();
 	};
 }
 

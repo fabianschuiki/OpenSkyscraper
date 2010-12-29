@@ -17,3 +17,17 @@ bool CoreObject::handleEvent(CoreEvent * event)
 	}
 	return false;
 }
+
+void CoreObject::sendPrepare()
+{
+	CoreEvent e;
+	e.type = kCoreEventPrepare;
+	handleEvent(&e);
+}
+
+void CoreObject::sendCleanUp()
+{
+	CoreEvent e;
+	e.type = kCoreEventCleanUp;
+	handleEvent(&e);
+}
