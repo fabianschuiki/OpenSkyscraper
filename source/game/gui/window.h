@@ -10,6 +10,7 @@ namespace OSS {
 	class Window : public Object {
 	private:
 		recti frame;
+	public:
 		Sprite backgroundSprite;
 		
 		//Accessors

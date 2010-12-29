@@ -13,7 +13,7 @@ namespace OSS {
 		void sleep(double seconds);
 		
 		//Paths
-		std::string resourcesPath();
+		std::vector<std::string> resourcesPaths();
 		std::string pathToResource(std::string resourceName);
 		std::string pathToResource(std::string resourceGroup, std::string resourceName);
 		std::string pathToResource(std::string resourceGroup, std::string resourceName, std::string resourceType);

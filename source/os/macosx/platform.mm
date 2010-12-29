@@ -5,7 +5,14 @@
 using namespace OSS;
 
 
-std::string Platform::resourcesPath()
+std::vector<std::string> Platform::resourcesPaths()
 {
-	return [[[NSBundle mainBundle] resourcePath] UTF8String];
+	std::vector<std::string> paths;
+	paths.push_back([[[NSBundle mainBundle] resourcePath] UTF8String]);
+	NSArray * appSupports = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSAllDomainsMask, YES);
+	for (NSString * appSupport in appSupports) {
+		NSString * path = [appSupport stringByAppendingPathComponent:@"OpenSkyScraper"];
+		paths.push_back([path UTF8String]);
+	}
+	return paths;
 }
