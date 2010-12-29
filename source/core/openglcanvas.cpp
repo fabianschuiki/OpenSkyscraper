@@ -31,8 +31,13 @@ bool OpenGLCanvas::activateMode()
 {
 	bool success = switchToMode(&desiredMode);
 	if (success) {
-		currentMode = desiredMode;
+		//Store the current mode
+		SDL_Surface * surface = SDL_GetVideoSurface();
+		currentMode.resolution.x = surface->w;
+		currentMode.resolution.y = surface->h;
+		currentMode.fullscreen = (surface->flags & SDL_FULLSCREEN);
 		
+		//Issue an event to inform the game about the mode change
 		CoreEvent vmc;
 		vmc.type = kCoreEventVideoModeChanged;
 		Application::shared()->handleEvent(&vmc);

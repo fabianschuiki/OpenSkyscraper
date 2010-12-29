@@ -126,7 +126,6 @@ namespace OSS {
 			OSSObjectLog << std::endl;
 			typename std::set< Pointer<T> >::iterator item;
 			for (item = finalizedItems.begin(); item != finalizedItems.end(); item++) {
-				OSSObjectLog << "refinalizing " << (*item)->description() << std::endl;
 				itemsToUnfinalize.push_back(*item);
 				itemsToFinalize.push_back(*item);
 			}
