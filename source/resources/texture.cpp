@@ -23,27 +23,6 @@ Texture::Texture(std::string name) : StoreItem(name)
 	getStore()->registerItem(this);
 }
 
-Texture::Texture(std::string name, ILenum type, const void * data, ILuint length) : StoreItem(name)
-{
-	textureID = 0;
-	useTransparencyColor = true;
-	transparencyColor = (color3d){1, 1, 1};
-	
-	//Generate the temporary image
-	tempImage = ilGenImage();
-	ilBindImage(tempImage);
-	
-	//Load the image from the data
-	ILboolean success = ilLoadL(type, data, length);
-	ilBindImage(0);
-	if (!success) {
-		ilDeleteImage(tempImage);
-		tempImage = 0;
-	}
-	
-	getStore()->registerItem(this);
-}
-
 Texture::~Texture()
 {
 	//Delete the OpenGL texture
@@ -63,6 +42,21 @@ Texture::~Texture()
 std::string Texture::instanceName()
 {
 	return this->className() + " " + name;
+}
+
+void Texture::assignLoadedData(ILenum type, const void * data, ILuint length)
+{
+	//Generate the temporary image
+	tempImage = ilGenImage();
+	ilBindImage(tempImage);
+	
+	//Load the image from the data
+	ILboolean success = ilLoadL(type, data, length);
+	ilBindImage(0);
+	if (!success) {
+		ilDeleteImage(tempImage);
+		tempImage = 0;
+	}
 }
 
 

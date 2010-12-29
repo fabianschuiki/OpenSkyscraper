@@ -81,7 +81,8 @@ void SimTower::reloadResources()
 			
 			//Create a texture resource from it
 			char name[512]; sprintf(name, "simtower/%03i.bmp", bitmapIndex);
-			/*OSS::Texture * texture =*/ new OSS::Texture(name, IL_BMP, bmp, bmpLength);
+			/*OSS::Texture * texture =*/ //new OSS::Texture(name, IL_BMP, bmp, bmpLength);
+			OSS::Texture::named(name)->assignLoadedData(IL_BMP, bmp, bmpLength);
 			
 			
 			//Dump the BMP file
