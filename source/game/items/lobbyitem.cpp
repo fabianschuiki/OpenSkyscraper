@@ -58,7 +58,7 @@ void LobbyItem::onPrepare()
 	//Load the debug background sprite
 	backgroundSprite->autoTexRectX = true;
 	backgroundSprite->textureMode = Sprite::kRepeatTextureMode;
-	backgroundSprite->texture = Texture::named("lobby_debug.png");
+	backgroundSprite->texture = Texture::named("lobby2_debug.png");
 	
 	//If this is the ground lobby we need some entrances
 	if (rect.origin.y == 0) {
