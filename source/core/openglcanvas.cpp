@@ -13,7 +13,7 @@ using namespace OSS;
 OpenGLCanvas::OpenGLCanvas()
 {
 	//Choose default resolutions
-	safeMode.resolution = int2(1024, 768);
+	safeMode.resolution = int2(800, 600);
 	safeMode.fullscreen = false;
 	desiredMode = safeMode;
 }
