@@ -3,7 +3,8 @@
 #include "platform.h"
 #include "scene.h"
 
-#include "../resources/resources.h"
+#include "../resources/texture.h"
+#include "../resources/sound.h"
 
 
 using namespace OSS;
@@ -31,6 +32,7 @@ Engine::Engine() {
 	
 	//Initialize the stores
 	stores.push_back(new TextureStore);
+	stores.push_back(new SoundStore);
 }
 
 Engine::~Engine() {

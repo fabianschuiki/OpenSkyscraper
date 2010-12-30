@@ -18,15 +18,26 @@ namespace OSS {
 			std::string getName();
 			std::string getDumpName();
 		};
+		
 		typedef std::vector< Pointer<Resource> > ResourceVector;
 		ResourceVector resources;
+		
+		//Resource Types
+		enum {
+			kBitmapResource			= 0x2,
+			kMenuResource			= 0x4,
+			kDialogBoxResource		= 0x5,
+			kStringTableResource	= 0x6,
+			kSoundResource			= 0x7F0A
+		};
 		
 		//Resource Names
 		typedef struct {
 			unsigned short resourceID;
 			std::string name;
 		} ResourceName;
-		static ResourceName resourceNames[];
+		static ResourceName bitmapResourceNames[];
+		static ResourceName soundResourceNames[];
 		static std::string getNameForResource(Resource * resource);
 		
 	public:

@@ -3,7 +3,15 @@
 using namespace OSS;
 
 
-SimTower::ResourceName SimTower::resourceNames[] = {
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Bitmaps
+//----------------------------------------------------------------------------------------------------
+
+SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	/**
 	 * User Interface
 	 */
@@ -367,5 +375,18 @@ SimTower::ResourceName SimTower::resourceNames[] = {
 	{0xF6D, "fire/chopper"},
 	{0xFA8, "fire/burnedfloor"},
 	
+	{0, ""}
+};
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Sounds
+//----------------------------------------------------------------------------------------------------
+
+SimTower::ResourceName SimTower::soundResourceNames[] = {
 	{0, ""}
 };

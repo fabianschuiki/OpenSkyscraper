@@ -13,6 +13,7 @@ namespace OSS {
 		Sound(std::string name);
 		~Sound();
 		virtual std::string instanceName();
+		void assignLoadedData(const void * data, ALuint length);
 		
 		//Store
 		OSSStoreItemStoreAccess(Sound)
@@ -24,6 +25,9 @@ namespace OSS {
 		//Unloading
 		void unfinalize();
 		void unload();
+		
+		//OpenAL Buffer
+		ALuint bufferID;
 	};
 	
 	typedef Store<Sound> SoundStore;

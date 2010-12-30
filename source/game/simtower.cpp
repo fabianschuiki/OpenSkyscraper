@@ -2,6 +2,7 @@
 
 #include "../core/platform.h"
 #include "../resources/texture.h"
+#include "../resources/sound.h"
 
 #include <sys/stat.h>
 
@@ -18,10 +19,19 @@ using namespace OSS;
 
 std::string SimTower::getNameForResource(Resource * resource)
 {
+	if (!resource) return "";
+	
 	//Try to find a name in the resource names table
-	for (int i = 0; SimTower::resourceNames[i].resourceID != 0; i++)
-		if (SimTower::resourceNames[i].resourceID == resource->id)
-			return SimTower::resourceNames[i].name;
+	// -> bitmaps
+	if (resource->type == kBitmapResource)
+		for (int i = 0; SimTower::bitmapResourceNames[i].resourceID != 0; i++)
+			if (SimTower::bitmapResourceNames[i].resourceID == resource->id)
+				return SimTower::bitmapResourceNames[i].name;
+	// -> sounds
+	if (resource->type == kSoundResource)
+		for (int i = 0; SimTower::soundResourceNames[i].resourceID != 0; i++)
+			if (SimTower::soundResourceNames[i].resourceID == resource->id)
+				return SimTower::soundResourceNames[i].name;
 	
 	//None was found, so we simply return the resource ID in hex
 	char name[16];
@@ -203,7 +213,7 @@ void SimTower::extractTextures()
 				memcpy(buffer, &bmpHeader, sizeof(bmpHeader));
 				memcpy(buffer + sizeof(bmpHeader), resource->data, resource->length);
 				
-				//DEBUG: Dump the buffer for debuggin purposes
+				//DEBUG: Dump the buffer for debugging purposes
 				FILE * fdump = fopen((dumpPath + resource->getDumpName() + ".bmp").c_str(), "w");
 				fwrite(buffer, 1, bufferLength, fdump);
 				fclose(fdump);
@@ -213,7 +223,7 @@ void SimTower::extractTextures()
 				textureName += resource->getName();
 				
 				//Create a texture from it
-				OSS::Texture * texture = OSS::Texture::named(textureName);
+				Texture * texture = Texture::named(textureName);
 				texture->assignLoadedData(IL_BMP, buffer, bufferLength);
 				texture->useTransparencyColor = true;
 				
@@ -226,4 +236,32 @@ void SimTower::extractTextures()
 
 void SimTower::extractSounds()
 {
+	std::string dumpPath = "/tmp/SimTower Extraction/";
+	mkdir(dumpPath.c_str(), 0777);
+	dumpPath += "sounds/";
+	mkdir(dumpPath.c_str(), 0777);
+	
+	//Iterate through the resources
+	for (ResourceVector::iterator i = resources.begin(); i != resources.end(); i++) {
+		Resource * resource = (*i);
+		
+		//Treat the supported resource types
+		switch (resource->type) {
+				//Wave Audio
+			case 0x7F0A: {
+				//DEBUG: Dump the buffer for debugging purposes
+				FILE * fdump = fopen((dumpPath + resource->getDumpName() + ".wav").c_str(), "w");
+				fwrite(resource->data, 1, resource->length, fdump);
+				fclose(fdump);
+				
+				//Assemble the sound name
+				std::string soundName = "simtower/";
+				soundName += resource->getName();
+				
+				//Create a sound from it
+				Sound * sound = Sound::named(soundName);
+				sound->assignLoadedData(resource->data, resource->length);
+			} break;
+		}
+	}
 }
