@@ -118,11 +118,14 @@ namespace OSS {
 		//Construction Process
 	private:
 		Pointer<Sprite> constructionSprite;
+		Pointer<Sprite> constructionWorkerSprite[3];
+		double constructionWorkerUpdateTimer;
 		double constructionProgress;
 		bool underConstruction;
 		bool drawFlexibleConstruction;
 	public:
 		void setUnderConstruction(bool uc);
+		void updateConstructionWorkerSprites();
 		
 		//Initialization
 		static Item * createNew(Descriptor * descriptor, recti rect, unsigned int itemID);

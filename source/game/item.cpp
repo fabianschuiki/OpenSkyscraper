@@ -52,12 +52,17 @@ Item * Item::createNew(Item::Descriptor * descriptor, recti rect, unsigned int i
 
 Item::Item()
 {
+	itemID = 0;
+	descriptor = NULL;
+	
+	constructionWorkerUpdateTimer = 0;
+	constructionProgress = 0;
+	underConstruction = false;
+	drawFlexibleConstruction = false;
 }
 
 Item::~Item()
 {
-	ceilingSprite = NULL;
-	backgroundSprite = NULL;
 }
 
 
@@ -92,10 +97,20 @@ Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
 void Item::advance(double dt)
 {
 	//Simulate the construction
-	if (constructionProgress < 1.0 && !tower->getConstructionsHalted()) {
-		constructionProgress += dt * 1.0;
-		if (constructionProgress >= 1.0 || drawFlexibleConstruction)
-			setUnderConstruction(false);
+	if (constructionProgress < 1.0) {
+		//Increase the construction worker update timer
+		constructionWorkerUpdateTimer += dt;
+		if (constructionWorkerUpdateTimer > 0.1) {
+			constructionWorkerUpdateTimer -= 0.1;
+			updateConstructionWorkerSprites();
+		}
+		
+		//Advance the construction progress
+		if (!tower->getConstructionsHalted()) {
+			constructionProgress += dt * (1 / 0.75);
+			if (constructionProgress >= 1.0 || drawFlexibleConstruction)
+				setUnderConstruction(false);
+		}
 	}
 }
 
@@ -123,6 +138,12 @@ void Item::draw(rectd visibleRect)
 		constructionSprite->autoTexRelativeX = !drawFlexibleConstruction;
 		constructionSprite->draw(visibleRect);
 	}
+	
+	//Draw the construction workers
+	if (!drawFlexibleConstruction)
+		for (int i = 0; i < 3; i++)
+			if (constructionWorkerSprite[i])
+				constructionWorkerSprite[i]->draw(visibleRect);
 	
 	//Draw the sprites
 	if (!underConstruction)
@@ -164,7 +185,7 @@ void Item::onPrepare()
 void Item::setUnderConstruction(bool uc)
 {
 	//Ignore if the construction state didn't change
-	//if (underConstruction == uc) return;
+	if (underConstruction == uc) return;
 	underConstruction = uc;
 	
 	//Switch to construction mode
@@ -184,12 +205,43 @@ void Item::setUnderConstruction(bool uc)
 		
 		//Setup the construction
 		constructionProgress = 0;
+		
+		//Setup the construction worker sprites
+		for (int i = 0; i < 3; i++) {
+			if (!constructionWorkerSprite[i] && rect.size.y > i) {
+				Sprite * sprite = new Sprite;
+				sprite->rect.size = double2(16, 24);
+				sprite->texture = Texture::named("simtower/construction/workers");
+				sprite->textureRect.size = double2(1.0 / 6, 1);
+				constructionWorkerSprite[i] = sprite;
+			}
+		}
+		updateConstructionWorkerSprites();
 	}
 	
 	//Switch to constructed mode
 	else {
 		constructionSprite = NULL;
 		constructionProgress = 1.0;
+		
+		//Destroy construction worker sprites
+		for (int i = 0; i < 3; i++)
+			constructionWorkerSprite[i] = NULL;
+	}
+}
+
+void Item::updateConstructionWorkerSprites()
+{
+	for (int i = 0; i < 3; i++) {
+		Sprite * sprite = constructionWorkerSprite[i];
+		if (!sprite) continue;
+		
+		//Position the sprite
+		int2 newCoords(rand() % (rect.size.x - 1), i);
+		sprite->rect.origin = tower->convertCellToWorldCoordinates(newCoords + rect.origin);
+		
+		//Choose a new texture area
+		sprite->textureRect.origin.x = (rand() % 6) * sprite->textureRect.size.x;
 	}
 }
 
