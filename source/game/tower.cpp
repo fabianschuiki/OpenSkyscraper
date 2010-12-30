@@ -1,6 +1,8 @@
 #include "tower.h"
 #include "../classes.h"
 
+#include "../resources/sound.h"
+
 using namespace OSS;
 
 
@@ -412,6 +414,11 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Withdraw funds...
 	//Play construction sound...
+	ALuint source;
+	alGenSources(1, &source);
+	alSourcei(source, AL_BUFFER, Sound::named("simtower/#1B58")->bufferID);
+	alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
+	alSourcePlay(source);
 	
 	return true;
 }

@@ -1,5 +1,6 @@
 #include "towerscene.h"
 #include "../../classes.h"
+#include "../../resources/sound.h"
 
 using namespace OSS;
 
@@ -180,6 +181,12 @@ void TowerScene::renderGUI()
 
 void TowerScene::onMoveOnScreen()
 {
+	ALuint source;
+	alGenSources(1, &source);
+	alSourcei(source, AL_BUFFER, Sound::named("simtower/#4E20")->bufferID);
+	alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
+	alSourcePlay(source);
+	
 	Scene::onMoveOnScreen();
 	
 	glEnable(GL_TEXTURE_RECTANGLE_EXT);

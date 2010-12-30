@@ -89,6 +89,9 @@ void Sound::assignLoadedData(const void * data, ALuint length)
 					 ? (fmt->numChannels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16)
 					 : (fmt->numChannels == 1 ? AL_FORMAT_MONO8 : AL_FORMAT_STEREO8));
 	alBufferData(bufferID, format, samples, dataHeader->size, fmt->sampleRate);
+	if (alGetError() != AL_NO_ERROR) {
+		OSSObjectError << "unable to alBufferData!" << std::endl;
+	}
 }
 
 
