@@ -107,7 +107,7 @@ void Item::advance(double dt)
 		
 		//Advance the construction progress
 		if (!tower->getConstructionsHalted()) {
-			constructionProgress += dt * (1 / 0.75);
+			constructionProgress += dt * 1.0;
 			if (constructionProgress >= 1.0 || drawFlexibleConstruction)
 				setUnderConstruction(false);
 		}
