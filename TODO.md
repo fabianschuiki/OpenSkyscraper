@@ -5,7 +5,6 @@ Background
 ----------
 
 - Put background drawing stuff into its own `Background` class
-- Figure out drawing of the sky sprites. Now they're showing the raindrops.
 
 
 Tower
@@ -21,7 +20,6 @@ Tower
 Items
 -----
 
-- Disable the progression of the construction animation for draggable items.
 - When two adjacent items are collapsed, they both show the construction animation. It should be possible to only show the animation for the part that was actually added to cause the collapse.
 
 
@@ -29,7 +27,6 @@ Lobby
 -----
 
 - Multiple unconnected lobbies on the ground floor allowed. This should *not* be the case!
-- `Lobby` shouldn't show construction step bitmap 212
 - `Lobby` needs a texture (don't know where to find it though…)
 
 
