@@ -14,7 +14,6 @@ Tower
 - Reorganize tower stuff into *game/tower* directory
 - Draw the fire ladders on the far left and right of each floor; also on the lobby floor. (they're in 075)
 - Add clouds to the sky
-- Add *funds*, *star rating*, *time* and *date* to the `Tower` class and animate them
 
 
 Items
@@ -35,12 +34,3 @@ User Interface
 
 - Figure out a way to draw the UI (windows, sprites, entities, hierarchies, etc.)
 - Create `Tools`, `Map` and `Control` windows that also were in the original SimTower.
-
-
-Audio
------
-
-- Initialize OpenAL or whatever we will use for audio
-- Create `Sound` class
-- Create `SoundEmitter` class
-- Locate listener at the center of the screen (POI of the `TowerScene`)
