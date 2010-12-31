@@ -8,16 +8,28 @@
 
 namespace OSS {
 	class Window : public CoreObject {
-	private:
-		recti frame;
 	public:
+		//Initialization
+		Window();
+		
+		//Background
 		Sprite backgroundSprite;
 		
-		//Accessors
+		//Frame
+	private:
+		recti frame;
 	public:
 		void setFrame(recti frame);
 		recti getFrame();
 		
+		//Border
+		color4d borderColor;
+		
+		//Layout
+		void eventVideoModeChanged();
+		virtual void layout() {}
+		
+		//Rendering
 		virtual void draw(rectd visibleRect);
 	};
 }
