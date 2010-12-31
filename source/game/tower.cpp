@@ -16,6 +16,13 @@ Tower::Tower()
 	ceilingHeight = 12;
 	cellSize = int2(8, 24 + ceilingHeight);
 	constructionsHalted = false;
+	
+	//Initialize the construction sound effects
+	constructionSoundFlexible.sound = Sound::named("simtower/construction/flexible");
+	constructionSoundFlexible.layer = SoundEffect::kTopLayer;
+	//constructionSoundFlexible.maxConcurrentPlaybacks = 2;
+	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.2;
+	constructionSoundFlexible.copyBeforeUse = true;
 }
 
 
@@ -374,8 +381,7 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	bounds.unify(itemRect);
 	
 	//Play the construction sound
-	Engine::shared()->audioTask.playSound(Sound::named("simtower/construction/flexible"),
-										  SoundEffect::kTopLayer);
+	Engine::shared()->audioTask.addSoundEffect(&constructionSoundFlexible);
 	
 	return true;
 }

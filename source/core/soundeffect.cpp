@@ -12,12 +12,16 @@ SoundEffect::SoundEffect()
 {
 	sourceID = 0;
 	copyBeforeUse = false;
+	maxConcurrentPlaybacks = 0;
+	minIntervalBetweenPlaybacks = 0;
 }
 
 SoundEffect::SoundEffect(Sound * sound, Layer layer)
 {
 	sourceID = 0;
 	copyBeforeUse = false;
+	maxConcurrentPlaybacks = 0;
+	minIntervalBetweenPlaybacks = 0;
 	this->sound = sound;
 	this->layer = layer;
 }
@@ -26,6 +30,11 @@ SoundEffect::~SoundEffect()
 {
 	//Stop playback, this will also get rid of the source if necessary
 	stop();
+}
+
+std::string SoundEffect::instanceName()
+{
+	return this->className() + " " + (sound ? sound->name : "<no sound>");
 }
 
 
@@ -97,4 +106,17 @@ bool SoundEffect::isPlaying()
 bool SoundEffect::isStopped()
 {
 	return (getSourceState() == AL_STOPPED);
+}
+
+double SoundEffect::getSecondsPlayed()
+{
+	if (!sourceID || !sound) return 0;
+	
+	//WTF? alGetSourcef returns a float that without any fractional part! So we have to do the
+	//magic ourselves.
+	ALint samples;
+	alGetSourcei(sourceID, AL_SAMPLE_OFFSET, &samples);
+	ALint frequency;
+	alGetBufferi(sound->bufferID, AL_FREQUENCY, &frequency);
+	return ((double)samples / frequency);
 }

@@ -7,6 +7,36 @@ void AudioTask::addSoundEffect(SoundEffect * effect)
 {
 	if (!effect) return;
 	
+	//Apply the concurrency limitation
+	if (effect->maxConcurrentPlaybacks || effect->minIntervalBetweenPlaybacks) {
+		//Count the number of times the same sound is being played and the shortest duration for how
+		//long it's been playing.
+		unsigned int concurrentPlaybacks = 0;
+		double shortest = 1e10; //some big number
+		SoundEffectList * effects = &soundEffects[effect->layer];
+		for (SoundEffectList::iterator e = effects->begin(); e != effects->end(); e++) {
+			if ((*e)->sound == effect->sound) {
+				concurrentPlaybacks++;
+				shortest = std::min<double>(shortest, (*e)->getSecondsPlayed());
+			}
+		}
+		
+		//Reject the sound effect if this exceeds the maximum
+		if (effect->maxConcurrentPlaybacks && concurrentPlaybacks >= effect->maxConcurrentPlaybacks) {
+			OSSObjectLog << "rejecting " << effect->description()
+			<< " due to exceeded concurrent playbacks" << std::endl;
+			return;
+		}
+		
+		//Reject the sound effect if the minimal interval has not been reached yet
+		if (shortest < effect->minIntervalBetweenPlaybacks) {
+			OSSObjectLog << "rejecting " << effect->description()
+			<< " due to limitation of minimal interval between playbacks ("
+			<< shortest << " < " << effect->minIntervalBetweenPlaybacks << ")" << std::endl;
+			return;
+		}
+	}
+	
 	//Copy the sound effect if required
 	if (effect->copyBeforeUse)
 		effect = new SoundEffect(*effect);
@@ -29,12 +59,12 @@ void AudioTask::update()
 	for (SoundEffectListMap::iterator mapEntry = soundEffects.begin();
 		 mapEntry != soundEffects.end();
 		 mapEntry++) {
-		for (SoundEffectList::iterator vectorEntry = mapEntry->second.begin();
-			 vectorEntry != mapEntry->second.end();
-			 vectorEntry++) {
-			if ((*vectorEntry)->isStopped()) {
-				OSSObjectLog << "removing SoundEffect with " << (*vectorEntry)->sound->name << std::endl;
-				mapEntry->second.erase(vectorEntry);
+		for (SoundEffectList::iterator listEntry = mapEntry->second.begin();
+			 listEntry != mapEntry->second.end();
+			 listEntry++) {
+			if ((*listEntry)->isStopped()) {
+				OSSObjectLog << "removing SoundEffect with " << (*listEntry)->sound->name << std::endl;
+				mapEntry->second.erase(listEntry);
 			}
 		}
 	}

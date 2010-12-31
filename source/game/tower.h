@@ -108,6 +108,12 @@ namespace OSS {
 		
 		
 		/**
+		 * Sound Effects
+		 */
+		SoundEffect constructionSoundFlexible;
+		
+		
+		/**
 		 * Uncategorized
 		 */
 		ALuint buildSoundSource;

@@ -26,10 +26,22 @@ namespace OSS {
 		 */
 		bool copyBeforeUse;
 		
-		//Constructor
+		/**
+		 * Specifies how many instances of this effect may be played concurrently. 0 means unlimited.
+		 */
+		unsigned int maxConcurrentPlaybacks;
+		
+		/**
+		 * Specifies for how many seconds a previous instance of this effect had to be playing in
+		 * order to allow the next instance to be played.
+		 */
+		double minIntervalBetweenPlaybacks;
+		
+		//Initialization
 		SoundEffect();
 		SoundEffect(Sound * sound, Layer layer);
 		~SoundEffect();
+		std::string instanceName();
 		
 		//Playback
 		void play();
@@ -40,6 +52,7 @@ namespace OSS {
 		ALint getSourceState();
 		bool isPlaying();
 		bool isStopped();
+		double getSecondsPlayed();
 	};
 }
 

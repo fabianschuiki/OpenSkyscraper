@@ -181,7 +181,7 @@ void TowerScene::renderGUI()
 
 void TowerScene::onMoveOnScreen()
 {
-	Engine::shared()->audioTask.playSound(Sound::named("simtower/#4E20"), SoundEffect::kTopLayer);
+	//Engine::shared()->audioTask.playSound(Sound::named("simtower/#4E20"), SoundEffect::kTopLayer);
 	
 	Scene::onMoveOnScreen();
 	
