@@ -1,5 +1,5 @@
 #include "texture.h"
-#include "../classes.h"
+#include "../core/platform.h"
 
 using namespace OSS;
 
