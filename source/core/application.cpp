@@ -69,6 +69,12 @@ void Application::prepare()
 	alListenerfv(AL_VELOCITY, (ALfloat[]){0, 0, 0});
 	alListenerfv(AL_ORIENTATION, (ALfloat[]){0, 0, 1,  0, 1, 0});
 	
+	//Activate the current mode
+	OpenGLCanvas::shared()->activateMode();
+	
+	//Initialize AntTweakBar
+	TwInit(TW_OPENGL, NULL);
+	
 	//Prepare the singletons
 	//OpenGLCanvas::shared()->sendPrepare();
 	//Engine::shared()->sendPrepare();
@@ -123,7 +129,14 @@ void Application::quit()
 
 bool Application::handleEvent(CoreEvent * event)
 {
+	if (event->type == kEventSDL && TwEventSDL(&event->base.sdl)) return true;
 	if (OpenGLCanvas::shared()->handleEvent(event)) return true;
 	if (Engine::shared() && Engine::shared()->handleEvent(event)) return true;
 	return CoreObject::handleEvent(event);
+}
+
+void Application::eventVideoModeChanged()
+{
+	int2 resolution = OpenGLCanvas::shared()->currentMode.resolution;
+	TwWindowSize(resolution.x, resolution.y);
 }

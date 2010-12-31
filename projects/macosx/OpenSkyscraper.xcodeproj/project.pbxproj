@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		1F02479812CE00500023455F /* libAntTweakBar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F02479712CE00500023455F /* libAntTweakBar.a */; };
+		1F0247AE12CE00CD0023455F /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0247AD12CE00CD0023455F /* libfreetype.a */; };
 		1F0D409111FEF2EB00C6D787 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0D409011FEF2EB00C6D787 /* SDL.framework */; };
 		1F0D40CB11FEF48500C6D787 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40CA11FEF48500C6D787 /* SDLMain.m */; };
 		1F0D40E011FEF7C900C6D787 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40DF11FEF7C900C6D787 /* main.cpp */; };
@@ -70,6 +72,8 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		1F02479712CE00500023455F /* libAntTweakBar.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libAntTweakBar.a; path = /usr/local/lib/libAntTweakBar.a; sourceTree = "<absolute>"; };
+		1F0247AD12CE00CD0023455F /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = /usr/local/lib/libfreetype.a; sourceTree = "<absolute>"; };
 		1F0D409011FEF2EB00C6D787 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		1F0D40C911FEF48500C6D787 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		1F0D40CA11FEF48500C6D787 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
@@ -183,6 +187,8 @@
 				1FAD1B8412C8E362004E5286 /* OpenAL.framework in Frameworks */,
 				1F8BBC9F12CAA4D700892C16 /* libIL.a in Frameworks */,
 				1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */,
+				1F02479812CE00500023455F /* libAntTweakBar.a in Frameworks */,
+				1F0247AE12CE00CD0023455F /* libfreetype.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +215,8 @@
 				1F8BBC9E12CAA4D700892C16 /* libIL.a */,
 				1F8BBCA012CAA4D700892C16 /* libpng.a */,
 				1F0D409011FEF2EB00C6D787 /* SDL.framework */,
+				1F02479712CE00500023455F /* libAntTweakBar.a */,
+				1F0247AD12CE00CD0023455F /* libfreetype.a */,
 			);
 			name = "Third-party";
 			sourceTree = "<group>";

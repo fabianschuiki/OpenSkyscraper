@@ -30,6 +30,7 @@ namespace OSS {
 		
 		//Events
 		virtual bool handleEvent(CoreEvent * event);
+		virtual void eventVideoModeChanged();
 	};
 }
 

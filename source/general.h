@@ -9,7 +9,6 @@
 
 //C++ IOstream library
 #include <ios>
-#include <istream>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -54,6 +53,9 @@
 //#include <OpenAL/alc.h>
 #include "os/macosx/alc.h" //required since alc.h in OS X uses typedef'd void for empty param list -> C++ sucks!
 #endif
+
+//AntTweakBar
+#include <AntTweakBar.h>
 
 
 /**

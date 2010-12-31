@@ -97,7 +97,7 @@ void OpenGLCanvas::eventPrepare()
 	//TODO: read the desired and safe modes from the user defaults...
 	
 	//Activate the desired mode
-	assert(activateMode());
+	//assert(activateMode());
 }
 
 void OpenGLCanvas::eventCleanUp()
