@@ -91,6 +91,7 @@ void Engine::runloopCycle()
 	//Update the tasks
 	inputTask.update();
 	simulationTask.update();
+	audioTask.update();
 	renderTask.update();
 	loaderTask.update();
 	
@@ -114,6 +115,7 @@ bool Engine::handleEvent(CoreEvent * event)
 	
 	if (inputTask.handleEvent(event)) return true;
 	if (simulationTask.handleEvent(event)) return true;
+	if (audioTask.handleEvent(event)) return true;
 	if (renderTask.handleEvent(event)) return true;
 	if (loaderTask.handleEvent(event)) return true;
 	return CoreObject::handleEvent(event);

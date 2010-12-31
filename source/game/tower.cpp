@@ -414,11 +414,12 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Withdraw funds...
 	//Play construction sound...
-	ALuint source;
+	/*ALuint source;
 	alGenSources(1, &source);
 	alSourcei(source, AL_BUFFER, Sound::named("simtower/#1B58")->bufferID);
 	alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
-	alSourcePlay(source);
+	alSourcePlay(source);*/
+	Engine::shared()->audioTask.playSound(Sound::named("simtower/#1B58"), SoundEffect::kTopLayer);
 	
 	return true;
 }

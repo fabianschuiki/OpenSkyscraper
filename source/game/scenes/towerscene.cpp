@@ -181,11 +181,7 @@ void TowerScene::renderGUI()
 
 void TowerScene::onMoveOnScreen()
 {
-	ALuint source;
-	alGenSources(1, &source);
-	alSourcei(source, AL_BUFFER, Sound::named("simtower/#4E20")->bufferID);
-	alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
-	alSourcePlay(source);
+	Engine::shared()->audioTask.playSound(Sound::named("simtower/#4E20"), SoundEffect::kTopLayer);
 	
 	Scene::onMoveOnScreen();
 	

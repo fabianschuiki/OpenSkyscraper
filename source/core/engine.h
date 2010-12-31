@@ -34,11 +34,13 @@ namespace OSS {
 		 */
 		friend class InputTask;
 		friend class SimulationTask;
+		friend class AudioTask;
 		friend class RenderTask;
 		friend class LoaderTask;
 		
 		InputTask inputTask;
 		SimulationTask simulationTask;
+		AudioTask audioTask;
 		RenderTask renderTask;
 		LoaderTask loaderTask;
 		

@@ -42,6 +42,8 @@
 		1FD0EAE911FF8F5B004F4D4E /* rendertask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EAE811FF8F5B004F4D4E /* rendertask.cpp */; };
 		1FD0EB1D11FF96FC004F4D4E /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EB1C11FF96FC004F4D4E /* scene.cpp */; };
 		1FF348F012CB993E0077DF1B /* office.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF348EF12CB993E0077DF1B /* office.cpp */; };
+		1FFC7B5B12CD53A00071EA72 /* audiotask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7B5A12CD53A00071EA72 /* audiotask.cpp */; };
+		1FFC7B5F12CD576A0071EA72 /* soundeffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7B5E12CD576A0071EA72 /* soundeffect.cpp */; };
 		1FFDB2E412CBE5260054BEA3 /* simtower-names.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -150,6 +152,10 @@
 		1FD0EB1C11FF96FC004F4D4E /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene.cpp; sourceTree = "<group>"; };
 		1FF348EE12CB993E0077DF1B /* office.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = office.h; sourceTree = "<group>"; };
 		1FF348EF12CB993E0077DF1B /* office.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = office.cpp; sourceTree = "<group>"; };
+		1FFC7B5912CD53A00071EA72 /* audiotask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audiotask.h; sourceTree = "<group>"; };
+		1FFC7B5A12CD53A00071EA72 /* audiotask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audiotask.cpp; sourceTree = "<group>"; };
+		1FFC7B5D12CD576A0071EA72 /* soundeffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundeffect.h; sourceTree = "<group>"; };
+		1FFC7B5E12CD576A0071EA72 /* soundeffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundeffect.cpp; sourceTree = "<group>"; };
 		1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "simtower-names.cpp"; sourceTree = "<group>"; };
 		1FFFCBC911FCD629005D8446 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		256AC3F00F4B6AF500CF3369 /* OpenSkyscraper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSkyscraper_Prefix.pch; sourceTree = "<group>"; };
@@ -242,6 +248,8 @@
 				1F0D418511FF00D700C6D787 /* platform.cpp */,
 				1FD0EB1811FF930F004F4D4E /* scene.h */,
 				1FD0EB1C11FF96FC004F4D4E /* scene.cpp */,
+				1FFC7B5D12CD576A0071EA72 /* soundeffect.h */,
+				1FFC7B5E12CD576A0071EA72 /* soundeffect.cpp */,
 				1F38244E1202BBE800C1E2B0 /* sprite.h */,
 				1F38244F1202BBE800C1E2B0 /* sprite.cpp */,
 				1FD0EA6511FF68CA004F4D4E /* tasks */,
@@ -370,6 +378,8 @@
 			children = (
 				1FD0EA6711FF68EE004F4D4E /* tasks.h */,
 				1FD0EA6611FF68CF004F4D4E /* task.h */,
+				1FFC7B5912CD53A00071EA72 /* audiotask.h */,
+				1FFC7B5A12CD53A00071EA72 /* audiotask.cpp */,
 				1FD0EA6A11FF69CE004F4D4E /* inputtask.h */,
 				1FD0EA6B11FF69CE004F4D4E /* inputtask.cpp */,
 				1FD0EAD711FF8E6A004F4D4E /* simulationtask.h */,
@@ -510,6 +520,8 @@
 				1FC821CC12CA1B6400168481 /* window.cpp in Sources */,
 				1FF348F012CB993E0077DF1B /* office.cpp in Sources */,
 				1FFDB2E412CBE5260054BEA3 /* simtower-names.cpp in Sources */,
+				1FFC7B5B12CD53A00071EA72 /* audiotask.cpp in Sources */,
+				1FFC7B5F12CD576A0071EA72 /* soundeffect.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
