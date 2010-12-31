@@ -44,6 +44,8 @@
 		1FF348F012CB993E0077DF1B /* office.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF348EF12CB993E0077DF1B /* office.cpp */; };
 		1FFC7B5B12CD53A00071EA72 /* audiotask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7B5A12CD53A00071EA72 /* audiotask.cpp */; };
 		1FFC7B5F12CD576A0071EA72 /* soundeffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7B5E12CD576A0071EA72 /* soundeffect.cpp */; };
+		1FFC7C7312CD7B630071EA72 /* controlwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7C7212CD7B630071EA72 /* controlwindow.cpp */; };
+		1FFC7D4912CD8C860071EA72 /* rand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7D4812CD8C860071EA72 /* rand.cpp */; };
 		1FFDB2E412CBE5260054BEA3 /* simtower-names.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -156,6 +158,10 @@
 		1FFC7B5A12CD53A00071EA72 /* audiotask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audiotask.cpp; sourceTree = "<group>"; };
 		1FFC7B5D12CD576A0071EA72 /* soundeffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundeffect.h; sourceTree = "<group>"; };
 		1FFC7B5E12CD576A0071EA72 /* soundeffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundeffect.cpp; sourceTree = "<group>"; };
+		1FFC7C7112CD7B630071EA72 /* controlwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = controlwindow.h; sourceTree = "<group>"; };
+		1FFC7C7212CD7B630071EA72 /* controlwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlwindow.cpp; sourceTree = "<group>"; };
+		1FFC7D0212CD87130071EA72 /* rand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rand.h; sourceTree = "<group>"; };
+		1FFC7D4812CD8C860071EA72 /* rand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rand.cpp; sourceTree = "<group>"; };
 		1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "simtower-names.cpp"; sourceTree = "<group>"; };
 		1FFFCBC911FCD629005D8446 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		256AC3F00F4B6AF500CF3369 /* OpenSkyscraper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSkyscraper_Prefix.pch; sourceTree = "<group>"; };
@@ -261,6 +267,8 @@
 			isa = PBXGroup;
 			children = (
 				1F0D41AB11FF0E5F00C6D787 /* math.h */,
+				1FFC7D0212CD87130071EA72 /* rand.h */,
+				1FFC7D4812CD8C860071EA72 /* rand.cpp */,
 				1F0D41A311FF0DF000C6D787 /* rect.h */,
 				1F0D41A411FF0DF000C6D787 /* vector2D.h */,
 			);
@@ -345,11 +353,13 @@
 		1FC821C312CA1A9C00168481 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				1FC821D012CA1C1100168481 /* gui.h */,
 				1FC821C712CA1B0C00168481 /* toolboxwindow.h */,
 				1FC821C812CA1B0C00168481 /* toolboxwindow.cpp */,
 				1FC821CA12CA1B6400168481 /* window.h */,
 				1FC821CB12CA1B6400168481 /* window.cpp */,
-				1FC821D012CA1C1100168481 /* gui.h */,
+				1FFC7C7112CD7B630071EA72 /* controlwindow.h */,
+				1FFC7C7212CD7B630071EA72 /* controlwindow.cpp */,
 			);
 			path = gui;
 			sourceTree = "<group>";
@@ -522,6 +532,8 @@
 				1FFDB2E412CBE5260054BEA3 /* simtower-names.cpp in Sources */,
 				1FFC7B5B12CD53A00071EA72 /* audiotask.cpp in Sources */,
 				1FFC7B5F12CD576A0071EA72 /* soundeffect.cpp in Sources */,
+				1FFC7C7312CD7B630071EA72 /* controlwindow.cpp in Sources */,
+				1FFC7D4912CD8C860071EA72 /* rand.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

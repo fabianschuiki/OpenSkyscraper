@@ -33,12 +33,12 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	
 	//Time
 	// -> background
-	{0x140, "ui/time/background"},
+	{0x140, "ui/control/background"},
 	// -> widgets
-	{0x141, "ui/time/watch"},
-	{0x143, "ui/time/star/empty"},
-	{0x142, "ui/time/star/filled"},
-	{0x147, "ui/time/towerrating"},
+	{0x141, "ui/control/watch"},
+	{0x143, "ui/control/star/empty"},
+	{0x142, "ui/control/star/filled"},
+	{0x147, "ui/control/towerrating"},
 	
 	//Map
 	// -> background

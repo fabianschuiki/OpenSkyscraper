@@ -114,6 +114,32 @@ namespace OSS {
 		
 		
 		/**
+		 * Environment
+		 */
+		
+		//Time
+		double time;
+		unsigned int date;
+		unsigned int getDayOfWeek();	//0,1 = WD; 2 = WE
+		unsigned int getQuarter();		//0..3
+		unsigned int getYear();			//0..inf
+		bool isWeekday();
+		bool isWeekend();
+		
+		//Rating
+		unsigned short rating;
+		
+		//Funds
+		long funds;
+		void depositFunds(long amount);
+		void withdrawFunds(long amount);
+		
+		//Population
+		int population;
+		void recalculatePopulation();
+		
+		
+		/**
 		 * Uncategorized
 		 */
 		ALuint buildSoundSource;

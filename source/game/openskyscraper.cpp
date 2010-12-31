@@ -60,7 +60,7 @@ void OpenSkyscraper::eventPrepare()
 	SimTower::shared()->extractAll();
 	
 	//Load an empty tower
-	towerScene->tower = new Tower;
+	towerScene->setTower(new Tower);
 	
 	//Switch to the tower scene
 	Engine::shared()->switchToScene(towerScene);

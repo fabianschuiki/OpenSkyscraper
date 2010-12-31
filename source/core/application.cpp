@@ -46,6 +46,9 @@ void Application::prepare()
 	//Make sure we received keyboard repeat events
 	SDL_EnableKeyRepeat(250, 50);
 	
+	//Supporting Unicode wouldn't hurt either in the 21st centurey
+	SDL_EnableUNICODE(SDL_TRUE);
+	
 	//Prepare OpenGL
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, true);
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);

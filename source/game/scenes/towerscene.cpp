@@ -166,6 +166,9 @@ void TowerScene::renderGUI()
 	//DEBUG: draw the current construction tool
 	debugConstructionToolSprite.draw(visibleRect);
 	
+	//Draw the control window
+	controlWindow.draw(visibleRect);
+	
 	//Draw the toolbox window
 	toolboxWindow->draw(visibleRect);
 }
@@ -217,6 +220,7 @@ void TowerScene::onMoveOffScreen()
 bool TowerScene::handleEvent(CoreEvent * event)
 {
 	if (toolboxWindow && toolboxWindow->handleEvent(event)) return true;
+	if (controlWindow.handleEvent(event)) return true;
 	if (tower && tower->handleEvent(event)) return true;
 	return Scene::handleEvent(event);
 }
@@ -231,6 +235,15 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 			//DEBUG: Enable construction tool change using page up/down keys
 		case SDLK_PAGEUP:	setConstructionTool((Item::Type)(++debugItemType)); return true; break;
 		case SDLK_PAGEDOWN:	setConstructionTool((Item::Type)(--debugItemType)); return true; break;
+	}
+	switch (event->key.keysym.unicode) {
+			//DEBUG: Change tower rating
+		case '1':	tower->rating = 1; return true; break;
+		case '2':	tower->rating = 2; return true; break;
+		case '3':	tower->rating = 3; return true; break;
+		case '4':	tower->rating = 4; return true; break;
+		case '5':	tower->rating = 5; return true; break;
+		case '6':	tower->rating = 6; return true; break;
 	}
 	return false;
 }
@@ -369,4 +382,10 @@ void TowerScene::eventPrepare()
 {
 	toolboxWindow = new ToolboxWindow;
 	toolboxWindow->eventPrepare();
+}
+
+void TowerScene::setTower(Tower * tower)
+{
+	this->tower = tower;
+	controlWindow.tower = tower;
 }

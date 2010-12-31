@@ -6,6 +6,7 @@
 #include "../tower.h"
 #include "../item.h"
 #include "../gui/toolboxwindow.h"
+#include "../gui/controlwindow.h"
 
 
 namespace OSS {
@@ -31,6 +32,7 @@ namespace OSS {
 		
 		//The tower currently being played
 		Pointer<Tower> tower;
+		void setTower(Tower * tower);
 	
 		
 		//Simulation
@@ -89,6 +91,7 @@ namespace OSS {
 		void setConstructionTool(Item::Type itemType);
 		
 		Pointer<ToolboxWindow> toolboxWindow;
+		ControlWindow controlWindow;
 		Sprite debugConstructionToolSprite;
 		unsigned char debugItemType;
 		

@@ -17,12 +17,18 @@ Tower::Tower()
 	cellSize = int2(8, 24 + ceilingHeight);
 	constructionsHalted = false;
 	
-	//Initialize the construction sound effects
+	//Initialize the flexible construction sound effect
 	constructionSoundFlexible.sound = Sound::named("simtower/construction/flexible");
 	constructionSoundFlexible.layer = SoundEffect::kTopLayer;
-	//constructionSoundFlexible.maxConcurrentPlaybacks = 2;
 	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.2;
 	constructionSoundFlexible.copyBeforeUse = true;
+	
+	//Initialize the environment
+	time = 5.0;
+	date = 0;
+	rating = 1;
+	funds = 2e6;
+	population = 0;
 }
 
 
@@ -91,6 +97,20 @@ void Tower::onMoveOffScreen()
 
 void Tower::advance(double dt)
 {
+	//Decide at what speed the game time should be running
+	double timeSpeed = 0.5;
+	if (time > 1.5 && time < 6.0)
+		timeSpeed = 1;
+	if (time > 12 && time < 13)
+		timeSpeed = 1.0 / 30;
+	
+	//Advance the game time
+	time += dt * timeSpeed;
+	if (time > 24) {
+		time -= 24;
+		date++;
+	}
+	
 	//Advance the facilities
 	for (ItemMap::iterator it = facilityItems.begin(); it != facilityItems.end(); it++) {
 		Item * item = it->second;
@@ -423,12 +443,6 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	insertNewItem(descriptor, rect);
 	
 	//Withdraw funds...
-	//Play construction sound...
-	/*ALuint source;
-	alGenSources(1, &source);
-	alSourcei(source, AL_BUFFER, Sound::named("simtower/#1B58")->bufferID);
-	alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
-	alSourcePlay(source);*/
 	Engine::shared()->audioTask.playSound(Sound::named("simtower/construction/normal"),
 										  SoundEffect::kTopLayer);
 	
@@ -535,4 +549,38 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Make the bounds cover the newly built item too
 	bounds.unify(rect);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Environment
+//----------------------------------------------------------------------------------------------------
+
+unsigned int Tower::getDayOfWeek()
+{
+	return (date % 3);
+}
+
+unsigned int Tower::getQuarter()
+{
+	return ((date / 3) % 4);
+}
+
+unsigned int Tower::getYear()
+{
+	return (date / 12);
+}
+
+bool Tower::isWeekday()
+{
+	return (getDayOfWeek() < 2);
+}
+
+bool Tower::isWeekend()
+{
+	return (getDayOfWeek() == 2);
 }

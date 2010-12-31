@@ -16,6 +16,7 @@ OpenGLCanvas::OpenGLCanvas()
 	safeMode.resolution = int2(800, 600);
 	safeMode.fullscreen = false;
 	desiredMode = safeMode;
+	currentMode = safeMode;
 }
 
 
