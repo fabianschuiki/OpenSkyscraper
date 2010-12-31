@@ -14,6 +14,7 @@ SoundEffect::SoundEffect()
 	copyBeforeUse = false;
 	maxConcurrentPlaybacks = 0;
 	minIntervalBetweenPlaybacks = 0;
+	loopCount = 1;
 }
 
 SoundEffect::SoundEffect(Sound * sound, Layer layer)
@@ -22,6 +23,7 @@ SoundEffect::SoundEffect(Sound * sound, Layer layer)
 	copyBeforeUse = false;
 	maxConcurrentPlaybacks = 0;
 	minIntervalBetweenPlaybacks = 0;
+	loopCount = 1;
 	this->sound = sound;
 	this->layer = layer;
 }
@@ -56,6 +58,12 @@ void SoundEffect::play()
 		//Setup some default source attributes
 		alSourcei(sourceID, AL_BUFFER, sound->bufferID);
 		alSourcei(sourceID, AL_SOURCE_RELATIVE, AL_TRUE);
+		
+		//Decide whether to loop
+		cachedSecondsPlayed = 0;
+		loopsLeft = (loopCount - 1);
+		if (loopsLeft)
+			alSourcei(sourceID, AL_LOOPING, AL_TRUE);
 	}
 	
 	//Start playing the source
@@ -119,4 +127,31 @@ double SoundEffect::getSecondsPlayed()
 	ALint frequency;
 	alGetBufferi(sound->bufferID, AL_FREQUENCY, &frequency);
 	return ((double)samples / frequency);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Heartbeat
+//----------------------------------------------------------------------------------------------------
+
+void SoundEffect::update()
+{
+	if (isPlaying()) {
+		//Get the seconds played
+		double secondsPlayed = getSecondsPlayed();
+		
+		//If the seconds played is lower than the previous one, we looped
+		if (secondsPlayed < cachedSecondsPlayed) {
+			if (--loopsLeft == 0)
+				alSourcei(sourceID, AL_LOOPING, AL_FALSE);
+			OSSObjectLog << "looped, " << loopsLeft << " loops left" << std::endl;
+		}
+		
+		//Cache the seconds played for the next heartbeat
+		cachedSecondsPlayed = secondsPlayed;
+	}
 }

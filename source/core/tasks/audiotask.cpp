@@ -55,13 +55,18 @@ void AudioTask::playSound(Sound * sound, SoundEffect::Layer layer)
 
 void AudioTask::update()
 {
-	//Search for stopped sound effects and remove them from the map
+	//Iterate through all sound effects currently playing
 	for (SoundEffectListMap::iterator mapEntry = soundEffects.begin();
 		 mapEntry != soundEffects.end();
 		 mapEntry++) {
 		for (SoundEffectList::iterator listEntry = mapEntry->second.begin();
 			 listEntry != mapEntry->second.end();
 			 listEntry++) {
+			
+			//Update
+			(*listEntry)->update();
+			
+			//Get rid of stopped effects
 			if ((*listEntry)->isStopped()) {
 				OSSObjectLog << "removing SoundEffect with " << (*listEntry)->sound->name << std::endl;
 				mapEntry->second.erase(listEntry);

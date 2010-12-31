@@ -37,6 +37,15 @@ namespace OSS {
 		 */
 		double minIntervalBetweenPlaybacks;
 		
+		/**
+		 * Specifies how many times the sound effect is played until it is stopped.
+		 */
+	private:
+		unsigned int loopsLeft;
+		double cachedSecondsPlayed;
+	public:
+		unsigned int loopCount;
+		
 		//Initialization
 		SoundEffect();
 		SoundEffect(Sound * sound, Layer layer);
@@ -53,6 +62,9 @@ namespace OSS {
 		bool isPlaying();
 		bool isStopped();
 		double getSecondsPlayed();
+		
+		//Heartbeat
+		void update(); //keeps various internal processes running
 	};
 }
 
