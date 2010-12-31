@@ -55,8 +55,21 @@ namespace OSS {
 			//Convenience coordinate accessors
 			inline T minX() { return origin.x; }
 			inline T minY() { return origin.y; }
+			inline T midX() { return origin.x + size.x / 2; }
+			inline T midY() { return origin.y + size.y / 2; }
 			inline T maxX() { return origin.x + size.x; }
 			inline T maxY() { return origin.y + size.y; }
+			
+			//Convenience point accessors
+			inline Vector2D<T> minXminY() { return Vector2D<T>(minX(), minY()); }
+			inline Vector2D<T> minXmidY() { return Vector2D<T>(minX(), midY()); }
+			inline Vector2D<T> minXmaxY() { return Vector2D<T>(minX(), maxY()); }
+			inline Vector2D<T> midXminY() { return Vector2D<T>(midX(), minY()); }
+			inline Vector2D<T> center()	  { return Vector2D<T>(midX(), midY()); }
+			inline Vector2D<T> midXmaxY() { return Vector2D<T>(midX(), maxY()); }
+			inline Vector2D<T> maxXminY() { return Vector2D<T>(maxX(), minY()); }
+			inline Vector2D<T> maxXmidY() { return Vector2D<T>(maxX(), midY()); }
+			inline Vector2D<T> maxXmaxY() { return Vector2D<T>(maxX(), maxY()); }
 			
 			//Boolean operations
 			bool containsPoint(Vector2D<T> &p) {
