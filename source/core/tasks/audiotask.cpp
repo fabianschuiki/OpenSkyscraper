@@ -7,6 +7,10 @@ void AudioTask::addSoundEffect(SoundEffect * effect)
 {
 	if (!effect) return;
 	
+	//Copy the sound effect if required
+	if (effect->copyBeforeUse)
+		effect = new SoundEffect(*effect);
+	
 	//Add the sound effect to the appropriate layer
 	soundEffects[effect->layer].push_back(effect);
 	

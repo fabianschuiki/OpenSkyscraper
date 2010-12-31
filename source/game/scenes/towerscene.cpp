@@ -190,7 +190,6 @@ void TowerScene::onMoveOnScreen()
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	//constructionItemDescriptor = Item::descriptorForItemType(Item::kLobbyType);
 	setConstructionTool(Item::kLobbyType);
 	
 	tower->onMoveOnScreen();
@@ -303,13 +302,14 @@ void TowerScene::startConstruction()
 		return;
 	
 	//Is this a draggable item like the lobby or a floor?
+	bool success = false;
 	if (constructionItemDescriptor->attributes & Item::kFlexibleWidthAttribute) {
 		//Disable the constructions
 		tower->setConstructionsHalted(true);
 		
 		//Do the initial build
 		previousConstructionTemplate = constructionTemplate;
-		bool success = tower->constructFlexibleWidthItem(constructionItemDescriptor,
+		success = tower->constructFlexibleWidthItem(constructionItemDescriptor,
 														 constructionTemplate,
 														 previousConstructionTemplate);
 		
@@ -318,8 +318,13 @@ void TowerScene::startConstruction()
 			isDraggingConstruction = true;
 	} else {
 		//Simply build the item
-		tower->constructItem(constructionItemDescriptor, constructionTemplate);
+		success = tower->constructItem(constructionItemDescriptor, constructionTemplate);
 	}
+	
+	//Play the annoying "click" sound if the construction was impossible :)
+	if (!success)
+		Engine::shared()->audioTask.playSound(Sound::named("simtower/construction/impossible"),
+											  SoundEffect::kTopLayer);
 }
 
 void TowerScene::endConstruction()

@@ -388,5 +388,14 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 //----------------------------------------------------------------------------------------------------
 
 SimTower::ResourceName SimTower::soundResourceNames[] = {
+	/**
+	 * Construction
+	 */
+	
+	{0x1B58, "construction/normal"},		//sound for placing facilities and transport
+	{0x1B59, "construction/flexible"},		//sound for flexible stuff like lobbies and floors
+	{0x1B5A, "construction/impossible"},	//annoying "click" :)
+	{0x1B5B, "construction/bulldoze"},
+	
 	{0, ""}
 };

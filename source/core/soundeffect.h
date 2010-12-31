@@ -19,6 +19,13 @@ namespace OSS {
 		Layer layer;
 		ALuint sourceID;
 		
+		/**
+		 * Tells the AudioTask to duplicate the SoundEffect before playback. Set this to true if
+		 * you intend to create a template SoundEffect which is kept around in your class and sent
+		 * to the AudioTask multiple times.
+		 */
+		bool copyBeforeUse;
+		
 		//Constructor
 		SoundEffect();
 		SoundEffect(Sound * sound, Layer layer);

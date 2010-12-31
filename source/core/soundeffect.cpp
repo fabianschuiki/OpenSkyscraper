@@ -11,11 +11,13 @@ using namespace OSS;
 SoundEffect::SoundEffect()
 {
 	sourceID = 0;
+	copyBeforeUse = false;
 }
 
 SoundEffect::SoundEffect(Sound * sound, Layer layer)
 {
 	sourceID = 0;
+	copyBeforeUse = false;
 	this->sound = sound;
 	this->layer = layer;
 }

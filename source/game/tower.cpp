@@ -373,6 +373,10 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	//Make the bounds cover the newly built item too
 	bounds.unify(itemRect);
 	
+	//Play the construction sound
+	Engine::shared()->audioTask.playSound(Sound::named("simtower/construction/flexible"),
+										  SoundEffect::kTopLayer);
+	
 	return true;
 }
 
@@ -419,7 +423,8 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	alSourcei(source, AL_BUFFER, Sound::named("simtower/#1B58")->bufferID);
 	alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
 	alSourcePlay(source);*/
-	Engine::shared()->audioTask.playSound(Sound::named("simtower/#1B58"), SoundEffect::kTopLayer);
+	Engine::shared()->audioTask.playSound(Sound::named("simtower/construction/normal"),
+										  SoundEffect::kTopLayer);
 	
 	return true;
 }
