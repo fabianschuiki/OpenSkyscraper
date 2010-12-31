@@ -111,6 +111,7 @@ namespace OSS {
 		 * Sound Effects
 		 */
 		SoundEffect constructionSoundFlexible;
+		SoundEffect fundsTransferSound;
 		
 		
 		/**
@@ -131,8 +132,7 @@ namespace OSS {
 		
 		//Funds
 		long funds;
-		void depositFunds(long amount);
-		void withdrawFunds(long amount);
+		void transferFunds(long amount);
 		
 		//Population
 		int population;

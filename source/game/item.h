@@ -93,7 +93,7 @@ namespace OSS {
 			Category category;
 			unsigned short minRating;
 			unsigned short attributes;
-			double price;
+			unsigned short price;
 			int2 cells;
 			int2 minUnit;
 		} Descriptor;

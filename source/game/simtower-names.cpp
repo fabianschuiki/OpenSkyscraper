@@ -397,5 +397,11 @@ SimTower::ResourceName SimTower::soundResourceNames[] = {
 	{0x1B5A, "construction/impossible"},	//annoying "click" :)
 	{0x1B5B, "construction/bulldoze"},
 	
+	
+	/**
+	 * Uncategorized
+	 */
+	{0x271D, "cash"},
+	
 	{0, ""}
 };

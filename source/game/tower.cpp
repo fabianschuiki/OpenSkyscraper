@@ -23,6 +23,13 @@ Tower::Tower()
 	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.2;
 	constructionSoundFlexible.copyBeforeUse = true;
 	
+	//Initialize the funds transfer sound effect
+	fundsTransferSound.sound = Sound::named("simtower/cash");
+	fundsTransferSound.layer = SoundEffect::kTopLayer;
+	fundsTransferSound.maxConcurrentPlaybacks = 1;
+	//fundsTransferSound.loopCount = 2;
+	fundsTransferSound.copyBeforeUse = true;
+	
 	//Initialize the environment
 	time = 5.0;
 	date = 0;
@@ -442,7 +449,12 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	//Insert the new item
 	insertNewItem(descriptor, rect);
 	
-	//Withdraw funds...
+	//Withdraw funds
+	long costs = descriptor->price;
+	costs += numEmptyCells * Item::descriptorForItemType(Item::kFloorType)->price;
+	transferFunds(-costs);
+	
+	//Play the construction sound
 	Engine::shared()->audioTask.playSound(Sound::named("simtower/construction/normal"),
 										  SoundEffect::kTopLayer);
 	
@@ -583,4 +595,10 @@ bool Tower::isWeekday()
 bool Tower::isWeekend()
 {
 	return (getDayOfWeek() == 2);
+}
+
+void Tower::transferFunds(long amount)
+{
+	funds += amount;
+	Engine::shared()->audioTask.addSoundEffect(&fundsTransferSound);
 }
