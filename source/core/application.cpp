@@ -73,7 +73,7 @@ void Application::prepare()
 	OpenGLCanvas::shared()->activateMode();
 	
 	//Initialize AntTweakBar
-	TwInit(TW_OPENGL, NULL);
+	//TwInit(TW_OPENGL, NULL);
 	
 	//Prepare the singletons
 	//OpenGLCanvas::shared()->sendPrepare();
@@ -129,7 +129,7 @@ void Application::quit()
 
 bool Application::handleEvent(CoreEvent * event)
 {
-	if (event->type == kEventSDL && TwEventSDL(&event->base.sdl)) return true;
+	//if (event->type == kEventSDL && TwEventSDL(&event->base.sdl)) return true;
 	if (OpenGLCanvas::shared()->handleEvent(event)) return true;
 	if (Engine::shared() && Engine::shared()->handleEvent(event)) return true;
 	return CoreObject::handleEvent(event);
@@ -137,6 +137,6 @@ bool Application::handleEvent(CoreEvent * event)
 
 void Application::eventVideoModeChanged()
 {
-	int2 resolution = OpenGLCanvas::shared()->currentMode.resolution;
-	TwWindowSize(resolution.x, resolution.y);
+	/*int2 resolution = OpenGLCanvas::shared()->currentMode.resolution;
+	TwWindowSize(resolution.x, resolution.y);*/
 }

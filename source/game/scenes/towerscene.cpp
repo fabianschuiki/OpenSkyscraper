@@ -173,9 +173,9 @@ void TowerScene::renderGUI()
 	toolboxWindow->draw(visibleRect);
 	
 	//Draw AntTweakBar
-	glDisable(GL_TEXTURE_RECTANGLE_EXT);
+	/*glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	TwDraw();
-	glEnable(GL_TEXTURE_RECTANGLE_EXT);
+	glEnable(GL_TEXTURE_RECTANGLE_EXT);*/
 }
 
 
@@ -200,8 +200,8 @@ void TowerScene::onMoveOnScreen()
 	
 	setConstructionTool(Item::kLobbyType);
 	
-	TwBar * myBar = TwNewBar("NameOfMyTweakBar");
-	TwAddButton(myBar, "Hello, World!", NULL, NULL, NULL);
+	/*TwBar * myBar = TwNewBar("NameOfMyTweakBar");
+	TwAddButton(myBar, "Hello, World!", NULL, NULL, NULL);*/
 	
 	tower->onMoveOnScreen();
 }
