@@ -58,9 +58,19 @@ void Tower::initBackground()
 	craneSprite->texture = Texture::named("simtower/decoration/crane");
 	craneSprite->rect.size = double2(36, 36);
 	
+	//Initialize the birds morning sound effect
+	birdsMorningSound.sound = Sound::named("simtower/background/birds/morning");
+	birdsMorningSound.loopCount = 3;
+	birdsMorningSound.copyBeforeUse = true;
+	
+	//Initialize the rain sound effect
+	rainSound.sound = Sound::named("simtower/background/rain");
+	rainSound.loopInfinitely = true;
+	
 	//Set sky state
 	rainAnimationTime = 0.0;
 	bzero(skyState, sizeof(skyState) * 2);
+	isRainyDay = true;
 	setSkyState(kDayState);
 }
 
@@ -168,11 +178,11 @@ void Tower::advance(double dt)
 void Tower::advanceTime(double dt)
 {
 	//Decide at what speed the game time should be running
-	double timeSpeed = /*0.5*/0.25;
-	/*if (time > 1.5 && time < 6.0)
+	double timeSpeed = 0.5;
+	if (time > 1.5 && time < 6.0)
 		timeSpeed = 1;
 	if (time > 12 && time < 13)
-		timeSpeed = 1.0 / 30;*/
+		timeSpeed = 1.0 / 30;
 	
 	//Advance the game time
 	previousTime = time;
@@ -181,9 +191,6 @@ void Tower::advanceTime(double dt)
 		time -= 24;
 		date++;
 	}
-	
-	if (time > 8 && time < 16) time = 16;
-	if (time > 20 || time < 4) time = 4;
 }
 
 void Tower::advanceFacilities(double dt)
@@ -215,8 +222,7 @@ void Tower::advanceBackground(double dt)
 	
 	//Birds
 	if (checkTime(6.0))
-		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/birds/morning"),
-											  SoundEffect::kTopLayer);
+		Engine::shared()->audioTask.addSoundEffect(&birdsMorningSound);
 	if (checkTime(18.0))
 		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/birds/evening"),
 											  SoundEffect::kTopLayer);
@@ -237,8 +243,39 @@ void Tower::advanceBackground(double dt)
 		setSkyState(kDayState, kTwilightState, (time - 17));
 	else if (time >= 18 && time < 19)
 		setSkyState(kTwilightState, kNightState, (time - 18));
-	else {
+	else if (!isRainyDay)
 		setSkyState(kDayState);
+	else if (time >= 7 && time < 8)
+		setSkyState(kDayState, kOvercastState, (time - 7));
+	else if (time >= 16 && time < 17)
+		setSkyState(kOvercastState, kDayState, (time - 16));
+	else {
+		rainAnimationTime += 2 * dt;
+		while (rainAnimationTime >= 1)
+			rainAnimationTime--;
+		setSkyState(kRainState);
+	}
+	
+	//Play the additional sounds for rainy days
+	if (isRainyDay) {
+		//Start and stop the rain sound effect
+		if (checkTime(8))
+			Engine::shared()->audioTask.addSoundEffect(&rainSound);
+		if (checkTime(16))
+			rainSound.stop();
+		
+		//Set the thunder countdown to 0 if it just started raining to introduce the weather ;)
+		if (checkTime(8))
+			nextThunderCountdown = 0.0;
+		
+		//Decrease the thunder countdown and play the sound effect if appropriate
+		nextThunderCountdown -= dt;
+		if (time >= 8 && time < 16 && nextThunderCountdown <= 0) {
+			Engine::shared()->audioTask.playSound(Sound::named("simtower/background/thunder"),
+												  SoundEffect::kTopLayer);
+			nextThunderCountdown = randd(3, 15.0);
+			OSSObjectLog << "next thunder in " << nextThunderCountdown << "s" << std::endl;
+		}
 	}
 }
 
@@ -286,12 +323,17 @@ void Tower::setSkyState(SkyState state)
 
 void Tower::setSkyState(SkyState current, SkyState target, double interpolation)
 {
+	//Recalculate the rainIndex
+	unsigned int newRainIndex = (rainAnimationTime * 2);
+	bool rainIndexChanged = (newRainIndex != rainIndex);
+	rainIndex = newRainIndex;
+	
 	//Store the states and update the sky textures
-	if (skyState[0] != current) {
+	if (skyState[0] != current || (rainIndexChanged && skyState[0] == kRainState)) {
 		skyState[0] = current;
 		updateSkySpriteTextures(0);
 	}
-	if (skyState[1] != target) {
+	if (skyState[1] != target || (rainIndexChanged && skyState[1] == kRainState)) {
 		skyState[1] = target;
 		updateSkySpriteTextures(1);
 	}
@@ -321,7 +363,6 @@ void Tower::updateSkySpriteTextures(unsigned int stateIndex)
 			case kNightState: textureName += "night"; break;
 			case kOvercastState: textureName += "overcast"; break;
 			case kRainState: {
-				unsigned int rainIndex = (rainAnimationTime * 2);
 				sprintf(str, "rain/%i", rainIndex);
 				textureName += str;
 			} break;

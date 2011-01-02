@@ -1,20 +1,19 @@
 #include "rand.h"
 
-using namespace OSS;
-
-
-int randi(int min, int max) {
-	return (rand() % (max - min)) + min;
-}
-
-unsigned int randui(unsigned int min, unsigned int max) {
-	return (rand() % (max - min)) + min;
-}
-
-float randf(float min, float max) {
-	return ((float)rand() / RAND_MAX) * (max - min) + min;
-}
-
-double randd(double min, double max) {
-	return ((double)rand() / RAND_MAX) * (max - min) + min;
+namespace OSS {
+	int randi(int min, int max) {
+		return (rand() % (max - min)) + min;
+	}
+	
+	unsigned int randui(unsigned int min, unsigned int max) {
+		return (rand() % (max - min)) + min;
+	}
+	
+	float randf(float min, float max) {
+		return ((float)rand() / RAND_MAX) * (max - min) + min;
+	}
+	
+	double randd(double min, double max) {
+		return ((double)rand() / RAND_MAX) * (max - min) + min;
+	}
 }

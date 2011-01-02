@@ -51,11 +51,20 @@ namespace OSS {
 		double cachedSecondsPlayed;
 	public:
 		unsigned int loopCount;
+		bool loopInfinitely;
+		
+		/**
+		 * The specific volume and fade value of this sound effect. Both values are multiplied
+		 * to obtain the final volume of the effect.
+		 */
+		double volume;
+		double fade;
 		
 		
 		//Initialization
 		SoundEffect();
 		SoundEffect(Sound * sound, Layer layer);
+		void init();
 		~SoundEffect();
 		std::string instanceName();
 		

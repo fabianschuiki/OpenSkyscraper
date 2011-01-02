@@ -10,22 +10,27 @@ using namespace OSS;
 
 SoundEffect::SoundEffect()
 {
-	sourceID = 0;
-	copyBeforeUse = false;
-	maxConcurrentPlaybacks = 0;
-	minIntervalBetweenPlaybacks = 0;
-	loopCount = 1;
+	init();
 }
 
 SoundEffect::SoundEffect(Sound * sound, Layer layer)
 {
+	init();
+	this->sound = sound;
+	this->layer = layer;
+}
+
+void SoundEffect::init()
+{
+	layer = kTopLayer;
 	sourceID = 0;
 	copyBeforeUse = false;
 	maxConcurrentPlaybacks = 0;
 	minIntervalBetweenPlaybacks = 0;
 	loopCount = 1;
-	this->sound = sound;
-	this->layer = layer;
+	loopInfinitely = false;
+	volume = 1.0;
+	fade = 1.0;
 }
 
 SoundEffect::~SoundEffect()
@@ -62,7 +67,7 @@ void SoundEffect::play()
 		//Decide whether to loop
 		cachedSecondsPlayed = 0;
 		loopsLeft = (loopCount - 1);
-		if (loopsLeft)
+		if (loopsLeft || loopInfinitely)
 			alSourcei(sourceID, AL_LOOPING, AL_TRUE);
 	}
 	
@@ -145,11 +150,13 @@ void SoundEffect::update()
 		double secondsPlayed = getSecondsPlayed();
 		
 		//If the seconds played is lower than the previous one, we looped
-		if (secondsPlayed < cachedSecondsPlayed) {
+		if (secondsPlayed < cachedSecondsPlayed && !loopInfinitely) {
 			if (--loopsLeft == 0)
 				alSourcei(sourceID, AL_LOOPING, AL_FALSE);
-			OSSObjectLog << "looped, " << loopsLeft << " loops left" << std::endl;
 		}
+		
+		//Set the volume
+		alSourcef(sourceID, AL_GAIN, volume * fade);
 		
 		//Cache the seconds played for the next heartbeat
 		cachedSecondsPlayed = secondsPlayed;

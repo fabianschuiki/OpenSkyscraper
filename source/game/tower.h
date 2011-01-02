@@ -75,7 +75,10 @@ namespace OSS {
 			kRainState
 		} SkyState;
 		SkyState skyState[2];
+		bool isRainyDay;
 		double rainAnimationTime;
+		unsigned int rainIndex;
+		double nextThunderCountdown;
 		void setSkyState(SkyState state);
 		void setSkyState(SkyState current, SkyState target, double interpolation);
 		void updateSkySpriteTextures(unsigned int stateIndex);
@@ -138,6 +141,9 @@ namespace OSS {
 		 */
 		SoundEffect constructionSoundFlexible;
 		SoundEffect fundsTransferSound;
+		
+		SoundEffect birdsMorningSound;
+		SoundEffect rainSound;
 		
 		
 		/**
