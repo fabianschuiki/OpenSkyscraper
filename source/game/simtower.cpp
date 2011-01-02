@@ -219,9 +219,12 @@ void SimTower::extractAll()
 void SimTower::extractTextures()
 {
 	std::string dumpPath = "/tmp/SimTower Extraction/";
+	std::string paletteDumpPath = dumpPath;
 	mkdir(dumpPath.c_str(), 0777);
 	dumpPath += "textures/";
 	mkdir(dumpPath.c_str(), 0777);
+	paletteDumpPath += "palettes/";
+	mkdir(paletteDumpPath.c_str(), 0777);
 	
 	//Iterate through the resources
 	for (ResourceVector::iterator i = resources.begin(); i != resources.end(); i++) {
@@ -255,6 +258,33 @@ void SimTower::extractTextures()
 				
 				//Get rid of the buffer
 				free(buffer);
+			} break;
+				
+				//DEBUG: Replacement Palettes
+			case 0x7F03: {
+				FILE * fdump = fopen((paletteDumpPath + resource->getDumpName() + ".act").c_str(), "w");
+				for (int i = 0; i < 256; i++) {
+					//Calculate the location of the replacement color
+					unsigned int replacementIndex = i;
+					
+					//For some reason, the color table has a duplicate entry for the color 184
+					if (replacementIndex >= 184)
+						replacementIndex++;
+					
+					//Since the replacement color palette still has 256 colors and compensating for the
+					//duplicate entry will access the inexistent index 256 of the palette, we have to wrap
+					//around at the end of the palette.
+					replacementIndex = replacementIndex % 256;
+					
+					//Extract the replacement color from the palette. The replacement palettes are organized
+					//as AARRGGBB, where the first byte of each channel corresponds to the value we want, and
+					//the second byte to some other color whose use I haven't found out yet.
+					ILubyte color[4];
+					for (int n = 0; n < 4; n++)
+						color[n] = ((ILubyte *)resource->data)[replacementIndex * 8 + (n * 2)];
+					fwrite(color + 1, 1, 3, fdump);
+				}
+				fclose(fdump);
 			} break;
 		}
 	}
@@ -384,10 +414,10 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 		sky[i] = darkDrops[i] = brightDrops[i] = brightColors[i];
 	Texture::named(textureName + "/day")->assignLoadedImage(ilCloneCurImage());
 	
-	//Create the dark texture
+	//Create the overcast texture
 	for (int i = 0; i < 6; i++)
 		sky[i] = darkDrops[i] = brightDrops[i] = darkColors[i];
-	Texture::named(textureName + "/dark")->assignLoadedImage(ilCloneCurImage());
+	Texture::named(textureName + "/overcast")->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the rain textures
 	for (int i = 0; i < 6; i++) {
