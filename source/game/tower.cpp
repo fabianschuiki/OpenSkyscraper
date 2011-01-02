@@ -37,14 +37,13 @@ void Tower::initBackground()
 	groundSprite->autoTexRectY = true;
 	
 	//Initialize the sky sprites
-	for (int i = 0; i < 10; i++) {	
-		char n[32];
-		sprintf(n, "simtower/background/sky/%i/test", i);
-		skySprites[i] = new Sprite;
-		skySprites[i]->texture = Texture::named(n);
-		skySprites[i]->rect = rectd(-800, i * 360, 1600, 360);
-		skySprites[i]->textureMode = Sprite::kRepeatTextureMode;
-		skySprites[i]->autoTexRectX = true;
+	for (int i = 0; i < 10; i++) {
+		for (int n = 0; n < 2; n++) {
+			skySprites[i][n] = new Sprite;
+			skySprites[i][n]->rect = rectd(-800, i * 360, 1600, 360);
+			skySprites[i][n]->textureMode = Sprite::kRepeatTextureMode;
+			skySprites[i][n]->autoTexRectX = true;
+		}
 	}
 	
 	//Initialize the city sprite
@@ -58,6 +57,11 @@ void Tower::initBackground()
 	craneSprite = new Sprite;
 	craneSprite->texture = Texture::named("simtower/decoration/crane");
 	craneSprite->rect.size = double2(36, 36);
+	
+	//Set sky state
+	rainAnimationTime = 0.0;
+	bzero(skyState, sizeof(skyState) * 2);
+	setSkyState(kDayState);
 }
 
 void Tower::initEnvironment()
@@ -164,11 +168,11 @@ void Tower::advance(double dt)
 void Tower::advanceTime(double dt)
 {
 	//Decide at what speed the game time should be running
-	double timeSpeed = 0.5;
-	if (time > 1.5 && time < 6.0)
+	double timeSpeed = /*0.5*/0.25;
+	/*if (time > 1.5 && time < 6.0)
 		timeSpeed = 1;
 	if (time > 12 && time < 13)
-		timeSpeed = 1.0 / 30;
+		timeSpeed = 1.0 / 30;*/
 	
 	//Advance the game time
 	previousTime = time;
@@ -177,6 +181,9 @@ void Tower::advanceTime(double dt)
 		time -= 24;
 		date++;
 	}
+	
+	if (time > 8 && time < 16) time = 16;
+	if (time > 20 || time < 4) time = 4;
 }
 
 void Tower::advanceFacilities(double dt)
@@ -202,12 +209,12 @@ void Tower::advanceTransport(double dt)
 void Tower::advanceBackground(double dt)
 {
 	//Carking cock in the morning
-	if (checkTime(5.0))
+	if (checkTime(5.5))
 		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/cock"),
 											  SoundEffect::kTopLayer);
 	
 	//Birds
-	if (checkTime(7.0))
+	if (checkTime(6.0))
 		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/birds/morning"),
 											  SoundEffect::kTopLayer);
 	if (checkTime(18.0))
@@ -218,6 +225,21 @@ void Tower::advanceBackground(double dt)
 	if (checkTime(10.0))
 		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/bells"),
 											  SoundEffect::kTopLayer);
+	
+	//Sky State
+	if (time < 5 || time >= 19)
+		setSkyState(kNightState);
+	else if (time >= 5 && time < 6)
+		setSkyState(kNightState, kTwilightState, (time - 5));
+	else if (time >= 6 && time < 7)
+		setSkyState(kTwilightState, kDayState, (time - 6));
+	else if (time >= 17 && time < 18)
+		setSkyState(kDayState, kTwilightState, (time - 17));
+	else if (time >= 18 && time < 19)
+		setSkyState(kTwilightState, kNightState, (time - 18));
+	else {
+		setSkyState(kDayState);
+	}
 }
 
 
@@ -226,7 +248,7 @@ void Tower::advanceBackground(double dt)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Rendering
+#pragma mark Background
 //----------------------------------------------------------------------------------------------------
 
 void Tower::renderBackground(rectd visibleRect)
@@ -244,8 +266,9 @@ void Tower::renderBackground(rectd visibleRect)
 	
 	//Draw the sky sprites
 	for (int i = 0; i < 10; i++)
-		if (skySprites[i])
-			skySprites[i]->draw(visibleRect);
+		for (int n = 0; n < 2; n++)
+			if (skySprites[i][n])
+				skySprites[i][n]->draw(visibleRect);
 	
 	//Draw the city sprite
 	if (citySprite)
@@ -254,6 +277,59 @@ void Tower::renderBackground(rectd visibleRect)
 	//Draw the crane sprite
 	if (craneSprite)
 		craneSprite->draw(visibleRect);
+}
+
+void Tower::setSkyState(SkyState state)
+{
+	setSkyState(state, skyState[1], 0.0);
+}
+
+void Tower::setSkyState(SkyState current, SkyState target, double interpolation)
+{
+	//Store the states and update the sky textures
+	if (skyState[0] != current) {
+		skyState[0] = current;
+		updateSkySpriteTextures(0);
+	}
+	if (skyState[1] != target) {
+		skyState[1] = target;
+		updateSkySpriteTextures(1);
+	}
+	
+	//Update the sky sprite alpha values
+	for (int i = 0; i < 10; i++) {
+		skySprites[i][0]->color.c.a = 1.0;
+		skySprites[i][1]->color.c.a = interpolation;
+	}
+}
+
+void Tower::updateSkySpriteTextures(unsigned int stateIndex)
+{
+	for (int i = 0; i < 10; i++) {
+		//Load the base texture name
+		std::string textureName("simtower/background/sky/");
+		
+		//Add the vertical index
+		char str[16];
+		sprintf(str, "%i/", i);
+		textureName += str;
+		
+		//Add the sky state
+		switch (skyState[stateIndex]) {
+			case kDayState: textureName += "day"; break;
+			case kTwilightState: textureName += "twilight"; break;
+			case kNightState: textureName += "night"; break;
+			case kOvercastState: textureName += "overcast"; break;
+			case kRainState: {
+				unsigned int rainIndex = (rainAnimationTime * 2);
+				sprintf(str, "rain/%i", rainIndex);
+				textureName += str;
+			} break;
+		}
+		
+		//Load the appropriate texture
+		skySprites[i][stateIndex]->texture = Texture::named(textureName);
+	}
 }
 
 

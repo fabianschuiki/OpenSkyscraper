@@ -49,7 +49,7 @@ void Sprite::draw(rectd visibleRect)
 	glColor4dv(color.v);
 	
 	//Bind the texture if there's one
-	if (texture != NULL)
+	if (texture)
 		texture->bind();
 	else
 		Texture::unbind();
@@ -58,7 +58,7 @@ void Sprite::draw(rectd visibleRect)
 	autogenerateTextureRect();
 	
 	//Perform the drawing according to the texture mode
-	if (texture != NULL) {
+	if (texture) {
 		switch (textureMode) {
 			case kRepeatTextureMode: {
 				/*if (autoTexRelativeX) {
@@ -141,6 +141,8 @@ void Sprite::draw(rectd visibleRect)
 
 void Sprite::autogenerateTextureRect()
 {
+	if (!texture) return;
+	
 	//Autocalculate the texture rect where requested
 	if (autoTexRectX) {
 		if (autoTexRelativeX)

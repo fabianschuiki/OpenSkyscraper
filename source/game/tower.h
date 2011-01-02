@@ -58,14 +58,27 @@ namespace OSS {
 		
 		
 		/**
-		 * Rendering
+		 * Background
 		 */
 		Pointer<Sprite> groundSprite;
-		Pointer<Sprite> skySprites[10];
+		Pointer<Sprite> skySprites[10][2];
 		Pointer<Sprite> citySprite;
 		Pointer<Sprite> craneSprite;
-		void prepareBackground();
 		void renderBackground(rectd visibleRect);
+		
+		//Sky State
+		typedef enum {
+			kDayState = 1,
+			kTwilightState,
+			kNightState,
+			kOvercastState,
+			kRainState
+		} SkyState;
+		SkyState skyState[2];
+		double rainAnimationTime;
+		void setSkyState(SkyState state);
+		void setSkyState(SkyState current, SkyState target, double interpolation);
+		void updateSkySpriteTextures(unsigned int stateIndex);
 		
 		
 		/**
