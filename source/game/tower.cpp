@@ -60,7 +60,7 @@ void Tower::initBackground()
 	
 	//Initialize the birds morning sound effect
 	birdsMorningSound.sound = Sound::named("simtower/background/birds/morning");
-	birdsMorningSound.loopCount = 3;
+	birdsMorningSound.loopCount = 2;
 	birdsMorningSound.copyBeforeUse = true;
 	
 	//Initialize the rain sound effect
@@ -70,7 +70,7 @@ void Tower::initBackground()
 	//Set sky state
 	rainAnimationTime = 0.0;
 	bzero(skyState, sizeof(skyState) * 2);
-	isRainyDay = true;
+	isRainyDay = false;
 	setSkyState(kDayState);
 }
 
@@ -215,6 +215,10 @@ void Tower::advanceTransport(double dt)
 
 void Tower::advanceBackground(double dt)
 {
+	//Decide whether this is going to be a rainy day
+	if (checkTime(5.0))
+		isRainyDay = (randui(0, 5) == 0);
+	
 	//Carking cock in the morning
 	if (checkTime(5.5))
 		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/cock"),
