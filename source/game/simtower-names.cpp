@@ -116,13 +116,13 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	// -> lobby
 	{0x1388, "facilities/lobby/ceiling"},
 	// -> stairs
-	{0x9A8, "transport/stairs/lower/0"},
-	{0x9A9, "transport/stairs/lower/1"},
-	{0x968, "transport/stairs/upper/0"},
-	{0x969, "transport/stairs/upper/1"},
+	{0x9A8, "transport/stairs/floor0/0"},
+	{0x9A9, "transport/stairs/floor0/1"},
+	{0x968, "transport/stairs/floor1/0"},
+	{0x969, "transport/stairs/floor1/1"},
 	// -> escalator
-	{0xAE8, "transport/escalator/lower"},
-	{0xAA8, "transport/escalator/upper"},
+	{0xAE8, "transport/escalator/floor0"},
+	{0xAA8, "transport/escalator/floor1"},
 	
 	
 	//Elevator

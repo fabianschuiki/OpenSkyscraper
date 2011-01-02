@@ -10,14 +10,29 @@ namespace OSS {
 	public:
 		static Item::Descriptor descriptor;
 		
-		//Decoration Sprites
-		Pointer<Sprite> entranceSprites[2];
+		//Initialization
+	public:
+		LobbyItem(Tower * tower);
 		
-		//Rendering
-		virtual void draw(rectd visibleRect);
+		void init();
+		void update();
+		
+		//Entrances
+	private:
+		Sprite entrances[2];
+	public:
+		void initEntrances();
+		void updateEntrances();
+		
+		//Basic Sprites
+		void initCeiling();
+		void initBackground();
+		
+		//Drawing
+		void draw(rectd visibleRect);
 		
 		//Notifications
-		virtual void onPrepare();
+		void onChangeLocation();
 	};
 }
 

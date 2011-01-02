@@ -10,20 +10,38 @@
 namespace OSS {
 	class Sprite : public CoreObject {
 	public:
-		//Texture modes
+		//Initialization
+		Sprite();
+		~Sprite();
+		
+		/**
+		 * Basic
+		 */
+		
+		//TODO: Make rect and color private
+		rectd rect;
+		color4d color;
+		bool hidden;
+		
+	public:
+		const rectd & getRect();
+		void setRect(const rectd & rect);
+		
+		const color4d & getColor();
+		void setColor(const color4d & color);
+		
+		bool isHidden();
+		void setHidden(bool hidden);
+		
+		
+		//Texturing
 		enum {
 			kRepeatTextureMode,
 			kRectTextureMode
 		};
-		
-		//Basic
-		rectd rect;
-		color4d color;
-		
-		//Texturing
 		Pointer<Texture> texture;
 		rectd textureRect;
-		unsigned int textureMode;
+		unsigned int textureMode; //TODO: Make of type TextureMode
 		double textureScale;
 		
 		//Autogenerating Texture Rect
@@ -31,10 +49,6 @@ namespace OSS {
 		bool autoTexRectY;
 		bool autoTexRelativeX;	//whether the texture coordinates should be relative to the sprite
 		bool autoTexRelativeY;
-		
-		//Initialization
-		Sprite();
-		~Sprite();
 		
 		//Drawing
 		void draw(rectd visibleRect);

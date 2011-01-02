@@ -20,26 +20,111 @@ Item::Descriptor LobbyItem::descriptor = {
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Rendering
+#pragma mark Initialization
+//----------------------------------------------------------------------------------------------------
+
+LobbyItem::LobbyItem(Tower * tower) : Item(tower, &descriptor)
+{
+}
+
+void LobbyItem::init()
+{
+	Item::init();
+	initEntrances();
+}
+
+void LobbyItem::update()
+{
+	Item::update();
+	updateEntrances();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Entrances
+//----------------------------------------------------------------------------------------------------
+
+void LobbyItem::initEntrances()
+{
+	//Setup the two entrance sprites
+	for (int i = 0; i < 2; i++) {
+		entrances[i].texture = Texture::named("simtower/decoration/entrance");
+		entrances[i].textureRect = rectd(i * 0.5, 0, 0.5, 1);
+	}
+	
+	//Update the entrances
+	updateEntrances();
+}
+
+void LobbyItem::updateEntrances()
+{
+	//Calculate the entrance rects
+	rectd rects[2];
+	for (int i = 0; i < 2; i++) {
+		rects[i].size = double2(56, 36);
+		rects[i].origin.y = getWorldRect().minY();
+	}
+	
+	//Position the entrance rects horizontally
+	rects[0].origin.x = getWorldRect().minX() - rects[0].size.x;
+	rects[1].origin.x = getWorldRect().maxX();
+	
+	//Set the entrance rects and decide whether they should be shown or not
+	bool onGroundFloor = (getRect().origin.y == 0);
+	for (int i = 0; i < 2; i++) {
+		entrances[i].setRect(rects[i]);
+		entrances[i].setHidden(!onGroundFloor);
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Basic Sprites
+//----------------------------------------------------------------------------------------------------
+
+void LobbyItem::initCeiling()
+{
+	Item::initCeiling();
+	
+	//We need the strong ceiling for the lobby
+	ceiling.texture = Texture::named("ceiling-strong.png");
+}
+
+void LobbyItem::initBackground()
+{
+	Item::initBackground();
+		
+	//DEBUG: Load the debug background sprite
+	backgrounds[0].autoTexRectX = true;
+	backgrounds[0].textureMode = Sprite::kRepeatTextureMode;
+	backgrounds[0].texture = Texture::named("lobby2_debug.png");
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
 void LobbyItem::draw(rectd visibleRect)
 {
+	//Draw the item
 	Item::draw(visibleRect);
 	
-	//Reposition the entrances if there are any
-	if (entranceSprites[0]) {
-		entranceSprites[0]->rect.origin.x = worldRect.minX() - entranceSprites[0]->rect.size.x;
-	}
-	if (entranceSprites[1]) {
-		entranceSprites[1]->rect.origin.x = worldRect.maxX();
-	}
-	for (int i = 0; i < 2; i++) {
-		if (entranceSprites[i]) {
-			entranceSprites[i]->rect.origin.y = worldRect.minY();
-			entranceSprites[i]->draw(visibleRect);
-		}
-	}
+	//Draw the entrances
+	for (int i = 0; i < 2; i++)
+		entrances[i].draw(visibleRect);
 }
 
 
@@ -51,25 +136,8 @@ void LobbyItem::draw(rectd visibleRect)
 #pragma mark Notifications
 //----------------------------------------------------------------------------------------------------
 
-void LobbyItem::onPrepare()
+void LobbyItem::onChangeLocation()
 {
-	Item::onPrepare();
-	
-	//Load the debug background sprite
-	backgroundSprite->autoTexRectX = true;
-	backgroundSprite->textureMode = Sprite::kRepeatTextureMode;
-	backgroundSprite->texture = Texture::named("lobby2_debug.png");
-	
-	//If this is the ground lobby we need some entrances
-	if (rect.origin.y == 0) {
-		for (int i = 0; i < 2; i++) {
-			entranceSprites[i] = new Sprite;
-			entranceSprites[i]->texture = Texture::named("simtower/decoration/entrance");
-			entranceSprites[i]->textureRect = rectd(0, 0, 0.5, 1);
-			entranceSprites[i]->rect = rectd(0, 0, 56, 36);
-		}
-		
-		//Set the texture rect
-		entranceSprites[1]->textureRect.origin.x = 0.5;
-	}
+	Item::onChangeLocation();
+	updateEntrances();
 }

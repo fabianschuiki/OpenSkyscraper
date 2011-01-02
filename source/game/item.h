@@ -96,24 +96,80 @@ namespace OSS {
 			unsigned short price;
 			int2 cells;
 			int2 minUnit;
+			rectmaski opacity;
 		} Descriptor;
 		
 		
-		//Tower
-	protected:
-		Pointer<Tower> tower;
+		/**
+		 * Initialization
+		 */
 	public:
-		void setTower(Tower * tower);
+		Item(Tower * tower, Descriptor * descriptor);
+		virtual ~Item();
 		
-		//Attributes
+		//Note that the init() function is separate from the constructor since we want to be able
+		//to initialize the entire class hierarchy of the item at once. Calling virtual methods in
+		//the constructor fails.
+		virtual void init();	//calls the initialization tree
+		virtual void update();	//calls the update tree
+		
+		//Factory
+		static Item * make(Tower * tower, Descriptor * descriptor);
+		static Item * make(Tower * tower, Descriptor * descriptor,
+						   unsigned int itemID);
+		static Item * make(Tower * tower, Descriptor * descriptor,
+						   unsigned int itemID, recti rect);
+		
+		
+		/**
+		 * Basic Attributes
+		 */
+		const Pointer<Tower> tower;
+		const Descriptor * descriptor;
+		
+		
+		/**
+		 * Identification
+		 */
+	private:
 		unsigned int itemID;
-		Descriptor * descriptor;
+	public:
+		unsigned int getItemID() const;
+		void setItemID(unsigned int itemID);
+		
+		
+		/**
+		 * Location
+		 */
+	private:
 		recti rect;
 		rectd worldRect;
+	public:
+		const recti & getRect() const;
+		void setRect(const recti & rect);		
+		const rectd & getWorldRect() const;
+		void setWorldRect(const rectd & worldRect);
 		
-		//Basic Sprites
-		Pointer<Sprite> ceilingSprite;
-		Pointer<Sprite> backgroundSprite;
+		//Convenience
+		inline unsigned int getNumFloors() const;
+		inline int getMaxFloor() const;
+		inline int getMinFloor() const;
+		
+		
+		/**
+		 * Basic Sprites
+		 */
+		Sprite ceiling;
+		std::map<unsigned int, Sprite> backgrounds;
+		
+		void initBasicSprites();
+		void updateBasicSprites();
+		
+		virtual void initCeiling();
+		virtual void initBackground();
+		virtual void updateCeiling();
+		virtual void updateBackground();
+		
 		
 		//Construction Process
 	private:
@@ -127,22 +183,21 @@ namespace OSS {
 		void setUnderConstruction(bool uc);
 		void updateConstructionWorkerSprites();
 		
-		//Initialization
-		static Item * createNew(Descriptor * descriptor, recti rect, unsigned int itemID);
-		Item();
-		~Item();
-		
 		//Descriptors
 		static Descriptor * descriptorForItemType(Type itemType);
 		
 		//Simulation
 		virtual void advance(double dt);
 		
-		//Rendering
+		//Drawing
 		virtual void draw(rectd visibleRect);
 		
-		//Notifications
-		virtual void onPrepare();
+		/**
+		 * Notifications
+		 */
+		
+		//Location
+		virtual void onChangeLocation();
 	};
 }
 

@@ -43,26 +43,26 @@ namespace OSS {
 				y = v.y;
 				return *this;
 			}
-			Vector2D<T> operator- ()	{ return Vector2D<T>(-x, -y); }
+			Vector2D<T> operator- () const	{ return Vector2D<T>(-x, -y); }
 			
 			//Boolean operators
-			bool operator ==(Vector2D<T> v) {
+			bool operator ==(Vector2D<T> v) const {
 				return (x == v.x && y == v.y);
 			}
-			bool operator !=(Vector2D<T> v) {
+			bool operator !=(Vector2D<T> v) const {
 				return (x != v.x || y != v.y);
 			}
 			
 			//Vector-Vector
-			Vector2D<T> operator+ (Vector2D<T> v)	{ return Vector2D<T>(x+v.x, y+v.y); }
-			Vector2D<T> operator- (Vector2D<T> v)	{ return Vector2D<T>(x-v.x, y-v.y); }
-			Vector2D<T> operator* (Vector2D<T> v)	{ return Vector2D<T>(x*v.x, y*v.y); }
-			Vector2D<T> operator/ (Vector2D<T> v)	{ return Vector2D<T>(x/v.x, y/v.y); }
+			Vector2D<T> operator+ (Vector2D<T> v) const	{ return Vector2D<T>(x+v.x, y+v.y); }
+			Vector2D<T> operator- (Vector2D<T> v) const	{ return Vector2D<T>(x-v.x, y-v.y); }
+			Vector2D<T> operator* (Vector2D<T> v) const	{ return Vector2D<T>(x*v.x, y*v.y); }
+			Vector2D<T> operator/ (Vector2D<T> v) const	{ return Vector2D<T>(x/v.x, y/v.y); }
 			//Vector-Scalar
-			Vector2D<T> operator+ (T v)	{ return Vector2D<T>(x+v, y+v); }
-			Vector2D<T> operator- (T v)	{ return Vector2D<T>(x-v, y-v); }
-			Vector2D<T> operator* (T v)	{ return Vector2D<T>(x*v, y*v); }
-			Vector2D<T> operator/ (T v)	{ return Vector2D<T>(x/v, y/v); }
+			Vector2D<T> operator+ (T v) const	{ return Vector2D<T>(x+v, y+v); }
+			Vector2D<T> operator- (T v) const	{ return Vector2D<T>(x-v, y-v); }
+			Vector2D<T> operator* (T v) const	{ return Vector2D<T>(x*v, y*v); }
+			Vector2D<T> operator/ (T v) const	{ return Vector2D<T>(x/v, y/v); }
 			
 			//Vector-Vector
 			Vector2D<T>& operator+= (Vector2D<T> v)	{ x += v.x; y += v.y; return *this; }
@@ -77,7 +77,7 @@ namespace OSS {
 			Vector2D<T>& operator/= (T v)	{ x /= v; y /= v; return *this; }
 			
 			//Operations
-			inline T length()
+			inline T length() const
 			{
 				return sqrt(x*x + y*y);
 			}
@@ -92,7 +92,7 @@ namespace OSS {
 				return length;
 			}
 			
-			inline T dot(Vector2D<T> v)
+			inline T dot(Vector2D<T> v) const
 			{
 				return (x*v.x + y*v.y);
 			}

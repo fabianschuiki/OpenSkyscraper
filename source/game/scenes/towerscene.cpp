@@ -69,8 +69,8 @@ void TowerScene::advance(double dt)
 			Tower::Cell * cell = tower->getCell(int2(x, y));
 			if (!cell) continue;
 			
-			visibleFacilities.insert(cell->facility);
-			visibleTransports.insert(cell->transport);
+			if (cell->facility) visibleFacilities.insert(cell->facility);
+			if (cell->transport) visibleTransports.insert(cell->transport);
 		}
 	}
 }
@@ -152,13 +152,19 @@ void TowerScene::renderFacilities()
 	for (it = visibleFacilities.begin(); it != visibleFacilities.end(); it++) {
 		Item * facility = tower->facilityItems[*it];
 		assert(facility != NULL);
-		facility->worldRect = tower->convertCellToWorldRect(facility->rect);
 		facility->draw(visibleRect);
 	}
 }
 
 void TowerScene::renderTransports()
 {
+	//OSSObjectLog << "rendering " << visibleFacilities.size() << " facilities..." << std::endl;
+	std::set<unsigned int>::iterator it;
+	for (it = visibleTransports.begin(); it != visibleTransports.end(); it++) {
+		Item * transport = tower->transportItems[*it];
+		assert(transport != NULL);
+		transport->draw(visibleRect);
+	}
 }
 
 void TowerScene::renderGUI()
@@ -308,6 +314,8 @@ void TowerScene::updateConstruction()
 	
 	//Update the construction template
 	constructionTemplate.size = constructionItemDescriptor->minUnit;
+	if (!constructionTemplate.size.length())
+		constructionTemplate.size = constructionItemDescriptor->cells;
 	constructionTemplate.origin.x = round(worldMouse.x / tower->cellSize.x - (double)constructionTemplate.size.x / 2);
 	if (!isDraggingConstruction)
 		constructionTemplate.origin.y = round(worldMouse.y / tower->cellSize.y - (double)constructionTemplate.size.y / 2);

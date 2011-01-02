@@ -535,17 +535,13 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	Cell * cellRight = getCell(int2(validRect.maxX(), validRect.minY()));
 	if (cellLeft && cellLeft->facility > 1) {
 		Item * facilityLeft = facilityItems[cellLeft->facility];
-		if (facilityLeft->descriptor->type == descriptor->type) {
-			OSSObjectLog << "adding adjacent facility " << facilityLeft->itemID << " on the left" << std::endl;
+		if (facilityLeft->descriptor->type == descriptor->type)
 			facilitiesHit.insert(facilityLeft);
-		}
 	}
 	if (cellRight && cellRight->facility > 1) {
 		Item * facilityRight = facilityItems[cellRight->facility];
-		if (facilityRight->descriptor->type == descriptor->type) {
-			OSSObjectLog << "adding adjacent facility " << facilityRight->itemID << " on the right" << std::endl;
+		if (facilityRight->descriptor->type == descriptor->type)
 			facilitiesHit.insert(facilityRight);
-		}
 	}
 	
 	//Calculate the item rect which actually is a union of the validRect and all the hit facilities.
@@ -553,8 +549,8 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	recti itemRect = validRect;
 	std::set<Item *>::iterator it;
 	for (it = facilitiesHit.begin(); it != facilitiesHit.end(); it++) {
-		itemRect.unify((*it)->rect);
-		facilityItems.erase((*it)->itemID);
+		itemRect.unify((*it)->getRect());
+		facilityItems.erase((*it)->getItemID());
 	}
 	OSSObjectLog << "the item rect is " << itemRect.description() << std::endl;
 	
@@ -565,8 +561,7 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	}
 	
 	//Create the new item and add it to the tower's facilities
-	Item * item = Item::createNew(descriptor, itemRect, itemID);
-	item->setTower(this);
+	Item * item = Item::make(this, descriptor, itemID, itemRect);
 	item->setUnderConstruction(true);
 	facilityItems[itemID] = item;
 	
@@ -594,38 +589,54 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 		return false;
 	
 	//Perform a cell analysis
-	int numEmptyCells, numOccupiedCells, numOccupiedCellsBelow, numOccupiedCellsAbove;
-	analyzeCellsInRect(rect, &numEmptyCells, NULL, &numOccupiedCells,
-					   &numOccupiedCellsBelow, &numOccupiedCellsAbove);
+	CellAnalysis analysis = analyzeCellsInRect(rect);
 	
-	//If the item is being built above ground the number of occupied cells below must match the
-	//rect's width.
-	if (rect.minY() >= 0 && numOccupiedCellsBelow != rect.size.x) {
-		OSSObjectError << "cells below not valid" << std::endl;
-		return false;
+	//Perform category-specific checks
+	switch (descriptor->category) {
+			//Facility items
+		case Item::kFacilityCategory: {
+			//If the item is being built above ground the number of occupied cells below must match the
+			//rect's width.
+			if (rect.minY() >= 0 && analysis.facilityCellsBelow != rect.size.x) {
+				OSSObjectError << "cells below not valid" << std::endl;
+				return false;
+			}
+			
+			//If the item is being built below ground, vice versa.
+			if (rect.maxY() <= 0 && analysis.facilityCellsAbove != rect.size.x) {
+				OSSObjectError << "cells above not valid" << std::endl;
+				return false;
+			}
+			
+			//There must not be any occupied cells inside the rect
+			if (analysis.facilityCells) {
+				OSSObjectError << "occupied by other facilities" << std::endl;
+				return false;
+			}
+		} break;
+			
+			//Transport items
+		case Item::kTransportCategory: {
+			//The transport item must be entirely covered by facilities
+			if (analysis.facilityCells != rect.area()) {
+				OSSObjectError << "not entirely occupied by facilities" << std::endl;
+				return false;
+			}
+			
+			//There must not be any cells occupied by transports inside the rect
+			if (analysis.transportCells) {
+				OSSObjectError << "occupied by other transports" << std::endl;
+				return false;
+			}
+		} break;
 	}
-	
-	//If the item is being built below ground, vice versa.
-	if (rect.maxY() <= 0 && numOccupiedCellsAbove != rect.size.x) {
-		OSSObjectError << "cells above not valid" << std::endl;
-		return false;
-	}
-	
-	//There must not be any occupied cells inside the rect
-	if (numOccupiedCells) {
-		OSSObjectError << "occupied by other facilities" << std::endl;
-		return false;
-	}
-	
-	//Now the number of floor cells that have to be paid is known
-	OSSObjectLog << "construction of " << numEmptyCells << " floor cells required" << std::endl;
 	
 	//Insert the new item
 	insertNewItem(descriptor, rect);
 	
 	//Withdraw funds
 	long costs = descriptor->price;
-	costs += numEmptyCells * Item::descriptorForItemType(Item::kFloorType)->price;
+	costs += analysis.emptyCells * Item::descriptorForItemType(Item::kFloorType)->price;
 	transferFunds(-costs);
 	
 	//Play the construction sound
@@ -637,22 +648,31 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 
 bool Tower::checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor, recti rect)
 {
-	if (!(descriptor->attributes & Item::kAllowedOnGroundAttribute) &&
-		rect.maxY() >= 1 && rect.minY() <= 0) {
-		OSSObjectError << "not allowed on ground level" << std::endl;
-		return false;
-	}
-	if ((descriptor->attributes & Item::kNotAboveGroundAttribute) && rect.maxY() > 0) {
-		OSSObjectError << "above ground not allowed" << std::endl;
-		return false;
-	}
-	if ((descriptor->attributes & Item::kNotBelowGroundAttribute) && rect.minY() < 0) {
-		OSSObjectError << "below ground not allowed" << std::endl;
-		return false;
-	}
-	if ((descriptor->attributes & Item::kEvery15thFloorAttribute) && (rect.origin.y % 15) != 0) {
-		OSSObjectError << "only every 15th floor allowed" << std::endl;
-		return false;
+	switch (descriptor->category) {
+			//Facility limitations
+		case Item::kFacilityCategory: {
+			if (!(descriptor->attributes & Item::kAllowedOnGroundAttribute) &&
+				rect.maxY() >= 1 && rect.minY() <= 0) {
+				OSSObjectError << "not allowed on ground level" << std::endl;
+				return false;
+			}
+			if ((descriptor->attributes & Item::kNotAboveGroundAttribute) && rect.maxY() > 0) {
+				OSSObjectError << "above ground not allowed" << std::endl;
+				return false;
+			}
+			if ((descriptor->attributes & Item::kNotBelowGroundAttribute) && rect.minY() < 0) {
+				OSSObjectError << "below ground not allowed" << std::endl;
+				return false;
+			}
+			if ((descriptor->attributes & Item::kEvery15thFloorAttribute) && (rect.origin.y % 15) != 0) {
+				OSSObjectError << "only every 15th floor allowed" << std::endl;
+				return false;
+			}
+		} break;
+			
+			//Transport limitations
+		case Item::kTransportCategory: {
+		} break;
 	}
 	return true;
 }
@@ -661,12 +681,10 @@ bool Tower::checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor
  * Counts various cell types inside a rect. Handy if you have to decide whether a given rect is
  * valid for construction.
  */
-void Tower::analyzeCellsInRect(recti rect,
-							   int * numEmptyCells, int * numFloorCells, int * numOccupiedCells,
-							   int * numOccupiedCellsBelow, int * numOccupiedCellsAbove)
+Tower::CellAnalysis Tower::analyzeCellsInRect(recti rect)
 {
-	int emptyCells = 0, floorCells = 0, occupiedCells = 0;
-	int occupiedCellsBelow = 0, occupiedCellsAbove = 0;
+	CellAnalysis analysis;
+	bzero(&analysis, sizeof(analysis));
 	
 	//Iterate through the item rect horizontally
 	for (int x = rect.minX(); x < rect.maxX(); x++) {
@@ -674,31 +692,31 @@ void Tower::analyzeCellsInRect(recti rect,
 		//Count occupied cells below
 		Cell * cellBelow = getCell(int2(x, rect.minY() - 1), false);
 		if (cellBelow && cellBelow->facility)
-			occupiedCellsBelow++;
+			analysis.facilityCellsBelow++;
 		
 		//Count occupied cells above
 		Cell * cellAbove = getCell(int2(x, rect.maxY()), false);
 		if (cellAbove && cellAbove->facility)
-			occupiedCellsAbove++;
+			analysis.facilityCellsAbove++;
 		
 		//Count cells inside
 		for (int y = rect.minY(); y < rect.maxY(); y++) {
 			Cell * cell = getCell(int2(x, y), false);
+			
 			if (!cell || !cell->facility)
-				emptyCells++;
+				analysis.emptyCells++;
 			else if (facilityItems[cell->facility]->descriptor->type == Item::kFloorType)
-				floorCells++;
+				analysis.floorCells++;
 			else
-				occupiedCells++;
+				analysis.facilityCells++;
+			
+			if (cell && cell->transport)
+				analysis.transportCells++;
 		}
 	}
 	
 	//Return the result
-	if (numEmptyCells) *numEmptyCells = emptyCells;
-	if (numFloorCells) *numFloorCells = floorCells;
-	if (numOccupiedCells) *numOccupiedCells = occupiedCells;
-	if (numOccupiedCellsBelow) *numOccupiedCellsBelow = occupiedCellsBelow;
-	if (numOccupiedCellsAbove) *numOccupiedCellsAbove = occupiedCellsAbove;
+	return analysis;
 }
 
 /**
@@ -711,19 +729,31 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	//Fetch a new item ID
 	unsigned int itemID = nextItemID();
 	
+	//DEBUG: Log the opacity
+	OSSObjectLog << descriptor->opacity.description() << std::endl;
+	
 	//Make the cells the item covers point at it
 	for (int x = rect.minX(); x < rect.maxX(); x++) {
 		for (int y = rect.minY(); y < rect.maxY(); y++) {
 			Cell * cell = getCell(int2(x, y), true);
-			cell->facility = itemID;
+			switch (descriptor->category) {
+				case Item::kFacilityCategory:	cell->facility	= itemID; break;
+				case Item::kTransportCategory:	cell->transport	= itemID; break;
+			}
 		}
 	}
 	
 	//Create the new item and add it to the tower's facilities
-	Item * item = Item::createNew(descriptor, rect, itemID);
-	item->setTower(this);
-	item->setUnderConstruction(true);
-	facilityItems[itemID] = item;
+	Item * item = Item::make(this, descriptor, itemID, rect);
+	switch (descriptor->category) {
+		case Item::kFacilityCategory: {
+			facilityItems[itemID] = item;
+			item->setUnderConstruction(true);
+		} break;
+		case Item::kTransportCategory: {
+			transportItems[itemID] = item;
+		} break;
+	}
 	
 	//If the item expands the tower's bounds vertically, reposition the crane
 	if (rect.minY() >= bounds.maxY()) {

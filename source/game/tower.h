@@ -130,9 +130,17 @@ namespace OSS {
 		bool constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect);
 		bool constructItem(Item::Descriptor * descriptor, recti rect);
 		bool checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor, recti rect);
-		void analyzeCellsInRect(recti rect,
-								int * numEmptyCells, int * numFloorCells, int * numOccupiedCells,
-								int * numOccupiedCellsBelow, int * numOccupiedCellsAbove);
+		
+		typedef struct {
+			unsigned int emptyCells;
+			unsigned int floorCells;
+			unsigned int facilityCells;
+			unsigned int transportCells;
+			unsigned int facilityCellsBelow;
+			unsigned int facilityCellsAbove;
+		} CellAnalysis;
+		CellAnalysis analyzeCellsInRect(recti rect);
+		
 		void insertNewItem(Item::Descriptor * descriptor, recti rect);
 		
 		

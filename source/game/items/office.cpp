@@ -11,41 +11,114 @@ Item::Descriptor OfficeItem::descriptor = {
 	1,
 	(Item::kNotBelowGroundAttribute),
 	40000,
-	int2(9, 1),
 	int2(9, 1)
 };
 
 
-OfficeItem::OfficeItem() : Item()
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Initialization
+//----------------------------------------------------------------------------------------------------
+
+OfficeItem::OfficeItem(Tower * tower) : Item(tower, &descriptor)
 {
 	type = randui(0, 6);
-	vacant = false;
-	updateBackground();
+	vacant = true;
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Type
+//----------------------------------------------------------------------------------------------------
+
+unsigned int OfficeItem::getType()
+{
+	return type;
+}
+
+void OfficeItem::setType(const unsigned int type)
+{
+	if (this->type != type) {
+		this->type = type;
+		if (!isVacant())
+			updateBackground();
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Vacancy
+//----------------------------------------------------------------------------------------------------
+
+bool OfficeItem::isVacant()
+{
+	return vacant;
+}
+
+void OfficeItem::setVacant(const bool vacant)
+{
+	if (this->vacant != vacant) {
+		this->vacant = vacant;
+		updateBackground();
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Basic Sprites
+//----------------------------------------------------------------------------------------------------
 
 void OfficeItem::updateBackground()
 {
+	Item::updateBackground();
+	
 	//Load the appropriate office texture
 	if (vacant) {
-		backgroundSprite->texture = Texture::named("simtower/facilities/office/vacant");
-		backgroundSprite->textureRect.size.x = 0.5;
-		backgroundSprite->textureRect.origin.x = 0;
+		backgrounds[0].texture = Texture::named("simtower/facilities/office/vacant");
+		backgrounds[0].textureRect.size.x = 0.5;
+		backgrounds[0].textureRect.origin.x = 0;
 	} else {
 		char str[256];
 		sprintf(str, "simtower/facilities/office/inhabited/%i", type / 2);
-		backgroundSprite->texture = Texture::named(str);
-		backgroundSprite->textureRect.size.x = 0.25;
-		backgroundSprite->textureRect.origin.x = (type % 2) * 0.5;
+		backgrounds[0].texture = Texture::named(str);
+		backgrounds[0].textureRect.size.x = 0.25;
+		backgrounds[0].textureRect.origin.x = (type % 2) * 0.5;
 	}
 	
 	//Choose between day and night texture
 	if (tower && (tower->time < 7 || tower->time >= 17))
-		backgroundSprite->textureRect.origin.x += backgroundSprite->textureRect.size.x;
+		backgrounds[0].textureRect.origin.x += backgrounds[0].textureRect.size.x;
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
 
 void OfficeItem::advance(double dt)
 {
 	Item::advance(dt);
-	if (tower && (tower->checkTime(7) || tower->checkTime(17)))
+	
+	//Update the background when the light state changes
+	if (tower->checkTime(7) || tower->checkTime(17))
 		updateBackground();
 }

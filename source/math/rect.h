@@ -37,52 +37,55 @@ namespace OSS {
 			inline operator Rect<double>() const { return Rect<double>(origin, size); }
 			
 			//Operators
-			inline Rect<T>& operator =(const Rect<T> r) {
+			inline Rect<T>& operator =(const Rect<T> &r) {
 				origin = r.origin;
 				size = r.size;
 				return *this;
 			}
-			inline Rect<T> operator -() { return Rect<T>(-origin, -size); }
+			inline Rect<T> operator -() const { return Rect<T>(-origin, -size); }
 			
 			//Boolean operators
-			inline bool operator ==(Rect<T> &r) {
+			inline bool operator ==(const Rect<T> &r) const {
 				return (origin == r.origin && size == r.size);
 			}
-			inline bool operator !=(Rect<T> &r) {
+			inline bool operator !=(const Rect<T> &r) const {
 				return (origin != r.origin || size != r.size);
 			}
 			
 			//Convenience coordinate accessors
-			inline T minX() { return origin.x; }
-			inline T minY() { return origin.y; }
-			inline T midX() { return origin.x + size.x / 2; }
-			inline T midY() { return origin.y + size.y / 2; }
-			inline T maxX() { return origin.x + size.x; }
-			inline T maxY() { return origin.y + size.y; }
+			inline T minX() const { return origin.x; }
+			inline T minY() const { return origin.y; }
+			inline T midX() const { return origin.x + size.x / 2; }
+			inline T midY() const { return origin.y + size.y / 2; }
+			inline T maxX() const { return origin.x + size.x; }
+			inline T maxY() const { return origin.y + size.y; }
 			
 			//Convenience point accessors
-			inline Vector2D<T> minXminY() { return Vector2D<T>(minX(), minY()); }
-			inline Vector2D<T> minXmidY() { return Vector2D<T>(minX(), midY()); }
-			inline Vector2D<T> minXmaxY() { return Vector2D<T>(minX(), maxY()); }
-			inline Vector2D<T> midXminY() { return Vector2D<T>(midX(), minY()); }
-			inline Vector2D<T> center()	  { return Vector2D<T>(midX(), midY()); }
-			inline Vector2D<T> midXmaxY() { return Vector2D<T>(midX(), maxY()); }
-			inline Vector2D<T> maxXminY() { return Vector2D<T>(maxX(), minY()); }
-			inline Vector2D<T> maxXmidY() { return Vector2D<T>(maxX(), midY()); }
-			inline Vector2D<T> maxXmaxY() { return Vector2D<T>(maxX(), maxY()); }
+			inline Vector2D<T> minXminY() const { return Vector2D<T>(minX(), minY()); }
+			inline Vector2D<T> minXmidY() const { return Vector2D<T>(minX(), midY()); }
+			inline Vector2D<T> minXmaxY() const { return Vector2D<T>(minX(), maxY()); }
+			inline Vector2D<T> midXminY() const { return Vector2D<T>(midX(), minY()); }
+			inline Vector2D<T> center()	  const { return Vector2D<T>(midX(), midY()); }
+			inline Vector2D<T> midXmaxY() const { return Vector2D<T>(midX(), maxY()); }
+			inline Vector2D<T> maxXminY() const { return Vector2D<T>(maxX(), minY()); }
+			inline Vector2D<T> maxXmidY() const { return Vector2D<T>(maxX(), midY()); }
+			inline Vector2D<T> maxXmaxY() const { return Vector2D<T>(maxX(), maxY()); }
+			
+			//Area
+			inline T area() const { return (size.x * size.y); }
 			
 			//Boolean operations
-			bool containsPoint(Vector2D<T> &p) {
+			bool containsPoint(const Vector2D<T> &p) const {
 				return (p.x >= minX() && p.y >= minY() && p.x < maxX() && p.y < maxY());
 			}
-			bool intersectsRect(Rect<T> &r) {
+			bool intersectsRect(const Rect<T> &r) const {
 				if (maxX() <= r.minX() || minX() >= r.maxX()) return false;
 				if (maxY() <= r.minY() || minY() >= r.maxY()) return false;
 				return true;
 			}
 			
 			//Rect modification
-			Rect<T> unionRect(Rect<T> &r) {
+			Rect<T> unionRect(const Rect<T> &r) {
 				Rect<T> res(std::min<T>(minX(), r.minX()),
 							std::min<T>(minY(), r.minY()),
 							std::max<T>(maxX(), r.maxX()),
@@ -91,9 +94,9 @@ namespace OSS {
 				res.size.y -= res.origin.y;
 				return res;
 			}
-			void unify(Rect<T> &r) { *this = unionRect(r); }
+			void unify(const Rect<T> &r) { *this = unionRect(r); }
 			
-			Rect<T> intersectionRect(Rect<T> &r) {
+			Rect<T> intersectionRect(const Rect<T> &r) {
 				Rect<T> res(std::max<T>(minX(), r.minX()),
 							std::max<T>(minY(), r.minY()),
 							std::min<T>(maxX(), r.maxX()),
@@ -102,9 +105,9 @@ namespace OSS {
 				res.size.y -= res.origin.y;
 				return res;
 			}
-			void intersect(Rect<T> &r) { *this = intersectionRect(r); }
+			void intersect(const Rect<T> &r) { *this = intersectionRect(r); }
 			
-			void inset(T x, T y) {
+			void inset(const T x, const T y) {
 				origin.x += x;
 				origin.y += y;
 				size.x -= 2*x;

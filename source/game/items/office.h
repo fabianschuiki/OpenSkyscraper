@@ -10,12 +10,28 @@ namespace OSS {
 	public:
 		static Item::Descriptor descriptor;
 		
+		//Initialization
+	public:
+		OfficeItem(Tower * tower);
+		
+		//Type
+	private:
 		unsigned int type;
+	public:
+		unsigned int getType();
+		void setType(const unsigned int type);
+		
+		//Vacancy
+	private:
 		bool vacant;
+	public:
+		bool isVacant();
+		void setVacant(const bool vacant);
 		
-		OfficeItem();
-		
+		//Basic Sprites
 		void updateBackground();
+		
+		//Simulation
 		void advance(double dt);
 	};
 }

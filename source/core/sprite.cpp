@@ -20,6 +20,8 @@ using namespace OSS;
 Sprite::Sprite() : CoreObject()
 {
 	color = (color4d){1, 1, 1, 1};
+	hidden = false;
+	
 	texture = NULL;
 	textureMode = Sprite::kRectTextureMode;
 	textureRect = rectd(0, 0, 1, 1);
@@ -35,6 +37,42 @@ Sprite::~Sprite()
 }
 
 
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Basic
+//----------------------------------------------------------------------------------------------------
+
+const rectd & Sprite::getRect()
+{
+	return rect;
+}
+
+void Sprite::setRect(const rectd & rect)
+{
+	this->rect = rect;
+}
+
+const color4d & Sprite::getColor()
+{
+	return color;
+}
+
+void Sprite::setColor(const color4d & color)
+{
+	this->color = color;
+}
+
+bool Sprite::isHidden()
+{
+	return hidden;
+}
+
+void Sprite::setHidden(bool hidden)
+{
+	this->hidden = hidden;
+}
+
+
 
 
 
@@ -45,6 +83,8 @@ Sprite::~Sprite()
 
 void Sprite::draw(rectd visibleRect)
 {
+	if (isHidden()) return;
+	
 	//Set the color
 	glColor4dv(color.v);
 	
