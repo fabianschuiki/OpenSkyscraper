@@ -399,9 +399,33 @@ SimTower::ResourceName SimTower::soundResourceNames[] = {
 	
 	
 	/**
+	 * Background
+	 */
+	
+	{0x1388, "background/birds/morning"},
+	{0x1389, "background/cock"},
+	{0x138A, "background/birds/evening"},	//it is probably a nightingale, but my ornithological knowledge is quite sparse.
+	{0x138B, "background/rain"},
+	{0x138C, "background/bells"},
+	{0x138D, "background/thunder"},
+	{0x271B, "background/crickets"},
+	{0x271C, "background/birds/day"},
+	
+	
+	/**
+	 * Environment
+	 */
+	
+	{0x2710, "environment/ratingincrease"},
+	{0x2711, "environment/applause"},
+	{0x2712, "environment/santa"},
+	{0x2718, "environment/towerrating"},
+	{0x271D, "cash"},
+	
+	
+	/**
 	 * Uncategorized
 	 */
-	{0x271D, "cash"},
 	
 	{0, ""}
 };

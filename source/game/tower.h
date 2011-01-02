@@ -10,8 +10,17 @@
 namespace OSS {
 	class Tower : public CoreObject {
 	public:
-		//Initialization
+		/**
+		 * Initialization
+		 */
+		
+		//Constructor
 		Tower();
+		
+		//Subinitializations
+		void initBackground();
+		void initEnvironment();
+		void initConstruction();
 		
 		
 		/**
@@ -42,6 +51,10 @@ namespace OSS {
 		 * Simulation
 		 */
 		void advance(double dt);
+		void advanceTime(double dt);
+		void advanceFacilities(double dt);
+		void advanceTransport(double dt);
+		void advanceBackground(double dt);
 		
 		
 		/**
@@ -140,9 +153,26 @@ namespace OSS {
 		
 		
 		/**
+		 * Timer
+		 *
+		 * The timer is used to check whether a specific time of the day just happened. This method
+		 * requires the previous time and the time which you are interested in, and will return true
+		 * if the alarm time lies in between the previous and the current time.
+		 *
+		 * For convenience, the tower also keeps track of the previous time so you may use the
+		 * timer without the previous time argument. This requires that you check the timer at the
+		 * same frequency as the tower advances, otherwise some events may be lost.
+		 */
+	private:
+		double previousTime;
+	public:
+		bool checkTime(double previousTime, double alarmTime);
+		bool checkTime(double alarmTime);
+		
+		
+		/**
 		 * Uncategorized
 		 */
-		ALuint buildSoundSource;
 	};
 }
 

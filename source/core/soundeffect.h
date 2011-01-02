@@ -9,15 +9,21 @@
 namespace OSS {
 	class SoundEffect : public CoreObject {
 	public:
+		/**
+		 * Sound Layers
+		 */
 		typedef enum {
 			kBackgroundLayer,
+			kFacilityLayer,
 			kTransportLayer,
 			kTopLayer
 		} Layer;
 		
+		//Internals
 		Pointer<Sound> sound;
 		Layer layer;
 		ALuint sourceID;
+		
 		
 		/**
 		 * Tells the AudioTask to duplicate the SoundEffect before playback. Set this to true if
@@ -45,6 +51,7 @@ namespace OSS {
 		double cachedSecondsPlayed;
 	public:
 		unsigned int loopCount;
+		
 		
 		//Initialization
 		SoundEffect();
