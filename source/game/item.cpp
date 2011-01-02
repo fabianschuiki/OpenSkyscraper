@@ -59,6 +59,14 @@ Item::Item()
 	constructionProgress = 0;
 	underConstruction = false;
 	drawFlexibleConstruction = false;
+	
+	//Initialize the background sprite
+	backgroundSprite = new Sprite;
+	
+	//Initialize the ceiling sprite
+	ceilingSprite = new Sprite;
+	ceilingSprite->autoTexRectX = true;
+	ceilingSprite->textureMode = Sprite::kRepeatTextureMode;
 }
 
 Item::~Item()
@@ -162,15 +170,9 @@ void Item::draw(rectd visibleRect)
 //----------------------------------------------------------------------------------------------------
 
 void Item::onPrepare()
-{	
-	//Initialize the background sprite
-	backgroundSprite = new Sprite;
-	
-	//Initialize the ceiling sprite
-	ceilingSprite = new Sprite;
-	ceilingSprite->autoTexRectX = true;
-	ceilingSprite->textureMode = Sprite::kRepeatTextureMode;
-	ceilingSprite->texture = Texture::named(descriptor->type == Item::kLobbyType ? "ceiling-strong.png" : "ceiling.png");
+{
+	ceilingSprite->texture = Texture::named(descriptor->type == Item::kLobbyType ?
+											"ceiling-strong.png" : "ceiling.png");
 }
 
 

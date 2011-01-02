@@ -21,8 +21,8 @@ Texture::Texture(std::string name) : StoreItem(name)
 {
 	textureID = 0;
 	tempImage = 0;
-	useTransparencyColor = false;
-	transparencyColor = (color3d){1, 1, 1};
+	useTransparentColor = false;
+	transparentColor = (color3d){1, 1, 1};
 }
 
 Texture::~Texture()
@@ -111,13 +111,20 @@ void Texture::load()
 			OSSObjectError << "unable to convert image " << tempImage << " to IL_RGBA and IL_UNSIGNED_BYTE" << std::endl;
 		else {
 			//Post-process the image (apply transparency based on a color)
-			if (useTransparencyColor) {
+			if (useTransparentColor) {
 				ILubyte * imageData = ilGetData();
 				for (unsigned int i = 0; i < ilGetInteger(IL_IMAGE_SIZE_OF_DATA); i += ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL)) {
-					if (imageData[i + 0] == transparencyColor.c.r * 255 &&
-						imageData[i + 1] == transparencyColor.c.g * 255 &&
-						imageData[i + 2] == transparencyColor.c.b * 255) {
+					if (imageData[i + 0] == transparentColor.c.r * 255 &&
+						imageData[i + 1] == transparentColor.c.g * 255 &&
+						imageData[i + 2] == transparentColor.c.b * 255) {
 						imageData[i + 3] = 0.0;
+					}
+					for (std::vector<color3d>::iterator c = transparentColors.begin(); c != transparentColors.end(); c++) {
+						if (imageData[i + 0] == (*c).c.r * 255 &&
+							imageData[i + 1] == (*c).c.g * 255 &&
+							imageData[i + 2] == (*c).c.b * 255) {
+							imageData[i + 3] = 0.0;
+						}
 					}
 				}
 			}

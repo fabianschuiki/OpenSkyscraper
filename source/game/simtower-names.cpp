@@ -144,9 +144,9 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	
 	
 	//Office
-	{0x5A8, "facilities/office/inhabited0"},	//office types 0 and 1
-	{0x5A9, "facilities/office/inhabited1"},	//office types 2 and 3
-	{0x5AA, "facilities/office/inhabited2"},	//office types 4 and 5
+	{0x5A8, "facilities/office/inhabited/0"},	//office types 0 and 1
+	{0x5A9, "facilities/office/inhabited/1"},	//office types 2 and 3
+	{0x5AA, "facilities/office/inhabited/2"},	//office types 4 and 5
 	{0x5AB, "facilities/office/vacant"},		//vacant office
 	{0x5E8, "facilities/office/workers"},		//office workers overlay
 	

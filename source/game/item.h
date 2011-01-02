@@ -100,8 +100,8 @@ namespace OSS {
 		
 		
 		//Tower
-	private:
-		Tower * tower;
+	protected:
+		Pointer<Tower> tower;
 	public:
 		void setTower(Tower * tower);
 		

@@ -252,6 +252,9 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 		case '4':	tower->rating = 4; return true; break;
 		case '5':	tower->rating = 5; return true; break;
 		case '6':	tower->rating = 6; return true; break;
+			
+			//DEBUG: Change time
+		case ' ':	tower->time++; return true; break;
 	}
 	return false;
 }

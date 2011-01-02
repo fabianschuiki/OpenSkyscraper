@@ -37,8 +37,9 @@ namespace OSS {
 		static void unbind();
 		
 		//Post-processing
-		color3d transparencyColor;
-		bool useTransparencyColor;
+		color3d transparentColor;
+		std::vector<color3d> transparentColors;
+		bool useTransparentColor;
 	};
 	
 	typedef Store<Texture> TextureStore;

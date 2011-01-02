@@ -357,11 +357,21 @@ void SimTower::postprocessTexture(std::string resourceName,
 	//Standard textures
 	Texture * texture = Texture::named(textureName);
 	texture->assignLoadedData(IL_BMP, buffer, bufferLength);
-	texture->useTransparencyColor = true;
+	texture->useTransparentColor = true;
+	
+	//Some default colors for later use
+	const color3d skyThroughWindow[2] = {
+		(color3d){140 / 255.0, 214 / 255.0, 1.0},
+		(color3d){66 / 255.0, 198 / 255.0, 1.0}
+	};
 	
 	//Setup the correct transparency color
 	if (resourceName == "background/city")
-		texture->transparencyColor = (color3d){138 / 255.0, 212 / 255.0, 255 / 255.0};
+		texture->transparentColor = (color3d){138 / 255.0, 212 / 255.0, 1.0};
+	if (resourceName.find("facilities") == 0) {
+		texture->transparentColors.push_back(skyThroughWindow[0]);
+		texture->transparentColors.push_back(skyThroughWindow[1]);
+	}
 }
 
 void SimTower::applyReplacementPalette(unsigned short id)

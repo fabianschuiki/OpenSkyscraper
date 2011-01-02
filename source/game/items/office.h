@@ -10,7 +10,13 @@ namespace OSS {
 	public:
 		static Item::Descriptor descriptor;
 		
-		void onPrepare();
+		unsigned int type;
+		bool vacant;
+		
+		OfficeItem();
+		
+		void updateBackground();
+		void advance(double dt);
 	};
 }
 
