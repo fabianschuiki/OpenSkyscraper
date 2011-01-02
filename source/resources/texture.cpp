@@ -48,6 +48,8 @@ std::string Texture::instanceName()
 
 void Texture::assignLoadedData(ILenum type, const void * data, ILuint length)
 {
+	if (tempImage) ilDeleteImage(tempImage);
+	
 	//Generate the temporary image
 	tempImage = ilGenImage();
 	ilBindImage(tempImage);
@@ -55,6 +57,12 @@ void Texture::assignLoadedData(ILenum type, const void * data, ILuint length)
 	//Load the image from the data
 	ilLoadL(type, data, length);
 	ilBindImage(0);
+}
+
+void Texture::assignLoadedImage(ILuint image)
+{
+	if (tempImage) ilDeleteImage(tempImage);
+	tempImage = image;
 }
 
 

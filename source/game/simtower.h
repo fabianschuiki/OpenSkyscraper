@@ -48,6 +48,11 @@ namespace OSS {
 		void extractAll();
 		void extractTextures();
 		void extractSounds();
+		
+		//Creates one or more textures from the given information
+		void postprocessTexture(std::string textureName, const void * buffer, unsigned int bufferLength);
+		
+		void spawnSkyTextures(std::string textureName, ILuint image);
 	};
 }
 

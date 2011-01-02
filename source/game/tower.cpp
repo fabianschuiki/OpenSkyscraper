@@ -39,7 +39,7 @@ void Tower::initBackground()
 	//Initialize the sky sprites
 	for (int i = 0; i < 10; i++) {	
 		char n[32];
-		sprintf(n, "simtower/background/sky/%i", i);
+		sprintf(n, "simtower/background/sky/%i/test", i);
 		skySprites[i] = new Sprite;
 		skySprites[i]->texture = Texture::named(n);
 		skySprites[i]->rect = rectd(-800, i * 360, 1600, 360);

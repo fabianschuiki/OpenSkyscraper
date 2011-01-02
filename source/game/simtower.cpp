@@ -9,6 +9,21 @@
 using namespace OSS;
 
 
+/**
+ * Color structure used for palette modification.
+ */
+
+typedef union {
+	struct {
+		ILubyte r;
+		ILubyte g;
+		ILubyte b;
+		ILubyte _x;
+	} c;
+	ILubyte v[4];
+} colorPalette;
+
+
 
 
 
@@ -218,14 +233,8 @@ void SimTower::extractTextures()
 				fwrite(buffer, 1, bufferLength, fdump);
 				fclose(fdump);
 				
-				//Assemble the texture name
-				std::string textureName = "simtower/";
-				textureName += resource->getName();
-				
-				//Create a texture from it
-				Texture * texture = Texture::named(textureName);
-				texture->assignLoadedData(IL_BMP, buffer, bufferLength);
-				texture->useTransparencyColor = true;
+				//Postprocess the bitmap
+				postprocessTexture(resource->getName(), buffer, bufferLength);
 				
 				//Get rid of the buffer
 				free(buffer);
@@ -264,4 +273,83 @@ void SimTower::extractSounds()
 			} break;
 		}
 	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Postprocessing
+//----------------------------------------------------------------------------------------------------
+
+void SimTower::postprocessTexture(std::string resourceName,
+								  const void * buffer, unsigned int bufferLength)
+{
+	//Assemble the texture name
+	std::string textureName("simtower/");
+	textureName += resourceName;
+	
+	//Sky textures
+	if (resourceName.find("background/sky") == 0) {
+		//Load the image
+		ILuint sky = ilGenImage();
+		ilBindImage(sky);
+		ilLoadL(IL_BMP, buffer, bufferLength);
+		
+		//Do the actual postprocessing
+		spawnSkyTextures(textureName, sky);
+		
+		//Get rid of the image
+		ilBindImage(0);
+		ilDeleteImage(sky);
+		return;
+	}
+	
+	//Standard textures
+	Texture * texture = Texture::named(textureName);
+	texture->assignLoadedData(IL_BMP, buffer, bufferLength);
+	texture->useTransparencyColor = true;
+	
+	//Setup the correct transparency color
+	if (resourceName == "background/city")
+		texture->transparencyColor = (color3d){138 / 255.0, 212 / 255.0, 255 / 255.0};
+}
+
+void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
+{
+	//Fetch the palette
+	colorPalette * palette = (colorPalette *)ilGetPalette();
+	
+	//Extract the color locations
+	colorPalette * sky = &palette[188];
+	colorPalette * darkDrops = &palette[207];
+	colorPalette * brightDrops = &palette[213];
+	
+	//Extract the colors
+	colorPalette darkColors[6]; memcpy(darkColors, darkDrops, sizeof(colorPalette) * 6);
+	colorPalette brightColors[6]; memcpy(brightColors, brightDrops, sizeof(colorPalette) * 6);
+	
+	//Create the day texture
+	for (int i = 0; i < 6; i++)
+		sky[i] = darkDrops[i] = brightDrops[i] = brightColors[i];
+	Texture::named(textureName + "/day")->assignLoadedImage(ilCloneCurImage());
+	
+	//Create the dark texture
+	for (int i = 0; i < 6; i++)
+		sky[i] = darkDrops[i] = brightDrops[i] = darkColors[i];
+	Texture::named(textureName + "/dark")->assignLoadedImage(ilCloneCurImage());
+	
+	//Create the rain textures
+	for (int i = 0; i < 6; i++) {
+		sky[i] = brightDrops[i] = darkColors[i];
+		darkDrops[i] = brightColors[i];
+	}
+	Texture::named(textureName + "/rain/0")->assignLoadedImage(ilCloneCurImage());
+	for (int i = 0; i < 6; i++) {
+		sky[i] = darkDrops[i] = darkColors[i];
+		brightDrops[i] = brightColors[i];
+	}
+	Texture::named(textureName + "/rain/1")->assignLoadedImage(ilCloneCurImage());
 }

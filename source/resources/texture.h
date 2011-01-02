@@ -14,6 +14,7 @@ namespace OSS {
 		~Texture();
 		virtual std::string instanceName();
 		void assignLoadedData(ILenum type, const void * data, ILuint length);
+		void assignLoadedImage(ILuint image);
 		
 		//Store
 		OSSStoreItemStoreAccess(Texture)
