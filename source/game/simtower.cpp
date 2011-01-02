@@ -15,13 +15,30 @@ using namespace OSS;
 
 typedef union {
 	struct {
-		ILubyte r;
-		ILubyte g;
 		ILubyte b;
+		ILubyte g;
+		ILubyte r;
 		ILubyte _x;
 	} c;
 	ILubyte v[4];
 } colorPalette;
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Resources
+//----------------------------------------------------------------------------------------------------
+
+SimTower::Resource * SimTower::getResource(unsigned short type, unsigned short id)
+{
+	for (ResourceVector::iterator it = resources.begin(); it != resources.end(); it++)
+		if ((*it)->type == type && (*it)->id == id)
+			return (*it);
+	return NULL;
+}
 
 
 
@@ -317,6 +334,36 @@ void SimTower::postprocessTexture(std::string resourceName,
 		texture->transparencyColor = (color3d){138 / 255.0, 212 / 255.0, 255 / 255.0};
 }
 
+void SimTower::applyReplacementPalette(unsigned short id)
+{
+	//Fetch the resource containing the replacement palette
+	Resource * replacementPalette = getResource(0x7F03, id);
+	
+	//Fetch a pointer to the current image's palette
+	colorPalette * palette = (colorPalette *)ilGetPalette();
+	for (int i = 0; i < 256; i++) {
+		//Calculate the location of the replacement color
+		unsigned int replacementIndex = i;
+		
+		//For some reason, the color table has a duplicate entry for the color 184
+		if (replacementIndex >= 184)
+			replacementIndex++;
+		
+		//Since the replacement color palette still has 256 colors and compensating for the
+		//duplicate entry will access the inexistent index 256 of the palette, we have to wrap
+		//around at the end of the palette.
+		replacementIndex = replacementIndex % 256;
+		
+		//Extract the replacement color from the palette. The replacement palettes are organized
+		//as AARRGGBB, where the first byte of each channel corresponds to the value we want, and
+		//the second byte to some other color whose use I haven't found out yet.
+		colorPalette color;
+		for (int n = 0; n < 4; n++)
+			color.v[3 - n] = ((ILubyte *)replacementPalette->data)[replacementIndex * 8 + (n * 2)];
+		palette[i] = color;
+	}
+}
+
 void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 {
 	//Fetch the palette
@@ -330,6 +377,7 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 	//Extract the colors
 	colorPalette darkColors[6]; memcpy(darkColors, darkDrops, sizeof(colorPalette) * 6);
 	colorPalette brightColors[6]; memcpy(brightColors, brightDrops, sizeof(colorPalette) * 6);
+	colorPalette nightColors[6]; memcpy(nightColors, &palette[173], sizeof(colorPalette) * 6);
 	
 	//Create the day texture
 	for (int i = 0; i < 6; i++)
@@ -352,4 +400,16 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 		brightDrops[i] = brightColors[i];
 	}
 	Texture::named(textureName + "/rain/1")->assignLoadedImage(ilCloneCurImage());
+	
+	//Create the twilight texture
+	applyReplacementPalette(0x3E9);
+	for (int i = 0; i < 6; i++)
+		darkDrops[i] = brightDrops[i] = sky[i];
+	Texture::named(textureName + "/twilight")->assignLoadedImage(ilCloneCurImage());
+	
+	//Create the night texture
+	applyReplacementPalette(0x3EA);
+	for (int i = 0; i < 6; i++)
+		darkDrops[i] = brightDrops[i] = sky[i];
+	Texture::named(textureName + "/night")->assignLoadedImage(ilCloneCurImage());
 }

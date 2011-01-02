@@ -21,6 +21,7 @@ namespace OSS {
 		
 		typedef std::vector< Pointer<Resource> > ResourceVector;
 		ResourceVector resources;
+		Resource * getResource(unsigned short type, unsigned short id);
 		
 		//Resource Types
 		enum {
@@ -51,7 +52,7 @@ namespace OSS {
 		
 		//Creates one or more textures from the given information
 		void postprocessTexture(std::string textureName, const void * buffer, unsigned int bufferLength);
-		
+		void applyReplacementPalette(unsigned short id);
 		void spawnSkyTextures(std::string textureName, ILuint image);
 	};
 }
