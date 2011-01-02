@@ -258,7 +258,6 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 
 bool TowerScene::eventMouseDown(SDL_Event * event)
 {
-	OSSObjectLog << event->button.x << " x " << event->button.y << std::endl;
 	switch (event->button.button) {
 		case SDL_BUTTON_WHEELUP:	POI.y += 10; return true; break;
 		case SDL_BUTTON_WHEELDOWN:	POI.y -= 10; return true; break;

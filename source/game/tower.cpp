@@ -20,7 +20,7 @@ Tower::Tower()
 	//Initialize the flexible construction sound effect
 	constructionSoundFlexible.sound = Sound::named("simtower/construction/flexible");
 	constructionSoundFlexible.layer = SoundEffect::kTopLayer;
-	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.3;
+	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.4;
 	constructionSoundFlexible.copyBeforeUse = true;
 	
 	//Initialize the funds transfer sound effect
