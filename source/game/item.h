@@ -139,6 +139,7 @@ namespace OSS {
 	public:
 		unsigned int getItemID() const;
 		void setItemID(unsigned int itemID);
+		bool isValid() const;
 		
 		
 		/**
@@ -198,6 +199,9 @@ namespace OSS {
 		
 		//Location
 		virtual void onChangeLocation();
+		
+		//Surroundings
+		virtual void onChangeTransportItems() {}
 	};
 }
 

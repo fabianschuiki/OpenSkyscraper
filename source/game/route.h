@@ -54,6 +54,9 @@ namespace OSS {
 		
 		//Operators
 		Route & operator= (const Route & route);
+		
+		//Validation
+		bool isValid();
 	};
 }
 

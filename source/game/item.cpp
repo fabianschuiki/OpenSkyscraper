@@ -150,6 +150,11 @@ void Item::setItemID(unsigned int itemID)
 	this->itemID = itemID;
 }
 
+bool Item::isValid() const
+{
+	return (getItemID() != 0);
+}
+
 
 
 

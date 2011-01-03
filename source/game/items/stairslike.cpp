@@ -16,7 +16,7 @@ StairslikeItem::StairslikeItem(Tower * tower, Descriptor * descriptor) : Transpo
 {
 	animationFrame = 0;
 	animationProgress = 0;
-	inUse = true;
+	inUse = false;
 	numAnimationFrames = 0;
 	numAnimationFramesPerTexture = 0;
 }
@@ -33,8 +33,8 @@ StairslikeItem::StairslikeItem(Tower * tower, Descriptor * descriptor) : Transpo
 std::set<int> StairslikeItem::getConnectionFloors()
 {
 	std::set<int> floors;
-	floors.insert(getRect().minY());
-	floors.insert(getRect().maxY());
+	floors.insert(getMinFloor());
+	floors.insert(getMaxFloor());
 	return floors;
 }
 

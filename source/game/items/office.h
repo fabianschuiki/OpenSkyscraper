@@ -3,6 +3,7 @@
 
 #include "../../general.h"
 #include "../facilityitem.h"
+#include "../route.h"
 
 
 namespace OSS {
@@ -33,6 +34,23 @@ namespace OSS {
 		
 		//Simulation
 		void advance(double dt);
+		
+		//Reachability
+	private:
+		Pointer<Route> routeFromLobby;
+	public:
+		Route * getRouteFromLobby() const;
+		void setRouteFromLobby(Route * route);
+		bool isReachableFromLobby();
+		void updateRouteFromLobby();
+		
+		//Occupancy
+		double occupancyTime;
+		bool isAttractiveForUse();
+		
+		//Notifications
+		void onChangeLocation();
+		void onChangeTransportItems();
 	};
 }
 

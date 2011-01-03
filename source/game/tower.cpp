@@ -153,12 +153,11 @@ recti Tower::getGroundFloorRect() const
 #pragma mark Notifications
 //----------------------------------------------------------------------------------------------------
 
-void Tower::onMoveOnScreen()
+void Tower::onChangeTransportItems()
 {
-}
-
-void Tower::onMoveOffScreen()
-{
+	for (ItemIDMap::iterator pair = facilityItems.begin(); pair != facilityItems.end(); pair++)
+		if (pair->second)
+			pair->second->onChangeTransportItems();
 }
 
 
@@ -825,6 +824,10 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Make the bounds cover the newly built item too
 	bounds.unify(rect);
+	
+	//Post a notification
+	if (descriptor->category == Item::kTransportCategory)
+		onChangeTransportItems();
 }
 
 void Tower::eraseItem(Item * item)
@@ -850,6 +853,8 @@ void Tower::eraseItem(unsigned int itemID, Item * item)
 		pair->second.erase(item);
 	for (pair = transportItemsByFloor.begin(); pair != transportItemsByFloor.end(); pair++)
 		pair->second.erase(item);
+	
+	item->setItemID(0);
 }
 
 

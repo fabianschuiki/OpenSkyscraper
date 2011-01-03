@@ -27,6 +27,7 @@ OfficeItem::OfficeItem(Tower * tower) : FacilityItem(tower, &descriptor)
 {
 	type = randui(0, 6);
 	vacant = true;
+	occupancyTime = 0;
 }
 
 
@@ -70,6 +71,7 @@ void OfficeItem::setVacant(const bool vacant)
 {
 	if (this->vacant != vacant) {
 		this->vacant = vacant;
+		tower->transferFunds(vacant ? -10000 : 10000);
 		updateBackground();
 	}
 }
@@ -118,19 +120,111 @@ void OfficeItem::advance(double dt)
 {
 	FacilityItem::advance(dt);
 	
-	static double route_t = 0;
-	route_t += dt;
-	if (route_t > 2) {
-		route_t -= 2;
-		Pointer<Route> route = tower->findRoute(tower->getGroundFloorRect(),
-												getRect());
-		if (route)
-			OSSObjectLog << "found route " << route->description() << std::endl;
-		else
-			OSSObjectLog << "no route found" << std::endl;
+	//Handle vacant attractive offices
+	if (isVacant() && isAttractiveForUse()) {
+		//Reset the occupancy time at 5 in the morning
+		if (tower->checkTime(5))
+			occupancyTime = 0;
+		
+		//If the occupancy time is invalid, set it to a proper value
+		if (occupancyTime < 7 || occupancyTime >= 17)
+			occupancyTime = randd(tower->time, std::min<double>(tower->time + 1, 17));
+		
+		//If we just hit the occupancy time, set the vacancy to false
+		if (tower->checkTime(occupancyTime))
+			setVacant(false);
 	}
+	
+	//Move out of unattractive offices monday morning
+	if (!isVacant() && !isAttractiveForUse() && tower->getDayOfWeek() == 0 && tower->checkTime(5))
+		setVacant(true);
+	
+	//DEBUG: Colorize the office if it is not reachable from the lobby
+	backgrounds[0].color = (isReachableFromLobby() ? (color4d){1, 1, 1, 1} : (color4d){1, 0.25, 0.25, 1});
 	
 	//Update the background when the light state changes
 	if (tower->checkTime(7) || tower->checkTime(17))
 		updateBackground();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Reachability
+//----------------------------------------------------------------------------------------------------
+
+Route * OfficeItem::getRouteFromLobby() const
+{
+	return routeFromLobby;
+}
+
+void OfficeItem::setRouteFromLobby(Route * route)
+{
+	if (routeFromLobby != route) {
+		routeFromLobby = route;
+	}
+}
+
+bool OfficeItem::isReachableFromLobby()
+{
+	return (getRouteFromLobby() != NULL);
+}
+
+void OfficeItem::updateRouteFromLobby()
+{
+	//If the route from the lobby exists but is invalid, get rid of it
+	Route * route = getRouteFromLobby();
+	if (route && !route->isValid()) {
+		OSSObjectLog << "route is invalid, setting to NULL" << std::endl;
+		route = NULL;
+	}
+	
+	//If there's no route from the lobby, try to calculate one
+	if (!route)
+		route = tower->findRoute(tower->getGroundFloorRect(), getRect());
+	
+	//Store the route
+	setRouteFromLobby(route);
+	
+	//DEBUG: Log the route
+	if (routeFromLobby)
+		OSSObjectLog << routeFromLobby->description() << std::endl;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Attractivity
+//----------------------------------------------------------------------------------------------------
+
+bool OfficeItem::isAttractiveForUse()
+{
+	return isReachableFromLobby();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Notifications
+//----------------------------------------------------------------------------------------------------
+
+void OfficeItem::onChangeLocation()
+{
+	FacilityItem::onChangeLocation();
+	updateRouteFromLobby();
+}
+
+void OfficeItem::onChangeTransportItems()
+{
+	FacilityItem::onChangeTransportItems();
+	updateRouteFromLobby();
 }

@@ -47,8 +47,7 @@ namespace OSS {
 		/**
 		 * Notifications
 		 */
-		void onMoveOnScreen();
-		void onMoveOffScreen();
+		void onChangeTransportItems();
 		
 		
 		/**

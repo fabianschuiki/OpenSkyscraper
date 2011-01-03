@@ -113,3 +113,25 @@ Route & Route::operator= (const Route & route)
 	nodes = route.nodes;
 	return *this;
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Validation
+//----------------------------------------------------------------------------------------------------
+
+bool Route::isValid()
+{
+	for (Nodes::iterator node = nodes.begin(); node != nodes.end(); node++) {
+		if (!(*node).transport->isValid())
+			return false;
+		if (!(*node).transport->connectsToFloor((*node).start.minY()))
+			return false;
+		if (!(*node).transport->connectsToFloor((*node).end.minY()))
+			return false;
+	}
+	return true;
+}

@@ -208,14 +208,10 @@ void TowerScene::onMoveOnScreen()
 	
 	/*TwBar * myBar = TwNewBar("NameOfMyTweakBar");
 	TwAddButton(myBar, "Hello, World!", NULL, NULL, NULL);*/
-	
-	tower->onMoveOnScreen();
 }
 
 void TowerScene::onMoveOffScreen()
-{
-	tower->onMoveOffScreen();
-	
+{	
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	
