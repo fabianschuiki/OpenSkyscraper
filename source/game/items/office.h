@@ -4,6 +4,7 @@
 #include "../../general.h"
 #include "../facilityitem.h"
 #include "../route.h"
+#include "../scheduledperson.h"
 
 
 namespace OSS {
@@ -51,6 +52,16 @@ namespace OSS {
 		//Notifications
 		void onChangeLocation();
 		void onChangeTransportItems();
+		
+		//Workers
+	private:
+		typedef std::map< std::string, Pointer<ScheduledPerson> > ScheduledPersonMap;
+		ScheduledPersonMap workers;
+	public:
+		void initWorkers();
+		void clearWorkers();
+		void updateWorkerSchedules();
+		void updateSalesmanSchedule(ScheduledPerson * person);
 	};
 }
 

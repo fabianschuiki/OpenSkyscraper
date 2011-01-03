@@ -43,6 +43,8 @@
 		1FD0EAD911FF8E6A004F4D4E /* simulationtask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EAD811FF8E6A004F4D4E /* simulationtask.cpp */; };
 		1FD0EAE911FF8F5B004F4D4E /* rendertask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EAE811FF8F5B004F4D4E /* rendertask.cpp */; };
 		1FD0EB1D11FF96FC004F4D4E /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EB1C11FF96FC004F4D4E /* scene.cpp */; };
+		1FF2160F12D2335F0043144D /* person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF2160E12D2335F0043144D /* person.cpp */; };
+		1FF2166812D23E520043144D /* scheduledperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF2166712D23E520043144D /* scheduledperson.cpp */; };
 		1FF348F012CB993E0077DF1B /* office.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF348EF12CB993E0077DF1B /* office.cpp */; };
 		1FFABC6012D10E7600D9B02C /* stairs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFABC5F12D10E7600D9B02C /* stairs.cpp */; };
 		1FFABF4512D14F4B00D9B02C /* facilityitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFABF4412D14F4B00D9B02C /* facilityitem.cpp */; };
@@ -162,6 +164,10 @@
 		1FD0EAE811FF8F5B004F4D4E /* rendertask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rendertask.cpp; sourceTree = "<group>"; };
 		1FD0EB1811FF930F004F4D4E /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scene.h; sourceTree = "<group>"; };
 		1FD0EB1C11FF96FC004F4D4E /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene.cpp; sourceTree = "<group>"; };
+		1FF2160D12D2335F0043144D /* person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = person.h; sourceTree = "<group>"; };
+		1FF2160E12D2335F0043144D /* person.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = person.cpp; sourceTree = "<group>"; };
+		1FF2166612D23E520043144D /* scheduledperson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scheduledperson.h; sourceTree = "<group>"; };
+		1FF2166712D23E520043144D /* scheduledperson.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scheduledperson.cpp; sourceTree = "<group>"; };
 		1FF348EE12CB993E0077DF1B /* office.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = office.h; sourceTree = "<group>"; };
 		1FF348EF12CB993E0077DF1B /* office.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = office.cpp; sourceTree = "<group>"; };
 		1FFABC5E12D10E7600D9B02C /* stairs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stairs.h; sourceTree = "<group>"; };
@@ -327,8 +333,13 @@
 				1F38278A1203562000C1E2B0 /* items */,
 				1F21FDF812003389000A8AC3 /* openskyscraper.h */,
 				1F21FDF912003389000A8AC3 /* openskyscraper.cpp */,
+				1FF2166512D23DC10043144D /* people */,
+				1FF2160D12D2335F0043144D /* person.h */,
+				1FF2160E12D2335F0043144D /* person.cpp */,
 				1FBE67F712D1AF22008F0E9C /* route.h */,
 				1FBE67F812D1AF22008F0E9C /* route.cpp */,
+				1FF2166612D23E520043144D /* scheduledperson.h */,
+				1FF2166712D23E520043144D /* scheduledperson.cpp */,
 				1F21FE061200359B000A8AC3 /* scenes */,
 				1F21FF1312007D1F000A8AC3 /* simtower.h */,
 				1F21FF1412007D1F000A8AC3 /* simtower.cpp */,
@@ -436,6 +447,13 @@
 				1F21FCCC120020CE000A8AC3 /* loadertask.cpp */,
 			);
 			path = tasks;
+			sourceTree = "<group>";
+		};
+		1FF2166512D23DC10043144D /* people */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = people;
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* OpenSkyscraper */ = {
@@ -576,6 +594,8 @@
 				1FFABF7912D1544900D9B02C /* stairslike.cpp in Sources */,
 				1FFABF8412D1567200D9B02C /* escalator.cpp in Sources */,
 				1FBE67F912D1AF22008F0E9C /* route.cpp in Sources */,
+				1FF2160F12D2335F0043144D /* person.cpp in Sources */,
+				1FF2166812D23E520043144D /* scheduledperson.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

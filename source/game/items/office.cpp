@@ -71,7 +71,16 @@ void OfficeItem::setVacant(const bool vacant)
 {
 	if (this->vacant != vacant) {
 		this->vacant = vacant;
+		
+		//Transfer some funds
 		tower->transferFunds(vacant ? -10000 : 10000);
+		
+		//Populate or clear the office
+		if (vacant)
+			clearWorkers();
+		else
+			initWorkers();
+		
 		updateBackground();
 	}
 }
@@ -119,6 +128,7 @@ void OfficeItem::updateBackground()
 void OfficeItem::advance(double dt)
 {
 	FacilityItem::advance(dt);
+	if (underConstruction) return;
 	
 	//Handle vacant attractive offices
 	if (isVacant() && isAttractiveForUse()) {
@@ -126,18 +136,32 @@ void OfficeItem::advance(double dt)
 		if (tower->checkTime(5))
 			occupancyTime = 0;
 		
-		//If the occupancy time is invalid, set it to a proper value
-		if (occupancyTime < 7 || occupancyTime >= 17)
-			occupancyTime = randd(tower->time, std::min<double>(tower->time + 1, 17));
-		
-		//If we just hit the occupancy time, set the vacancy to false
-		if (tower->checkTime(occupancyTime))
-			setVacant(false);
+		//Check whether it is time for occupancy operations
+		if (tower->time >= 7 && tower->time < 17) {
+			//If the occupancy time is invalid, set it to a proper value
+			if (occupancyTime < 7 || occupancyTime >= 17) {
+				occupancyTime = randd(tower->time, std::min<double>(tower->time + 2, 17));
+				OSSObjectLog << "reset occupancy time to " << occupancyTime << std::endl;
+			}
+			
+			//If we just hit the occupancy time, set the vacancy to false
+			if (tower->checkTime(occupancyTime))
+				setVacant(false);
+		}
 	}
 	
 	//Move out of unattractive offices monday morning
 	if (!isVacant() && !isAttractiveForUse() && tower->getDayOfWeek() == 0 && tower->checkTime(5))
 		setVacant(true);
+	
+	//Update worker schedules
+	if (!isVacant() && tower->checkTime(5))
+		updateWorkerSchedules();
+	
+	//Update the worker schedules
+	for (ScheduledPersonMap::iterator w = workers.begin(); w != workers.end(); w++)
+		if (w->second)
+			w->second->updateFromSchedule();
 	
 	//DEBUG: Colorize the office if it is not reachable from the lobby
 	backgrounds[0].color = (isReachableFromLobby() ? (color4d){1, 1, 1, 1} : (color4d){1, 0.25, 0.25, 1});
@@ -227,4 +251,44 @@ void OfficeItem::onChangeTransportItems()
 {
 	FacilityItem::onChangeTransportItems();
 	updateRouteFromLobby();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Workers
+//----------------------------------------------------------------------------------------------------
+
+void OfficeItem::initWorkers()
+{
+	workers["salesman/0"] = new ScheduledPerson(tower);
+	workers["salesman/1"] = new ScheduledPerson(tower);
+	
+	updateWorkerSchedules();
+}
+
+void OfficeItem::clearWorkers()
+{
+	workers.clear();
+}
+
+void OfficeItem::updateWorkerSchedules()
+{
+	OSSObjectLog << std::endl;
+	updateSalesmanSchedule(workers["salesman/0"]);
+	updateSalesmanSchedule(workers["salesman/1"]);
+}
+
+void OfficeItem::updateSalesmanSchedule(ScheduledPerson * person)
+{
+	if (!person)
+		return;
+	
+	Schedule * s = new Schedule;
+	s->addNode(randd(7, 8), this);
+	s->addNode(randd(17, 18.5), NULL);
+	person->setSchedule(s);
 }

@@ -842,6 +842,7 @@ void Tower::eraseItem(unsigned int itemID)
 
 void Tower::eraseItem(unsigned int itemID, Item * item)
 {
+	item->retain();
 	items.erase(itemID);
 	facilityItems.erase(itemID);
 	transportItems.erase(itemID);
@@ -855,6 +856,7 @@ void Tower::eraseItem(unsigned int itemID, Item * item)
 		pair->second.erase(item);
 	
 	item->setItemID(0);
+	item->release();
 }
 
 

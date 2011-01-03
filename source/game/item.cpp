@@ -1,6 +1,7 @@
 #include "item.h"
 #include "items.h"
 #include "tower.h"
+#include "person.h"
 
 using namespace OSS;
 
@@ -419,4 +420,23 @@ void Item::updateConstructionWorkerSprites()
 		//Choose a new texture area
 		sprite->textureRect.origin.x = (rand() % 6) * sprite->textureRect.size.x;
 	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark People
+//----------------------------------------------------------------------------------------------------
+
+void Item::addPerson(Person * person)
+{
+	people.insert(person);
+}
+
+void Item::removePerson(Person * person)
+{
+	people.erase(person);
 }

@@ -9,6 +9,7 @@
 
 namespace OSS {
 	class Tower;
+	class Person;
 	
 	class Item : public CoreObject {
 	public:
@@ -202,6 +203,17 @@ namespace OSS {
 		
 		//Surroundings
 		virtual void onChangeTransportItems() {}
+		
+		
+		/**
+		 * People
+		 */
+	private:
+		typedef std::set< Pointer<Person> > People;
+		People people;
+	public:
+		void addPerson(Person * person);
+		void removePerson(Person * person);
 	};
 }
 
