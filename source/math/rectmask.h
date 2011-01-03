@@ -2,11 +2,12 @@
 #define OSS_RECTMASK_H
 
 #include "../general.h"
+#include "../base/object.h"
 #include "../base/pointer.h"
 #include "rect.h"
 
 
-namespace OSS {
+namespace OSS {	
 	namespace Math {
 		template <typename T>
 		

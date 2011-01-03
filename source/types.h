@@ -3,9 +3,6 @@
 
 #include "general.h"
 
-//General math classes and types
-#include "math/math.h"
-
 //Unfortunately there's still some DOSism around
 #ifdef __WIN32__
 #define PATH_SEGMENTER "\\"

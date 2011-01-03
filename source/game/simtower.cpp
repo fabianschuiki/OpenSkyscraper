@@ -365,13 +365,16 @@ void SimTower::postprocessTexture(std::string resourceName,
 		(color3d){66 / 255.0, 198 / 255.0, 1.0}
 	};
 	
-	//Setup the correct transparency color
+	//Setup the correct transparency behaviour
 	if (resourceName == "background/city")
 		texture->transparentColor = (color3d){138 / 255.0, 212 / 255.0, 1.0};
 	if (resourceName.find("facilities") == 0) {
 		texture->transparentColors.push_back(skyThroughWindow[0]);
 		texture->transparentColors.push_back(skyThroughWindow[1]);
 	}
+	if (resourceName.find("ui") == 0 &&
+		resourceName.find("ui/control/star") != 0)
+		texture->useTransparentColor = false;
 }
 
 void SimTower::applyReplacementPalette(unsigned short id)
