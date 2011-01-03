@@ -126,6 +126,9 @@ namespace OSS {
 		 */
 		const Pointer<Tower> tower;
 		const Descriptor * descriptor;
+		Type getType();
+		Group getGroup();
+		Category getCategory();
 		
 		
 		/**
@@ -146,7 +149,8 @@ namespace OSS {
 		rectd worldRect;
 	public:
 		const recti & getRect() const;
-		void setRect(const recti & rect);		
+		recti getFloorRect(int floor) const;
+		void setRect(const recti & rect);
 		const rectd & getWorldRect() const;
 		void setWorldRect(const rectd & worldRect);
 		

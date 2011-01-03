@@ -27,6 +27,23 @@ StairslikeItem::StairslikeItem(Tower * tower, Descriptor * descriptor) : Transpo
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Connection
+//----------------------------------------------------------------------------------------------------
+
+std::set<int> StairslikeItem::getConnectionFloors()
+{
+	std::set<int> floors;
+	floors.insert(getRect().minY());
+	floors.insert(getRect().maxY());
+	return floors;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Animation
 //----------------------------------------------------------------------------------------------------
 

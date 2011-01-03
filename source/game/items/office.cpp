@@ -118,6 +118,18 @@ void OfficeItem::advance(double dt)
 {
 	FacilityItem::advance(dt);
 	
+	static double route_t = 0;
+	route_t += dt;
+	if (route_t > 2) {
+		route_t -= 2;
+		Pointer<Route> route = tower->findRoute((*tower->facilityItemsByFloor[0].begin())->getRect(),
+												getRect());
+		if (route)
+			OSSObjectLog << "found route " << route->description() << std::endl;
+		else
+			OSSObjectLog << "no route found" << std::endl;
+	}
+	
 	//Update the background when the light state changes
 	if (tower->checkTime(7) || tower->checkTime(17))
 		updateBackground();

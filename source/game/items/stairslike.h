@@ -12,6 +12,9 @@ namespace OSS {
 		//Initialization
 		StairslikeItem(Tower * tower, Descriptor * descriptor);
 		
+		//Connection
+		std::set<int> getConnectionFloors();
+		
 		//Animation
 	private:
 		unsigned int animationFrame;

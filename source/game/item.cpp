@@ -113,6 +113,30 @@ Item * Item::make(Tower * tower, Descriptor * descriptor, unsigned int itemID, r
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Basic Attributes
+//----------------------------------------------------------------------------------------------------
+
+Item::Type Item::getType()
+{
+	return descriptor->type;
+}
+
+Item::Group Item::getGroup()
+{
+	return descriptor->group;
+}
+
+Item::Category Item::getCategory()
+{
+	return descriptor->category;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Identification
 //----------------------------------------------------------------------------------------------------
 
@@ -138,6 +162,14 @@ void Item::setItemID(unsigned int itemID)
 const recti & Item::getRect() const
 {
 	return rect;
+}
+
+recti Item::getFloorRect(int floor) const
+{
+	recti r = getRect();
+	r.size.y = 1;
+	r.origin.y = floor;
+	return r;
 }
 
 void Item::setRect(const recti & rect)

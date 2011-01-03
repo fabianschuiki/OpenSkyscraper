@@ -98,7 +98,8 @@ namespace OSS {
 		ItemIDMap transportItems;
 		
 		//by floor
-		typedef std::map< int, std::set< Pointer<Item> > > ItemFloorMap;
+		typedef std::set< Pointer<Item> > ItemSet;
+		typedef std::map< int, ItemSet > ItemFloorMap;
 		ItemFloorMap itemsByFloor;
 		ItemFloorMap facilityItemsByFloor;
 		ItemFloorMap transportItemsByFloor;
@@ -218,6 +219,14 @@ namespace OSS {
 		 * Pathfinder
 		 */
 		Route * findRoute(recti origin, recti destination);
+	private:
+		typedef struct {
+			unsigned int elevatorsUsed;
+			unsigned int stairsUsed;
+			unsigned int escalatorsUsed;
+		} PathfinderStats;
+		bool findRoute(recti origin, recti destination, TransportItem * transport,
+					   ItemSet usedTransports, PathfinderStats stats, Route * route);
 		
 		
 		/**

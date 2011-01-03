@@ -903,7 +903,112 @@ bool Tower::checkTime(double alarmTime)
 #pragma mark Pathfinder
 //----------------------------------------------------------------------------------------------------
 
-Route * findRoute(recti origin, recti destination)
+Route * Tower::findRoute(recti origin, recti destination)
 {
-	return NULL;
+	Route * route = new Route(this);
+	route->origin = origin;
+	route->destination = destination;
+	
+	if (!findRoute(origin, destination, NULL, ItemSet(), PathfinderStats(), route)) {
+		delete route;
+		route = NULL;
+	}
+	
+	return route;
+}
+
+/*Route * Tower::findRoute(recti origin, recti destination, recti offset, ItemSet usedTransports)
+{
+	//If both rects are on the same floor, return an empty route since we're done
+	if (offset.minY() == destination.minY())
+		return new Route(this);
+	
+	//Find the transports that connect to the origin's floor
+	ItemSet * transportSet = &transportItemsByFloor[offset.minY()];
+	for (ItemSet::iterator t = transportSet->begin(); t != transportSet->end(); t++) {
+		TransportItem * transport = (TransportItem *)((Item *)*t);
+		
+		//Skip the transports that don't connect to the floor
+		if (!transport->connectsToFloor(offset.minY()))
+			continue;
+		
+		//Elevators are only mounted on the origin floor or lobbies
+		if (transport->item == Item::kElevatorType || transport->item == Item::kExpressElevatorType)
+			if (offset.minY() != origin.minY() && (offset.minY() % 15) != 0)
+				continue;
+		
+		//Check whether this transport connects directly to the destination
+		if (transport->connectsToFloor(destination.minY()))
+	}
+	
+	return false;
+}*/
+
+bool Tower::findRoute(recti origin, recti destination, TransportItem * transport,
+					  ItemSet usedTransports, PathfinderStats stats, Route * route)
+{
+	//Check whether the transport connects directly to the destination floor
+	if (transport && transport->connectsToFloor(destination.minY())) {
+		route->addNode(origin, transport, transport->getFloorRect(destination.minY()));
+		return true;
+	}
+	
+	//Fetch the connection floors
+	std::set<int> connectionFloors;
+	if (transport) {
+		connectionFloors = transport->getConnectionFloors();
+		connectionFloors.erase(origin.minY());
+	} else {
+		connectionFloors.insert(origin.minY());
+	}
+	
+	//Update the stats and add this transport to the used ones
+	if (transport) {
+		if (transport->isElevator()) stats.elevatorsUsed++;
+		if (transport->isStairs()) stats.stairsUsed++;
+		if (transport->isEscalator()) stats.escalatorsUsed++;
+		usedTransports.insert(transport);
+	}
+	
+	//Iterate through the connection floors
+	Route * shortestRoute = NULL;
+	
+	for (std::set<int>::iterator floor = connectionFloors.begin(); floor != connectionFloors.end(); floor++) {
+		
+		//Find the transports on this floor
+		ItemSet * items = &transportItemsByFloor[*floor];
+		for (ItemSet::iterator item = items->begin(); item != items->end(); item++) {
+			TransportItem * t = (TransportItem *)((Item *)*item);
+			
+			//Skip transports we've already used
+			if (usedTransports.count(t))
+				continue;
+			
+			//Skip elevators if we aren't on a lobby and connecting from a previous transport
+			if (t->isElevator() && (*floor % 15) != 0 && transport)
+				continue;
+			
+			//Create a new temporary route
+			Route * newRoute = new Route(*route);
+			if (transport)
+				newRoute->addNode(origin, transport, transport->getFloorRect(*floor));
+			
+			//Find routes using this transport
+			OSSObjectLog << "finding routes using " << t->description() << std::endl;
+			if (findRoute(t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute)) {
+				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
+					shortestRoute = newRoute;
+				else
+					delete newRoute;
+			}
+		}
+	}
+	
+	//If we have found a route, copy it to the old one
+	if (shortestRoute) {
+		*route = *shortestRoute;
+		return true;
+	}
+	
+	return false;
 }

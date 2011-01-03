@@ -10,6 +10,17 @@ namespace OSS {
 	public:
 		//Initialization
 		TransportItem(Tower * tower, Item::Descriptor * descriptor) : Item(tower, descriptor) {}
+		
+		//Connection
+		virtual bool connectsToFloor(int floor);
+		std::set<int> getConnectedLobbies();
+		virtual std::set<int> getConnectionFloors() = 0;
+		
+		//Identity
+		bool isElevator();
+		bool isStairslike();
+		bool isStairs();
+		bool isEscalator();
 	};
 }
 
