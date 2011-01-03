@@ -5,6 +5,7 @@
 #include "../base/base.h"
 #include "../core/core.h"
 #include "item.h"
+#include "route.h"
 
 
 namespace OSS {
@@ -91,9 +92,16 @@ namespace OSS {
 		Item * getTransport(unsigned int itemID, bool createIfInexistent = false);
 		
 	protected:*/
-		typedef std::map< unsigned int, Pointer<Item> > ItemMap;
-		ItemMap facilityItems;
-		ItemMap transportItems;
+		typedef std::map< unsigned int, Pointer<Item> > ItemIDMap;
+		ItemIDMap items;
+		ItemIDMap facilityItems;
+		ItemIDMap transportItems;
+		
+		//by floor
+		typedef std::map< int, std::set< Pointer<Item> > > ItemFloorMap;
+		ItemFloorMap itemsByFloor;
+		ItemFloorMap facilityItemsByFloor;
+		ItemFloorMap transportItemsByFloor;
 		
 		unsigned int nextItemID();
 		
@@ -118,10 +126,11 @@ namespace OSS {
 		 * creates the cell in the cells map if it doesn't exist. Otherwise NULL is returned for
 		 * cells that don't exist.
 		 */
-		Cell * getCell(int2 coordinates, bool createIfInexistent = false);
 		
 	public:
 		std::map<int, std::map<int, Cell> > cells;
+	public:
+		Cell * getCell(int2 coordinates, bool createIfInexistent = false);
 		
 		
 		/**
@@ -147,6 +156,9 @@ namespace OSS {
 		CellAnalysis analyzeCellsInRect(recti rect, rectmaski mask);
 		
 		void insertNewItem(Item::Descriptor * descriptor, recti rect);
+		void eraseItem(Item * item);
+		void eraseItem(unsigned int itemID);
+		void eraseItem(unsigned int itemID, Item * item);
 		
 		
 		/**
@@ -200,6 +212,12 @@ namespace OSS {
 	public:
 		bool checkTime(double previousTime, double alarmTime);
 		bool checkTime(double alarmTime);
+		
+		
+		/**
+		 * Pathfinder
+		 */
+		Route * findRoute(recti origin, recti destination);
 		
 		
 		/**

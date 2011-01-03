@@ -96,6 +96,8 @@ namespace OSS {
 		unsigned char debugItemType;
 		
 		virtual void eventPrepare();
+		
+		void buildDebugTower();
 	};
 }
 

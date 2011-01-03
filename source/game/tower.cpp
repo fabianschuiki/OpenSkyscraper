@@ -196,7 +196,7 @@ void Tower::advanceTime(double dt)
 void Tower::advanceFacilities(double dt)
 {
 	//Advance the facilities
-	for (ItemMap::iterator it = facilityItems.begin(); it != facilityItems.end(); it++) {
+	for (ItemIDMap::iterator it = facilityItems.begin(); it != facilityItems.end(); it++) {
 		Item * item = it->second;
 		if (item)
 			item->advance(dt);
@@ -206,7 +206,7 @@ void Tower::advanceFacilities(double dt)
 void Tower::advanceTransport(double dt)
 {
 	//Advance the Transports
-	for (ItemMap::iterator it = transportItems.begin(); it != transportItems.end(); it++) {
+	for (ItemIDMap::iterator it = transportItems.begin(); it != transportItems.end(); it++) {
 		Item * item = it->second;
 		if (item)
 			item->advance(dt);
@@ -528,7 +528,7 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	OSSObjectLog << "the item's valid rect is " << validRect.description() << std::endl;
 	
 	//Fetch the item ID we will assign the new item
-	unsigned int itemID = nextItemID();
+	//unsigned int itemID = nextItemID();
 	
 	//Add adjacent facilities of the same type to the list of hit facilities, so they get collapsed
 	Cell * cellLeft = getCell(int2(validRect.minX() - 1, validRect.minY()));
@@ -550,12 +550,13 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	std::set<Item *>::iterator it;
 	for (it = facilitiesHit.begin(); it != facilitiesHit.end(); it++) {
 		itemRect.unify((*it)->getRect());
-		facilityItems.erase((*it)->getItemID());
+		//facilityItems.erase((*it)->getItemID());
+		eraseItem(*it);
 	}
 	OSSObjectLog << "the item rect is " << itemRect.description() << std::endl;
 	
 	//Make the cells the item covers point at it
-	for (int x = itemRect.minX(); x < itemRect.maxX(); x++) {
+	/*for (int x = itemRect.minX(); x < itemRect.maxX(); x++) {
 		Cell * cell = getCell(int2(x, itemRect.origin.y), true);
 		cell->facility = itemID;
 	}
@@ -574,7 +575,10 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	}
 	
 	//Make the bounds cover the newly built item too
-	bounds.unify(itemRect);
+	bounds.unify(itemRect);*/
+	
+	//Insert the new item
+	insertNewItem(descriptor, itemRect);
 	
 	//Play the construction sound
 	Engine::shared()->audioTask.addSoundEffect(&constructionSoundFlexible);
@@ -771,14 +775,27 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Create the new item and add it to the tower's facilities
 	Item * item = Item::make(this, descriptor, itemID, rect);
+	ItemIDMap * idMap = NULL;
+	ItemFloorMap * floorMap = NULL;
 	switch (descriptor->category) {
 		case Item::kFacilityCategory: {
-			facilityItems[itemID] = item;
+			idMap = &facilityItems;
+			floorMap = &facilityItemsByFloor;
 			item->setUnderConstruction(true);
 		} break;
 		case Item::kTransportCategory: {
-			transportItems[itemID] = item;
+			idMap = &transportItems;
+			floorMap = &transportItemsByFloor;
 		} break;
+	}
+	
+	//Add the item to the appropriate maps
+	assert(idMap && floorMap);
+	items[itemID] = item;
+	(*idMap)[itemID] = item;
+	for (int y = rect.minY(); y < rect.maxY(); y++) {
+		itemsByFloor[y].insert(item);
+		(*floorMap)[y].insert(item);
 	}
 	
 	//If the item expands the tower's bounds vertically, reposition the crane
@@ -791,6 +808,31 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Make the bounds cover the newly built item too
 	bounds.unify(rect);
+}
+
+void Tower::eraseItem(Item * item)
+{
+	eraseItem(item->getItemID(), item);
+}
+
+void Tower::eraseItem(unsigned int itemID)
+{
+	eraseItem(itemID, items[itemID]);
+}
+
+void Tower::eraseItem(unsigned int itemID, Item * item)
+{
+	items.erase(itemID);
+	facilityItems.erase(itemID);
+	transportItems.erase(itemID);
+	
+	ItemFloorMap::iterator pair;
+	for (pair = itemsByFloor.begin(); pair != itemsByFloor.end(); pair++)
+		pair->second.erase(item);
+	for (pair = facilityItemsByFloor.begin(); pair != facilityItemsByFloor.end(); pair++)
+		pair->second.erase(item);
+	for (pair = transportItemsByFloor.begin(); pair != transportItemsByFloor.end(); pair++)
+		pair->second.erase(item);
 }
 
 
@@ -850,4 +892,18 @@ bool Tower::checkTime(double previousTime, double alarmTime)
 bool Tower::checkTime(double alarmTime)
 {
 	return checkTime(previousTime, alarmTime);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Pathfinder
+//----------------------------------------------------------------------------------------------------
+
+Route * findRoute(recti origin, recti destination)
+{
+	return NULL;
 }

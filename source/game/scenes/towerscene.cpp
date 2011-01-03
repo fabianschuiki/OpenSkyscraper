@@ -261,6 +261,9 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 			
 			//DEBUG: Change time
 		case ' ':	tower->time++; return true; break;
+			
+			//DEBUG: Build debug tower
+		case 'd':	buildDebugTower(); return true; break;
 	}
 	return false;
 }
@@ -406,4 +409,27 @@ void TowerScene::setTower(Tower * tower)
 {
 	this->tower = tower;
 	controlWindow.tower = tower;
+}
+
+void TowerScene::buildDebugTower()
+{
+	//Lobby
+	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
+									  recti(-32, 0, 0, 1), recti(32, 0, 0, 1));
+	
+	//Offices
+	for (int y = 1; y < 2; y++) {
+		for (int x = 0; x < 1; x++) {
+			tower->constructItem(Item::descriptorForItemType(Item::kOfficeType),
+								 recti(x * 9, y, 9, 1));
+			tower->constructItem(Item::descriptorForItemType(Item::kOfficeType),
+								 recti((-x - 1) * 9, y, 9, 1));
+		}
+	}
+	
+	//Stairs
+	for (int y = 0; y < 1; y++) {
+		tower->constructItem(Item::descriptorForItemType(Item::kStairsType),
+							 recti(-4, y, 8, 2));
+	}
 }

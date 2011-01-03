@@ -32,6 +32,7 @@
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
 		1FAD1B3812C8E094004E5286 /* sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD1B3712C8E094004E5286 /* sound.cpp */; };
 		1FAD1B8412C8E362004E5286 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAD1B8312C8E362004E5286 /* OpenAL.framework */; };
+		1FBE67F912D1AF22008F0E9C /* route.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FBE67F812D1AF22008F0E9C /* route.cpp */; };
 		1FC821C912CA1B0C00168481 /* toolboxwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC821C812CA1B0C00168481 /* toolboxwindow.cpp */; };
 		1FC821CC12CA1B6400168481 /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC821CB12CA1B6400168481 /* window.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
@@ -136,6 +137,8 @@
 		1FAD1B3712C8E094004E5286 /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sound.cpp; sourceTree = "<group>"; };
 		1FAD1B8312C8E362004E5286 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		1FAD1B9812C8E4AE004E5286 /* alc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alc.h; sourceTree = "<group>"; };
+		1FBE67F712D1AF22008F0E9C /* route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = route.h; sourceTree = "<group>"; };
+		1FBE67F812D1AF22008F0E9C /* route.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = route.cpp; sourceTree = "<group>"; };
 		1FC821C712CA1B0C00168481 /* toolboxwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = toolboxwindow.h; sourceTree = "<group>"; };
 		1FC821C812CA1B0C00168481 /* toolboxwindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = toolboxwindow.cpp; sourceTree = "<group>"; };
 		1FC821CA12CA1B6400168481 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
@@ -324,14 +327,16 @@
 				1F38278A1203562000C1E2B0 /* items */,
 				1F21FDF812003389000A8AC3 /* openskyscraper.h */,
 				1F21FDF912003389000A8AC3 /* openskyscraper.cpp */,
+				1FBE67F712D1AF22008F0E9C /* route.h */,
+				1FBE67F812D1AF22008F0E9C /* route.cpp */,
 				1F21FE061200359B000A8AC3 /* scenes */,
+				1F21FF1312007D1F000A8AC3 /* simtower.h */,
+				1F21FF1412007D1F000A8AC3 /* simtower.cpp */,
+				1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */,
 				1F21FE82120044AF000A8AC3 /* tower.h */,
 				1F21FE83120044AF000A8AC3 /* tower.cpp */,
 				1FFABF4712D1512500D9B02C /* transportitem.h */,
 				1FFABF4812D1512500D9B02C /* transportitem.cpp */,
-				1F21FF1312007D1F000A8AC3 /* simtower.h */,
-				1F21FF1412007D1F000A8AC3 /* simtower.cpp */,
-				1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */,
 			);
 			path = game;
 			sourceTree = "<group>";
@@ -570,6 +575,7 @@
 				1FFABF4912D1512500D9B02C /* transportitem.cpp in Sources */,
 				1FFABF7912D1544900D9B02C /* stairslike.cpp in Sources */,
 				1FFABF8412D1567200D9B02C /* escalator.cpp in Sources */,
+				1FBE67F912D1AF22008F0E9C /* route.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
