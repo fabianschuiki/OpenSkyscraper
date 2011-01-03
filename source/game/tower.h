@@ -40,6 +40,9 @@ namespace OSS {
 		int2 convertWorldToCellCoordinates(double2 coordinates);
 		double2 convertCellToWorldCoordinates(int2 coordinates);
 		
+		//Ground Floor
+		recti getGroundFloorRect() const;
+		
 		
 		/**
 		 * Notifications
@@ -103,6 +106,9 @@ namespace OSS {
 		ItemFloorMap itemsByFloor;
 		ItemFloorMap facilityItemsByFloor;
 		ItemFloorMap transportItemsByFloor;
+		
+		//Convenience access to the ground lobby
+		Item * getGroundLobby();
 		
 		unsigned int nextItemID();
 		

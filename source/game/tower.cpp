@@ -109,7 +109,7 @@ void Tower::initConstruction()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Coordinates
+#pragma mark Dimensions
 //----------------------------------------------------------------------------------------------------
 
 recti Tower::convertWorldToCellRect(rectd rect)
@@ -125,7 +125,6 @@ rectd Tower::convertCellToWorldRect(recti rect)
 }
 
 
-
 int2 Tower::convertWorldToCellCoordinates(double2 coordinates)
 {
 	return int2(round(coordinates.x / cellSize.x), round(coordinates.y / cellSize.y));
@@ -134,6 +133,15 @@ int2 Tower::convertWorldToCellCoordinates(double2 coordinates)
 double2 Tower::convertCellToWorldCoordinates(int2 coordinates)
 {
 	return double2(coordinates.x * cellSize.x, coordinates.y * cellSize.y);
+}
+
+
+recti Tower::getGroundFloorRect() const
+{
+	recti r = bounds;
+	r.size.y = 1;
+	r.origin.y = 0;
+	return r;
 }
 
 
@@ -394,6 +402,15 @@ void Tower::updateSkySpriteTextures(unsigned int stateIndex)
 Item * Tower::getTransport(unsigned int itemID, bool createIfInexistent = false)
 {
 }*/
+
+Item * Tower::getGroundLobby()
+{
+	ItemSet * floor0Facilities = &facilityItemsByFloor[0];
+	ItemSet::iterator item = floor0Facilities->begin();
+	if (item == floor0Facilities->end())
+		return NULL;
+	return *item;
+}
 
 unsigned int Tower::nextItemID()
 {
@@ -917,33 +934,6 @@ Route * Tower::findRoute(recti origin, recti destination)
 	return route;
 }
 
-/*Route * Tower::findRoute(recti origin, recti destination, recti offset, ItemSet usedTransports)
-{
-	//If both rects are on the same floor, return an empty route since we're done
-	if (offset.minY() == destination.minY())
-		return new Route(this);
-	
-	//Find the transports that connect to the origin's floor
-	ItemSet * transportSet = &transportItemsByFloor[offset.minY()];
-	for (ItemSet::iterator t = transportSet->begin(); t != transportSet->end(); t++) {
-		TransportItem * transport = (TransportItem *)((Item *)*t);
-		
-		//Skip the transports that don't connect to the floor
-		if (!transport->connectsToFloor(offset.minY()))
-			continue;
-		
-		//Elevators are only mounted on the origin floor or lobbies
-		if (transport->item == Item::kElevatorType || transport->item == Item::kExpressElevatorType)
-			if (offset.minY() != origin.minY() && (offset.minY() % 15) != 0)
-				continue;
-		
-		//Check whether this transport connects directly to the destination
-		if (transport->connectsToFloor(destination.minY()))
-	}
-	
-	return false;
-}*/
-
 bool Tower::findRoute(recti origin, recti destination, TransportItem * transport,
 					  ItemSet usedTransports, PathfinderStats stats, Route * route)
 {
@@ -970,8 +960,12 @@ bool Tower::findRoute(recti origin, recti destination, TransportItem * transport
 		usedTransports.insert(transport);
 	}
 	
+	//Abort if we exceed the stats limits
+	if (stats.elevatorsUsed >= 2 || stats.stairsUsed >= 4 || stats.escalatorsUsed >= 6)
+		return false;
+	
 	//Iterate through the connection floors
-	Route * shortestRoute = NULL;
+	Pointer<Route> shortestRoute;
 	
 	for (std::set<int>::iterator floor = connectionFloors.begin(); floor != connectionFloors.end(); floor++) {
 		
@@ -989,18 +983,15 @@ bool Tower::findRoute(recti origin, recti destination, TransportItem * transport
 				continue;
 			
 			//Create a new temporary route
-			Route * newRoute = new Route(*route);
+			Pointer<Route> newRoute = new Route(*route);
 			if (transport)
 				newRoute->addNode(origin, transport, transport->getFloorRect(*floor));
 			
 			//Find routes using this transport
 			OSSObjectLog << "finding routes using " << t->description() << std::endl;
-			if (findRoute(t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute)) {
+			if (findRoute(t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute))
 				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
 					shortestRoute = newRoute;
-				else
-					delete newRoute;
-			}
 		}
 	}
 	

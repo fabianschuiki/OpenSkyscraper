@@ -29,8 +29,15 @@ Route::Node::Node(Route * route, recti start, TransportItem * transport, recti e
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Route::Route(Tower * tower) : tower(tower)
+Route::Route(Tower * tower) : tower(tower), CoreObject()
 {
+}
+
+Route::Route(const Route & route) : tower(route.tower), CoreObject()
+{
+	origin = route.origin;
+	destination = route.destination;
+	nodes = route.nodes;
 }
 
 std::string Route::description()

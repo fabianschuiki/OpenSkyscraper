@@ -17,7 +17,7 @@ namespace OSS {
 		 */
 		class Node {
 		private:
-			Pointer<Route> route;
+			Route * route;
 			
 		public:
 			recti start;
@@ -38,6 +38,7 @@ namespace OSS {
 		
 		//Initialization
 		Route(Tower * tower);
+		Route(const Route & route);
 		std::string description();
 		
 		//Nodes
