@@ -264,8 +264,17 @@ void OfficeItem::onChangeTransportItems()
 
 void OfficeItem::initWorkers()
 {
+	//Initialize the salesmen
 	workers["salesman/0"] = new ScheduledPerson(tower);
 	workers["salesman/1"] = new ScheduledPerson(tower);
+	
+	//Initialize the male workers
+	workers["male/0"] = new ScheduledPerson(tower);
+	workers["male/1"] = new ScheduledPerson(tower);
+	
+	//Initialize the female workers
+	workers["female/0"] = new ScheduledPerson(tower);
+	workers["female/1"] = new ScheduledPerson(tower);
 	
 	updateWorkerSchedules();
 }
@@ -278,8 +287,16 @@ void OfficeItem::clearWorkers()
 void OfficeItem::updateWorkerSchedules()
 {
 	OSSObjectLog << std::endl;
+	
+	//Update the salesmen
 	updateSalesmanSchedule(workers["salesman/0"]);
 	updateSalesmanSchedule(workers["salesman/1"]);
+	
+	//Update the other workers
+	updateWorkerSchedule(workers["male/0"]);
+	updateWorkerSchedule(workers["male/1"]);
+	updateWorkerSchedule(workers["female/0"]);
+	updateWorkerSchedule(workers["female/1"]);
 }
 
 void OfficeItem::updateSalesmanSchedule(ScheduledPerson * person)
@@ -288,7 +305,19 @@ void OfficeItem::updateSalesmanSchedule(ScheduledPerson * person)
 		return;
 	
 	Schedule * s = new Schedule;
-	s->addNode(randd(7, 8), this);
+	
+	//Arrive at the tower
+	s->addNode(randd(7, 10), this);
+	
+	//Leave the tower
 	s->addNode(randd(17, 18.5), NULL);
 	person->setSchedule(s);
+}
+
+void OfficeItem::updateWorkerSchedule(ScheduledPerson * person)
+{
+	if (!person)
+		return;
+	
+	Schedule * s = new Schedule;
 }

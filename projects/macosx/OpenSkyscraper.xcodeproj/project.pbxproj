@@ -333,7 +333,6 @@
 				1F38278A1203562000C1E2B0 /* items */,
 				1F21FDF812003389000A8AC3 /* openskyscraper.h */,
 				1F21FDF912003389000A8AC3 /* openskyscraper.cpp */,
-				1FF2166512D23DC10043144D /* people */,
 				1FF2160D12D2335F0043144D /* person.h */,
 				1FF2160E12D2335F0043144D /* person.cpp */,
 				1FBE67F712D1AF22008F0E9C /* route.h */,
@@ -447,13 +446,6 @@
 				1F21FCCC120020CE000A8AC3 /* loadertask.cpp */,
 			);
 			path = tasks;
-			sourceTree = "<group>";
-		};
-		1FF2166512D23DC10043144D /* people */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = people;
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* OpenSkyscraper */ = {
