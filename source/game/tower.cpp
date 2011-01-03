@@ -24,6 +24,9 @@ Tower::Tower()
 	
 	//Initialize the timer
 	previousTime = time;
+	
+	//DEBUG: Initialize the pause state
+	paused = true;
 }
 
 void Tower::initBackground()
@@ -171,6 +174,8 @@ void Tower::onChangeTransportItems()
 
 void Tower::advance(double dt)
 {
+	if (paused) return;
+	
 	//Advance the environment
 	advanceTime(dt);
 	

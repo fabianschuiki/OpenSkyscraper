@@ -208,12 +208,12 @@ namespace OSS {
 		/**
 		 * People
 		 */
-	private:
+	protected:
 		typedef std::set< Pointer<Person> > People;
 		People people;
 	public:
-		void addPerson(Person * person);
-		void removePerson(Person * person);
+		virtual void addPerson(Person * person);
+		virtual void removePerson(Person * person);
 	};
 }
 

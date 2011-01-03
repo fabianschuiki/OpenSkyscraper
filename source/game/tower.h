@@ -182,6 +182,7 @@ namespace OSS {
 		 */
 		
 		//Time
+		bool paused;
 		double time;
 		unsigned int date;
 		unsigned int getDayOfWeek();	//0,1 = WD; 2 = WE

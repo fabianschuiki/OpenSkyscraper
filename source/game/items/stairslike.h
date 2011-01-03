@@ -38,6 +38,14 @@ namespace OSS {
 		
 		//Simulation
 		void advance(double dt);
+		
+		//People
+	private:
+		typedef std::map< Person *, double > TransitProgressMap;
+		TransitProgressMap transitProgress;
+	public:
+		void addPerson(Person * person);
+		void removePerson(Person * person);
 	};
 }
 

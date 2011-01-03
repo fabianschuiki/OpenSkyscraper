@@ -260,6 +260,9 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 			
 			//DEBUG: Build debug tower
 		case 'd':	buildDebugTower(); return true; break;
+			
+			//DEBUG: Pause
+		case 'p':	tower->paused = !tower->paused; return true; break;
 	}
 	return false;
 }

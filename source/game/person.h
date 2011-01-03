@@ -20,10 +20,15 @@ namespace OSS {
 		//Journey
 	private:
 		int currentFloor;
-		Pointer<Item> currentItem;
-		Route::Nodes::iterator currentRouteNode;
 		int nextFloor;
+		Pointer<Item> currentItem;
+		unsigned int nodeIndex;
 	public:
+		int getCurrentFloor();
+		void setCurrentFloor(int floor);
+		int getNextFloor();
+		Item * getCurrentItem() const;
+		void setCurrentItem(Item * item);
 		void initJourney();
 		void advanceJourney();
 		

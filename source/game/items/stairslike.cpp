@@ -1,5 +1,6 @@
 #include "stairslike.h"
 #include "../tower.h"
+#include "../person.h"
 
 using namespace OSS;
 
@@ -139,8 +140,56 @@ void StairslikeItem::advance(double dt)
 {
 	TransportItem::advance(dt);
 	
+	//Advance people's transit
+	People peopleToAdvance;
+	for (TransitProgressMap::iterator p = transitProgress.begin(); p != transitProgress.end(); p++) {
+		if (p->second >= 1) 
+			continue;
+		p->second += dt / 2;
+		if (p->second >= 1)
+			peopleToAdvance.insert(p->first);
+	}
+	
+	//Advance people's journey where transit is over
+	for (People::iterator p = peopleToAdvance.begin(); p != peopleToAdvance.end(); p++) {
+		(*p)->setCurrentFloor((*p)->getNextFloor());
+		(*p)->advanceJourney();
+	}
+	
 	//Animate the stairs if in use
 	if (isInUse())
 		setAnimationProgress(fmod(getAnimationProgress() + 1.5 * dt, 1.0));
 }
 
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark People
+//----------------------------------------------------------------------------------------------------
+
+void StairslikeItem::addPerson(Person * person)
+{
+	TransportItem::addPerson(person);
+	
+	//Create a transit progress entry for this person
+	transitProgress[person] = 0.0;
+	
+	//Animate the item
+	setInUse(true);
+}
+
+void StairslikeItem::removePerson(Person * person)
+{
+	//Get rid of the transit progress entry
+	transitProgress.erase(person);
+	
+	//Actually remove the person
+	TransportItem::removePerson(person);
+	
+	//Stop the animation if there are no more people using this item
+	if (people.empty())
+		setInUse(false);
+}

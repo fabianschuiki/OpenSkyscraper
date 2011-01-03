@@ -17,6 +17,7 @@ Person::Person(Tower * tower) : tower(tower), CoreObject()
 {
 	currentFloor = 0;
 	nextFloor = 0;
+	nodeIndex = 0;
 }
 
 
@@ -28,12 +29,80 @@ Person::Person(Tower * tower) : tower(tower), CoreObject()
 #pragma mark Journey
 //----------------------------------------------------------------------------------------------------
 
+int Person::getCurrentFloor()
+{
+	return currentFloor;
+}
+
+void Person::setCurrentFloor(int floor)
+{
+	currentFloor = floor;
+}
+
+int Person::getNextFloor()
+{
+	return nextFloor;
+}
+
+Item * Person::getCurrentItem() const
+{
+	return currentItem;
+}
+
+void Person::setCurrentItem(Item * item)
+{
+	if (currentItem != item) {
+		//Remove the person from the current item
+		if (currentItem)
+			currentItem->removePerson(this);
+		
+		//Switch to the new item
+		currentItem = item;
+		
+		//Add person to the new item
+		if (currentItem)
+			currentItem->addPerson(this);
+	}
+}
+
 void Person::initJourney()
 {
+	nextFloor = currentFloor;
+	nodeIndex = 0;
+	advanceJourney();
 }
 
 void Person::advanceJourney()
 {
+	assert(getRoute());
+	
+	//Check whether there are nodes left in the route
+	const Route::Nodes * nodes = &getRoute()->getNodes();
+	if (nodes->size() > nodeIndex) {
+		
+		//Fetch the next node
+		const Route::Node * node = &nodes->at(nodeIndex);
+		
+		//Extract the floor information
+		currentFloor = node->start.minY();
+		nextFloor = node->end.minY();
+		
+		//Attach to the transport
+		assert(node->transport);
+		setCurrentItem(node->transport);
+		
+		//Increase the node index
+		nodeIndex++;
+	}
+	
+	//No more route nodes
+	else {
+		//Move to the destination item
+		setCurrentItem(getDestination());
+		
+		//Reset the route
+		setRoute(NULL);
+	}
 }
 
 
@@ -72,7 +141,8 @@ void Person::setRoute(Route * route)
 {
 	if (this->route != route) {
 		this->route = route;
-		initJourney();
+		if (route)
+			initJourney();
 	}
 }
 
