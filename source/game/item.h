@@ -96,7 +96,7 @@ namespace OSS {
 			unsigned short price;
 			int2 cells;
 			int2 minUnit;
-			rectmaski opacity;
+			rectmaski mask;
 		} Descriptor;
 		
 		
@@ -151,28 +151,24 @@ namespace OSS {
 		void setWorldRect(const rectd & worldRect);
 		
 		//Convenience
-		inline unsigned int getNumFloors() const;
-		inline int getMaxFloor() const;
-		inline int getMinFloor() const;
+		unsigned int getNumFloors() const;
+		int getMaxFloor() const;
+		int getMinFloor() const;
 		
 		
 		/**
 		 * Basic Sprites
 		 */
-		Sprite ceiling;
+		virtual void initBasicSprites();
+		virtual void updateBasicSprites();
+		
 		std::map<unsigned int, Sprite> backgrounds;
-		
-		void initBasicSprites();
-		void updateBasicSprites();
-		
-		virtual void initCeiling();
 		virtual void initBackground();
-		virtual void updateCeiling();
 		virtual void updateBackground();
 		
 		
 		//Construction Process
-	private:
+	protected:
 		Pointer<Sprite> constructionSprite;
 		Pointer<Sprite> constructionWorkerSprite[3];
 		double constructionWorkerUpdateTimer;

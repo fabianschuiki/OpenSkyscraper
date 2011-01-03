@@ -2,6 +2,7 @@
 #define OSS_RECTMASK_H
 
 #include "../general.h"
+#include "../base/pointer.h"
 #include "rect.h"
 
 
@@ -9,9 +10,9 @@ namespace OSS {
 	namespace Math {
 		template <typename T>
 		
-		class RectMask {
-			typedef std::vector< Rect<T> * > RectList;
-			typedef typename RectList::iterator ListIterator;
+		class RectMask : public Object {
+			typedef std::vector< Pointer< Rect<T> > > RectList;
+			typedef typename RectList::const_iterator ListIterator;
 			RectList rects;
 			
 		public:
@@ -27,8 +28,8 @@ namespace OSS {
 			}
 			
 			//Constructors
-			RectMask() {}
-			RectMask(Rect<T> * firstRect, ...) {
+			RectMask() : Object() {}
+			RectMask(Rect<T> * firstRect, ...) : Object() {
 				va_list vl;
 				va_start(vl, firstRect);
 				Rect<T> * r = firstRect;
@@ -38,16 +39,12 @@ namespace OSS {
 				}
 				va_end(vl);
 			}
-			~RectMask() {
-				for (ListIterator r = rects.begin(); r != rects.end(); r++)
-					delete *r;
-			}
 			
 			//Boolean operations
 			bool containsPoint(const Vector2D<T> &p) const {
 				if (rects.empty()) return true;
-				for (ListIterator r = rects.begin(); r != rects.end(); r++)
-					if ((*r)->containsPoint(p))
+				for (ListIterator it = rects.begin(); it != rects.end(); it++)
+					if ((*it)->containsPoint(p))
 						return true;
 				return false;
 			}

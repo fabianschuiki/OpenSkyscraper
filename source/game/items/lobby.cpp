@@ -23,19 +23,19 @@ Item::Descriptor LobbyItem::descriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-LobbyItem::LobbyItem(Tower * tower) : Item(tower, &descriptor)
+LobbyItem::LobbyItem(Tower * tower) : FacilityItem(tower, &descriptor)
 {
 }
 
 void LobbyItem::init()
 {
-	Item::init();
+	FacilityItem::init();
 	initEntrances();
 }
 
 void LobbyItem::update()
 {
-	Item::update();
+	FacilityItem::update();
 	updateEntrances();
 }
 
@@ -92,7 +92,7 @@ void LobbyItem::updateEntrances()
 
 void LobbyItem::initCeiling()
 {
-	Item::initCeiling();
+	FacilityItem::initCeiling();
 	
 	//We need the strong ceiling for the lobby
 	ceiling.texture = Texture::named("ceiling-strong.png");
@@ -100,7 +100,7 @@ void LobbyItem::initCeiling()
 
 void LobbyItem::initBackground()
 {
-	Item::initBackground();
+	FacilityItem::initBackground();
 		
 	//DEBUG: Load the debug background sprite
 	backgrounds[0].autoTexRectX = true;
@@ -120,7 +120,7 @@ void LobbyItem::initBackground()
 void LobbyItem::draw(rectd visibleRect)
 {
 	//Draw the item
-	Item::draw(visibleRect);
+	FacilityItem::draw(visibleRect);
 	
 	//Draw the entrances
 	for (int i = 0; i < 2; i++)
@@ -138,6 +138,6 @@ void LobbyItem::draw(rectd visibleRect)
 
 void LobbyItem::onChangeLocation()
 {
-	Item::onChangeLocation();
+	FacilityItem::onChangeLocation();
 	updateEntrances();
 }

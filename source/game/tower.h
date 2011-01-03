@@ -132,14 +132,19 @@ namespace OSS {
 		bool checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor, recti rect);
 		
 		typedef struct {
-			unsigned int emptyCells;
-			unsigned int floorCells;
-			unsigned int facilityCells;
-			unsigned int transportCells;
+			unsigned int empty;
+			unsigned int floor;
+			unsigned int facility;
+			unsigned int transport;
+		} CellCount;
+		typedef struct {
+			CellCount all;
+			CellCount masked;
+			unsigned int unmaskedCells;
 			unsigned int facilityCellsBelow;
 			unsigned int facilityCellsAbove;
 		} CellAnalysis;
-		CellAnalysis analyzeCellsInRect(recti rect);
+		CellAnalysis analyzeCellsInRect(recti rect, rectmaski mask);
 		
 		void insertNewItem(Item::Descriptor * descriptor, recti rect);
 		

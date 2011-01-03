@@ -589,7 +589,8 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 		return false;
 	
 	//Perform a cell analysis
-	CellAnalysis analysis = analyzeCellsInRect(rect);
+	CellAnalysis analysis = analyzeCellsInRect(rect, descriptor->mask);
+	OSSObjectLog << "analysis returned " << analysis.unmaskedCells << " masked cells" << std::endl;
 	
 	//Perform category-specific checks
 	switch (descriptor->category) {
@@ -609,7 +610,7 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 			}
 			
 			//There must not be any occupied cells inside the rect
-			if (analysis.facilityCells) {
+			if (analysis.masked.facility) {
 				OSSObjectError << "occupied by other facilities" << std::endl;
 				return false;
 			}
@@ -618,13 +619,13 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 			//Transport items
 		case Item::kTransportCategory: {
 			//The transport item must be entirely covered by facilities
-			if (analysis.facilityCells != rect.area()) {
+			if (analysis.all.facility != rect.area()) {
 				OSSObjectError << "not entirely occupied by facilities" << std::endl;
 				return false;
 			}
 			
 			//There must not be any cells occupied by transports inside the rect
-			if (analysis.transportCells) {
+			if (analysis.masked.transport) {
 				OSSObjectError << "occupied by other transports" << std::endl;
 				return false;
 			}
@@ -636,7 +637,7 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Withdraw funds
 	long costs = descriptor->price;
-	costs += analysis.emptyCells * Item::descriptorForItemType(Item::kFloorType)->price;
+	costs += analysis.masked.empty * Item::descriptorForItemType(Item::kFloorType)->price;
 	transferFunds(-costs);
 	
 	//Play the construction sound
@@ -681,7 +682,7 @@ bool Tower::checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor
  * Counts various cell types inside a rect. Handy if you have to decide whether a given rect is
  * valid for construction.
  */
-Tower::CellAnalysis Tower::analyzeCellsInRect(recti rect)
+Tower::CellAnalysis Tower::analyzeCellsInRect(recti rect, rectmaski mask)
 {
 	CellAnalysis analysis;
 	bzero(&analysis, sizeof(analysis));
@@ -701,17 +702,40 @@ Tower::CellAnalysis Tower::analyzeCellsInRect(recti rect)
 		
 		//Count cells inside
 		for (int y = rect.minY(); y < rect.maxY(); y++) {
-			Cell * cell = getCell(int2(x, y), false);
+			int2 point(x, y);
 			
-			if (!cell || !cell->facility)
-				analysis.emptyCells++;
-			else if (facilityItems[cell->facility]->descriptor->type == Item::kFloorType)
-				analysis.floorCells++;
-			else
-				analysis.facilityCells++;
+			//Check whether this cell is masked
+			bool masked = (mask.containsPoint(point - rect.origin));
 			
-			if (cell && cell->transport)
-				analysis.transportCells++;
+			//Count masked cells
+			if (!masked)
+				analysis.unmaskedCells++;
+			
+			//Fetch the cell instance
+			Cell * cell = getCell(point, false);
+			
+			//Count the facility cells
+			if (!cell || !cell->facility) {
+				analysis.all.empty++;
+				if (masked) analysis.masked.empty++;
+			}
+			else if (facilityItems[cell->facility]->descriptor->type == Item::kFloorType) {
+				analysis.all.floor++;
+				if (masked) analysis.masked.floor++;
+			}
+			else {
+				analysis.all.facility++;
+				if (masked) analysis.masked.facility++;
+			}
+			
+			//Count transport cells
+			if (cell && cell->transport) {
+				analysis.all.transport++;
+				if (masked) {
+					OSSObjectLog << "cell at " << point.description() << " occupied by transport!" << std::endl;
+					analysis.masked.transport++;
+				}
+			}
 		}
 	}
 	
@@ -730,12 +754,14 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	unsigned int itemID = nextItemID();
 	
 	//DEBUG: Log the opacity
-	OSSObjectLog << descriptor->opacity.description() << std::endl;
+	OSSObjectLog << descriptor->mask.description() << std::endl;
 	
 	//Make the cells the item covers point at it
 	for (int x = rect.minX(); x < rect.maxX(); x++) {
 		for (int y = rect.minY(); y < rect.maxY(); y++) {
-			Cell * cell = getCell(int2(x, y), true);
+			int2 point(x, y);
+			if (!descriptor->mask.containsPoint(point - rect.origin)) continue;
+			Cell * cell = getCell(point, true);
 			switch (descriptor->category) {
 				case Item::kFacilityCategory:	cell->facility	= itemID; break;
 				case Item::kTransportCategory:	cell->transport	= itemID; break;

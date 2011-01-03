@@ -2,11 +2,11 @@
 #define OSS_OFFICE_H
 
 #include "../../general.h"
-#include "../item.h"
+#include "../facilityitem.h"
 
 
 namespace OSS {
-	class OfficeItem : public Item {
+	class OfficeItem : public FacilityItem {
 	public:
 		static Item::Descriptor descriptor;
 		

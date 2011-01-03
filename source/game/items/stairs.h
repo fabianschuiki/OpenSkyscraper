@@ -3,11 +3,11 @@
 
 
 #include "../../general.h"
-#include "../item.h"
+#include "../transportitem.h"
 
 
 namespace OSS {
-	class StairsItem : public Item {
+	class StairsItem : public TransportItem {
 	public:
 		static Item::Descriptor descriptor;
 		

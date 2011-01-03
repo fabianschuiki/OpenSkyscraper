@@ -160,17 +160,17 @@ void Item::setWorldRect(const rectd & worldRect)
 	}
 }
 
-inline unsigned int Item::getNumFloors() const
+unsigned int Item::getNumFloors() const
 {
 	return getRect().size.y;
 }
 
-inline int Item::getMaxFloor() const
+int Item::getMaxFloor() const
 {
 	return getRect().maxY() - 1;
 }
 
-inline int Item::getMinFloor() const
+int Item::getMinFloor() const
 {
 	return getRect().minY();
 }
@@ -186,35 +186,16 @@ inline int Item::getMinFloor() const
 
 void Item::initBasicSprites()
 {
-	initCeiling();
 	initBackground();
 }
 
 void Item::updateBasicSprites()
 {
-	updateCeiling();
 	updateBackground();
-}
-
-void Item::initCeiling()
-{
-	ceiling.autoTexRectX = true;
-	ceiling.textureMode = Sprite::kRepeatTextureMode;
-	ceiling.texture = Texture::named("ceiling.png");
 }
 
 void Item::initBackground()
 {
-}
-
-void Item::updateCeiling()
-{
-	//Calculate the ceiling rect
-	rectd rect = getWorldRect();
-	rect.origin.y = rect.maxY();
-	rect.size.y = 12;
-	rect.origin.y -= rect.size.y;
-	ceiling.setRect(rect);
 }
 
 void Item::updateBackground()
@@ -226,10 +207,8 @@ void Item::updateBackground()
 		rect.size.y = 1;
 		rect.origin.y += floor;
 		
-		//Convert the rect to world coordinates and trim the top floor
+		//Convert the rect to world coordinates
 		rectd worldRect = tower->convertCellToWorldRect(rect);
-		if (rect.origin.y == getMaxFloor())
-			worldRect.size.y -= ceiling.getRect().size.y;
 		
 		//Set the background rect
 		backgrounds[floor].setRect(worldRect);
@@ -315,10 +294,6 @@ void Item::draw(rectd visibleRect)
 		for (int i = 0; i < getRect().size.y; i++)
 			backgrounds[i].draw(visibleRect);
 	}
-	
-	//Draw the ceiling sprite
-	if (!underConstruction || !drawFlexibleConstruction)
-		ceiling.draw(visibleRect);
 }
 
 

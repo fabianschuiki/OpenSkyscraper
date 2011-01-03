@@ -44,6 +44,8 @@
 		1FD0EB1D11FF96FC004F4D4E /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD0EB1C11FF96FC004F4D4E /* scene.cpp */; };
 		1FF348F012CB993E0077DF1B /* office.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FF348EF12CB993E0077DF1B /* office.cpp */; };
 		1FFABC6012D10E7600D9B02C /* stairs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFABC5F12D10E7600D9B02C /* stairs.cpp */; };
+		1FFABF4512D14F4B00D9B02C /* facilityitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFABF4412D14F4B00D9B02C /* facilityitem.cpp */; };
+		1FFABF4912D1512500D9B02C /* transportitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFABF4812D1512500D9B02C /* transportitem.cpp */; };
 		1FFC7B5B12CD53A00071EA72 /* audiotask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7B5A12CD53A00071EA72 /* audiotask.cpp */; };
 		1FFC7B5F12CD576A0071EA72 /* soundeffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7B5E12CD576A0071EA72 /* soundeffect.cpp */; };
 		1FFC7C7312CD7B630071EA72 /* controlwindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFC7C7212CD7B630071EA72 /* controlwindow.cpp */; };
@@ -160,6 +162,10 @@
 		1FFABC5E12D10E7600D9B02C /* stairs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stairs.h; sourceTree = "<group>"; };
 		1FFABC5F12D10E7600D9B02C /* stairs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stairs.cpp; sourceTree = "<group>"; };
 		1FFABE4912D13BCD00D9B02C /* rectmask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rectmask.h; sourceTree = "<group>"; };
+		1FFABF4312D14F4B00D9B02C /* facilityitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = facilityitem.h; sourceTree = "<group>"; };
+		1FFABF4412D14F4B00D9B02C /* facilityitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = facilityitem.cpp; sourceTree = "<group>"; };
+		1FFABF4712D1512500D9B02C /* transportitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transportitem.h; sourceTree = "<group>"; };
+		1FFABF4812D1512500D9B02C /* transportitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = transportitem.cpp; sourceTree = "<group>"; };
 		1FFC7B5912CD53A00071EA72 /* audiotask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audiotask.h; sourceTree = "<group>"; };
 		1FFC7B5A12CD53A00071EA72 /* audiotask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audiotask.cpp; sourceTree = "<group>"; };
 		1FFC7B5D12CD576A0071EA72 /* soundeffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundeffect.h; sourceTree = "<group>"; };
@@ -303,6 +309,8 @@
 			isa = PBXGroup;
 			children = (
 				1F21FF1B12007DEC000A8AC3 /* game.h */,
+				1FFABF4312D14F4B00D9B02C /* facilityitem.h */,
+				1FFABF4412D14F4B00D9B02C /* facilityitem.cpp */,
 				1F38253D1202ED5000C1E2B0 /* gameevent.h */,
 				1FC821C312CA1A9C00168481 /* gui */,
 				1F38276612032C2400C1E2B0 /* item.h */,
@@ -313,6 +321,8 @@
 				1F21FE061200359B000A8AC3 /* scenes */,
 				1F21FE82120044AF000A8AC3 /* tower.h */,
 				1F21FE83120044AF000A8AC3 /* tower.cpp */,
+				1FFABF4712D1512500D9B02C /* transportitem.h */,
+				1FFABF4812D1512500D9B02C /* transportitem.cpp */,
 				1F21FF1312007D1F000A8AC3 /* simtower.h */,
 				1F21FF1412007D1F000A8AC3 /* simtower.cpp */,
 				1FFDB2E312CBE5260054BEA3 /* simtower-names.cpp */,
@@ -546,6 +556,8 @@
 				1FFC7C7312CD7B630071EA72 /* controlwindow.cpp in Sources */,
 				1FFC7D4912CD8C860071EA72 /* rand.cpp in Sources */,
 				1FFABC6012D10E7600D9B02C /* stairs.cpp in Sources */,
+				1FFABF4512D14F4B00D9B02C /* facilityitem.cpp in Sources */,
+				1FFABF4912D1512500D9B02C /* transportitem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

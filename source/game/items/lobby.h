@@ -2,11 +2,11 @@
 #define OSS_LOBBY_H
 
 #include "../../general.h"
-#include "../item.h"
+#include "../facilityitem.h"
 
 
 namespace OSS {
-	class LobbyItem : public Item {
+	class LobbyItem : public FacilityItem {
 	public:
 		static Item::Descriptor descriptor;
 		

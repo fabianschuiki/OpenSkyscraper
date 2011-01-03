@@ -23,7 +23,7 @@ Item::Descriptor OfficeItem::descriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-OfficeItem::OfficeItem(Tower * tower) : Item(tower, &descriptor)
+OfficeItem::OfficeItem(Tower * tower) : FacilityItem(tower, &descriptor)
 {
 	type = randui(0, 6);
 	vacant = true;
@@ -85,7 +85,7 @@ void OfficeItem::setVacant(const bool vacant)
 
 void OfficeItem::updateBackground()
 {
-	Item::updateBackground();
+	FacilityItem::updateBackground();
 	
 	//Load the appropriate office texture
 	if (vacant) {
@@ -116,7 +116,7 @@ void OfficeItem::updateBackground()
 
 void OfficeItem::advance(double dt)
 {
-	Item::advance(dt);
+	FacilityItem::advance(dt);
 	
 	//Update the background when the light state changes
 	if (tower->checkTime(7) || tower->checkTime(17))

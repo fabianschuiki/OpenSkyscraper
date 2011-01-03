@@ -2,13 +2,14 @@
 #define OSS_RECT_H
 
 #include "../general.h"
+#include "../base/object.h"
 
 
 namespace OSS {
 	namespace Math {
 		template <typename T>
 		
-		class Rect {
+		class Rect : public Object {
 		public:
 			Vector2D<T> origin;
 			Vector2D<T> size;
@@ -23,10 +24,10 @@ namespace OSS {
 			}
 			
 			//Constructors
-			Rect() {}
-			Rect(T x, T y, T w, T h) : origin(x, y), size(w, h) {}
-			Rect(const Rect<T> &r) : origin(r.origin), size(r.size) {}
-			Rect(const Vector2D<T> origin, const Vector2D<T> size) {
+			Rect() : Object() {}
+			Rect(T x, T y, T w, T h) : origin(x, y), size(w, h), Object() {}
+			Rect(const Rect<T> &r) : origin(r.origin), size(r.size), Object() {}
+			Rect(const Vector2D<T> origin, const Vector2D<T> size) :  Object() {
 				this->origin = origin;
 				this->size = size;
 			}

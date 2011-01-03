@@ -25,7 +25,7 @@ Item::Descriptor StairsItem::descriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-StairsItem::StairsItem(Tower * tower) : Item(tower, &descriptor)
+StairsItem::StairsItem(Tower * tower) : TransportItem(tower, &descriptor)
 {
 	animationFrame = 0;
 	animationProgress = 0;
@@ -111,6 +111,12 @@ void StairsItem::updateBackground()
 		backgrounds[i].texture = Texture::named(textureName);
 		backgrounds[i].textureRect.origin.x = (getAnimationFrame() % 7) / 7.0;
 	}
+	
+	//Reduce the upper background's height, since the texture accounts for a ceiling that isn't
+	//actually there.
+	rectd rect = backgrounds[1].getRect();
+	rect.size.y -= 12;
+	backgrounds[1].setRect(rect);
 }
 
 
