@@ -145,7 +145,7 @@ void StairslikeItem::advance(double dt)
 	for (TransitProgressMap::iterator p = transitProgress.begin(); p != transitProgress.end(); p++) {
 		if (p->second >= 1) 
 			continue;
-		p->second += dt / 2;
+		p->second += dt / 1.0;
 		if (p->second >= 1)
 			peopleToAdvance.insert(p->first);
 	}
