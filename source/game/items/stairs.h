@@ -3,36 +3,19 @@
 
 
 #include "../../general.h"
-#include "../transportitem.h"
+#include "stairslike.h"
 
 
 namespace OSS {
-	class StairsItem : public TransportItem {
+	class StairsItem : public StairslikeItem {
 	public:
 		static Item::Descriptor descriptor;
 		
 		//Initialization
 		StairsItem(Tower * tower);
 		
-		//Animation
-	private:
-		unsigned int animationFrame;
-		double animationProgress;
-		bool inUse;
-	public:
-		unsigned int getAnimationFrame();
-		void setAnimationFrame(unsigned int animationFrame);
-		double getAnimationProgress();
-		void setAnimationProgress(double animationProgress);
-		bool isInUse();
-		void setInUse(bool inUse);
-		
 		//Basic Sprites
-		void initBackground();
 		void updateBackground();
-		
-		//Simulation
-		void advance(double dt);
 	};
 }
 

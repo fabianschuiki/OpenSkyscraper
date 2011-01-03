@@ -76,11 +76,12 @@ Item * Item::make(Tower * tower, Descriptor * descriptor)
 	Item * instance = NULL;
 	switch (descriptor->type) {
 			//Structure
-		case Item::kLobbyType:	instance = new LobbyItem(tower); break;
-		case Item::kStairsType:	instance = new StairsItem(tower); break;
+		case Item::kLobbyType:		instance = new LobbyItem(tower); break;
+		case Item::kStairsType:		instance = new StairsItem(tower); break;
+		case Item::kEscalatorType:	instance = new EscalatorItem(tower); break;
 			
 			//Office
-		case Item::kOfficeType:	instance = new OfficeItem(tower); break;
+		case Item::kOfficeType:		instance = new OfficeItem(tower); break;
 	}
 	
 	//Initialize the item
@@ -227,11 +228,12 @@ void Item::updateBackground()
 Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
 {
 	switch (itemType) {
-		case Item::kLobbyType:	return &LobbyItem::descriptor; break;
-		case Item::kFloorType:	return &floorItemDescriptor; break;
-		case Item::kStairsType:	return &StairsItem::descriptor; break;
+		case Item::kLobbyType:		return &LobbyItem::descriptor; break;
+		case Item::kFloorType:		return &floorItemDescriptor; break;
+		case Item::kStairsType:		return &StairsItem::descriptor; break;
+		case Item::kEscalatorType:	return &EscalatorItem::descriptor; break;
 			
-		case Item::kOfficeType:	return &OfficeItem::descriptor; break;
+		case Item::kOfficeType:		return &OfficeItem::descriptor; break;
 	}
 	return NULL;
 }
