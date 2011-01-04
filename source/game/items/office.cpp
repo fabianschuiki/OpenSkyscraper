@@ -155,13 +155,15 @@ void OfficeItem::advance(double dt)
 		setVacant(true);
 	
 	//Update worker schedules
-	if (!isVacant() && tower->checkTime(5))
-		updateWorkerSchedules();
+	/*if (!isVacant() && tower->checkTime(5))
+		updateWorkerSchedules();*/
+	if (!isVacant())
+		advanceWorkers(dt);
 	
 	//Update the worker schedules
-	for (ScheduledPersonMap::iterator w = workers.begin(); w != workers.end(); w++)
+	for (WorkerMap::iterator w = workers.begin(); w != workers.end(); w++)
 		if (w->second)
-			w->second->updateFromSchedule();
+			w->second->updateTimedJourney();
 	
 	//DEBUG: Colorize the office if it is not reachable from the lobby
 	backgrounds[0].color = (isReachableFromLobby() ? (color4d){1, 1, 1, 1} : (color4d){1, 0.25, 0.25, 1});
@@ -169,6 +171,22 @@ void OfficeItem::advance(double dt)
 	//Update the background when the light state changes
 	if (tower->checkTime(7) || tower->checkTime(17))
 		updateBackground();
+}
+
+void OfficeItem::advanceWorkers(double dt)
+{
+	//Iterate through the workers and advance those that haven't got a clue what to do :)
+	for (WorkerMap::iterator w = workers.begin(); w != workers.end(); w++)
+		if (!w->second->hasNextDestination())
+			advanceWorker(w->first, w->second);
+}
+
+void OfficeItem::advanceWorker(std::string key, TimedPerson * worker)
+{
+	if (tower->time > 12)
+		worker->setNextDestination(17, NULL);
+	else
+		worker->setNextDestination(7, this);
 }
 
 
@@ -265,18 +283,18 @@ void OfficeItem::onChangeTransportItems()
 void OfficeItem::initWorkers()
 {
 	//Initialize the salesmen
-	workers["salesman/0"] = new ScheduledPerson(tower);
-	workers["salesman/1"] = new ScheduledPerson(tower);
+	workers["salesman/0"] = new TimedPerson(tower);
+	workers["salesman/1"] = new TimedPerson(tower);
 	
 	//Initialize the male workers
-	workers["male/0"] = new ScheduledPerson(tower);
-	workers["male/1"] = new ScheduledPerson(tower);
+	workers["male/0"] = new TimedPerson(tower);
+	workers["male/1"] = new TimedPerson(tower);
 	
 	//Initialize the female workers
-	workers["female/0"] = new ScheduledPerson(tower);
-	workers["female/1"] = new ScheduledPerson(tower);
+	workers["female/0"] = new TimedPerson(tower);
+	workers["female/1"] = new TimedPerson(tower);
 	
-	updateWorkerSchedules();
+	//updateWorkerSchedules();
 }
 
 void OfficeItem::clearWorkers()
@@ -284,7 +302,7 @@ void OfficeItem::clearWorkers()
 	workers.clear();
 }
 
-void OfficeItem::updateWorkerSchedules()
+/*void OfficeItem::updateWorkerSchedules()
 {
 	OSSObjectLog << std::endl;
 	
@@ -320,4 +338,4 @@ void OfficeItem::updateWorkerSchedule(ScheduledPerson * person)
 		return;
 	
 	Schedule * s = new Schedule;
-}
+}*/

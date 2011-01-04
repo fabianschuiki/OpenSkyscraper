@@ -4,7 +4,7 @@
 #include "../../general.h"
 #include "../facilityitem.h"
 #include "../route.h"
-#include "../scheduledperson.h"
+#include "../timedperson.h"
 
 
 namespace OSS {
@@ -35,6 +35,8 @@ namespace OSS {
 		
 		//Simulation
 		void advance(double dt);
+		void advanceWorkers(double dt);
+		void advanceWorker(std::string key, TimedPerson * worker);
 		
 		//Reachability
 	private:
@@ -55,13 +57,14 @@ namespace OSS {
 		
 		//Workers
 	private:
-		typedef std::map< std::string, Pointer<ScheduledPerson> > ScheduledPersonMap;
-		ScheduledPersonMap workers;
+		typedef std::map< std::string, Pointer<TimedPerson> > WorkerMap;
+		WorkerMap workers;
 	public:
 		void initWorkers();
 		void clearWorkers();
-		void updateWorkerSchedules();
-		void updateSalesmanSchedule(ScheduledPerson * person);
+		//void updateWorkerSchedules();
+		//void updateSalesmanSchedule(ScheduledPerson * person);
+		//void updateWorkerSchedule(ScheduledPerson * person);
 	};
 }
 
