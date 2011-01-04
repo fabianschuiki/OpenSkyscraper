@@ -17,23 +17,48 @@ namespace OSS {
 		//Initialization
 		Person(Tower * tower);
 		
-		//Journey
+		/**
+		 * Location
+		 */
 	private:
-		int currentFloor;
+		int floor;
+		Pointer<Item> item;
+		double arrivalTime;
+	public:
+		//Floor
+		int getFloor();
+		void setFloor(int floor);
+		
+		//Item
+		Item * getItem() const;
+		void setItem(Item * item);
+		
+		//Arrival time
+		double getArrivalTime();
+		void setArrivalTime(double time);
+		
+		//Convenience
+		double getTimeSinceArrival();
+		bool isAt(Item * item);
+		bool hasBeenAtFor(Item * item, double duration);
+		
+		
+		/**
+		 * Journey
+		 */
+	private:
 		int nextFloor;
-		Pointer<Item> currentItem;
 		unsigned int nodeIndex;
 	public:
-		int getCurrentFloor();
-		void setCurrentFloor(int floor);
 		int getNextFloor();
-		Item * getCurrentItem() const;
-		void setCurrentItem(Item * item);
+		void setNextFloor(int nextFloor);
 		void initJourney();
 		void advanceJourney();
 		
 		
-		//Route
+		/**
+		 * Route
+		 */
 	private:
 		Pointer<Item> destination;
 		Pointer<Route> route;
@@ -43,6 +68,12 @@ namespace OSS {
 		Route * getRoute();
 		void setRoute(Route * route);
 		void updateRoute();
+		
+		
+		/**
+		 * Notifications
+		 */
+		virtual void onArrivedAtDestination();
 	};
 }
 

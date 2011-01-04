@@ -15,9 +15,83 @@ using namespace OSS;
 
 Person::Person(Tower * tower) : tower(tower), CoreObject()
 {
-	currentFloor = 0;
+	floor = 0;
 	nextFloor = 0;
 	nodeIndex = 0;
+	arrivalTime = 0;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Location
+//----------------------------------------------------------------------------------------------------
+
+int Person::getFloor()
+{
+	return floor;
+}
+
+void Person::setFloor(int floor)
+{
+	this->floor = floor;
+}
+
+Item * Person::getItem() const
+{
+	return item;
+}
+
+void Person::setItem(Item * item)
+{
+	if (this->item != item) {
+		//Remove the person from the current item
+		if (this->item)
+			this->item->removePerson(this);
+		
+		//Switch to the new item
+		this->item = item;
+		
+		//Update the arrival time
+		setArrivalTime(tower->time);
+		
+		//Add person to the new item
+		if (this->item)
+			this->item->addPerson(this);
+	}
+}
+
+double Person::getArrivalTime()
+{
+	//Wrap around the arrival time if required. If the person arrived yesterday at 17:00 and it is
+	//10:00 today, the time since arrival would be -7h, which makes no sense. Instead it should
+	//read as 17h.
+	if (arrivalTime < tower->time)
+		arrivalTime -= 24;
+	return arrivalTime;
+}
+
+void Person::setArrivalTime(double time)
+{
+	arrivalTime = time;
+}
+
+double Person::getTimeSinceArrival()
+{
+	return (tower->time - getArrivalTime());
+}
+
+bool Person::isAt(Item * item)
+{
+	return (getItem() == item);
+}
+
+bool Person::hasBeenAtFor(Item * item, double duration)
+{
+	return (getItem() == item && getTimeSinceArrival() >= duration);
 }
 
 
@@ -29,45 +103,19 @@ Person::Person(Tower * tower) : tower(tower), CoreObject()
 #pragma mark Journey
 //----------------------------------------------------------------------------------------------------
 
-int Person::getCurrentFloor()
-{
-	return currentFloor;
-}
-
-void Person::setCurrentFloor(int floor)
-{
-	currentFloor = floor;
-}
-
 int Person::getNextFloor()
 {
 	return nextFloor;
 }
 
-Item * Person::getCurrentItem() const
+void Person::setNextFloor(int nextFloor)
 {
-	return currentItem;
-}
-
-void Person::setCurrentItem(Item * item)
-{
-	if (currentItem != item) {
-		//Remove the person from the current item
-		if (currentItem)
-			currentItem->removePerson(this);
-		
-		//Switch to the new item
-		currentItem = item;
-		
-		//Add person to the new item
-		if (currentItem)
-			currentItem->addPerson(this);
-	}
+	this->nextFloor = nextFloor;
 }
 
 void Person::initJourney()
 {
-	nextFloor = currentFloor;
+	nextFloor = getFloor();
 	nodeIndex = 0;
 	advanceJourney();
 }
@@ -84,12 +132,12 @@ void Person::advanceJourney()
 		const Route::Node * node = &nodes->at(nodeIndex);
 		
 		//Extract the floor information
-		currentFloor = node->start.minY();
-		nextFloor = node->end.minY();
+		setFloor(node->start.minY());
+		setNextFloor(node->end.minY());
 		
 		//Attach to the transport
 		assert(node->transport);
-		setCurrentItem(node->transport);
+		setItem(node->transport);
 		
 		//Increase the node index
 		nodeIndex++;
@@ -97,11 +145,7 @@ void Person::advanceJourney()
 	
 	//No more route nodes
 	else {
-		//Move to the destination item
-		setCurrentItem(getDestination());
-		
-		//Reset the route
-		setRoute(NULL);
+		onArrivedAtDestination();
 	}
 }
 
@@ -150,14 +194,14 @@ void Person::updateRoute()
 {
 	//Calculate the starting rect of the root. It's either the current item's rect or the ground
 	//floor.
-	recti start = (currentItem ? currentItem->getRect() : tower->getGroundFloorRect());
+	recti start = (getItem() ? getItem()->getRect() : tower->getGroundFloorRect());
 	
 	//The destination rect likewise
 	recti destination = (getDestination() ? getDestination()->getRect() : tower->getGroundFloorRect());
 	
 	//If there's no current item, reset the current floor to the ground level.
-	if (!currentItem)
-		currentFloor = 0;
+	if (!getItem())
+		setFloor(0);
 	
 	//Find a route to the destination
 	Route * route = tower->findRoute(start, destination);
@@ -165,4 +209,22 @@ void Person::updateRoute()
 	if (!route)
 		OSSObjectError << "cannot find route from " << start.description()
 		<< " to " << destination.description() << std::endl;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Notifications
+//----------------------------------------------------------------------------------------------------
+
+void Person::onArrivedAtDestination()
+{
+	//Move to the destination item
+	setItem(getDestination());
+	
+	//Reset the route
+	setRoute(NULL);
 }

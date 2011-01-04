@@ -163,7 +163,7 @@ void OfficeItem::advance(double dt)
 	//Update the worker schedules
 	for (WorkerMap::iterator w = workers.begin(); w != workers.end(); w++)
 		if (w->second)
-			w->second->updateTimedJourney();
+			w->second->updateTimedDestination();
 	
 	//DEBUG: Colorize the office if it is not reachable from the lobby
 	backgrounds[0].color = (isReachableFromLobby() ? (color4d){1, 1, 1, 1} : (color4d){1, 0.25, 0.25, 1});
@@ -177,16 +177,29 @@ void OfficeItem::advanceWorkers(double dt)
 {
 	//Iterate through the workers and advance those that haven't got a clue what to do :)
 	for (WorkerMap::iterator w = workers.begin(); w != workers.end(); w++)
-		if (!w->second->hasNextDestination())
+		if (w->second->hasNoPlans())
 			advanceWorker(w->first, w->second);
 }
 
 void OfficeItem::advanceWorker(std::string key, TimedPerson * worker)
 {
-	if (tower->time > 12)
-		worker->setNextDestination(17, NULL);
-	else
-		worker->setNextDestination(7, this);
+	OSSObjectLog << "advancing worker " << key << std::endl;
+	
+	//Before 12:00, move to the office
+	if (tower->time < 12 && !worker->isAt(this))
+		worker->setNextDestination(randd(7, 10), this, 0.25);
+	
+	//Between 12:00 and 12:45, go have lunch if at the office
+	if (tower->time >= 12 && tower->time < 12.75)
+		worker->setNextDestination(randd(tower->time, tower->time + 1/6.0), NULL, 0.25);
+	
+	//Between 12:00 and 17:00, return from lunch after spending 20 minutes there
+	if (tower->time >= 12 && tower->time < 17)
+		worker->setNextDestination(randd(tower->time, tower->time + 10 / 60.0), this, 0.25);
+	
+	//After 17:00, go home
+	if (tower->time >= 17)
+		worker->setNextDestination(randd(tower->time, 19), NULL);
 }
 
 
@@ -283,7 +296,7 @@ void OfficeItem::onChangeTransportItems()
 void OfficeItem::initWorkers()
 {
 	//Initialize the salesmen
-	workers["salesman/0"] = new TimedPerson(tower);
+	/*workers["salesman/0"] = new TimedPerson(tower);
 	workers["salesman/1"] = new TimedPerson(tower);
 	
 	//Initialize the male workers
@@ -291,7 +304,7 @@ void OfficeItem::initWorkers()
 	workers["male/1"] = new TimedPerson(tower);
 	
 	//Initialize the female workers
-	workers["female/0"] = new TimedPerson(tower);
+	workers["female/0"] = new TimedPerson(tower);*/
 	workers["female/1"] = new TimedPerson(tower);
 	
 	//updateWorkerSchedules();

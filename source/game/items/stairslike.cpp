@@ -152,7 +152,7 @@ void StairslikeItem::advance(double dt)
 	
 	//Advance people's journey where transit is over
 	for (People::iterator p = peopleToAdvance.begin(); p != peopleToAdvance.end(); p++) {
-		(*p)->setCurrentFloor((*p)->getNextFloor());
+		(*p)->setFloor((*p)->getNextFloor());
 		(*p)->advanceJourney();
 	}
 	
