@@ -10,7 +10,8 @@ namespace OSS {
 	class TimedPerson : public Person {
 	public:
 		//Initialization
-		TimedPerson(Tower * tower) : Person(tower) {}
+		TimedPerson(Tower * tower);
+		virtual void reset();
 		
 		
 		/**

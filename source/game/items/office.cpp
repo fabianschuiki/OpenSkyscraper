@@ -175,31 +175,61 @@ void OfficeItem::advance(double dt)
 
 void OfficeItem::advanceWorkers(double dt)
 {
+	bool resetWorkers = tower->checkTime(3);
+	
 	//Iterate through the workers and advance those that haven't got a clue what to do :)
-	for (WorkerMap::iterator w = workers.begin(); w != workers.end(); w++)
+	for (WorkerMap::iterator w = workers.begin(); w != workers.end(); w++) {
+		if (resetWorkers)
+			w->second->reset();
 		if (w->second->hasNoPlans())
 			advanceWorker(w->first, w->second);
+	}
 }
 
 void OfficeItem::advanceWorker(std::string key, TimedPerson * worker)
 {
-	OSSObjectLog << "advancing worker " << key << std::endl;
+	OSSObjectLog << "advancing worker " << key << ": ";
 	
 	//Before 12:00, move to the office
-	if (tower->time < 12 && !worker->isAt(this))
-		worker->setNextDestination(randd(7, 10), this, 0.25);
+	if (tower->time < 12) {
+		if (worker->isAt(this)) {
+			std::cout << "work at office until 12:00";
+			worker->setPauseEndTime(12);
+		} else {
+			worker->setNextDestination(randd(std::max<double>(tower->time, 7), 10), this, 0.25);
+			std::cout << "go to work at " << worker->getNextDestinationTime();
+		}
+	}
 	
 	//Between 12:00 and 12:45, go have lunch if at the office
-	if (tower->time >= 12 && tower->time < 12.75)
+	else if (tower->time >= 12 && tower->time < 12.75 && worker->isAt(this)) {
 		worker->setNextDestination(randd(tower->time, tower->time + 1/6.0), NULL, 0.25);
+		std::cout << "go to have lunch at " << worker->getNextDestinationTime();
+	}
 	
 	//Between 12:00 and 17:00, return from lunch after spending 20 minutes there
-	if (tower->time >= 12 && tower->time < 17)
-		worker->setNextDestination(randd(tower->time, tower->time + 10 / 60.0), this, 0.25);
+	else if (tower->time >= 12 && tower->time < 17) {
+		if (worker->isAt(this)) {
+			std::cout << "work at office until 17:00";
+			worker->setPauseEndTime(17);
+		} else {
+			worker->setNextDestination(randd(tower->time, tower->time + 10 / 60.0), this, 0.25);
+			std::cout << "go back to work at " << worker->getNextDestinationTime();
+		}
+	}
 	
 	//After 17:00, go home
-	if (tower->time >= 17)
-		worker->setNextDestination(randd(tower->time, 19), NULL);
+	if (tower->time >= 17) {
+		if (worker->isAt(NULL)) {
+			std::cout << "enjoy evening at home";
+			worker->setPauseEndTime(24);
+		} else {
+			worker->setNextDestination(randd(tower->time, 19), NULL);
+			std::cout << "go home at " << worker->getNextDestinationTime();
+		}
+	}
+	
+	std::cout << std::endl;
 }
 
 

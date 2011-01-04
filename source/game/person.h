@@ -16,6 +16,7 @@ namespace OSS {
 	public:
 		//Initialization
 		Person(Tower * tower);
+		virtual void reset();
 		
 		/**
 		 * Location
@@ -68,6 +69,10 @@ namespace OSS {
 		Route * getRoute();
 		void setRoute(Route * route);
 		void updateRoute();
+		
+		//Convenience
+		bool isAtDestination();
+		bool hasRoute();
 		
 		
 		/**

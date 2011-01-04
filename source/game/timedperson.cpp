@@ -9,6 +9,36 @@ using namespace OSS;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Initialization
+//----------------------------------------------------------------------------------------------------
+
+TimedPerson::TimedPerson(Tower * tower) : Person(tower) 
+{
+	nextDestinationTime = 0;
+	nextDestinationValid = false;
+	nextDestinationPauseDuration = 0;
+	
+	pauseDurationAtDestination = 0;
+	pauseDuration = 0;
+	pauseEndTime = 0;
+}
+
+void TimedPerson::reset()
+{
+	Person::reset();
+	
+	clearNextDestination();
+	setPauseDurationAtDestination(0);
+	setPauseDuration(0);
+	setPauseEndTime(0);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Next Destination
 //----------------------------------------------------------------------------------------------------
 
@@ -135,12 +165,12 @@ void TimedPerson::setPauseEndTime(double time)
 
 bool TimedPerson::isPausing()
 {
-	return (tower->time >= getPauseEndTime());
+	return (tower->time <= getPauseEndTime());
 }
 
 bool TimedPerson::hasNoPlans()
 {
-	return (isPausing() || !isNextDestinationValid());
+	return (!isPausing() && !isNextDestinationValid() && !hasRoute());
 }
 
 

@@ -21,6 +21,13 @@ Person::Person(Tower * tower) : tower(tower), CoreObject()
 	arrivalTime = 0;
 }
 
+void Person::reset()
+{
+	OSSObjectLog << std::endl;
+	setItem(NULL);
+	setDestination(NULL);
+}
+
 
 
 
@@ -203,12 +210,28 @@ void Person::updateRoute()
 	if (!getItem())
 		setFloor(0);
 	
-	//Find a route to the destination
-	Route * route = tower->findRoute(start, destination);
-	setRoute(route);
-	if (!route)
-		OSSObjectError << "cannot find route from " << start.description()
-		<< " to " << destination.description() << std::endl;
+	//If the item and destination are equal, set the route to null
+	if (getItem() == getDestination())
+		setRoute(NULL);
+	
+	//Otherwise find a route to the destination
+	else {
+		Route * route = tower->findRoute(start, destination);
+		setRoute(route);
+		if (!route)
+			OSSObjectError << "cannot find route from " << start.description()
+			<< " to " << destination.description() << std::endl;
+	}
+}
+
+bool Person::isAtDestination()
+{
+	return isAt(getDestination());
+}
+
+bool Person::hasRoute()
+{
+	return (getRoute() != NULL);
 }
 
 

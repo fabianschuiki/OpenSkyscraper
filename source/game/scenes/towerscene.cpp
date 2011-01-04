@@ -414,7 +414,7 @@ void TowerScene::buildDebugTower()
 {
 	//Lobby
 	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
-									  recti(-32, 0, 0, 1), recti(32, 0, 0, 1));
+									  recti(-9, 0, 0, 1), recti(9, 0, 0, 1));
 	
 	//Offices
 	for (int y = 1; y < 2; y++) {
