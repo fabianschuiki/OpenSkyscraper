@@ -137,7 +137,7 @@ double TimedPerson::getPauseDurationAtDestination()
 
 void TimedPerson::setPauseDurationAtDestination(double duration)
 {
-	pauseDuration = duration;
+	pauseDurationAtDestination = duration;
 }
 
 double TimedPerson::getPauseDuration()
@@ -147,10 +147,10 @@ double TimedPerson::getPauseDuration()
 
 void TimedPerson::setPauseDuration(double duration)
 {
-	if (pauseDuration != duration) {
-		pauseDuration = duration;
-		setPauseEndTime(tower->time + duration);
-	}
+	//if (pauseDuration != duration) {
+	pauseDuration = duration;
+	setPauseEndTime(tower->time + duration);
+	//}
 }
 
 double TimedPerson::getPauseEndTime()

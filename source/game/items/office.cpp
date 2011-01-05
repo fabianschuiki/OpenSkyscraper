@@ -202,7 +202,8 @@ void OfficeItem::advanceWorker(std::string key, TimedPerson * worker)
 	}
 	
 	//Between 12:00 and 12:45, go have lunch if at the office
-	else if (tower->time >= 12 && tower->time < 12.75 && worker->isAt(this)) {
+	else if (tower->time >= 12 && tower->time < 12.75 && worker->isAt(this) &&
+			 !worker->boolProps["hadLunch"]) {
 		worker->setNextDestination(randd(tower->time, tower->time + 1/6.0), NULL, 0.25);
 		std::cout << "go to have lunch at " << worker->getNextDestinationTime();
 	}
@@ -215,11 +216,12 @@ void OfficeItem::advanceWorker(std::string key, TimedPerson * worker)
 		} else {
 			worker->setNextDestination(randd(tower->time, tower->time + 10 / 60.0), this, 0.25);
 			std::cout << "go back to work at " << worker->getNextDestinationTime();
+			worker->boolProps["hadLunch"] = true;
 		}
 	}
 	
 	//After 17:00, go home
-	if (tower->time >= 17) {
+	else if (tower->time >= 17) {
 		if (worker->isAt(NULL)) {
 			std::cout << "enjoy evening at home";
 			worker->setPauseEndTime(24);
