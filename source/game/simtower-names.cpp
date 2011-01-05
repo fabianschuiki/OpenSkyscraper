@@ -346,6 +346,19 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	
 	
 	/**
+	 * Lobby
+	 */
+	{0x9E8, "lobby/single/0"},		//lobby and skylobby
+	{0x9E9, "lobby/single/1"},
+	{0x9EA, "lobby/single/2"},
+	
+	//Transport
+	{0xFE9, "transport/doublelobby"},
+	{0xFEA, "transport/triplelobby"},
+	
+	
+	
+	/**
 	 * Uncategorized
 	 *
 	 * Various bitmaps that don't belong into a category yet.

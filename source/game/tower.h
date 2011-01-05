@@ -193,6 +193,7 @@ namespace OSS {
 		
 		//Rating
 		unsigned short rating;
+		unsigned int getLobbyStyle();
 		
 		//Funds
 		long funds;

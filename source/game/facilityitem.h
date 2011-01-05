@@ -10,13 +10,14 @@ namespace OSS {
 	class FacilityItem : public Item {
 	public:
 		//Initialization
-		FacilityItem(Tower * tower, Item::Descriptor * descriptor) : Item(tower, descriptor) {}
+		FacilityItem(Tower * tower, Item::Descriptor * descriptor);
 		
 		//Basic Sprites
 		void initBasicSprites();
 		void updateBasicSprites();
 		
 		Sprite ceiling;
+		bool hasCeiling;
 		virtual void initCeiling();
 		virtual void updateCeiling();
 		virtual void updateBackground();

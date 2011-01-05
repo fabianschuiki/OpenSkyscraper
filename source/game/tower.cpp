@@ -898,6 +898,15 @@ bool Tower::isWeekend()
 	return (getDayOfWeek() == 2);
 }
 
+unsigned int Tower::getLobbyStyle()
+{
+	if (rating >= 4)
+		return 2;
+	if (rating >= 3)
+		return 1;
+	return 0;
+}
+
 void Tower::transferFunds(long amount)
 {
 	funds += amount;

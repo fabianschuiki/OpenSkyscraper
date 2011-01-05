@@ -3,9 +3,11 @@
 
 #include "../general.h"
 #include "../base/base.h"
+#include "../resources/texture.h"
+#include "../resources/sound.h"
 
 
-namespace OSS {
+namespace OSS {	
 	class SimTower : public Singleton<SimTower, Object> {
 	private:
 		//Resources
@@ -26,6 +28,7 @@ namespace OSS {
 		//Resource Types
 		enum {
 			kBitmapResource			= 0x2,
+			kPercellBitmapResource	= 0x7F02,
 			kMenuResource			= 0x4,
 			kDialogBoxResource		= 0x5,
 			kStringTableResource	= 0x6,
@@ -54,6 +57,12 @@ namespace OSS {
 		void postprocessTexture(std::string textureName, const void * buffer, unsigned int bufferLength);
 		void applyReplacementPalette(unsigned short id);
 		void spawnSkyTextures(std::string textureName, ILuint image);
+		void spawnLobbyTextures(std::string textureName, ILuint image);
+		
+		//Dumping textures to disk for debugging purposes
+		std::string getDumpPath(std::string type, std::string name);
+		void dumpTexture(Texture * texture);
+		void dumpSound(std::string name, const void * buffer, unsigned int bufferLength);
 	};
 }
 

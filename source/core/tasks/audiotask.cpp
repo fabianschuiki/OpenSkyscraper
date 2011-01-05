@@ -3,9 +3,14 @@
 using namespace OSS;
 
 
+AudioTask::AudioTask() : Task()
+{
+	disabled = false;
+}
+
 void AudioTask::addSoundEffect(SoundEffect * effect)
 {
-	if (!effect) return;
+	if (!effect || disabled) return;
 	
 	//Apply the concurrency limitation
 	if (effect->maxConcurrentPlaybacks || effect->minIntervalBetweenPlaybacks) {
@@ -73,4 +78,14 @@ void AudioTask::update()
 			}
 		}
 	}
+}
+
+void AudioTask::enableSoundEffects()
+{
+	disabled = false;
+}
+
+void AudioTask::disableSoundEffects()
+{
+	disabled = true;
 }

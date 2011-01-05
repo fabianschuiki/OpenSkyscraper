@@ -8,6 +8,20 @@ using namespace OSS;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Initialization
+//----------------------------------------------------------------------------------------------------
+
+FacilityItem::FacilityItem(Tower * tower, Item::Descriptor * descriptor) : Item(tower, descriptor)
+{
+	hasCeiling = true;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Basic Sprites
 //----------------------------------------------------------------------------------------------------
 
@@ -33,6 +47,8 @@ void FacilityItem::initCeiling()
 
 void FacilityItem::updateCeiling()
 {
+	if (!hasCeiling) return;
+	
 	//Calculate the ceiling rect
 	rectd rect = getWorldRect();
 	rect.origin.y = rect.maxY();
@@ -45,11 +61,13 @@ void FacilityItem::updateBackground()
 {	
 	Item::updateBackground();
 	
-	//Adjust the topmost background's height
-	Sprite * background = &backgrounds[getNumFloors() - 1];
-	rectd rect = background->getRect();
-	rect.size.y -= ceiling.getRect().size.y;
-	background->setRect(rect);
+	//Adjust the topmost background's height if we have a ceiling
+	if (hasCeiling) {
+		Sprite * background = &backgrounds[getNumFloors() - 1];
+		rectd rect = background->getRect();
+		rect.size.y -= ceiling.getRect().size.y;
+		background->setRect(rect);
+	}
 }
 
 
@@ -66,6 +84,6 @@ void FacilityItem::draw(rectd visibleRect)
 	Item::draw(visibleRect);
 	
 	//Draw the ceiling sprite
-	if (!underConstruction || !drawFlexibleConstruction)
+	if (hasCeiling && (!underConstruction || !drawFlexibleConstruction))
 		ceiling.draw(visibleRect);
 }

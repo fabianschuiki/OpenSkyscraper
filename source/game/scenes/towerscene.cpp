@@ -412,12 +412,14 @@ void TowerScene::setTower(Tower * tower)
 
 void TowerScene::buildDebugTower()
 {
+	Engine::shared()->audioTask.disableSoundEffects();
+	
 	//Lobby
 	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
 									  recti(-9, 0, 0, 1), recti(9, 0, 0, 1));
 	
 	//Offices
-	for (int y = 1; y < 2; y++) {
+	for (int y = 1; y < 15; y++) {
 		for (int x = 0; x < 1; x++) {
 			tower->constructItem(Item::descriptorForItemType(Item::kOfficeType),
 								 recti(x * 9, y, 9, 1));
@@ -425,10 +427,13 @@ void TowerScene::buildDebugTower()
 								 recti((-x - 1) * 9, y, 9, 1));
 		}
 	}
+	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
+									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));
 	
 	//Stairs
-	for (int y = 0; y < 1; y++) {
+	/*for (int y = 0; y < 1; y++) {
 		tower->constructItem(Item::descriptorForItemType(Item::kStairsType),
 							 recti(-4, y, 8, 2));
-	}
+	 }*/
+	Engine::shared()->audioTask.enableSoundEffects();
 }

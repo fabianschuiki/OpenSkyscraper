@@ -17,16 +17,19 @@ namespace OSS {
 		void init();
 		void update();
 		
+		std::string getLobbyTextureBaseName();
+		
 		//Entrances
 	private:
-		Sprite entrances[2];
+		Sprite outsideEntrances[2];
+		Sprite insideEntrance;
 	public:
 		void initEntrances();
 		void updateEntrances();
 		
 		//Basic Sprites
-		void initCeiling();
 		void initBackground();
+		void updateBackground();
 		
 		//Drawing
 		void draw(rectd visibleRect);

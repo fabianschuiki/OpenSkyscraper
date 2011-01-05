@@ -57,6 +57,7 @@ void Application::prepare()
 	ilInit();
 	
 	//Tell the DevIL how all loaded images should be oriented
+	ilEnable(IL_FILE_OVERWRITE);
 	ilEnable(IL_ORIGIN_SET);
 	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 	

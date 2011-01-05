@@ -1,8 +1,6 @@
 #include "simtower.h"
 
 #include "../core/platform.h"
-#include "../resources/texture.h"
-#include "../resources/sound.h"
 
 #include <sys/stat.h>
 
@@ -55,7 +53,7 @@ std::string SimTower::getNameForResource(Resource * resource)
 	
 	//Try to find a name in the resource names table
 	// -> bitmaps
-	if (resource->type == kBitmapResource)
+	if (resource->type == kBitmapResource || resource->type == kPercellBitmapResource)
 		for (int i = 0; SimTower::bitmapResourceNames[i].resourceID != 0; i++)
 			if (SimTower::bitmapResourceNames[i].resourceID == resource->id)
 				return SimTower::bitmapResourceNames[i].name;
@@ -217,15 +215,7 @@ void SimTower::extractAll()
 }
 
 void SimTower::extractTextures()
-{
-	std::string dumpPath = "/tmp/SimTower Extraction/";
-	std::string paletteDumpPath = dumpPath;
-	mkdir(dumpPath.c_str(), 0777);
-	dumpPath += "textures/";
-	mkdir(dumpPath.c_str(), 0777);
-	paletteDumpPath += "palettes/";
-	mkdir(paletteDumpPath.c_str(), 0777);
-	
+{	
 	//Iterate through the resources
 	for (ResourceVector::iterator i = resources.begin(); i != resources.end(); i++) {
 		Resource * resource = (*i);
@@ -247,11 +237,6 @@ void SimTower::extractTextures()
 				uint8_t * buffer = (uint8_t *)malloc(bufferLength);
 				memcpy(buffer, &bmpHeader, sizeof(bmpHeader));
 				memcpy(buffer + sizeof(bmpHeader), resource->data, resource->length);
-				
-				//DEBUG: Dump the buffer for debugging purposes
-				FILE * fdump = fopen((dumpPath + resource->getDumpName() + ".bmp").c_str(), "w");
-				fwrite(buffer, 1, bufferLength, fdump);
-				fclose(fdump);
 				
 				//Postprocess the bitmap
 				postprocessTexture(resource->getName(), buffer, bufferLength);
@@ -333,10 +318,8 @@ void SimTower::extractTextures()
 					dst[dstidx] = src[i];
 				}
 				
-				//DEBUG: Dump the buffer for debugging purposes
-				FILE * fdump = fopen((dumpPath + "[percell]" + resource->getDumpName() + ".bmp").c_str(), "w");
-				fwrite(buffer, 1, bufferLength, fdump);
-				fclose(fdump);
+				//Postprocess the bitmap
+				postprocessTexture(resource->getName(), buffer, bufferLength);
 				
 				//Get rid of the buffer
 				free(buffer);
@@ -344,7 +327,7 @@ void SimTower::extractTextures()
 				
 				//DEBUG: Replacement Palettes
 			case 0x7F03: {
-				FILE * fdump = fopen((paletteDumpPath + resource->getDumpName() + ".act").c_str(), "w");
+				FILE * fdump = fopen(getDumpPath("palettes", resource->getName() + ".act").c_str(), "w");
 				for (int i = 0; i < 256; i++) {
 					//Calculate the location of the replacement color
 					unsigned int replacementIndex = i;
@@ -373,12 +356,7 @@ void SimTower::extractTextures()
 }
 
 void SimTower::extractSounds()
-{
-	std::string dumpPath = "/tmp/SimTower Extraction/";
-	mkdir(dumpPath.c_str(), 0777);
-	dumpPath += "sounds/";
-	mkdir(dumpPath.c_str(), 0777);
-	
+{	
 	//Iterate through the resources
 	for (ResourceVector::iterator i = resources.begin(); i != resources.end(); i++) {
 		Resource * resource = (*i);
@@ -387,14 +365,17 @@ void SimTower::extractSounds()
 		switch (resource->type) {
 				//Wave Audio
 			case 0x7F0A: {
-				//DEBUG: Dump the buffer for debugging purposes
+				/*//DEBUG: Dump the buffer for debugging purposes
 				FILE * fdump = fopen((dumpPath + resource->getDumpName() + ".wav").c_str(), "w");
 				fwrite(resource->data, 1, resource->length, fdump);
-				fclose(fdump);
+				fclose(fdump);*/
 				
 				//Assemble the sound name
 				std::string soundName = "simtower/";
 				soundName += resource->getName();
+				
+				//Dump the sound
+				dumpSound(soundName, resource->data, resource->length);
 				
 				//Create a sound from it
 				Sound * sound = Sound::named(soundName);
@@ -417,8 +398,8 @@ void SimTower::postprocessTexture(std::string resourceName,
 								  const void * buffer, unsigned int bufferLength)
 {
 	//Assemble the texture name
-	std::string textureName("simtower/");
-	textureName += resourceName;
+	std::string texturePrefix("simtower/");
+	std::string textureName = texturePrefix + resourceName;
 	
 	//Sky textures
 	if (resourceName.find("background/sky") == 0) {
@@ -436,10 +417,27 @@ void SimTower::postprocessTexture(std::string resourceName,
 		return;
 	}
 	
+	//Single lobby textures
+	if (resourceName.find("lobby/single") == 0) {
+		//Load the image
+		ILuint lobby = ilGenImage();
+		ilBindImage(lobby);
+		ilLoadL(IL_BMP, buffer, bufferLength);
+		
+		//Split up the image
+		spawnLobbyTextures(textureName, lobby);
+		
+		//Get rid of the image
+		ilBindImage(0);
+		ilDeleteImage(lobby);
+		return;
+	}
+	
 	//Standard textures
 	Texture * texture = Texture::named(textureName);
 	texture->assignLoadedData(IL_BMP, buffer, bufferLength);
 	texture->useTransparentColor = true;
+	dumpTexture(texture);
 	
 	//Some default colors for later use
 	const color3d skyThroughWindow[2] = {
@@ -466,6 +464,7 @@ void SimTower::applyReplacementPalette(unsigned short id)
 	
 	//Fetch a pointer to the current image's palette
 	colorPalette * palette = (colorPalette *)ilGetPalette();
+	if (!palette) return;
 	for (int i = 0; i < 256; i++) {
 		//Calculate the location of the replacement color
 		unsigned int replacementIndex = i;
@@ -490,7 +489,7 @@ void SimTower::applyReplacementPalette(unsigned short id)
 }
 
 void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
-{
+{	
 	//Fetch the palette
 	colorPalette * palette = (colorPalette *)ilGetPalette();
 	
@@ -507,34 +506,113 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 	//Create the day texture
 	for (int i = 0; i < 6; i++)
 		sky[i] = darkDrops[i] = brightDrops[i] = brightColors[i];
-	Texture::named(textureName + "/day")->assignLoadedImage(ilCloneCurImage());
+	Texture * day = Texture::named(textureName + "/day");
+	day->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the overcast texture
 	for (int i = 0; i < 6; i++)
 		sky[i] = darkDrops[i] = brightDrops[i] = darkColors[i];
-	Texture::named(textureName + "/overcast")->assignLoadedImage(ilCloneCurImage());
+	Texture * overcast = Texture::named(textureName + "/overcast");
+	overcast->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the rain textures
 	for (int i = 0; i < 6; i++) {
 		sky[i] = brightDrops[i] = darkColors[i];
 		darkDrops[i] = brightColors[i];
 	}
-	Texture::named(textureName + "/rain/0")->assignLoadedImage(ilCloneCurImage());
+	Texture * rain0 = Texture::named(textureName + "/rain/0");
+	rain0->assignLoadedImage(ilCloneCurImage());
 	for (int i = 0; i < 6; i++) {
 		sky[i] = darkDrops[i] = darkColors[i];
 		brightDrops[i] = brightColors[i];
 	}
-	Texture::named(textureName + "/rain/1")->assignLoadedImage(ilCloneCurImage());
+	Texture * rain1 = Texture::named(textureName + "/rain/1");
+	rain1->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the twilight texture
 	applyReplacementPalette(0x3E9);
 	for (int i = 0; i < 6; i++)
 		darkDrops[i] = brightDrops[i] = sky[i];
-	Texture::named(textureName + "/twilight")->assignLoadedImage(ilCloneCurImage());
+	Texture * twilight = Texture::named(textureName + "/twilight");
+	twilight->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the night texture
 	applyReplacementPalette(0x3EA);
 	for (int i = 0; i < 6; i++)
 		darkDrops[i] = brightDrops[i] = sky[i];
-	Texture::named(textureName + "/night")->assignLoadedImage(ilCloneCurImage());
+	Texture * night = Texture::named(textureName + "/night");
+	night->assignLoadedImage(ilCloneCurImage());
+	
+	//Dump the textures
+	dumpTexture(day);
+	dumpTexture(overcast);
+	dumpTexture(rain0);
+	dumpTexture(rain1);
+	dumpTexture(twilight);
+	dumpTexture(night);
+}
+
+void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)
+{	
+	//Convert the lobby image to 24 bit RGB
+	if (!ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE)) {
+		OSSObjectError << "unable to convert image " << image << " of " << textureName << " to 8bit RGB" << std::endl;
+		return;
+	}
+	
+	//Load the two variants of the lobby (ground and sky)
+	Texture * t;
+	std::string variants[2] = {"ground", "sky"};
+	for (int i = 0; i < 2; i++) {
+		//Assemble the texture name without prefix
+		std::string variantName = textureName + "/" + variants[i];
+		
+		//Extract the lobby pattern
+		ILuint pattern = ilGenImage();
+		ilBindImage(pattern);
+		ilTexImage(256, 36, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, NULL);
+		ilBlit(image, 0, 0, 0, i * 328, 0, 0, 256, 36, 1);
+		t = Texture::named(variantName + "/pattern");
+		t->assignLoadedImage(pattern);
+		dumpTexture(t);
+		
+		//Extract the lobby entrance
+		ILuint entrance = ilGenImage();
+		ilBindImage(entrance);
+		ilTexImage(56, 36, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, NULL);
+		ilBlit(image, 0, 0, 0, i * 328 + 272, 0, 0, 56, 36, 1);
+		t = Texture::named(variantName + "/entrance");
+		t->assignLoadedImage(entrance);
+		dumpTexture(t);
+	}
+}
+
+std::string SimTower::getDumpPath(std::string type, std::string name)
+{
+	std::string path("/tmp/SimTower Extraction/");
+	mkdir(path.c_str(), 0777);
+	path += type + "/";
+	mkdir(path.c_str(), 0777);
+	
+	std::string::size_type pos = 0;
+	while ((pos = name.find("/", pos)) != std::string::npos) {
+		name.erase(pos, 1);
+		name.insert(pos, ":");
+	}
+	path += name;
+	
+	return path;
+}
+
+void SimTower::dumpTexture(Texture * texture)
+{
+	ilBindImage(texture->tempImage);
+	ilSaveImage(getDumpPath("textures", texture->name.substr(9) + ".bmp").c_str());
+}
+
+void SimTower::dumpSound(std::string name, const void * buffer, unsigned int bufferLength)
+{
+	FILE * fdump = fopen(getDumpPath("sounds", name.substr(9) + ".wav").c_str(), "w");
+	fwrite(buffer, bufferLength, 1, fdump);
+	fclose(fdump);
 }

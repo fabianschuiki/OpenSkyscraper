@@ -14,11 +14,20 @@ namespace OSS {
 		SoundEffectListMap soundEffects;
 		
 	public:
+		//Initialization
+		AudioTask();
+		
 		//Playing sounds
 		void addSoundEffect(SoundEffect * effect);
 		
 		//Convenience
 		void playSound(Sound * sound, SoundEffect::Layer layer);
+		
+	private:
+		bool disabled;
+	public:
+		void enableSoundEffects();
+		void disableSoundEffects();
 		
 	protected:
 		friend class Engine;
