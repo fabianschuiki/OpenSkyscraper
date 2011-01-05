@@ -1,4 +1,5 @@
 #include "escalator.h"
 #include "lobby.h"
 #include "office.h"
+#include "singleroom.h"
 #include "stairs.h"

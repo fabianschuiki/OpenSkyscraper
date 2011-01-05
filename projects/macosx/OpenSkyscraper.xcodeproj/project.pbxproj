@@ -24,6 +24,7 @@
 		1F21FE84120044AF000A8AC3 /* tower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FE83120044AF000A8AC3 /* tower.cpp */; };
 		1F21FF1512007D1F000A8AC3 /* simtower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF1412007D1F000A8AC3 /* simtower.cpp */; };
 		1F21FF3C12008057000A8AC3 /* platform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF3B12008057000A8AC3 /* platform.mm */; };
+		1F2FC8EB12D4C671008B3FC2 /* singleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2FC8EA12D4C671008B3FC2 /* singleroom.cpp */; };
 		1F3824501202BBE800C1E2B0 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38244F1202BBE800C1E2B0 /* sprite.cpp */; };
 		1F38276812032C2400C1E2B0 /* item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38276712032C2400C1E2B0 /* item.cpp */; };
 		1F38278D1203562700C1E2B0 /* lobby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38278C1203562700C1E2B0 /* lobby.cpp */; };
@@ -125,6 +126,8 @@
 		1F21FF1412007D1F000A8AC3 /* simtower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = simtower.cpp; sourceTree = "<group>"; };
 		1F21FF1B12007DEC000A8AC3 /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
 		1F21FF3B12008057000A8AC3 /* platform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platform.mm; sourceTree = "<group>"; };
+		1F2FC8E912D4C671008B3FC2 /* singleroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleroom.h; sourceTree = "<group>"; };
+		1F2FC8EA12D4C671008B3FC2 /* singleroom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = singleroom.cpp; sourceTree = "<group>"; };
 		1F38244E1202BBE800C1E2B0 /* sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sprite.h; sourceTree = "<group>"; };
 		1F38244F1202BBE800C1E2B0 /* sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sprite.cpp; sourceTree = "<group>"; };
 		1F38253D1202ED5000C1E2B0 /* gameevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameevent.h; sourceTree = "<group>"; };
@@ -393,6 +396,8 @@
 				1F38278C1203562700C1E2B0 /* lobby.cpp */,
 				1FF348EE12CB993E0077DF1B /* office.h */,
 				1FF348EF12CB993E0077DF1B /* office.cpp */,
+				1F2FC8E912D4C671008B3FC2 /* singleroom.h */,
+				1F2FC8EA12D4C671008B3FC2 /* singleroom.cpp */,
 				1FFABC5E12D10E7600D9B02C /* stairs.h */,
 				1FFABC5F12D10E7600D9B02C /* stairs.cpp */,
 				1FFABF7712D1544900D9B02C /* stairslike.h */,
@@ -594,6 +599,7 @@
 				1FF2160F12D2335F0043144D /* person.cpp in Sources */,
 				1FF2166812D23E520043144D /* scheduledperson.cpp in Sources */,
 				1FBE226E12D30D9100311E16 /* timedperson.cpp in Sources */,
+				1F2FC8EB12D4C671008B3FC2 /* singleroom.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
