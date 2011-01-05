@@ -1,4 +1,5 @@
 #include "facilityitem.h"
+#include "tower.h"
 
 using namespace OSS;
 
@@ -14,6 +15,11 @@ using namespace OSS;
 FacilityItem::FacilityItem(Tower * tower, Item::Descriptor * descriptor) : Item(tower, descriptor)
 {
 	hasCeiling = true;
+	variant = 0;
+	lit = false;
+	
+	//Update the lighting
+	updateLighting();
 }
 
 
@@ -57,6 +63,16 @@ void FacilityItem::updateCeiling()
 	ceiling.setRect(rect);
 }
 
+bool FacilityItem::getHasCeiling() const
+{
+	return hasCeiling;
+}
+
+void FacilityItem::setHasCeiling(bool flag)
+{
+	hasCeiling = flag;
+}
+
 void FacilityItem::updateBackground()
 {	
 	Item::updateBackground();
@@ -68,6 +84,88 @@ void FacilityItem::updateBackground()
 		rect.size.y -= ceiling.getRect().size.y;
 		background->setRect(rect);
 	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Variant
+//----------------------------------------------------------------------------------------------------
+
+unsigned int FacilityItem::getVariant() const
+{
+	return variant;
+}
+
+void FacilityItem::setVariant(const unsigned int variant)
+{
+	if (this->variant != variant) {
+		this->variant = variant;
+		onChangeVariant();
+	}
+}
+
+void FacilityItem::onChangeVariant()
+{
+	updateBackground();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Lighting
+//----------------------------------------------------------------------------------------------------
+
+bool FacilityItem::isLit() const
+{
+	return lit;
+}
+
+void FacilityItem::setLit(bool lit)
+{
+	if (this->lit != lit) {
+		this->lit = lit;
+		onChangeLit();
+	}
+}
+
+bool FacilityItem::shouldBeLitDueToTime()
+{
+	return (tower->time >= 7 && tower->time < 17);
+}
+
+void FacilityItem::updateLighting()
+{
+	setLit(shouldBeLitDueToTime());
+}
+
+void FacilityItem::onChangeLit()
+{
+	updateBackground();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void FacilityItem::advance(double dt)
+{
+	Item::advance(dt);
+	
+	//Ask the facility to update its lighting state at twilight
+	if (tower->checkTime(7) || tower->checkTime(17))
+		updateLighting();
 }
 
 

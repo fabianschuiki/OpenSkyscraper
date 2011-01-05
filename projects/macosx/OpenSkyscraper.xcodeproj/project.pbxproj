@@ -25,6 +25,9 @@
 		1F21FF1512007D1F000A8AC3 /* simtower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF1412007D1F000A8AC3 /* simtower.cpp */; };
 		1F21FF3C12008057000A8AC3 /* platform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF3B12008057000A8AC3 /* platform.mm */; };
 		1F2FC8EB12D4C671008B3FC2 /* singleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2FC8EA12D4C671008B3FC2 /* singleroom.cpp */; };
+		1F2FC97412D4F5F7008B3FC2 /* hotelitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2FC97312D4F5F7008B3FC2 /* hotelitem.cpp */; };
+		1F2FC9B312D4FDB8008B3FC2 /* doubleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2FC9B212D4FDB8008B3FC2 /* doubleroom.cpp */; };
+		1F2FC9C712D4FE31008B3FC2 /* suite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2FC9C612D4FE31008B3FC2 /* suite.cpp */; };
 		1F3824501202BBE800C1E2B0 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38244F1202BBE800C1E2B0 /* sprite.cpp */; };
 		1F38276812032C2400C1E2B0 /* item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38276712032C2400C1E2B0 /* item.cpp */; };
 		1F38278D1203562700C1E2B0 /* lobby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F38278C1203562700C1E2B0 /* lobby.cpp */; };
@@ -128,6 +131,12 @@
 		1F21FF3B12008057000A8AC3 /* platform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platform.mm; sourceTree = "<group>"; };
 		1F2FC8E912D4C671008B3FC2 /* singleroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleroom.h; sourceTree = "<group>"; };
 		1F2FC8EA12D4C671008B3FC2 /* singleroom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = singleroom.cpp; sourceTree = "<group>"; };
+		1F2FC97212D4F5F7008B3FC2 /* hotelitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotelitem.h; sourceTree = "<group>"; };
+		1F2FC97312D4F5F7008B3FC2 /* hotelitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotelitem.cpp; sourceTree = "<group>"; };
+		1F2FC9B112D4FDB8008B3FC2 /* doubleroom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = doubleroom.h; sourceTree = "<group>"; };
+		1F2FC9B212D4FDB8008B3FC2 /* doubleroom.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = doubleroom.cpp; sourceTree = "<group>"; };
+		1F2FC9C512D4FE31008B3FC2 /* suite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = suite.h; sourceTree = "<group>"; };
+		1F2FC9C612D4FE31008B3FC2 /* suite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = suite.cpp; sourceTree = "<group>"; };
 		1F38244E1202BBE800C1E2B0 /* sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sprite.h; sourceTree = "<group>"; };
 		1F38244F1202BBE800C1E2B0 /* sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sprite.cpp; sourceTree = "<group>"; };
 		1F38253D1202ED5000C1E2B0 /* gameevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameevent.h; sourceTree = "<group>"; };
@@ -390,8 +399,12 @@
 			isa = PBXGroup;
 			children = (
 				1F3827911203574300C1E2B0 /* items.h */,
+				1F2FC9B112D4FDB8008B3FC2 /* doubleroom.h */,
+				1F2FC9B212D4FDB8008B3FC2 /* doubleroom.cpp */,
 				1FFABF8212D1567200D9B02C /* escalator.h */,
 				1FFABF8312D1567200D9B02C /* escalator.cpp */,
+				1F2FC97212D4F5F7008B3FC2 /* hotelitem.h */,
+				1F2FC97312D4F5F7008B3FC2 /* hotelitem.cpp */,
 				1F38278B1203562700C1E2B0 /* lobby.h */,
 				1F38278C1203562700C1E2B0 /* lobby.cpp */,
 				1FF348EE12CB993E0077DF1B /* office.h */,
@@ -402,6 +415,8 @@
 				1FFABC5F12D10E7600D9B02C /* stairs.cpp */,
 				1FFABF7712D1544900D9B02C /* stairslike.h */,
 				1FFABF7812D1544900D9B02C /* stairslike.cpp */,
+				1F2FC9C512D4FE31008B3FC2 /* suite.h */,
+				1F2FC9C612D4FE31008B3FC2 /* suite.cpp */,
 			);
 			path = items;
 			sourceTree = "<group>";
@@ -600,6 +615,9 @@
 				1FF2166812D23E520043144D /* scheduledperson.cpp in Sources */,
 				1FBE226E12D30D9100311E16 /* timedperson.cpp in Sources */,
 				1F2FC8EB12D4C671008B3FC2 /* singleroom.cpp in Sources */,
+				1F2FC97412D4F5F7008B3FC2 /* hotelitem.cpp in Sources */,
+				1F2FC9B312D4FDB8008B3FC2 /* doubleroom.cpp in Sources */,
+				1F2FC9C712D4FE31008B3FC2 /* suite.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

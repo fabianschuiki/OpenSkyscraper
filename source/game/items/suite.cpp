@@ -1,17 +1,17 @@
-#include "singleroom.h"
+#include "suite.h"
 #include "../tower.h"
 
 using namespace OSS;
 
 
-Item::Descriptor SingleRoomItem::descriptor = {
-	Item::kSingleRoomType,
+Item::Descriptor SuiteItem::descriptor = {
+	Item::kSuiteType,
 	Item::kHotelGroup,
 	Item::kFacilityCategory,
 	1,
 	(Item::kNotBelowGroundAttribute),
-	20000,
-	int2(4, 1)
+	100000,
+	int2(10, 1)
 };
 
 
@@ -23,12 +23,12 @@ Item::Descriptor SingleRoomItem::descriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-SingleRoomItem::SingleRoomItem(Tower * tower) : HotelItem(tower, &descriptor)
+SuiteItem::SuiteItem(Tower * tower) : HotelItem(tower, &descriptor)
 {
 	setVariant(randui(0, 1));
 }
 
-std::string SingleRoomItem::getTypeName()
+std::string SuiteItem::getTypeName()
 {
-	return "single";
+	return "suite";
 }

@@ -94,7 +94,7 @@ namespace OSS {
 			Category category;
 			unsigned short minRating;
 			unsigned short attributes;
-			unsigned short price;
+			unsigned int price;
 			int2 cells;
 			int2 minUnit;
 			rectmaski mask;
@@ -168,7 +168,10 @@ namespace OSS {
 		virtual void initBasicSprites();
 		virtual void updateBasicSprites();
 		
+		//Backgrounds
+	protected:
 		std::map<unsigned int, Sprite> backgrounds;
+	public:
 		virtual void initBackground();
 		virtual void updateBackground();
 		

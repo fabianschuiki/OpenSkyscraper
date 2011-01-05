@@ -1,5 +1,5 @@
-#ifndef OSS_SINGLEROOM_H
-#define OSS_SINGLEROOM_H
+#ifndef OSS_DOUBLEROOM_H
+#define OSS_DOUBLEROOM_H
 
 
 #include "../../general.h"
@@ -7,12 +7,12 @@
 
 
 namespace OSS {
-	class SingleRoomItem : public HotelItem {
+	class DoubleRoomItem : public HotelItem {
 	public:
 		static Item::Descriptor descriptor;
 		
 		//Initialization
-		SingleRoomItem(Tower * tower);
+		DoubleRoomItem(Tower * tower);
 		std::string getTypeName();
 	};
 }

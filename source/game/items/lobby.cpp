@@ -26,7 +26,7 @@ Item::Descriptor LobbyItem::descriptor = {
 
 LobbyItem::LobbyItem(Tower * tower) : FacilityItem(tower, &descriptor)
 {
-	hasCeiling = false;
+	setHasCeiling(false);
 }
 
 void LobbyItem::init()

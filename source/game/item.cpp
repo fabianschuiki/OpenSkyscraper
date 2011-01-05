@@ -86,6 +86,8 @@ Item * Item::make(Tower * tower, Descriptor * descriptor)
 			
 			//Hotel
 		case Item::kSingleRoomType:	instance = new SingleRoomItem(tower); break;
+		case Item::kDoubleRoomType:	instance = new DoubleRoomItem(tower); break;
+		case Item::kSuiteType:		instance = new SuiteItem(tower); break;
 	}
 	
 	//Initialize the item
@@ -280,6 +282,8 @@ Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
 			
 			//Hotel
 		case Item::kSingleRoomType:	return &SingleRoomItem::descriptor; break;
+		case Item::kDoubleRoomType:	return &DoubleRoomItem::descriptor; break;
+		case Item::kSuiteType:		return &SuiteItem::descriptor; break;
 	}
 	return NULL;
 }
