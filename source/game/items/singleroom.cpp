@@ -67,5 +67,5 @@ void SingleRoomItem::updateBackground()
 	char str[256];
 	sprintf(str, "simtower/facilities/hotel/single/%i/1", type);
 	backgrounds[0].texture = Texture::named(str);
-	backgrounds[0].textureRect = rectd(0.125 * 3, 0, 0.125, 1);
+	backgrounds[0].textureRect = rectd(0.125 * 2, 0, 0.125, 1);
 }
