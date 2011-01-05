@@ -260,6 +260,88 @@ void SimTower::extractTextures()
 				free(buffer);
 			} break;
 				
+				//Per-cell Bitmaps
+			case 0x7F02: {
+				//Create the BMP header
+				struct {
+					uint16_t type;
+					uint32_t size;
+					uint32_t _reserved;
+					uint32_t offset;
+				} __attribute__((__packed__)) bmpHeader = {0x4D42, 0, 0, 0x436};
+				
+				//Calculate the image dimensions
+				const unsigned int floorHeight = 36;
+				const unsigned int cellWidth = 8;
+				const unsigned int cellPixels = floorHeight * cellWidth;
+				unsigned int cellsInResource = resource->length / cellPixels;
+				
+				//Create the DIB header
+				struct {
+					uint32_t size;
+					uint32_t width;
+					uint32_t height;
+					uint16_t numPlanes;
+					uint16_t bitsPerPixel;
+					uint32_t compression;
+					uint32_t imageSize;
+					uint32_t hDPI;
+					uint32_t vDPI;
+					uint32_t numColors;
+					uint32_t numImportantColors;
+				} __attribute__((__packed__)) dibHeader = {
+					40,
+					(cellsInResource * cellWidth), floorHeight,
+					1, 8,
+					0,
+					(cellsInResource * cellPixels),
+					0, 0, 256, 256
+				};
+				
+				//Create a new buffer to hold the assembled data
+				unsigned int bufferLength = sizeof(bmpHeader) + sizeof(dibHeader) + 0x400 + dibHeader.imageSize;
+				uint8_t * buffer = (uint8_t *)malloc(bufferLength);
+				
+				//Copy the bmpHeader into the buffer
+				memcpy(buffer, &bmpHeader, sizeof(bmpHeader));
+				
+				//Copy the dibHeader into the buffer
+				memcpy(buffer + sizeof(bmpHeader), &dibHeader, sizeof(dibHeader));
+				
+				//Assemble the palette
+				uint8_t * palette = (buffer + sizeof(bmpHeader) + sizeof(dibHeader));
+				Resource * paletteResource = getResource(0x7F03, 0x3E8);
+				uint8_t * paletteSource = (uint8_t *)paletteResource->data;
+				for (int i = 0; i < paletteResource->length; i++) {
+					(*palette++) = paletteSource[i * 8 + 6];
+					(*palette++) = paletteSource[i * 8 + 4];
+					(*palette++) = paletteSource[i * 8 + 2];
+					(*palette++) = 0;
+				}
+				
+				//Since the actualy pixel data is only 8 pixels wide, with the individual cells
+				//stacked vertically, we re-organize the buffer by flipping the image vertically and
+				//lining up the cells horizontally to simplify postprocessing.
+				uint8_t * src = (uint8_t *)resource->data;
+				uint8_t * dst = buffer + bmpHeader.offset;
+				for (unsigned int i = 0; i < dibHeader.imageSize; i++) {
+					unsigned int srcx = (i % 8);
+					unsigned int srcy = (i / 8);
+					unsigned int dstx = srcx + (srcy / floorHeight) * 8;
+					unsigned int dsty = floorHeight - 1 - (srcy % floorHeight);
+					unsigned int dstidx = (dstx + dsty * dibHeader.width);
+					dst[dstidx] = src[i];
+				}
+				
+				//DEBUG: Dump the buffer for debugging purposes
+				FILE * fdump = fopen((dumpPath + "[percell]" + resource->getDumpName() + ".bmp").c_str(), "w");
+				fwrite(buffer, 1, bufferLength, fdump);
+				fclose(fdump);
+				
+				//Get rid of the buffer
+				free(buffer);
+			} break;
+				
 				//DEBUG: Replacement Palettes
 			case 0x7F03: {
 				FILE * fdump = fopen((paletteDumpPath + resource->getDumpName() + ".act").c_str(), "w");
