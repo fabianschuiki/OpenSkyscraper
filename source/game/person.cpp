@@ -23,9 +23,12 @@ Person::Person(Tower * tower) : tower(tower), CoreObject()
 
 void Person::reset()
 {
-	OSSObjectLog << std::endl;
 	setItem(NULL);
 	setDestination(NULL);
+	
+	//DEBUG: Reset the properties
+	boolProps.clear();
+	intProps.clear();
 }
 
 

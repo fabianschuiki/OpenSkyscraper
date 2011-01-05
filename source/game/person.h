@@ -79,6 +79,16 @@ namespace OSS {
 		 * Notifications
 		 */
 		virtual void onArrivedAtDestination();
+		
+		
+		/**
+		 * Uncategorized
+		 */
+		
+		//DEBUG: Properties. These are only used for debuggin purposes and ought to be replaced in
+		//later versions of the game by a more sophisticated system.
+		std::map<std::string, bool> boolProps;
+		std::map<std::string, int> intProps;
 	};
 }
 
