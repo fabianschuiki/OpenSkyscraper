@@ -135,10 +135,10 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	{0x7ED, "transport/floordigits/two/ms/highlighted"},	//two digit floors, most significant digit
 	{0x7EC, "transport/floordigits/two/ls/highlighted"},	//two digit floors, least significant digit
 	// -> standard elevator
-	{0x428, "transport/elevator/standard/empty"},
-	{0x429, "transport/elevator/standard/occupied"},
+	{0x428, "transport/elevator/standard/car/empty"},
+	{0x429, "transport/elevator/standard"},
 	// -> service elevator
-	{0x42A, "transport/elevator/service"},
+	{0x42A, "transport/elevator/service/car"},
 	// -> express elevator
 	{0x42B, "transport/elevator/express"},
 	
