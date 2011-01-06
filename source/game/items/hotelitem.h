@@ -57,7 +57,7 @@ namespace OSS {
 		void initGuests();
 		void updateGuests();
 		void clearGuests();
-		void removeGuest(HotelGuest * guest);
+		void removePerson(Person * person);
 		
 		//Convenience
 		bool areAllGuestsAsleep();

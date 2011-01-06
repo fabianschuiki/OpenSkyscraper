@@ -119,10 +119,12 @@ void HotelGuest::think()
 	
 	//Leave
 	OSSObjectLog << "leaving" << std::endl;
-	if (tower->time < 7)
-		OSSObjectLog << "PROBLEM!" << std::endl;
-	setNextDestination(tower->time + randd(0.25, 0.75), NULL);
-	hotel->removeGuest(this);
+	setNextDestination(randd(tower->time + 0.25, 10), NULL);
+}
+
+bool HotelGuest::isLeaving()
+{
+	return didSleep;
 }
 
 bool HotelGuest::isAsleep()

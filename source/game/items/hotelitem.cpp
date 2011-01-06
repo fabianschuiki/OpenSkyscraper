@@ -142,14 +142,18 @@ void HotelItem::clearGuests()
 	guests.clear();
 }
 
-void HotelItem::removeGuest(HotelGuest * guest)
+void HotelItem::removePerson(Person * person)
 {
-	OSSObjectLog << std::endl;
-	guests.erase(guest);
+	OccupiableItem::removePerson(person);
 	
-	//If there are no more guests, mark the hotel item as vacant
-	if (guests.empty())
-		setOccupied(false);
+	if (((HotelGuest *)person)->isLeaving()) {
+		OSSObjectLog << std::endl;
+		guests.erase((HotelGuest *)person);
+		
+		//If there are no more guests, mark the hotel item as vacant
+		if (guests.empty())
+			setOccupied(false);
+	}
 }
 
 bool HotelItem::areAllGuestsAsleep()

@@ -25,6 +25,7 @@ namespace OSS {
 		bool didSleep;
 	public:
 		void think();
+		bool isLeaving();
 		
 		//Sleep
 	private:
