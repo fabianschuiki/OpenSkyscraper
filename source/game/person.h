@@ -23,23 +23,32 @@ namespace OSS {
 		 */
 		
 		//Type
-	private:
+	public:
 		typedef enum {
 			kManType,
 			kSalesmanType,
-			kWomanAType,
 			kChildType,
-			kWomanBType,
 			kSecurityOfficerType,
+			
+			kWomanAType,
+			kWomanBType,
 			kMotherWithChildType,
 			kMotherType,
 			kHousekeeperType
 		} Type;
+		
+	private:
 		Type type;
+		
 	public:
 		Type getType();
 		void setType(Type type);
 		virtual void onChangeType();
+		typedef enum {
+			kMale,
+			kFemale
+		} Gender;
+		Gender getGender();
 		
 		//Stress
 	private:
@@ -53,23 +62,26 @@ namespace OSS {
 		/**
 		 * Managed Sprites
 		 */
-	private:
-		typedef std::set< Pointer<Sprite> > SpriteSet;
-		SpriteSet managedSprites;
-		
+	public:
 		typedef enum {
 			kPortraitType,
 			kQueuingType,
 			kMountingType,
 			kDescendingType
 		} SpriteType;
-		typedef std::map<Sprite *, SpriteType> SpriteTypeMap;
-		SpriteTypeMap managedSpriteTypes;
 		
 		typedef enum {
 			kHeadingLeft,
 			kHeadingRight
 		} SpriteHeading;
+		
+	private:
+		typedef std::set< Pointer<Sprite> > SpriteSet;
+		SpriteSet managedSprites;
+		
+		typedef std::map<Sprite *, SpriteType> SpriteTypeMap;
+		SpriteTypeMap managedSpriteTypes;
+		
 		typedef std::map<Sprite *, SpriteHeading> SpriteHeadingMap;
 		SpriteHeadingMap managedSpriteHeadings;
 		
@@ -88,13 +100,13 @@ namespace OSS {
 		/**
 		 * Animation Sprite
 		 */
-	private:
+	protected:
 		Sprite animationSprite;
 		double animationTime;
 		unsigned int animationIndex;
 		int2 animationLocation;
 	public:
-		const Sprite & getAnimationSprite();
+		Sprite & getAnimationSprite();
 		
 		unsigned int getAnimationIndex();
 		void setAnimationIndex(unsigned int animationIndex);
@@ -109,8 +121,10 @@ namespace OSS {
 		
 		virtual double getAnimationPeriod();
 		virtual bool shouldAnimate();
+		void resetAnimation();
 		void advanceAnimation(double dt);
 		virtual void shuffleAnimation();
+		void drawAnimation(rectd visibleRect);
 		
 		
 		/**

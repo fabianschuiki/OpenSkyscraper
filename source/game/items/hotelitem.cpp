@@ -115,32 +115,15 @@ void HotelItem::advance(double dt)
 	//Update the guests
 	updateGuests();
 	
-	//Perform guest animation if required
-	if (isOccupied() && getState() != kAsleepState) {
-		guestAnimationTimer += dt;
-		if (guestAnimationTimer >= 1) {
-			guestAnimationTimer -= 1;
-			updateGuestAnimation();
-		}
-	}
+	//Animate the guests
+	if (isOccupied() && getState() != kAsleepState)
+		advanceGuests(dt);
 }
 
-void HotelItem::updateGuestAnimation()
+void HotelItem::advanceGuests(double dt)
 {
-	for (Guests::iterator g = guests.begin(); g != guests.end(); g++) {
-		//Calculate the cell position
-		recti rect = getRect();
-		rect.origin.x = randi(rect.minX(), rect.maxX() - 2);
-		rect.size.x = 2;
-		
-		//Calculate the world position
-		rectd worldRect = tower->convertCellToWorldRect(rect);
-		worldRect.size.y = backgrounds[0].getRect().size.y;
-		(*g)->sprite.setRect(worldRect);
-		
-		//Choose a new slice of the image
-		(*g)->shuffleSprite();
-	}
+	for (Guests::iterator i = guests.begin(); i != guests.end(); i++)
+		(*i)->advanceAnimation(dt);
 }
 
 
@@ -165,7 +148,7 @@ void HotelItem::drawGuests(rectd visibleRect)
 {
 	for (Guests::iterator g = guests.begin(); g != guests.end(); g++)
 		if ((*g)->isAt(this))
-			(*g)->sprite.draw(visibleRect);
+			(*g)->drawAnimation(visibleRect);
 }
 
 
@@ -177,10 +160,19 @@ void HotelItem::drawGuests(rectd visibleRect)
 #pragma mark Guests
 //----------------------------------------------------------------------------------------------------
 
+unsigned int HotelItem::getMaxNumberOfGuests()
+{
+	return 2;
+}
+
 void HotelItem::initGuests()
 {
-	guests.insert(new HotelGuest(tower, this));
-	updateGuestAnimation();
+	unsigned int numGuests = getMaxNumberOfGuests();
+	for (int i = 0; i < numGuests; i++) {
+		HotelGuest * guest = new HotelGuest(tower, this);
+		guest->setType(i == 0 ? Person::kManType : Person::kWomanBType);
+		guests.insert(guest);
+	}
 }
 
 void HotelItem::updateGuests()

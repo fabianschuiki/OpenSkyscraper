@@ -32,3 +32,17 @@ std::string SingleRoomItem::getTypeName()
 {
 	return "single";
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Initialization
+//----------------------------------------------------------------------------------------------------
+
+unsigned int SingleRoomItem::getMaxNumberOfGuests()
+{
+	return 1;
+}

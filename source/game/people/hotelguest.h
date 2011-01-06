@@ -34,9 +34,12 @@ namespace OSS {
 		bool isAsleep();
 		void setAsleep(bool asleep);
 		
-		//Sprite
-		Sprite sprite;
-		void shuffleSprite();
+		//Animation Sprite
+		void initAnimationSprite();
+		void updateAnimationSprite();
+		
+		bool shouldAnimate();
+		void shuffleAnimation();
 	};
 }
 

@@ -71,6 +71,13 @@ void Person::onChangeType()
 	updateManagedSprites();
 }
 
+Person::Gender Person::getGender()
+{
+	if (getType() >= kWomanAType)
+		return kFemale;
+	return kMale;
+}
+
 
 
 double Person::getStress()
@@ -155,10 +162,10 @@ void Person::updateManagedSprites()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Managed Sprites
+#pragma mark Animation Sprite
 //----------------------------------------------------------------------------------------------------
 
-const Sprite & Person::getAnimationSprite()
+Sprite & Person::getAnimationSprite()
 {
 	return animationSprite;
 }
@@ -207,6 +214,7 @@ void Person::onChangeAnimationLocation()
 
 void Person::initAnimationSprite()
 {
+	updateAnimationSprite();
 }
 
 void Person::updateAnimationSprite()
@@ -233,6 +241,13 @@ bool Person::shouldAnimate()
 	return false;
 }
 
+void Person::resetAnimation()
+{
+	animationTime = 0;
+	if (shouldAnimate())
+		shuffleAnimation();
+}
+
 void Person::advanceAnimation(double dt)
 {
 	if (!shouldAnimate())
@@ -251,12 +266,12 @@ void Person::advanceAnimation(double dt)
 
 void Person::shuffleAnimation()
 {
-	if (!getItem())
-		return;
-	
-	//By default, only shuffle the animation location inside the item
-	recti rect = getItem()->getRect();
-	setAnimationLocation(int2(randi(0, rect.size.x - 1), randi(0, rect.size.y - 1)));
+}
+
+void Person::drawAnimation(rectd visibleRect)
+{
+	if (shouldAnimate())
+		animationSprite.draw(visibleRect);
 }
 
 
@@ -302,6 +317,9 @@ void Person::setItem(Item * item)
 		//Add person to the new item
 		if (this->item)
 			this->item->addPerson(this);
+		
+		//Reset the animation
+		resetAnimation();
 		
 		//Compensate the retain
 		release();

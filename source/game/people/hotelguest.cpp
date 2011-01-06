@@ -22,8 +22,7 @@ HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : TimedPerson(tower), h
 	didChooseSleepTime = false;
 	asleep = false;
 	
-	sprite.texture = Texture::named("simtower/facilities/hotel/guests");
-	sprite.textureRect.size.x = (1.0 / 16);
+	initAnimationSprite();
 }
 
 
@@ -97,7 +96,7 @@ void HotelGuest::think()
 		
 		//Decide when to wake up and go to sleep
 		if (!didSleep) {
-			setPauseEndTimeFuture(randd(6, 7));
+			setPauseEndTimeFuture(randd(6, 8));
 			OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
 			setAsleep(true);
 			return;
@@ -122,7 +121,7 @@ void HotelGuest::think()
 	
 	//Leave
 	OSSObjectLog << "leaving" << std::endl;
-	setNextDestination(randd(tower->time + 0.25, 10), NULL);
+	setNextDestination(randd(tower->time + 0.25, 12), NULL);
 }
 
 bool HotelGuest::isLeaving()
@@ -143,11 +142,46 @@ void HotelGuest::setAsleep(bool asleep)
 	}
 }
 
-void HotelGuest::shuffleSprite()
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Animation Sprite
+//----------------------------------------------------------------------------------------------------
+
+void HotelGuest::initAnimationSprite()
+{	
+	//Load the texture and set the slice size
+	animationSprite.texture = Texture::named("simtower/facilities/hotel/guests");
+	animationSprite.setRect(rectd(0, 0, 16, 24));
+	animationSprite.textureRect.size.x = (1.0 / 16);
+	
+	//Do the rest of the initialization
+	TimedPerson::initAnimationSprite();
+}
+
+void HotelGuest::updateAnimationSprite()
 {
-	//TODO: Make this dependent on the guest's gender/type
-	unsigned int index = randi(0, 11);
-	if (didSleep)
-		index = randi(0, 1);
-	sprite.textureRect.origin.x = randi(0, 11) / 16.0;
+	TimedPerson::updateAnimationSprite();
+	
+	//Set the texture rect
+	animationSprite.textureRect.origin.x = getAnimationIndex() / 16.0;
+}
+
+bool HotelGuest::shouldAnimate()
+{
+	return isAt(hotel);
+}
+
+void HotelGuest::shuffleAnimation()
+{
+	TimedPerson::shuffleAnimation();
+	
+	//Set the animation index
+	setAnimationIndex(getGender() == kMale ? randi(0, 10) : randi(11, 15));
+	
+	//Position the guest
+	setAnimationLocation(int2(randi(0, hotel->getRect().size.x - 2), 0));
 }

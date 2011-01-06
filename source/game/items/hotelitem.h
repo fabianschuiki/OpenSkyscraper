@@ -44,11 +44,8 @@ namespace OSS {
 		/**
 		 * Simulation
 		 */
-	private:
-		double guestAnimationTimer;
-	public:
-		virtual void advance(double dt);
-		void updateGuestAnimation();
+		void advance(double dt);
+		void advanceGuests(double dt);
 		
 		
 		/**
@@ -65,6 +62,7 @@ namespace OSS {
 		typedef std::set< Pointer<HotelGuest> > Guests;
 		Guests guests;
 	public:
+		virtual unsigned int getMaxNumberOfGuests();
 		void initGuests();
 		void updateGuests();
 		void clearGuests();
