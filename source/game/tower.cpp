@@ -958,11 +958,10 @@ Route * Tower::findRoute(recti origin, recti destination)
 	Route * route = new Route(this);
 	route->origin = origin;
 	route->destination = destination;
+	route->autorelease();
 	
-	if (!findRoute(origin, destination, NULL, ItemSet(), PathfinderStats(), route)) {
-		delete route;
+	if (!findRoute(origin, destination, NULL, ItemSet(), PathfinderStats(), route))
 		route = NULL;
-	}
 	
 	return route;
 }
@@ -970,6 +969,11 @@ Route * Tower::findRoute(recti origin, recti destination)
 bool Tower::findRoute(recti origin, recti destination, TransportItem * transport,
 					  ItemSet usedTransports, PathfinderStats stats, Route * route)
 {
+	//If there is no transport and the origin and destination are on the same floor, we already
+	//have a route.
+	if (!transport && origin.minY() == destination.minY())
+		return true;
+	
 	//Check whether the transport connects directly to the destination floor
 	if (transport && transport->connectsToFloor(destination.minY())) {
 		route->addNode(origin, transport, transport->getFloorRect(destination.minY()));

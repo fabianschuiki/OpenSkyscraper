@@ -464,8 +464,8 @@ void Person::updateRoute()
 	recti destination = (getDestination() ? getDestination()->getRect() : tower->getGroundFloorRect());
 	
 	//If there's no current item, reset the current floor to the ground level.
-	if (!getItem())
-		setFloor(0);
+	/*if (!getItem())
+		setFloor(0);*/
 	
 	//If the item and destination are equal, set the route to null
 	if (getItem() == getDestination())

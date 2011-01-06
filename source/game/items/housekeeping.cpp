@@ -110,18 +110,12 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 				int nextDistance = abs(nextHotel->getMinFloor() - janitor->getFloor());
 				
 				//Check whether the hotel is vertically closer than the old one
-				if (nextDistance < distance) {
-					/*OSSObjectLog << "discarding on " << hotel->getMinFloor() << ", " << nextDistance
-					<< " > " << distance << std::endl;*/
+				if (nextDistance < distance)
 					continue;
-				}
 				
 				//Check whether the hotel is more to the left than the one we have
-				if (nextHotel->getRect().origin.x < hotel->getRect().origin.x) {
-					/*OSSObjectLog << "discarding on " << hotel->getMinFloor() << ", " << nextDistance
-					<< " > " << distance << std::endl;*/
+				if (nextHotel->getRect().origin.x < hotel->getRect().origin.x)
 					continue;
-				}
 			}
 			
 			//Obviously nothing disqualified the hotel, so take it
