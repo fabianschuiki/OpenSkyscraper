@@ -104,17 +104,17 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 		
 		//Check whether the hotel is dirty and doesn't have a janitor yet
 		if (hotel->getState() == HotelItem::kDirtyState && !hotel->hasAssignedJanitor()) {
-			if (nextHotel) {
-				//Check whether the hotel is more to the left than the one we have
-				if (nextHotel->getRect().origin.x < hotel->getRect().origin.x)
-					continue;
-				
+			if (nextHotel) {				
 				//Calculate the distance between the items
-				int distance = fabs(hotel->getMinFloor() - janitor->getFloor());
-				int nextDistance = fabs(nextHotel->getMinFloor() - janitor->getFloor());
+				int distance = abs(hotel->getMinFloor() - janitor->getFloor());
+				int nextDistance = abs(nextHotel->getMinFloor() - janitor->getFloor());
 				
 				//Check whether the hotel is vertically closer than the old one
 				if (nextDistance > distance)
+					continue;
+				
+				//Check whether the hotel is more to the left than the one we have
+				if (nextHotel->getRect().origin.x < hotel->getRect().origin.x)
 					continue;
 			}
 			

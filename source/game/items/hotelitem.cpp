@@ -111,9 +111,17 @@ void HotelItem::updateBackground()
 void HotelItem::advance(double dt)
 {
 	OccupiableItem::advance(dt);
-	
+		
 	//Update the guests
 	updateGuests();
+	
+	//Everyone should be asleep at 1:30
+	if (tower->checkTime(1.5))
+		assert(areAllGuestsAsleep());
+	
+	//There shouldn't be any more guests after 12:00
+	if (tower->checkTime(12))
+		assert(guests.empty());
 	
 	//Animate the guests
 	if (isOccupied() && getState() != kAsleepState)
@@ -187,6 +195,17 @@ void HotelItem::clearGuests()
 	guests.clear();
 }
 
+void HotelItem::addPerson(Person * person)
+{
+	OccupiableItem::addPerson(person);
+	
+	//Special treatment for janitors
+	if (person->isKindOfClass(typeid(Janitor))) {
+		//Mark the hotel as clean and empty
+		setState(kEmptyState);
+	}
+}
+
 void HotelItem::removePerson(Person * person)
 {
 	OccupiableItem::removePerson(person);
@@ -201,12 +220,6 @@ void HotelItem::removePerson(Person * person)
 			if (guests.empty())
 				setOccupied(false);
 		}
-	}
-	
-	//Special treatment for janitors
-	if (person->isKindOfClass(typeid(Janitor))) {
-		//Mark the hotel as clean and empty
-		setState(kEmptyState);
 	}
 }
 
@@ -235,12 +248,8 @@ Janitor * HotelItem::getAssignedJanitor()
 void HotelItem::setAssignedJanitor(Janitor * janitor)
 {
 	if (assignedJanitor != janitor) {
-		if (assignedJanitor)
-			assignedJanitor->setAssignedHotel(NULL);
 		assignedJanitor = janitor;
-		if (assignedJanitor)
-			assignedJanitor->setAssignedHotel(this);
-		backgrounds[0].color = (assignedJanitor ? (color4d){0, 1, 0, 1} : (color4d){1, 1, 1, 1});
+		backgrounds[0].color = (assignedJanitor ? (color4d){0.25, 1, 0.25, 1} : (color4d){1, 1, 1, 1});
 	}
 }
 

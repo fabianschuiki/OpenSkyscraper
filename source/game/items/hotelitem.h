@@ -68,6 +68,8 @@ namespace OSS {
 		void initGuests();
 		void updateGuests();
 		void clearGuests();
+		
+		void addPerson(Person * person);
 		void removePerson(Person * person);
 		
 		//Convenience

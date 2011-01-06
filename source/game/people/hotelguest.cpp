@@ -65,7 +65,7 @@ void HotelGuest::think()
 		
 		//Have dinner if it is before 21:00
 		if (!hadDinner) {
-			if (tower->time < 21 && isAt(hotel)) {
+			if (tower->time >= 18.5 && tower->time < 21 && isAt(hotel)) {
 				OSSObjectLog << "going to have dinner" << std::endl;
 				setNextDestination(NULL, 0.75);
 				return;
@@ -119,8 +119,9 @@ void HotelGuest::think()
 	}
 	
 	//Leave
-	OSSObjectLog << "leaving" << std::endl;
-	setNextDestination(randd(tower->time + 0.25, 12), NULL);
+	setNextDestination(randd(tower->time + 0.25, 8), NULL);
+	OSSObjectLog << "leaving at " << getNextDestinationTime() << std::endl;
+	assert(getNextDestinationTime() <= 12);
 }
 
 bool HotelGuest::isLeaving()

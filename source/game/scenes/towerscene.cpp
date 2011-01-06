@@ -419,17 +419,17 @@ void TowerScene::buildDebugTower()
 	
 	//Lobby
 	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
-									  recti(-32, 0, 0, 1), recti(32, 0, 0, 1));
+									  recti(-50, 0, 0, 1), recti(50, 0, 0, 1));
 	
 	//Hotels
-	for (int y = 1; y < 4; y++) {
+	for (int y = 1; y < 6; y++) {
 		for (int x = 0; x < 2; x++) {
 			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
 								 recti(x * 4, y, 4, 1));
 			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
 								 recti((-x - 1) * 4, y, 4, 1));
 		}
-		for (int x = 0; x < 2; x++) {
+		for (int x = 0; x < 6; x++) {
 			tower->constructItem(Item::descriptorForItemType(Item::kDoubleRoomType),
 								 recti(8 + x * 6, y, 6, 1));
 			tower->constructItem(Item::descriptorForItemType(Item::kDoubleRoomType),
@@ -441,9 +441,9 @@ void TowerScene::buildDebugTower()
 	
 	//Housekeeping
 	tower->constructItem(Item::descriptorForItemType(Item::kHousekeepingType),
-						 recti(-7, 4, 15, 1));
+						 recti(-7, 6, 15, 1));
 	tower->constructItem(Item::descriptorForItemType(Item::kEscalatorType),
-						 recti(-4, 3, 8, 2));
+						 recti(-4, 5, 8, 2));
 	
 	/*//Offices
 	for (int y = 1; y < 15; y++) {
