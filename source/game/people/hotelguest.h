@@ -21,6 +21,7 @@ namespace OSS {
 		bool initialVisitDone;
 		bool hadDinner;
 		double sleepTime;
+		bool didChooseSleepTime;
 		bool didSleep;
 	public:
 		void think();

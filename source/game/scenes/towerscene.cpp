@@ -258,6 +258,8 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 			//DEBUG: Change time
 		case 'h':	tower->time += 1; return true; break;
 		case ' ':	tower->time += 0.2; return true; break;
+		case 'a':	tower->debugSpeed--; return true; break;
+		case 's':	tower->debugSpeed++; return true; break;
 			
 			//DEBUG: Build debug tower
 		case 'd':	buildDebugTower(); return true; break;

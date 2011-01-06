@@ -24,6 +24,8 @@ Tower::Tower()
 	
 	//Initialize the timer
 	previousTime = time;
+	previousTimeBuffer = previousTime;
+	debugSpeed = 0;
 	
 	//DEBUG: Initialize the pause state
 	paused = true;
@@ -190,14 +192,15 @@ void Tower::advance(double dt)
 void Tower::advanceTime(double dt)
 {
 	//Decide at what speed the game time should be running
-	double timeSpeed = 0.05;
+	double timeSpeed = 0.25;
 	if (time > 1.5 && time < 6.0)
 		timeSpeed = 1;
 	if (time > 12 && time < 13)
-		timeSpeed = 1.0 / 60;
+		timeSpeed = 1.0 / 45;
+	timeSpeed *= pow(2, debugSpeed);
 	
 	//Advance the game time
-	previousTime = time;
+	previousTime = previousTimeBuffer;
 	time += dt * timeSpeed;
 	if (time > 24) {
 		dateAdvanced = true;
@@ -206,6 +209,7 @@ void Tower::advanceTime(double dt)
 	} else {
 		dateAdvanced = false;
 	}
+	previousTimeBuffer = time;
 }
 
 void Tower::advanceFacilities(double dt)

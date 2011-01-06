@@ -188,6 +188,7 @@ namespace OSS {
 		bool didDateAdvance();
 		
 		bool paused;
+		int debugSpeed;
 		double time;
 		unsigned int date;
 		unsigned int getDayOfWeek();	//0,1 = WD; 2 = WE
@@ -222,6 +223,7 @@ namespace OSS {
 		 */
 	private:
 		double previousTime;
+		double previousTimeBuffer; //required to enable changes to the time outside of advance()
 	public:
 		bool checkTime(double previousTime, double alarmTime);
 		bool checkTime(double alarmTime);

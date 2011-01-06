@@ -14,6 +14,8 @@ namespace OSS {
 	}
 	
 	double randd(double min, double max) {
-		return ((double)rand() / RAND_MAX) * (max - min) + min;
+		double f = ((double)rand() / RAND_MAX);
+		assert(f <= 1 && f >= 0);
+		return f * (max - min) + min;
 	}
 }
