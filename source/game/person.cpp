@@ -235,7 +235,7 @@ void Person::updateAnimationSprite()
 
 double Person::getAnimationPeriod()
 {
-	return 1;
+	return 0.75;
 }
 
 bool Person::shouldAnimate()

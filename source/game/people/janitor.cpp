@@ -55,16 +55,12 @@ bool Janitor::hasAssignedHotel()
 void Janitor::onChangeAssignedHotel()
 {
 	//If we have an assigned hotel, move there
-	if (getAssignedHotel()) {
-		OSSObjectLog << "assigned to hotel " << getAssignedHotel()->description() << std::endl;
+	if (getAssignedHotel())
 		setNextDestination(getAssignedHotel(), 0.25);
-	}
 	
 	//Otherwise go back to housekeeping
-	else {
-		OSSObjectLog << "going back to " << housekeeping->description() << std::endl;
+	else
 		setNextDestination(housekeeping);
-	}
 }
 
 

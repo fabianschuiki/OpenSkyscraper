@@ -1025,7 +1025,7 @@ bool Tower::findRoute(recti origin, recti destination, TransportItem * transport
 				newRoute->addNode(origin, transport, transport->getFloorRect(*floor));
 			
 			//Find routes using this transport
-			OSSObjectLog << "finding routes using " << t->description() << std::endl;
+			//OSSObjectLog << "finding routes using " << t->description() << std::endl;
 			if (findRoute(t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute))
 				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
 					shortestRoute = newRoute;
