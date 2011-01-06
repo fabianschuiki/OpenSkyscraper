@@ -58,6 +58,9 @@ Item * Person::getItem() const
 void Person::setItem(Item * item)
 {
 	if (this->item != item) {
+		//Retain us in case the retain count drops to 0 during the switch
+		retain();
+		
 		//Remove the person from the current item
 		if (this->item)
 			this->item->removePerson(this);
@@ -71,6 +74,9 @@ void Person::setItem(Item * item)
 		//Add person to the new item
 		if (this->item)
 			this->item->addPerson(this);
+		
+		//Compensate the retain
+		release();
 	}
 }
 

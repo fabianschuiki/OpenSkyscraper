@@ -33,6 +33,10 @@ namespace OSS {
 	public:
 		bool isAsleep();
 		void setAsleep(bool asleep);
+		
+		//Sprite
+		Sprite sprite;
+		void shuffleSprite();
 	};
 }
 

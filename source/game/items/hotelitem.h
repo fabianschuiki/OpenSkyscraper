@@ -44,7 +44,18 @@ namespace OSS {
 		/**
 		 * Simulation
 		 */
+	private:
+		double guestAnimationTimer;
+	public:
 		virtual void advance(double dt);
+		void updateGuestAnimation();
+		
+		
+		/**
+		 * Drawing
+		 */
+		void draw(rectd visibleRect);
+		void drawGuests(rectd visibleRect);
 		
 		
 		/**

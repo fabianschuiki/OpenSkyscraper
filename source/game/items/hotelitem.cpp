@@ -114,6 +114,58 @@ void HotelItem::advance(double dt)
 	
 	//Update the guests
 	updateGuests();
+	
+	//Perform guest animation if required
+	if (isOccupied() && getState() != kAsleepState) {
+		guestAnimationTimer += dt;
+		if (guestAnimationTimer >= 1) {
+			guestAnimationTimer -= 1;
+			updateGuestAnimation();
+		}
+	}
+}
+
+void HotelItem::updateGuestAnimation()
+{
+	for (Guests::iterator g = guests.begin(); g != guests.end(); g++) {
+		//Calculate the cell position
+		recti rect = getRect();
+		rect.origin.x = randi(rect.minX(), rect.maxX() - 2);
+		rect.size.x = 2;
+		
+		//Calculate the world position
+		rectd worldRect = tower->convertCellToWorldRect(rect);
+		worldRect.size.y = backgrounds[0].getRect().size.y;
+		(*g)->sprite.setRect(worldRect);
+		
+		//Choose a new slice of the image
+		(*g)->shuffleSprite();
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
+//----------------------------------------------------------------------------------------------------
+
+void HotelItem::draw(rectd visibleRect)
+{
+	OccupiableItem::draw(visibleRect);
+	
+	//Draw our guests if required
+	if (isOccupied() && getState() != kAsleepState)
+		drawGuests(visibleRect);
+}
+
+void HotelItem::drawGuests(rectd visibleRect)
+{
+	for (Guests::iterator g = guests.begin(); g != guests.end(); g++)
+		if ((*g)->isAt(this))
+			(*g)->sprite.draw(visibleRect);
 }
 
 
@@ -128,12 +180,13 @@ void HotelItem::advance(double dt)
 void HotelItem::initGuests()
 {
 	guests.insert(new HotelGuest(tower, this));
+	updateGuestAnimation();
 }
 
 void HotelItem::updateGuests()
 {
-	Guests tempGuests = guests;
-	for (Guests::iterator g = tempGuests.begin(); g != tempGuests.end(); g++)
+	Guests temp = guests;
+	for (Guests::iterator g = temp.begin(); g != temp.end(); g++)
 		(*g)->update();
 }
 

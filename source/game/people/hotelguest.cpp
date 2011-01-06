@@ -21,6 +21,9 @@ HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : TimedPerson(tower), h
 	didSleep = false;
 	didChooseSleepTime = false;
 	asleep = false;
+	
+	sprite.texture = Texture::named("simtower/facilities/hotel/guests");
+	sprite.textureRect.size.x = (1.0 / 16);
 }
 
 
@@ -138,4 +141,13 @@ void HotelGuest::setAsleep(bool asleep)
 		this->asleep = asleep;
 		hotel->onChangeGuestAsleep();
 	}
+}
+
+void HotelGuest::shuffleSprite()
+{
+	//TODO: Make this dependent on the guest's gender/type
+	unsigned int index = randi(0, 11);
+	if (didSleep)
+		index = randi(0, 1);
+	sprite.textureRect.origin.x = randi(0, 11) / 16.0;
 }
