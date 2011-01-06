@@ -4,6 +4,7 @@
 
 #include "../general.h"
 #include "item.h"
+#include "tower.h"
 
 
 namespace OSS {

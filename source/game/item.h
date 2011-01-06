@@ -207,6 +207,9 @@ namespace OSS {
 		//Surroundings
 		virtual void onChangeTransportItems() {}
 		
+		//Timing
+		virtual void onDateAdvance() {}
+		
 		
 		/**
 		 * People

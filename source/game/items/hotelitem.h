@@ -3,15 +3,17 @@
 
 
 #include "../../general.h"
-#include "../facilityitem.h"
+#include "../occupiableitem.h"
+#include "../people/hotelguest.h"
 
 
 namespace OSS {
-	class HotelItem : public FacilityItem {
+	class HotelItem : public OccupiableItem {
 	public:
 		//Initialization
 		HotelItem(Tower * tower, Item::Descriptor * descriptor);
 		virtual std::string getTypeName() = 0;
+		
 		
 		/**
 		 * State
@@ -30,16 +32,43 @@ namespace OSS {
 		void setState(State state);
 		virtual void onChangeState();
 		
+		
 		/**
 		 * Basic Sprites
-		 */
-		
+		 */		
 		std::string getTextureBaseName();
 		unsigned int getTextureSliceIndex();
 		virtual void updateBackground();
 		
-		double tc;
+		
+		/**
+		 * Simulation
+		 */
 		virtual void advance(double dt);
+		
+		
+		/**
+		 * Guests
+		 */
+	private:
+		typedef std::set< Pointer<HotelGuest> > Guests;
+		Guests guests;
+	public:
+		void initGuests();
+		void updateGuests();
+		void clearGuests();
+		void removeGuest(HotelGuest * guest);
+		
+		//Convenience
+		bool areAllGuestsAsleep();
+		
+		
+		/**
+		 * Notifications
+		 */
+		void initAutooccupyTime();
+		void onChangeOccupied();
+		void onChangeGuestAsleep();
 	};
 }
 

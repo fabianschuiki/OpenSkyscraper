@@ -114,6 +114,16 @@ void TimedPerson::clearNextDestination()
 
 void TimedPerson::updateTimedDestination()
 {
+	//If the day just advanced, reduce the various times by 24 hours
+	if (tower->didDateAdvance()) {
+		OSSObjectLog << "reducing time values by 24h" << std::endl;
+		if (nextDestinationTime >= 24)
+			nextDestinationTime -= 24;
+		if (pauseEndTime >= 24)
+			pauseEndTime -= 24;
+	}
+	
+	//If there's a next destination and the time is right, advance
 	if (isNextDestinationValid() && getNextDestinationTime() <= tower->time) {
 		setDestination(getNextDestination());
 		setPauseDurationAtDestination(getNextDestinationPauseDuration());
@@ -163,6 +173,13 @@ void TimedPerson::setPauseEndTime(double time)
 	pauseEndTime = time;
 }
 
+void TimedPerson::setPauseEndTimeFuture(double time)
+{
+	if (tower->time >= time)
+		time += 24;
+	setPauseEndTime(time);
+}
+
 bool TimedPerson::isPausing()
 {
 	return (tower->time <= getPauseEndTime());
@@ -171,6 +188,31 @@ bool TimedPerson::isPausing()
 bool TimedPerson::hasNoPlans()
 {
 	return (!isPausing() && !isNextDestinationValid() && !hasRoute());
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Intelligence
+//----------------------------------------------------------------------------------------------------
+
+void TimedPerson::update()
+{
+	Person::update();
+	
+	//Update the timed destination
+	updateTimedDestination();
+	
+	//If the person has no more plans, think!
+	if (hasNoPlans())
+		think();
+}
+
+void TimedPerson::think()
+{
 }
 
 

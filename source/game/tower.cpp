@@ -190,18 +190,21 @@ void Tower::advance(double dt)
 void Tower::advanceTime(double dt)
 {
 	//Decide at what speed the game time should be running
-	double timeSpeed = 0.5;
+	double timeSpeed = 0.05;
 	if (time > 1.5 && time < 6.0)
 		timeSpeed = 1;
 	if (time > 12 && time < 13)
-		timeSpeed = 1.0 / 30;
+		timeSpeed = 1.0 / 60;
 	
 	//Advance the game time
 	previousTime = time;
 	time += dt * timeSpeed;
 	if (time > 24) {
+		dateAdvanced = true;
 		time -= 24;
 		date++;
+	} else {
+		dateAdvanced = false;
 	}
 }
 
@@ -872,6 +875,11 @@ void Tower::eraseItem(unsigned int itemID, Item * item)
 #pragma mark -
 #pragma mark Environment
 //----------------------------------------------------------------------------------------------------
+
+bool Tower::didDateAdvance()
+{
+	return dateAdvanced;
+}
 
 unsigned int Tower::getDayOfWeek()
 {

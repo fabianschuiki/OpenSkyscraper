@@ -16,6 +16,8 @@
 		1F0D417111FEFFBE00C6D787 /* engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D416811FEFFBE00C6D787 /* engine.cpp */; };
 		1F0D418611FF00D700C6D787 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D418511FF00D700C6D787 /* platform.cpp */; };
 		1F0D419711FF0D1C00C6D787 /* openglcanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D419611FF0D1C00C6D787 /* openglcanvas.cpp */; };
+		1F16FBB812D507190043C2D1 /* hotelguest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F16FBB712D507190043C2D1 /* hotelguest.cpp */; };
+		1F16FBC812D50B4E0043C2D1 /* occupiableitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F16FBC712D50B4E0043C2D1 /* occupiableitem.cpp */; };
 		1F21FCCD120020CE000A8AC3 /* loadertask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FCCC120020CE000A8AC3 /* loadertask.cpp */; };
 		1F21FCEA1200255D000A8AC3 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FCE91200255D000A8AC3 /* texture.cpp */; };
 		1F21FD92120030B7000A8AC3 /* storeitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FD91120030B7000A8AC3 /* storeitem.cpp */; };
@@ -110,6 +112,10 @@
 		1F0D41A311FF0DF000C6D787 /* rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
 		1F0D41A411FF0DF000C6D787 /* vector2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector2D.h; sourceTree = "<group>"; };
 		1F0D41AB11FF0E5F00C6D787 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
+		1F16FBB612D507190043C2D1 /* hotelguest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotelguest.h; sourceTree = "<group>"; };
+		1F16FBB712D507190043C2D1 /* hotelguest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotelguest.cpp; sourceTree = "<group>"; };
+		1F16FBC612D50B4E0043C2D1 /* occupiableitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = occupiableitem.h; sourceTree = "<group>"; };
+		1F16FBC712D50B4E0043C2D1 /* occupiableitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = occupiableitem.cpp; sourceTree = "<group>"; };
 		1F21FCA1120013F5000A8AC3 /* store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = store.h; sourceTree = "<group>"; };
 		1F21FCC312001F39000A8AC3 /* storeitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = storeitem.h; sourceTree = "<group>"; };
 		1F21FCCB120020CE000A8AC3 /* loadertask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadertask.h; sourceTree = "<group>"; };
@@ -320,6 +326,15 @@
 			path = math;
 			sourceTree = "<group>";
 		};
+		1F16FBB512D507070043C2D1 /* people */ = {
+			isa = PBXGroup;
+			children = (
+				1F16FBB612D507190043C2D1 /* hotelguest.h */,
+				1F16FBB712D507190043C2D1 /* hotelguest.cpp */,
+			);
+			path = people;
+			sourceTree = "<group>";
+		};
 		1F21FCA012001295000A8AC3 /* resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,8 +361,11 @@
 				1F38276612032C2400C1E2B0 /* item.h */,
 				1F38276712032C2400C1E2B0 /* item.cpp */,
 				1F38278A1203562000C1E2B0 /* items */,
+				1F16FBC612D50B4E0043C2D1 /* occupiableitem.h */,
+				1F16FBC712D50B4E0043C2D1 /* occupiableitem.cpp */,
 				1F21FDF812003389000A8AC3 /* openskyscraper.h */,
 				1F21FDF912003389000A8AC3 /* openskyscraper.cpp */,
+				1F16FBB512D507070043C2D1 /* people */,
 				1FF2160D12D2335F0043144D /* person.h */,
 				1FF2160E12D2335F0043144D /* person.cpp */,
 				1FBE67F712D1AF22008F0E9C /* route.h */,
@@ -618,6 +636,8 @@
 				1F2FC97412D4F5F7008B3FC2 /* hotelitem.cpp in Sources */,
 				1F2FC9B312D4FDB8008B3FC2 /* doubleroom.cpp in Sources */,
 				1F2FC9C712D4FE31008B3FC2 /* suite.cpp in Sources */,
+				1F16FBB812D507190043C2D1 /* hotelguest.cpp in Sources */,
+				1F16FBC812D50B4E0043C2D1 /* occupiableitem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

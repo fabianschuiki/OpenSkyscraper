@@ -315,6 +315,10 @@ void Item::advance(double dt)
 				setUnderConstruction(false);
 		}
 	}
+	
+	//If the date advanced, issue a notification
+	if (tower->didDateAdvance())
+		onDateAdvance();
 }
 
 

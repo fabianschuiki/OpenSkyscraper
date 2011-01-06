@@ -11,10 +11,9 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-HotelItem::HotelItem(Tower * tower, Item::Descriptor * descriptor) : FacilityItem(tower, descriptor)
+HotelItem::HotelItem(Tower * tower, Item::Descriptor * descriptor) : OccupiableItem(tower, descriptor)
 {
 	state = kEmptyState;
-	tc = 0;
 }
 
 
@@ -100,17 +99,96 @@ void HotelItem::updateBackground()
 	}
 }
 
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
 void HotelItem::advance(double dt)
 {
-	FacilityItem::advance(dt);
+	OccupiableItem::advance(dt);
 	
-	tc += dt;
-	if (tc >= 3.0) {
-		tc -= 3.0;
-		
-		int s = getState();
-		if (s++ == kInfestedState)
-			s = kEmptyState;
-		setState((State)s);
+	//Update the guests
+	updateGuests();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Guests
+//----------------------------------------------------------------------------------------------------
+
+void HotelItem::initGuests()
+{
+	guests.insert(new HotelGuest(tower, this));
+}
+
+void HotelItem::updateGuests()
+{
+	Guests tempGuests = guests;
+	for (Guests::iterator g = tempGuests.begin(); g != tempGuests.end(); g++)
+		(*g)->update();
+}
+
+void HotelItem::clearGuests()
+{
+	guests.clear();
+}
+
+void HotelItem::removeGuest(HotelGuest * guest)
+{
+	OSSObjectLog << std::endl;
+	guests.erase(guest);
+	
+	//If there are no more guests, mark the hotel item as vacant
+	if (guests.empty())
+		setOccupied(false);
+}
+
+bool HotelItem::areAllGuestsAsleep()
+{
+	for (Guests::iterator g = guests.begin(); g != guests.end(); g++)
+		if (!(*g)->isAsleep())
+			return false;
+	return true;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Notifications
+//----------------------------------------------------------------------------------------------------
+
+void HotelItem::initAutooccupyTime()
+{
+	OSSObjectLog << std::endl;
+	setAutooccupyTime(randd(std::max<double>(tower->time, 17), 21));
+}
+
+void HotelItem::onChangeOccupied()
+{
+	OSSObjectLog << std::endl;
+	if (isOccupied()) {
+		setState(kOccupiedState);
+		initGuests();
+	} else {
+		setState(kDirtyState);
+		clearGuests();
 	}
+}
+
+void HotelItem::onChangeGuestAsleep()
+{
+	OSSObjectLog << std::endl;
+	setState(areAllGuestsAsleep() ? kAsleepState : kOccupiedState);
 }

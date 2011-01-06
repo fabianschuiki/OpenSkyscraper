@@ -22,6 +22,13 @@ typedef union {
 } colorPalette;
 
 
+const color3d SimTower::skyThroughWindow[] = {
+	(color3d){140 / 255.0, 214 / 255.0, 1.0},
+	(color3d){66 / 255.0, 198 / 255.0, 1.0},
+	(color3d){74 / 255.0, 180 / 255.0, 1.0}
+};
+
+
 
 
 
@@ -439,18 +446,13 @@ void SimTower::postprocessTexture(std::string resourceName,
 	texture->useTransparentColor = true;
 	dumpTexture(texture);
 	
-	//Some default colors for later use
-	const color3d skyThroughWindow[2] = {
-		(color3d){140 / 255.0, 214 / 255.0, 1.0},
-		(color3d){66 / 255.0, 198 / 255.0, 1.0}
-	};
-	
 	//Setup the correct transparency behaviour
 	if (resourceName == "background/city")
 		texture->transparentColor = (color3d){138 / 255.0, 212 / 255.0, 1.0};
 	if (resourceName.find("facilities") == 0) {
 		texture->transparentColors.push_back(skyThroughWindow[0]);
 		texture->transparentColors.push_back(skyThroughWindow[1]);
+		texture->transparentColors.push_back(skyThroughWindow[2]);
 	}
 	if (resourceName.find("ui") == 0 &&
 		resourceName.find("ui/control/star") != 0)
@@ -574,6 +576,9 @@ void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)
 		ilBlit(image, 0, 0, 0, i * 328, 0, 0, 256, 36, 1);
 		t = Texture::named(variantName + "/pattern");
 		t->assignLoadedImage(pattern);
+		t->transparentColors.push_back(skyThroughWindow[0]);
+		t->transparentColors.push_back(skyThroughWindow[1]);
+		t->useTransparentColor = true;
 		dumpTexture(t);
 		
 		//Extract the lobby entrance
@@ -583,6 +588,9 @@ void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)
 		ilBlit(image, 0, 0, 0, i * 328 + 272, 0, 0, 56, 36, 1);
 		t = Texture::named(variantName + "/entrance");
 		t->assignLoadedImage(entrance);
+		t->transparentColors.push_back(skyThroughWindow[0]);
+		t->transparentColors.push_back(skyThroughWindow[1]);
+		t->useTransparentColor = true;
 		dumpTexture(t);
 	}
 }

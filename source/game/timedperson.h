@@ -66,10 +66,18 @@ namespace OSS {
 		//End of pause
 		double getPauseEndTime();
 		void setPauseEndTime(double time);
+		void setPauseEndTimeFuture(double time); //ensures that the pause end time lies in the future
 		
 		//Convenience
 		bool isPausing();
 		bool hasNoPlans();
+		
+		
+		/**
+		 * Intelligence
+		 */
+		virtual void update();
+		virtual void think();
 		
 		
 		/**

@@ -44,6 +44,10 @@ namespace OSS {
 		static ResourceName soundResourceNames[];
 		static std::string getNameForResource(Resource * resource);
 		
+		//Some default colors for later use
+	private:
+		static const color3d skyThroughWindow[];
+		
 	public:
 		//Loads the resources of the SimTower executable
 		void loadResources();

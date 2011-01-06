@@ -82,6 +82,12 @@ namespace OSS {
 		
 		
 		/**
+		 * Intelligence
+		 */
+		virtual void update();
+		
+		
+		/**
 		 * Uncategorized
 		 */
 		

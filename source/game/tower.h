@@ -182,6 +182,11 @@ namespace OSS {
 		 */
 		
 		//Time
+	private:
+		bool dateAdvanced;
+	public:
+		bool didDateAdvance();
+		
 		bool paused;
 		double time;
 		unsigned int date;

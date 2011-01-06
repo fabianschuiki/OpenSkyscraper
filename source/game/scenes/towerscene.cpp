@@ -256,7 +256,8 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 		case '6':	tower->rating = 6; return true; break;
 			
 			//DEBUG: Change time
-		case ' ':	tower->time++; return true; break;
+		case 'h':	tower->time += 1; return true; break;
+		case ' ':	tower->time += 0.2; return true; break;
 			
 			//DEBUG: Build debug tower
 		case 'd':	buildDebugTower(); return true; break;
@@ -416,9 +417,21 @@ void TowerScene::buildDebugTower()
 	
 	//Lobby
 	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
-									  recti(-9, 0, 0, 1), recti(9, 0, 0, 1));
+									  recti(-32, 0, 0, 1), recti(32, 0, 0, 1));
 	
-	//Offices
+	//Hotels
+	for (int y = 1; y < 4; y++) {
+		for (int x = 0; x < 4; x++) {
+			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
+								 recti(x * 4, y, 4, 1));
+			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
+								 recti((-x - 1) * 4, y, 4, 1));
+		}
+		tower->constructItem(Item::descriptorForItemType(Item::kEscalatorType),
+							 recti(-4, y - 1, 8, 2));
+	}
+	
+	/*//Offices
 	for (int y = 1; y < 15; y++) {
 		for (int x = 0; x < 1; x++) {
 			tower->constructItem(Item::descriptorForItemType(Item::kOfficeType),
@@ -428,7 +441,7 @@ void TowerScene::buildDebugTower()
 		}
 	}
 	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
-									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));
+									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));*/
 	
 	//Stairs
 	/*for (int y = 0; y < 1; y++) {
