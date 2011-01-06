@@ -29,6 +29,11 @@ std::set<int> TransportItem::getConnectedLobbies()
 	return lobbies;
 }
 
+std::set<int> TransportItem::getConnectionFloors()
+{
+	return getConnectedLobbies();
+}
+
 
 
 

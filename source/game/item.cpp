@@ -29,6 +29,8 @@ static Item::Descriptor floorItemDescriptor = {
 Item::Item(Tower * tower, Descriptor * descriptor) : GameObject(), tower(tower), descriptor(descriptor)
 {
 	assert(tower && descriptor);
+	
+	hasUnionBackground = false;
 }
 
 Item::~Item()
@@ -80,6 +82,9 @@ Item * Item::make(Tower * tower, Descriptor * descriptor)
 		case Item::kLobbyType:		instance = new LobbyItem(tower); break;
 		case Item::kStairsType:		instance = new StairsItem(tower); break;
 		case Item::kEscalatorType:	instance = new EscalatorItem(tower); break;
+			
+			//Elevator
+		case Item::kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
 			
 			//Office
 		case Item::kOfficeType:		instance = new OfficeItem(tower); break;
@@ -247,18 +252,25 @@ void Item::initBackground()
 
 void Item::updateBackground()
 {	
-	//Calculate the background sprite rects
-	for (int floor = 0; floor < getNumFloors(); floor++) {
-		//Calculate the rect in cell coordinates
-		recti rect = getRect();
-		rect.size.y = 1;
-		rect.origin.y += floor;
-		
-		//Convert the rect to world coordinates
-		rectd worldRect = tower->convertCellToWorldRect(rect);
-		
-		//Set the background rect
-		backgrounds[floor].setRect(worldRect);
+	//If we're supposed to only have one big background, set its rect accordingly
+	if (hasUnionBackground) {
+		backgrounds[0].setRect(getWorldRect());
+	}
+	
+	//Otherwise calculate the background sprite rects
+	else {
+		for (int floor = 0; floor < getNumFloors(); floor++) {
+			//Calculate the rect in cell coordinates
+			recti rect = getRect();
+			rect.size.y = 1;
+			rect.origin.y += floor;
+			
+			//Convert the rect to world coordinates
+			rectd worldRect = tower->convertCellToWorldRect(rect);
+			
+			//Set the background rect
+			backgrounds[floor].setRect(worldRect);
+		}
 	}
 }
 
@@ -279,6 +291,9 @@ Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
 		case Item::kFloorType:		return &floorItemDescriptor; break;
 		case Item::kStairsType:		return &StairsItem::descriptor; break;
 		case Item::kEscalatorType:	return &EscalatorItem::descriptor; break;
+			
+			//Elevator
+		case Item::kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
 			
 			//Office
 		case Item::kOfficeType:		return &OfficeItem::descriptor; break;
@@ -353,8 +368,11 @@ void Item::draw(rectd visibleRect)
 	
 	//Draw the background sprites
 	if (!underConstruction) {
-		for (int i = 0; i < getRect().size.y; i++)
-			backgrounds[i].draw(visibleRect);
+		if (hasUnionBackground)
+			backgrounds[0].draw(visibleRect);
+		else
+			for (int i = 0; i < getRect().size.y; i++)
+				backgrounds[i].draw(visibleRect);
 	}
 }
 

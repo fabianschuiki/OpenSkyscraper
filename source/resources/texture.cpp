@@ -139,11 +139,12 @@ void Texture::load()
 		ilDeleteImage(tempImage);
 		tempImage = 0;
 	}
+	
+	isLoaded = true;
 }
 
 void Texture::finalize()
 {
-	assert(textureID == 0);
 	//OSSObjectLog << "Finalizing '" << name << "'..." << std::endl;
 	
 	//Only proceed if we have a valid image
@@ -151,8 +152,9 @@ void Texture::finalize()
 		return;
 	ilBindImage(tempImage);
 	
-	//Create the texture
-	glGenTextures(1, &textureID);
+	//Create the texture if required
+	if (!textureID)
+		glGenTextures(1, &textureID);
 	
 	//Actually create the OpenGL texture from the temporary bitmap
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureID);
@@ -175,6 +177,8 @@ void Texture::finalize()
 	ilBindImage(0);
 	/*ilDeleteImages(1, &tempImage);
 	tempImage = 0;*/
+	
+	isFinalized = true;
 }
 
 
@@ -183,10 +187,13 @@ void Texture::unfinalize()
 	//Clear the OpenGL texture
 	glDeleteTextures(1, &textureID);
 	textureID = 0;
+	
+	isFinalized = false;
 }
 
 void Texture::unload()
 {
+	isLoaded = false;
 }
 
 

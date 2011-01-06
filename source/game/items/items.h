@@ -5,4 +5,5 @@
 #include "office.h"
 #include "singleroom.h"
 #include "stairs.h"
+#include "standardelevator.h"
 #include "suite.h"

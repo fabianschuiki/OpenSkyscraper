@@ -24,7 +24,7 @@ namespace OSS {
 			kEscalatorType,
 			
 			//Elevator
-			kElevatorType,
+			kStandardElevatorType,
 			kServiceElevatorType,
 			kExpressElevatorType,
 			
@@ -172,6 +172,7 @@ namespace OSS {
 		//Backgrounds
 	protected:
 		std::map<unsigned int, Sprite> backgrounds;
+		bool hasUnionBackground;
 	public:
 		virtual void initBackground();
 		virtual void updateBackground();

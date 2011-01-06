@@ -440,6 +440,38 @@ void SimTower::postprocessTexture(std::string resourceName,
 		return;
 	}
 	
+	//Elevator textures
+	if (resourceName.find("transport/elevator") == 0) {
+		//Load the image
+		ILuint elevator = ilGenImage();
+		ilBindImage(elevator);
+		ilLoadL(IL_BMP, buffer, bufferLength);
+		
+		//Split up the image
+		spawnElevatorTextures(textureName, elevator);
+		
+		//Get rid of the image
+		ilBindImage(0);
+		ilDeleteImage(elevator);
+		return;
+	}
+	
+	//Floordigit textures
+	if (resourceName.find("transport/floordigits") == 0) {
+		//Load the image
+		ILuint digit = ilGenImage();
+		ilBindImage(digit);
+		ilLoadL(IL_BMP, buffer, bufferLength);
+		
+		//Split up the image
+		spawnFloordigitTextures(textureName, digit);
+		
+		//Get rid of the image
+		ilBindImage(0);
+		ilDeleteImage(digit);
+		return;
+	}
+	
 	//Standard textures
 	Texture * texture = Texture::named(textureName);
 	texture->assignLoadedData(IL_BMP, buffer, bufferLength);
@@ -594,6 +626,151 @@ void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)
 		dumpTexture(t);
 	}
 }
+
+void SimTower::spawnElevatorTextures(std::string textureName, ILuint image)
+{
+	std::string prefix("transport/elevator/");
+	std::string subname = textureName.substr(textureName.find(prefix) + prefix.length());
+	
+	//Calculate the cell width of this elevator
+	unsigned int cellWidth = (subname.find("express") == 0 ? 6 : 4);
+	
+	//Extract the image size
+	unsigned int width = ilGetInteger(IL_IMAGE_WIDTH);
+	unsigned int height = ilGetInteger(IL_IMAGE_HEIGHT);
+	
+	//If this is either the standard or express elevator, cut off the motor and buffer
+	if (subname == "standard" || subname == "express") {
+		//Decide what to cut
+		int cutWidth = 2 * 8 * cellWidth;
+		int cutX = width - cutWidth;
+		
+		//The motor has 3 animation frames
+		for (int frame = 0; frame < 3; frame++) {
+			ilBindImage(image);
+			
+			//Rotate the animation colors
+			unsigned int dataSize = ilGetInteger(IL_IMAGE_SIZE_OF_DATA);
+			ILubyte * data = ilGetData();
+			for (int i = 0; i < dataSize; i++) {
+				if (data[i] >= 201 && data[i] <= 203)
+					data[i] = ((data[i] - 201 + 1) % 3 + 201);
+				if (data[i] >= 197 && data[i] <= 198)
+					data[i] = ((data[i] - 197 + 1) % 2 + 197);
+			}
+			
+			//Copy the pixels
+			ILubyte * pixels = (ILubyte *)malloc(cutWidth * height * 3);
+			ilCopyPixels(cutX, 0, 0, cutWidth, height, 1, IL_RGB, IL_UNSIGNED_BYTE, pixels);
+		
+			//Create a new image to hold the slice
+			ILuint slice = ilGenImage();
+			ilBindImage(slice);
+			ilTexImage(cutWidth, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, NULL);
+			
+			//Copy the pixels into the slice
+			ilSetPixels(0, 0, 0, cutWidth, height, 1, IL_RGB, IL_UNSIGNED_BYTE, pixels);
+			free(pixels);
+			
+			//Create a texture from the slice
+			char frameName[256]; sprintf(frameName, "/motorbuffer/%i", frame);
+			Texture * t = Texture::named(textureName + frameName);
+			t->assignLoadedImage(slice);
+			dumpTexture(t);
+		}
+		
+		//Covnert the image to RGB
+		ilBindImage(image);
+		ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+		
+		//Create a new image to hold the remaining image
+		ILuint remainder = ilGenImage();
+		ilBindImage(remainder);
+		ilTexImage(width - cutWidth, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, NULL);
+		
+		//Blit the remaining part of the image into this one
+		ilBlit(image, 0, 0, 0, 0, 0, 0, width - cutWidth, height, 1);
+		
+		//Recall this function with the remaining image
+		if (subname == "standard")
+			spawnElevatorTextures(textureName + "/car/occupied", remainder);
+		else
+			spawnElevatorTextures(textureName + "/car", remainder);
+		
+		//Get rid of the remainder
+		ilDeleteImage(remainder);
+		return;
+	}
+	
+	//Convert the source image to an appropriate format
+	ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
+	
+	//If this is either the service or express elevator, cut off the empty car
+	if (subname == "service/car" || subname == "express/car") {
+		//Decide what to cut
+		int cutWidth = 8 * cellWidth;
+		
+		//Create a new image with the empty car
+		ILuint empty = ilGenImage();
+		ilBindImage(empty);
+		ilTexImage(cutWidth, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, NULL);
+		ilBlit(image, 0, 0, 0, 0, 0, 0, cutWidth, height, 1);
+		
+		//Create a texture from the empty car
+		Texture * t = Texture::named(textureName + "/empty");
+		t->assignLoadedImage(empty);
+		dumpTexture(t);
+		
+		//Create a new image with the remaining image
+		ILuint remainder = ilGenImage();
+		ilBindImage(remainder);
+		ilTexImage(width - cutWidth, height, 1, 3, IL_RGB, IL_UNSIGNED_BYTE, NULL);
+		ilBlit(image, 0, 0, 0, cutWidth, 0, 0, width - cutWidth, height, 1);
+		
+		//Recall this function with the remaining image
+		spawnElevatorTextures(textureName + "/occupied", remainder);
+		
+		//Get rid of the remainder
+		ilDeleteImage(remainder);
+		return;
+	}
+	
+	//For the rest of the images, simply clone the image and create a texture from it
+	Texture * t = Texture::named(textureName);
+	t->assignLoadedImage(ilCloneCurImage());
+	dumpTexture(t);
+}
+
+void SimTower::spawnFloordigitTextures(std::string textureName, ILuint image)
+{
+	//Make all pixels white except for a few which make up the digits
+	ilBindImage(image);
+	unsigned int dataSize = ilGetInteger(IL_IMAGE_SIZE_OF_DATA);
+	unsigned int width = ilGetInteger(IL_IMAGE_WIDTH);
+	bool leaveLeftmostIntact = (textureName.find("/one/") != std::string::npos);
+	ILubyte * data = ilGetData();
+	for (int i = 0; i < dataSize; i++) {
+		if (leaveLeftmostIntact && (i % width) < 32)
+			continue;
+		if (data[i] != 14 && data[i] != 78)
+			data[i] = 0;
+	}
+	
+	//Clone the image and create a texture from it
+	Texture * t = Texture::named(textureName);
+	t->assignLoadedImage(ilCloneCurImage());
+	t->useTransparentColor = true;
+	dumpTexture(t);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Debugging
+//----------------------------------------------------------------------------------------------------
 
 std::string SimTower::getDumpPath(std::string type, std::string name)
 {

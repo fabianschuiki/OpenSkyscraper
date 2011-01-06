@@ -62,6 +62,8 @@ namespace OSS {
 		void applyReplacementPalette(unsigned short id);
 		void spawnSkyTextures(std::string textureName, ILuint image);
 		void spawnLobbyTextures(std::string textureName, ILuint image);
+		void spawnElevatorTextures(std::string textureName, ILuint image);
+		void spawnFloordigitTextures(std::string textureName, ILuint image);
 		
 		//Dumping textures to disk for debugging purposes
 		std::string getDumpPath(std::string type, std::string name);

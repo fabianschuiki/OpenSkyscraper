@@ -36,6 +36,10 @@ namespace OSS {
 		 */
 		void release();
 		
+		//State
+		bool isLoaded;
+		bool isFinalized;
+		
 		//Loading
 		virtual void load() = 0;
 		virtual void finalize() {}

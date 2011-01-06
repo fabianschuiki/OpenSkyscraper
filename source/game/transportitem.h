@@ -14,7 +14,7 @@ namespace OSS {
 		//Connection
 		virtual bool connectsToFloor(int floor);
 		std::set<int> getConnectedLobbies();
-		virtual std::set<int> getConnectionFloors() = 0;
+		virtual std::set<int> getConnectionFloors();
 		
 		//Identity
 		bool isElevator();

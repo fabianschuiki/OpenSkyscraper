@@ -66,6 +66,9 @@
 		1FFECC2012D5EEA7006F320C /* housekeeping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFECC1F12D5EEA7006F320C /* housekeeping.cpp */; };
 		1FFECC2D12D5F1BC006F320C /* gameobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFECC2C12D5F1BC006F320C /* gameobject.cpp */; };
 		1FFECC5712D5F544006F320C /* janitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFECC5612D5F544006F320C /* janitor.cpp */; };
+		1FFECE9E12D636D1006F320C /* elevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFECE9D12D636D1006F320C /* elevator.cpp */; };
+		1FFECEA112D63724006F320C /* standardelevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFECEA012D63724006F320C /* standardelevator.cpp */; };
+		1FFED15512D670BE006F320C /* elevatorbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FFED15412D670BE006F320C /* elevatorbackground.cpp */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -220,6 +223,12 @@
 		1FFECC2C12D5F1BC006F320C /* gameobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gameobject.cpp; sourceTree = "<group>"; };
 		1FFECC5512D5F544006F320C /* janitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = janitor.h; sourceTree = "<group>"; };
 		1FFECC5612D5F544006F320C /* janitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = janitor.cpp; sourceTree = "<group>"; };
+		1FFECE9C12D636D1006F320C /* elevator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = elevator.h; sourceTree = "<group>"; };
+		1FFECE9D12D636D1006F320C /* elevator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = elevator.cpp; sourceTree = "<group>"; };
+		1FFECE9F12D63724006F320C /* standardelevator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = standardelevator.h; sourceTree = "<group>"; };
+		1FFECEA012D63724006F320C /* standardelevator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = standardelevator.cpp; sourceTree = "<group>"; };
+		1FFED15312D670BE006F320C /* elevatorbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = elevatorbackground.h; sourceTree = "<group>"; };
+		1FFED15412D670BE006F320C /* elevatorbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = elevatorbackground.cpp; sourceTree = "<group>"; };
 		1FFFCBC911FCD629005D8446 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		256AC3F00F4B6AF500CF3369 /* OpenSkyscraper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSkyscraper_Prefix.pch; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -432,6 +441,10 @@
 				1F3827911203574300C1E2B0 /* items.h */,
 				1F2FC9B112D4FDB8008B3FC2 /* doubleroom.h */,
 				1F2FC9B212D4FDB8008B3FC2 /* doubleroom.cpp */,
+				1FFECE9C12D636D1006F320C /* elevator.h */,
+				1FFECE9D12D636D1006F320C /* elevator.cpp */,
+				1FFED15312D670BE006F320C /* elevatorbackground.h */,
+				1FFED15412D670BE006F320C /* elevatorbackground.cpp */,
 				1FFABF8212D1567200D9B02C /* escalator.h */,
 				1FFABF8312D1567200D9B02C /* escalator.cpp */,
 				1F2FC97212D4F5F7008B3FC2 /* hotelitem.h */,
@@ -450,6 +463,8 @@
 				1FFABF7812D1544900D9B02C /* stairslike.cpp */,
 				1F2FC9C512D4FE31008B3FC2 /* suite.h */,
 				1F2FC9C612D4FE31008B3FC2 /* suite.cpp */,
+				1FFECE9F12D63724006F320C /* standardelevator.h */,
+				1FFECEA012D63724006F320C /* standardelevator.cpp */,
 			);
 			path = items;
 			sourceTree = "<group>";
@@ -656,6 +671,9 @@
 				1FFECC2012D5EEA7006F320C /* housekeeping.cpp in Sources */,
 				1FFECC2D12D5F1BC006F320C /* gameobject.cpp in Sources */,
 				1FFECC5712D5F544006F320C /* janitor.cpp in Sources */,
+				1FFECE9E12D636D1006F320C /* elevator.cpp in Sources */,
+				1FFECEA112D63724006F320C /* standardelevator.cpp in Sources */,
+				1FFED15512D670BE006F320C /* elevatorbackground.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
