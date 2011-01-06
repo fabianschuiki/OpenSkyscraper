@@ -88,8 +88,10 @@ void Application::run()
 {	
 	//Runloop
 	keepRunning = true;
-	while (keepRunning)
+	while (keepRunning) {
 		Engine::shared()->runloopCycle();
+		Object::drainAutoreleaseQueue();
+	}
 }
 
 void Application::cleanUp()

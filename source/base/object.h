@@ -13,14 +13,23 @@ namespace OSS {
 	protected:
 		int retainCount;
 		
+	private:
+		typedef std::queue<Object *> ObjectQueue;
+		static ObjectQueue autoreleaseQueue;
+		
 	public:
 		//Initialization
 		Object();
 		virtual ~Object();
 		
+		//Runtime Type Information
+		bool isKindOfClass(const std::type_info & typeidClass);
+		
 		//Memory Management
 		void retain();
 		virtual void release();
+		void autorelease();
+		static void drainAutoreleaseQueue();
 		
 		//Runtime Type Information
 		virtual std::string className();

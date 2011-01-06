@@ -191,13 +191,22 @@ void HotelItem::removePerson(Person * person)
 {
 	OccupiableItem::removePerson(person);
 	
-	if (((HotelGuest *)person)->isLeaving()) {
-		OSSObjectLog << std::endl;
-		guests.erase((HotelGuest *)person);
-		
-		//If there are no more guests, mark the hotel item as vacant
-		if (guests.empty())
-			setOccupied(false);
+	//Special treatment for hotel guests
+	if (person->isKindOfClass(typeid(HotelGuest))) {
+		//Check whether the guest is leaving
+		if (((HotelGuest *)person)->isLeaving()) {
+			guests.erase((HotelGuest *)person);
+			
+			//If there are no more guests, mark the hotel item as vacant
+			if (guests.empty())
+				setOccupied(false);
+		}
+	}
+	
+	//Special treatment for janitors
+	if (person->isKindOfClass(typeid(Janitor))) {
+		//Mark the hotel as clean and empty
+		setState(kEmptyState);
 	}
 }
 
@@ -207,6 +216,37 @@ bool HotelItem::areAllGuestsAsleep()
 		if (!(*g)->isAsleep())
 			return false;
 	return true;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Housekeeping
+//----------------------------------------------------------------------------------------------------
+
+Janitor * HotelItem::getAssignedJanitor()
+{
+	return assignedJanitor;
+}
+
+void HotelItem::setAssignedJanitor(Janitor * janitor)
+{
+	if (assignedJanitor != janitor) {
+		if (assignedJanitor)
+			assignedJanitor->setAssignedHotel(NULL);
+		assignedJanitor = janitor;
+		if (assignedJanitor)
+			assignedJanitor->setAssignedHotel(this);
+		backgrounds[0].color = (assignedJanitor ? (color4d){0, 1, 0, 1} : (color4d){1, 1, 1, 1});
+	}
+}
+
+bool HotelItem::hasAssignedJanitor()
+{
+	return (getAssignedJanitor() != NULL);
 }
 
 
@@ -233,6 +273,11 @@ void HotelItem::onChangeOccupied()
 	} else {
 		setState(kDirtyState);
 		clearGuests();
+		
+		//Dispatch the event
+		GameEvent event = {kGameEventHotelVacated};
+		event.hotel.hotel = this;
+		tower->handleEvent(&event);
 	}
 }
 

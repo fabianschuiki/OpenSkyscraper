@@ -3,6 +3,12 @@
 using namespace OSS;
 
 
+Object::ObjectQueue Object::autoreleaseQueue;
+
+
+
+
+
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
 #pragma mark Initialization
@@ -10,12 +16,27 @@ using namespace OSS;
 
 Object::Object()
 {
-	retainCount = 0;
+	retainCount = 1;
 }
 
 Object::~Object()
 {
-	assert(retainCount == 0);
+	//the assert breaks the capability of having static class instances
+	//assert(retainCount == 0);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Runtime Type Information
+//----------------------------------------------------------------------------------------------------
+
+bool Object::isKindOfClass(const std::type_info & typeidClass)
+{
+	return (typeid(*this) == typeidClass);
 }
 
 
@@ -38,6 +59,19 @@ void Object::release()
 	retainCount--;
 	if (retainCount <= 0)
 		delete this;
+}
+
+void Object::autorelease()
+{
+	autoreleaseQueue.push(this);
+}
+
+void Object::drainAutoreleaseQueue()
+{
+	while (!autoreleaseQueue.empty()) {
+		autoreleaseQueue.front()->release();
+		autoreleaseQueue.pop();
+	}
 }
 
 

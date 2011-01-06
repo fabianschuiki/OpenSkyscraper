@@ -11,7 +11,7 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Tower::Tower()
+Tower::Tower() : GameObject()
 {
 	//Setup some basic tower layout attributes
 	ceilingHeight = 12;
@@ -1035,4 +1035,13 @@ bool Tower::findRoute(recti origin, recti destination, TransportItem * transport
 	}
 	
 	return false;
+}
+
+bool Tower::handleEvent(GameEvent * event)
+{
+	if (event->type > kNumEventsCore)
+		for (ItemIDMap::iterator i = items.begin(); i != items.end(); i++)
+			if (i->second->handleEvent(event))
+				return true;
+	return GameObject::handleEvent(event);
 }

@@ -26,7 +26,7 @@ static Item::Descriptor floorItemDescriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Item::Item(Tower * tower, Descriptor * descriptor) : tower(tower), descriptor(descriptor)
+Item::Item(Tower * tower, Descriptor * descriptor) : GameObject(), tower(tower), descriptor(descriptor)
 {
 	assert(tower && descriptor);
 }
@@ -88,6 +88,9 @@ Item * Item::make(Tower * tower, Descriptor * descriptor)
 		case Item::kSingleRoomType:	instance = new SingleRoomItem(tower); break;
 		case Item::kDoubleRoomType:	instance = new DoubleRoomItem(tower); break;
 		case Item::kSuiteType:		instance = new SuiteItem(tower); break;
+			
+			//Services
+		case Item::kHousekeepingType:	instance = new HousekeepingItem(tower); break;
 	}
 	
 	//Initialize the item
@@ -284,6 +287,9 @@ Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
 		case Item::kSingleRoomType:	return &SingleRoomItem::descriptor; break;
 		case Item::kDoubleRoomType:	return &DoubleRoomItem::descriptor; break;
 		case Item::kSuiteType:		return &SuiteItem::descriptor; break;
+			
+			//Services
+		case Item::kHousekeepingType:	return &HousekeepingItem::descriptor; break;
 	}
 	return NULL;
 }

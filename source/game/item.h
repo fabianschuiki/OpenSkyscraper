@@ -3,7 +3,7 @@
 
 #include "../general.h"
 #include "../base/base.h"
-#include "../core/coreobject.h"
+#include "gameobject.h"
 #include "../core/sprite.h"
 
 
@@ -11,7 +11,7 @@ namespace OSS {
 	class Tower;
 	class Person;
 	
-	class Item : public CoreObject {
+	class Item : public GameObject {
 	public:
 		//Item Types
 		typedef enum {
@@ -84,7 +84,8 @@ namespace OSS {
 			kEvery15thFloorAttribute	= (1 << 1),
 			kNotAboveGroundAttribute	= (1 << 2),
 			kNotBelowGroundAttribute	= (1 << 3),
-			kAllowedOnGroundAttribute	= (1 << 4)
+			kAllowedOnGroundAttribute	= (1 << 4),
+			kUndestructibleAttribute	= (1 << 5)
 		};
 		
 		//Item Descriptor

@@ -3,13 +3,13 @@
 
 #include "../general.h"
 #include "../base/base.h"
-#include "../core/core.h"
+#include "gameobject.h"
 #include "item.h"
 #include "route.h"
 
 
 namespace OSS {
-	class Tower : public CoreObject {
+	class Tower : public GameObject {
 	public:
 		/**
 		 * Initialization
@@ -241,6 +241,13 @@ namespace OSS {
 		} PathfinderStats;
 		bool findRoute(recti origin, recti destination, TransportItem * transport,
 					   ItemSet usedTransports, PathfinderStats stats, Route * route);
+		
+		
+		/**
+		 * Events
+		 */
+	public:
+		bool handleEvent(GameEvent * event);
 		
 		
 		/**

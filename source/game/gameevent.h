@@ -10,7 +10,33 @@ namespace OSS {
 	 * Game Events
 	 */
 	enum {
+		//Transport
+		kGameEventTransportIncreased = kNumEventsCore,
+		kGameEventTransportDecreased,
+		
+		//Hotel
+		kGameEventHotelVacated,
+		
+		kNumEventsGame
 	};
+	
+	/**
+	 * Transport events
+	 */
+	class TransportItem;
+	typedef struct {
+		unsigned int type;
+		TransportItem * transport;
+	} GameEventTransport;
+	
+	/**
+	 * Hotel events
+	 */
+	class HotelItem;
+	typedef struct {
+		unsigned int type;
+		HotelItem * hotel;
+	} GameEventHotel;
 	
 	/**
 	 * Game event union
@@ -18,6 +44,8 @@ namespace OSS {
 	typedef union {
 		unsigned int type;
 		CoreEvent core;
+		GameEventTransport transport;
+		GameEventHotel hotel;
 	} GameEvent;
 }
 

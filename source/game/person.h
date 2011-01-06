@@ -3,13 +3,13 @@
 
 
 #include "../general.h"
-#include "../core/coreobject.h"
+#include "gameobject.h"
 #include "item.h"
 #include "route.h"
 
 
 namespace OSS {	
-	class Person : public CoreObject {
+	class Person : public GameObject {
 	protected:
 		const Pointer<Tower> tower;
 		
@@ -34,7 +34,7 @@ namespace OSS {
 			kWomanBType,
 			kMotherWithChildType,
 			kMotherType,
-			kHousekeeperType
+			kJanitorType
 		} Type;
 		
 	private:

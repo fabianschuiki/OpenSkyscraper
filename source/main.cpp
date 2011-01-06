@@ -2,7 +2,7 @@
 #include "game/openskyscraper.h"
 
 int main(int argc, char *argv[])
-{
+{	
 	OSS::OpenSkyscraper app;
 	
 	app.prepare();

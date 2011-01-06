@@ -13,8 +13,10 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Person::Person(Tower * tower) : tower(tower), CoreObject()
+Person::Person(Tower * tower) : tower(tower), GameObject()
 {
+	assert(tower);
+	
 	//Attributes
 	type = kManType;
 	stress = 0;

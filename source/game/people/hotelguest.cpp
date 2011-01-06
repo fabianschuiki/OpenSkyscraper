@@ -1,6 +1,5 @@
 #include "hotelguest.h"
-#include "hotelitem.h"
-#include "tower.h"
+#include "../items/hotelitem.h"
 
 using namespace OSS;
 

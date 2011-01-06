@@ -1,5 +1,6 @@
 #include "doubleroom.h"
 #include "escalator.h"
+#include "housekeeping.h"
 #include "lobby.h"
 #include "office.h"
 #include "singleroom.h"

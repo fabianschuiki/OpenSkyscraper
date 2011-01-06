@@ -231,7 +231,7 @@ bool TowerScene::handleEvent(CoreEvent * event)
 {
 	if (toolboxWindow && toolboxWindow->handleEvent(event)) return true;
 	if (controlWindow.handleEvent(event)) return true;
-	if (tower && tower->handleEvent(event)) return true;
+	if (tower && tower->handleEvent((GameEvent *)event)) return true;
 	return Scene::handleEvent(event);
 }
 
@@ -423,15 +423,27 @@ void TowerScene::buildDebugTower()
 	
 	//Hotels
 	for (int y = 1; y < 4; y++) {
-		for (int x = 0; x < 4; x++) {
+		for (int x = 0; x < 2; x++) {
 			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
 								 recti(x * 4, y, 4, 1));
 			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
 								 recti((-x - 1) * 4, y, 4, 1));
 		}
+		for (int x = 0; x < 2; x++) {
+			tower->constructItem(Item::descriptorForItemType(Item::kDoubleRoomType),
+								 recti(8 + x * 6, y, 6, 1));
+			tower->constructItem(Item::descriptorForItemType(Item::kDoubleRoomType),
+								 recti(-8 + (-x - 1) * 6, y, 6, 1));
+		}
 		tower->constructItem(Item::descriptorForItemType(Item::kEscalatorType),
 							 recti(-4, y - 1, 8, 2));
 	}
+	
+	//Housekeeping
+	tower->constructItem(Item::descriptorForItemType(Item::kHousekeepingType),
+						 recti(-7, 4, 15, 1));
+	tower->constructItem(Item::descriptorForItemType(Item::kEscalatorType),
+						 recti(-4, 3, 8, 2));
 	
 	/*//Offices
 	for (int y = 1; y < 15; y++) {

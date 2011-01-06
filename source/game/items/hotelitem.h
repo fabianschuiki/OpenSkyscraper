@@ -5,9 +5,10 @@
 #include "../../general.h"
 #include "../occupiableitem.h"
 #include "../people/hotelguest.h"
+#include "../people/janitor.h"
 
 
-namespace OSS {
+namespace OSS {	
 	class HotelItem : public OccupiableItem {
 	public:
 		//Initialization
@@ -18,7 +19,7 @@ namespace OSS {
 		/**
 		 * State
 		 */
-	private:
+	public:
 		typedef enum {
 			kEmptyState,
 			kOccupiedState,
@@ -26,6 +27,7 @@ namespace OSS {
 			kDirtyState,
 			kInfestedState
 		} State;
+	private:
 		State state;
 	public:
 		State getState() const;
@@ -70,6 +72,17 @@ namespace OSS {
 		
 		//Convenience
 		bool areAllGuestsAsleep();
+		
+		
+		/**
+		 * Housekeeping
+		 */
+	private:
+		Pointer<Janitor> assignedJanitor;
+	public:
+		Janitor * getAssignedJanitor();
+		void setAssignedJanitor(Janitor * janitor);
+		bool hasAssignedJanitor();
 		
 		
 		/**
