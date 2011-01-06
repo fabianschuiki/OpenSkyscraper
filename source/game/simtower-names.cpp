@@ -153,7 +153,7 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	
 	//Hotel
 	{0x5ED, "facilities/hotel/guests"},			//guests overlay
-	{0x5EE, "facilities/hotel/housekeeper"},	//housekeeper overlay
+	{0x5EE, "facilities/hotel/janitor"},		//janitor overlay
 	
 	// -> single room
 	//  0
