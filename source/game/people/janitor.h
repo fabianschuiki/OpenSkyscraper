@@ -29,9 +29,12 @@ namespace OSS {
 		//Intelligence
 		void think();
 		
-		void setItem(Item * item) {
-			TimedPerson::setItem(item);
-		}
+		//Animation Sprite
+		void initAnimationSprite();
+		void updateAnimationSprite();
+		
+		bool shouldAnimate();
+		void shuffleAnimation();
 	};
 }
 

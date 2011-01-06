@@ -126,6 +126,10 @@ void HotelItem::advance(double dt)
 	//Animate the guests
 	if (isOccupied() && getState() != kAsleepState)
 		advanceGuests(dt);
+	
+	//Animate the janitor
+	if (hasAssignedJanitor())
+		getAssignedJanitor()->advanceAnimation(dt);
 }
 
 void HotelItem::advanceGuests(double dt)
@@ -150,13 +154,16 @@ void HotelItem::draw(rectd visibleRect)
 	//Draw our guests if required
 	if (isOccupied() && getState() != kAsleepState)
 		drawGuests(visibleRect);
+	
+	//Draw the janitor if required
+	if (hasAssignedJanitor())
+		getAssignedJanitor()->drawAnimation(visibleRect);
 }
 
 void HotelItem::drawGuests(rectd visibleRect)
 {
 	for (Guests::iterator g = guests.begin(); g != guests.end(); g++)
-		if ((*g)->isAt(this))
-			(*g)->drawAnimation(visibleRect);
+		(*g)->drawAnimation(visibleRect);
 }
 
 
@@ -249,7 +256,7 @@ void HotelItem::setAssignedJanitor(Janitor * janitor)
 {
 	if (assignedJanitor != janitor) {
 		assignedJanitor = janitor;
-		backgrounds[0].color = (assignedJanitor ? (color4d){0.25, 1, 0.25, 1} : (color4d){1, 1, 1, 1});
+		//backgrounds[0].color = (assignedJanitor ? (color4d){0.25, 1, 0.25, 1} : (color4d){1, 1, 1, 1});
 	}
 }
 
