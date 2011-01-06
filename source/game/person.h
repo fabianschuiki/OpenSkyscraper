@@ -19,6 +19,101 @@ namespace OSS {
 		virtual void reset();
 		
 		/**
+		 * Attributes
+		 */
+		
+		//Type
+	private:
+		typedef enum {
+			kManType,
+			kSalesmanType,
+			kWomanAType,
+			kChildType,
+			kWomanBType,
+			kSecurityOfficerType,
+			kMotherWithChildType,
+			kMotherType,
+			kHousekeeperType
+		} Type;
+		Type type;
+	public:
+		Type getType();
+		void setType(Type type);
+		virtual void onChangeType();
+		
+		//Stress
+	private:
+		double stress;
+	public:
+		double getStress();
+		void setStress(double stress);
+		virtual void onChangeStress();
+		
+		
+		/**
+		 * Managed Sprites
+		 */
+	private:
+		typedef std::set< Pointer<Sprite> > SpriteSet;
+		SpriteSet managedSprites;
+		
+		typedef enum {
+			kPortraitType,
+			kQueuingType,
+			kMountingType,
+			kDescendingType
+		} SpriteType;
+		typedef std::map<Sprite *, SpriteType> SpriteTypeMap;
+		SpriteTypeMap managedSpriteTypes;
+		
+		typedef enum {
+			kHeadingLeft,
+			kHeadingRight
+		} SpriteHeading;
+		typedef std::map<Sprite *, SpriteHeading> SpriteHeadingMap;
+		SpriteHeadingMap managedSpriteHeadings;
+		
+	public:
+		void addManagedSprite(Sprite * sprite, SpriteType type, SpriteHeading heading);
+		void removeManagedSprite(Sprite * sprite);
+		
+		void setManagedSpriteType(Sprite * sprite, SpriteType type);
+		void setManagedSpriteHeading(Sprite * sprite, SpriteHeading heading);
+		
+		void initManagedSprite(Sprite * sprite);
+		void updateManagedSprite(Sprite * sprite);
+		void updateManagedSprites();
+		
+		
+		/**
+		 * Animation Sprite
+		 */
+	private:
+		Sprite animationSprite;
+		double animationTime;
+		unsigned int animationIndex;
+		int2 animationLocation;
+	public:
+		const Sprite & getAnimationSprite();
+		
+		unsigned int getAnimationIndex();
+		void setAnimationIndex(unsigned int animationIndex);
+		virtual void onChangeAnimationIndex();
+		
+		const int2 & getAnimationLocation();
+		void setAnimationLocation(int2 animationLocation);
+		virtual void onChangeAnimationLocation();
+		
+		virtual void initAnimationSprite();
+		virtual void updateAnimationSprite();
+		
+		virtual double getAnimationPeriod();
+		virtual bool shouldAnimate();
+		void advanceAnimation(double dt);
+		virtual void shuffleAnimation();
+		
+		
+		/**
 		 * Location
 		 */
 	private:

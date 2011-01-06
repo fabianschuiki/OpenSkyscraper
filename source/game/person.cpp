@@ -15,9 +15,22 @@ using namespace OSS;
 
 Person::Person(Tower * tower) : tower(tower), CoreObject()
 {
+	//Attributes
+	type = kManType;
+	stress = 0;
+	
+	//Animation Sprite
+	animationTime = 0;
+	animationIndex = 0;
+	
+	//Location
 	floor = 0;
+	
+	//Journey
 	nextFloor = 0;
 	nodeIndex = 0;
+	
+	//Route
 	arrivalTime = 0;
 }
 
@@ -29,6 +42,221 @@ void Person::reset()
 	//DEBUG: Reset the properties
 	boolProps.clear();
 	intProps.clear();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Attributes
+//----------------------------------------------------------------------------------------------------
+
+Person::Type Person::getType()
+{
+	return type;
+}
+
+void Person::setType(Type type)
+{
+	if (this->type != type) {
+		this->type = type;
+		onChangeType();
+	}
+}
+
+void Person::onChangeType()
+{
+	updateManagedSprites();
+}
+
+
+
+double Person::getStress()
+{
+	return stress;
+}
+
+void Person::setStress(double stress)
+{
+	if (this->stress != stress) {
+		this->stress = stress;
+		onChangeStress();
+	}
+}
+
+void Person::onChangeStress()
+{
+	updateManagedSprites();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Managed Sprites
+//----------------------------------------------------------------------------------------------------
+
+void Person::addManagedSprite(Sprite * sprite, SpriteType type, SpriteHeading heading)
+{
+	managedSprites.insert(sprite);
+	managedSpriteTypes[sprite] = type;
+	managedSpriteHeadings[sprite] = heading;
+	initManagedSprite(sprite);
+}
+
+void Person::removeManagedSprite(Sprite * sprite)
+{
+	managedSprites.erase(sprite);
+	managedSpriteTypes.erase(sprite);
+	managedSpriteHeadings.erase(sprite);
+}
+
+
+
+void Person::setManagedSpriteType(Sprite * sprite, SpriteType type)
+{
+	if (managedSpriteTypes[sprite] != type) {
+		managedSpriteTypes[sprite] = type;
+		updateManagedSprite(sprite);
+	}
+}
+
+void Person::setManagedSpriteHeading(Sprite * sprite, SpriteHeading heading)
+{
+	if (managedSpriteHeadings[sprite] != heading) {
+		managedSpriteHeadings[sprite] = heading;
+		updateManagedSprite(sprite);
+	}
+}
+
+
+
+void Person::initManagedSprite(Sprite * sprite)
+{
+}
+
+void Person::updateManagedSprite(Sprite * sprite)
+{
+}
+
+void Person::updateManagedSprites()
+{
+	for (SpriteSet::iterator i = managedSprites.begin(); i != managedSprites.end(); i++)
+		updateManagedSprite(*i);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Managed Sprites
+//----------------------------------------------------------------------------------------------------
+
+const Sprite & Person::getAnimationSprite()
+{
+	return animationSprite;
+}
+
+
+
+unsigned int Person::getAnimationIndex()
+{
+	return animationIndex;
+}
+
+void Person::setAnimationIndex(unsigned int animationIndex)
+{
+	if (this->animationIndex != animationIndex) {
+		this->animationIndex = animationIndex;
+		onChangeAnimationIndex();
+	}
+}
+
+void Person::onChangeAnimationIndex()
+{
+	updateAnimationSprite();
+}
+
+
+
+const int2 & Person::getAnimationLocation()
+{
+	return animationLocation;
+}
+
+void Person::setAnimationLocation(int2 animationLocation)
+{
+	if (this->animationLocation != animationLocation) {
+		this->animationLocation = animationLocation;
+		onChangeAnimationLocation();
+	}
+}
+
+void Person::onChangeAnimationLocation()
+{
+	updateAnimationSprite();
+}
+
+
+
+void Person::initAnimationSprite()
+{
+}
+
+void Person::updateAnimationSprite()
+{
+	if (!getItem())
+		return;
+	
+	//Position the animation sprite
+	rectd worldRect = animationSprite.getRect();
+	worldRect.origin = getItem()->getWorldRect().origin;
+	worldRect.origin += tower->convertCellToWorldCoordinates(getAnimationLocation());
+	animationSprite.setRect(worldRect);
+}
+
+
+
+double Person::getAnimationPeriod()
+{
+	return 1;
+}
+
+bool Person::shouldAnimate()
+{
+	return false;
+}
+
+void Person::advanceAnimation(double dt)
+{
+	if (!shouldAnimate())
+		return;
+	
+	//Increase the animation time
+	animationTime += dt;
+	
+	//If we passed the animation period, shuffle the animation
+	double period = getAnimationPeriod();
+	if (animationTime >= period) {
+		animationTime -= period;
+		shuffleAnimation();
+	}
+}
+
+void Person::shuffleAnimation()
+{
+	if (!getItem())
+		return;
+	
+	//By default, only shuffle the animation location inside the item
+	recti rect = getItem()->getRect();
+	setAnimationLocation(int2(randi(0, rect.size.x - 1), randi(0, rect.size.y - 1)));
 }
 
 
