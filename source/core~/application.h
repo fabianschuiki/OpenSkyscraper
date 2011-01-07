@@ -4,6 +4,7 @@
 #include "responder.h"
 
 #include "eventpump.h"
+#include "invocation.h"
 #include "../base/pointer.h"
 
 
@@ -15,11 +16,18 @@ namespace OSS {
 			 * Types
 			 */
 		public:
+			//Termination
 			typedef enum {
 				TerminateCancel = 0,
 				TerminateNow,
 				TerminateLater
 			} TerminateReply;
+			
+			//Invocation Ordering
+			typedef enum {
+				Before	= -1,
+				After	= 1
+			} OrderingMode;
 			
 			
 			/**
@@ -48,10 +56,18 @@ namespace OSS {
 			 * run loop to provide timing and animation.
 			 */
 		private:
-			typedef std::vector< Base::Pointer<Invocation> > InvocationVector;
+			typedef std::vector< Base::Pointer<AbstractInvocation> > InvocationVector;
 			InvocationVector invocations;
 		public:
-			void addInvocation(Invocation * invocation);
+			void addInvocation(AbstractInvocation * invocation);
+			void addInvocation(AbstractInvocation * invocation, OrderingMode ordered,
+							   AbstractInvocation * relativeTo);
+			void removeInvocation(AbstractInvocation * invocation);
+			
+			void performInvocations();
+			
+			virtual void willPerformInvocations() {}
+			virtual void didPerformInvocations() {}
 			
 			
 			/**

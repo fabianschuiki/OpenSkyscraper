@@ -24,6 +24,9 @@ void Application::run()
 		//If we're supposed to terminate, do so
 		if (terminateReply == TerminateLater)
 			terminate();
+		
+		//Perform the invocations
+		performInvocations();
 	}
 	
 	didRun();
@@ -49,6 +52,60 @@ bool Application::isTerminating()
 Application::TerminateReply Application::shouldTerminate()
 {
 	return TerminateNow;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Invocation
+//----------------------------------------------------------------------------------------------------
+
+void Application::addInvocation(AbstractInvocation * invocation)
+{
+	if (!invocation) return;
+	invocations.push_back(invocation);
+}
+
+void Application::addInvocation(AbstractInvocation * invocation, OrderingMode ordered,
+								AbstractInvocation * relativeTo)
+{
+	if (!invocation) return;
+	if (!relativeTo) {
+		addInvocation(invocation);
+		return;
+	}
+	
+	InvocationVector::iterator i;
+	for (i = invocations.begin(); i != invocations.end(); i++) {
+		if ((AbstractInvocation *)*i == relativeTo) {
+			if (ordered == Before)
+				invocations.insert(i, invocation);
+			else
+				invocations.insert((i + 1), invocation);
+			return;
+		}
+	}
+	
+	invocations.insert(i, invocation);
+}
+
+void Application::removeInvocation(AbstractInvocation * invocation)
+{
+	if (!invocation) return;
+	for (InvocationVector::iterator i = invocations.begin(); i != invocations.end(); i++)
+		if ((AbstractInvocation *)*i == invocation)
+			invocations.erase(i);
+}
+
+void Application::performInvocations()
+{
+	willPerformInvocations();
+	for (InvocationVector::iterator i = invocations.begin(); i != invocations.end(); i++)
+		(*i)->perform();
+	didPerformInvocations();
 }
 
 
