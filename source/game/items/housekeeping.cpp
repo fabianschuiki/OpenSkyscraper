@@ -6,7 +6,7 @@ using namespace OSS;
 
 Item::Descriptor HousekeepingItem::descriptor = {
 	Item::kHousekeepingType,
-	Item::kServicesGroup,
+	Item::kHotelGroup,
 	Item::kFacilityCategory,
 	1,
 	(Item::kUndestructibleAttribute),

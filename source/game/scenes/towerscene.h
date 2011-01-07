@@ -59,7 +59,7 @@ namespace OSS {
 		/**
 		 * Construction
 		 */		
-	private:
+	public:
 		Item::Descriptor * constructionItemDescriptor;
 		recti constructionTemplate;
 		
@@ -73,24 +73,16 @@ namespace OSS {
 		
 		/**
 		 * Uncategorized
-		 */
-	public:
-		//Tools
-		typedef enum {
-			kBulldozerTool,
-			kHandTool,
-			kInspectTool,
-			kConstructionTool
-		} Tool;
-		
+		 */		
 	private:
-		Tool tool;
+		ToolboxWindow::Tool tool;
 		
 	public:
-		void setTool(Tool tool);
+		ToolboxWindow::Tool getTool();
+		void setTool(ToolboxWindow::Tool tool);
 		void setConstructionTool(Item::Type itemType);
 		
-		Pointer<ToolboxWindow> toolboxWindow;
+		ToolboxWindow toolboxWindow;
 		ControlWindow controlWindow;
 		Sprite debugConstructionToolSprite;
 		unsigned char debugItemType;

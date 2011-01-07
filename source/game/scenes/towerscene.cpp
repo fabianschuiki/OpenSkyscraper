@@ -10,13 +10,11 @@ using namespace OSS;
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-TowerScene::TowerScene()
-{
-	constructionItemDescriptor = NULL;
-	
+TowerScene::TowerScene() : constructionItemDescriptor(NULL), toolboxWindow(this)
+{	
 	isDraggingConstruction = false;
 	
-	tool = kInspectTool;
+	tool = ToolboxWindow::kInspectTool;
 	
 	//DEBUG: Setup the debugging construction tool visualization sprite
 	debugConstructionToolSprite.texture = Texture::named("simtower/ui/toolbox/construction/normal");
@@ -176,7 +174,7 @@ void TowerScene::renderGUI()
 	controlWindow.draw(visibleRect);
 	
 	//Draw the toolbox window
-	toolboxWindow->draw(visibleRect);
+	toolboxWindow.draw(visibleRect);
 	
 	//Draw AntTweakBar
 	/*glDisable(GL_TEXTURE_RECTANGLE_EXT);
@@ -229,8 +227,8 @@ void TowerScene::onMoveOffScreen()
 
 bool TowerScene::handleEvent(CoreEvent * event)
 {
-	if (toolboxWindow && toolboxWindow->handleEvent(event)) return true;
-	if (controlWindow.handleEvent(event)) return true;
+	if (toolboxWindow.handleEvent((GameEvent *)event)) return true;
+	if (controlWindow.handleEvent((GameEvent *)event)) return true;
 	if (tower && tower->handleEvent((GameEvent *)event)) return true;
 	return Scene::handleEvent(event);
 }
@@ -278,7 +276,7 @@ bool TowerScene::eventMouseDown(SDL_Event * event)
 			
 		case SDL_BUTTON_LEFT: {
 			switch (tool) {
-				case kConstructionTool: {
+				case ToolboxWindow::kConstructionTool: {
 					startConstruction();
 					return true;
 				} break;
@@ -293,7 +291,7 @@ bool TowerScene::eventMouseUp(SDL_Event * event)
 	switch (event->button.button) {
 		case SDL_BUTTON_LEFT: {
 			switch (tool) {
-				case kConstructionTool: {
+				case ToolboxWindow::kConstructionTool: {
 					endConstruction();
 					return true;
 				} break;
@@ -380,14 +378,22 @@ void TowerScene::endConstruction()
 #pragma mark Uncategorized
 //----------------------------------------------------------------------------------------------------
 
-void TowerScene::setTool(Tool tool)
+ToolboxWindow::Tool TowerScene::getTool()
 {
-	this->tool = tool;
+	return tool;
+}
+
+void TowerScene::setTool(ToolboxWindow::Tool tool)
+{
+	if (this->tool != tool) {
+		this->tool = tool;
+		toolboxWindow.updateButtons();
+	}
 }
 
 void TowerScene::setConstructionTool(Item::Type itemType)
-{
-	setTool(kConstructionTool);
+{	
+	setTool(ToolboxWindow::kConstructionTool);
 	
 	//Skip if the item didn't change
 	if (constructionItemDescriptor && itemType == constructionItemDescriptor->type)
@@ -399,18 +405,19 @@ void TowerScene::setConstructionTool(Item::Type itemType)
 	//DEBUG: Change the icon shown by the debug construction tool sprite
 	debugConstructionToolSprite.textureRect.origin.x = ((itemType - 1) % 8) * debugConstructionToolSprite.textureRect.size.x;
 	debugConstructionToolSprite.textureRect.origin.y = (3 - (itemType - 1) / 8) * debugConstructionToolSprite.textureRect.size.y;
+	
+	toolboxWindow.updateItemButtons();
 }
 
 void TowerScene::eventPrepare()
 {
-	toolboxWindow = new ToolboxWindow;
-	toolboxWindow->eventPrepare();
 }
 
 void TowerScene::setTower(Tower * tower)
 {
 	this->tower = tower;
 	controlWindow.tower = tower;
+	toolboxWindow.updateButtons();
 }
 
 void TowerScene::buildDebugTower()

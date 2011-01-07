@@ -4,10 +4,11 @@
 #include "../../general.h"
 #include "../../base/base.h"
 #include "../../core/sprite.h"
+#include "../gameobject.h"
 
 
 namespace OSS {
-	class Window : public CoreObject {
+	class Window : public GameObject {
 	public:
 		//Initialization
 		Window();

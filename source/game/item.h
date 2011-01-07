@@ -36,9 +36,6 @@ namespace OSS {
 			kDoubleRoomType,
 			kSuiteType,
 			
-			//Condo
-			kCondoType,
-			
 			//Entertainment
 			kFastFoodType,
 			kRestaurantType,
@@ -58,18 +55,25 @@ namespace OSS {
 			kMedicalCenterType,
 			kHousekeepingType,
 			
+			//Condo
+			kCondoType,
+			
 			kMaxType
 		} Type;
 		
 		//Item Groups
 		typedef enum {
+			kNoneGroup = 0,
+			
 			kStructureGroup,
 			kElevatorGroup,
 			kOfficeGroup,
 			kHotelGroup,
 			kEntertainmentGroup,
 			kInfrastructureGroup,
-			kServicesGroup
+			kServicesGroup,
+			
+			kMaxGroup
 		} Group;
 		
 		//Item Categories
