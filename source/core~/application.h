@@ -47,7 +47,11 @@ namespace OSS {
 			 * run loop. A game engine might for example add a periodic invocation to hook into the
 			 * run loop to provide timing and animation.
 			 */
-			
+		private:
+			typedef std::vector< Base::Pointer<Invocation> > InvocationVector;
+			InvocationVector invocations;
+		public:
+			void addInvocation(Invocation * invocation);
 			
 			
 			/**
