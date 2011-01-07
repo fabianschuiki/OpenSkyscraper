@@ -1,29 +1,7 @@
 #include "object.h"
 
 using namespace OSS;
-
-
-Object::ObjectQueue Object::autoreleaseQueue;
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Initialization
-//----------------------------------------------------------------------------------------------------
-
-Object::Object()
-{
-	retainCount = 1;
-}
-
-Object::~Object()
-{
-	//the assert breaks the capability of having static class instances
-	//assert(retainCount == 0);
-}
+using namespace Base;
 
 
 
@@ -38,50 +16,6 @@ bool Object::isKindOfClass(const std::type_info & typeidClass)
 {
 	return (typeid(*this) == typeidClass);
 }
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Memory Management
-//----------------------------------------------------------------------------------------------------
-
-void Object::retain()
-{
-	retainCount++;
-}
-
-void Object::release()
-{
-	assert(retainCount > 0);
-	retainCount--;
-	if (retainCount <= 0)
-		delete this;
-}
-
-void Object::autorelease()
-{
-	autoreleaseQueue.push(this);
-}
-
-void Object::drainAutoreleaseQueue()
-{
-	while (!autoreleaseQueue.empty()) {
-		autoreleaseQueue.front()->release();
-		autoreleaseQueue.pop();
-	}
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Runtime Type Information
-//----------------------------------------------------------------------------------------------------
 
 /**
  * Returns the object's class name. This function may be realized in various ways,

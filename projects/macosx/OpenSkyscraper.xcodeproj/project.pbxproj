@@ -301,17 +301,17 @@
 			isa = PBXGroup;
 			children = (
 				1F0D411211FEF95A00C6D787 /* base.h */,
+				1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */,
+				1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */,
 				1FD0EA7011FF6E76004F4D4E /* event.h */,
 				1F0D411311FEF95A00C6D787 /* functor.h */,
+				1F96D15012D7423000F6398A /* managedmemory.h */,
+				1F96D15112D7457E00F6398A /* managedmemory.cpp */,
 				1F0D411411FEF95A00C6D787 /* object.h */,
 				1FD0EA7411FF72AD004F4D4E /* object.cpp */,
 				1F0D411511FEF95A00C6D787 /* pointer.h */,
 				1F0D411611FEF95A00C6D787 /* singleton.h */,
 				1F0E73E712D7334700C311CC /* responder.h */,
-				1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */,
-				1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */,
-				1F96D15012D7423000F6398A /* managedmemory.h */,
-				1F96D15112D7457E00F6398A /* managedmemory.cpp */,
 			);
 			path = base;
 			sourceTree = "<group>";

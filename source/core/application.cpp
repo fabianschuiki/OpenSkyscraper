@@ -2,6 +2,7 @@
 #include "engine.h"
 #include "openglcanvas.h"
 #include "platform.h"
+#include "autoreleasequeue.h"
 
 using namespace OSS;
 
@@ -89,8 +90,8 @@ void Application::run()
 	//Runloop
 	keepRunning = true;
 	while (keepRunning) {
+		Base::AutoreleaseQueue q;
 		Engine::shared()->runloopCycle();
-		Object::drainAutoreleaseQueue();
 	}
 }
 
