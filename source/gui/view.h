@@ -4,7 +4,7 @@
 
 namespace OSS {
 	namespace GUI {
-		class View {
+		class View : Base::Responder {
 			/**
 			 * Types
 			 */

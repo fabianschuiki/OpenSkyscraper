@@ -118,6 +118,8 @@
 		1F0D41A311FF0DF000C6D787 /* rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
 		1F0D41A411FF0DF000C6D787 /* vector2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector2D.h; sourceTree = "<group>"; };
 		1F0D41AB11FF0E5F00C6D787 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
+		1F0E73E712D7334700C311CC /* responder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = responder.h; sourceTree = "<group>"; };
+		1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoreleasequeue.h; sourceTree = "<group>"; };
 		1F10A92012D6C0C000A2FF19 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = view.h; sourceTree = "<group>"; };
 		1F16FBB612D507190043C2D1 /* hotelguest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotelguest.h; sourceTree = "<group>"; };
 		1F16FBB712D507190043C2D1 /* hotelguest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotelguest.cpp; sourceTree = "<group>"; };
@@ -300,6 +302,8 @@
 				1FD0EA7411FF72AD004F4D4E /* object.cpp */,
 				1F0D411511FEF95A00C6D787 /* pointer.h */,
 				1F0D411611FEF95A00C6D787 /* singleton.h */,
+				1F0E73E712D7334700C311CC /* responder.h */,
+				1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */,
 			);
 			path = base;
 			sourceTree = "<group>";
