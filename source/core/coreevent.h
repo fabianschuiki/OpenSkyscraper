@@ -2,7 +2,7 @@
 #define OSS_COREEVENT_H
 
 #include "../general.h"
-#include "../base/event.h"
+#include "../base/baseevent.h"
 
 
 namespace OSS {

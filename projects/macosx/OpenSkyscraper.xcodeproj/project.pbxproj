@@ -101,7 +101,6 @@
 		1F0D40CA11FEF48500C6D787 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		1F0D40DF11FEF7C900C6D787 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		1F0D411211FEF95A00C6D787 /* base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base.h; sourceTree = "<group>"; };
-		1F0D411311FEF95A00C6D787 /* functor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = functor.h; sourceTree = "<group>"; };
 		1F0D411411FEF95A00C6D787 /* object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = object.h; sourceTree = "<group>"; };
 		1F0D411511FEF95A00C6D787 /* pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pointer.h; sourceTree = "<group>"; };
 		1F0D411611FEF95A00C6D787 /* singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleton.h; sourceTree = "<group>"; };
@@ -124,6 +123,7 @@
 		1F0E73E712D7334700C311CC /* responder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = responder.h; sourceTree = "<group>"; };
 		1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoreleasequeue.h; sourceTree = "<group>"; };
 		1F0E740F12D764D200C311CC /* responder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = responder.cpp; sourceTree = "<group>"; };
+		1F0E741B12D7674500C311CC /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
 		1F10A92012D6C0C000A2FF19 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = view.h; sourceTree = "<group>"; };
 		1F16FBB612D507190043C2D1 /* hotelguest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotelguest.h; sourceTree = "<group>"; };
 		1F16FBB712D507190043C2D1 /* hotelguest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotelguest.cpp; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 		1FD0EA6711FF68EE004F4D4E /* tasks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tasks.h; sourceTree = "<group>"; };
 		1FD0EA6A11FF69CE004F4D4E /* inputtask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inputtask.h; sourceTree = "<group>"; };
 		1FD0EA6B11FF69CE004F4D4E /* inputtask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inputtask.cpp; sourceTree = "<group>"; };
-		1FD0EA7011FF6E76004F4D4E /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
+		1FD0EA7011FF6E76004F4D4E /* baseevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = baseevent.h; sourceTree = "<group>"; };
 		1FD0EA7411FF72AD004F4D4E /* object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = object.cpp; sourceTree = "<group>"; };
 		1FD0EA9711FF7A0A004F4D4E /* coreevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coreevent.h; sourceTree = "<group>"; };
 		1FD0EAA211FF8983004F4D4E /* coreobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coreobject.h; sourceTree = "<group>"; };
@@ -302,11 +302,11 @@
 		1F0D411111FEF95A00C6D787 /* base */ = {
 			isa = PBXGroup;
 			children = (
-				1F0D411211FEF95A00C6D787 /* base.h */,
 				1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */,
 				1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */,
-				1FD0EA7011FF6E76004F4D4E /* event.h */,
-				1F0D411311FEF95A00C6D787 /* functor.h */,
+				1F0D411211FEF95A00C6D787 /* base.h */,
+				1FD0EA7011FF6E76004F4D4E /* baseevent.h */,
+				1F0E741B12D7674500C311CC /* event.h */,
 				1F96D15012D7423000F6398A /* managedmemory.h */,
 				1F96D15112D7457E00F6398A /* managedmemory.cpp */,
 				1F0D411411FEF95A00C6D787 /* object.h */,

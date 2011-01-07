@@ -5,7 +5,7 @@
 
 //Legacy stuff we need to get rid of
 #include "../general.h"
-#include "event.h"
+#include "baseevent.h"
 
 #define OSSObjectLog std::cout << this->description() << " " << __FUNCTION__ << ": "
 #define OSSObjectError std::cout << this->description() << " " << __FUNCTION__ << ": *** "
