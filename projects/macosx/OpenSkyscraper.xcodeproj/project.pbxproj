@@ -36,6 +36,8 @@
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1F8BBC9F12CAA4D700892C16 /* libIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBC9E12CAA4D700892C16 /* libIL.a */; };
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
+		1F96D15212D7457E00F6398A /* managedmemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D15112D7457E00F6398A /* managedmemory.cpp */; };
+		1F96D16D12D7498100F6398A /* autoreleasequeue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */; };
 		1FAD1B3812C8E094004E5286 /* sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD1B3712C8E094004E5286 /* sound.cpp */; };
 		1FAD1B8412C8E362004E5286 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAD1B8312C8E362004E5286 /* OpenAL.framework */; };
 		1FBE226E12D30D9100311E16 /* timedperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FBE226D12D30D9100311E16 /* timedperson.cpp */; };
@@ -163,6 +165,9 @@
 		1F8B57BD1201F7470080E30C /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../resources/textures; sourceTree = "<group>"; };
 		1F8BBC9E12CAA4D700892C16 /* libIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIL.a; path = /usr/local/lib/libIL.a; sourceTree = "<absolute>"; };
 		1F8BBCA012CAA4D700892C16 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = /usr/local/lib/libpng.a; sourceTree = "<absolute>"; };
+		1F96D15012D7423000F6398A /* managedmemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = managedmemory.h; sourceTree = "<group>"; };
+		1F96D15112D7457E00F6398A /* managedmemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = managedmemory.cpp; sourceTree = "<group>"; };
+		1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = autoreleasequeue.cpp; sourceTree = "<group>"; };
 		1FAD1B3612C8E094004E5286 /* sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound.h; sourceTree = "<group>"; };
 		1FAD1B3712C8E094004E5286 /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sound.cpp; sourceTree = "<group>"; };
 		1FAD1B8312C8E362004E5286 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
@@ -304,6 +309,9 @@
 				1F0D411611FEF95A00C6D787 /* singleton.h */,
 				1F0E73E712D7334700C311CC /* responder.h */,
 				1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */,
+				1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */,
+				1F96D15012D7423000F6398A /* managedmemory.h */,
+				1F96D15112D7457E00F6398A /* managedmemory.cpp */,
 			);
 			path = base;
 			sourceTree = "<group>";
@@ -688,6 +696,8 @@
 				1FFECE9E12D636D1006F320C /* elevator.cpp in Sources */,
 				1FFECEA112D63724006F320C /* standardelevator.cpp in Sources */,
 				1FFED15512D670BE006F320C /* elevatorbackground.cpp in Sources */,
+				1F96D15212D7457E00F6398A /* managedmemory.cpp in Sources */,
+				1F96D16D12D7498100F6398A /* autoreleasequeue.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

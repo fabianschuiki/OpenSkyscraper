@@ -34,7 +34,7 @@ namespace OSS {
 				obj = o;
 			}
 			inline void operator =(const Pointer<T> &p) {
-				if (o) o->retain();
+				if (p.obj) p.obj->retain();
 				if (obj) obj->release();
 				obj = p.obj;
 			}
