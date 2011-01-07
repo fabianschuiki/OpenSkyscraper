@@ -118,6 +118,7 @@
 		1F0D41A311FF0DF000C6D787 /* rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
 		1F0D41A411FF0DF000C6D787 /* vector2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector2D.h; sourceTree = "<group>"; };
 		1F0D41AB11FF0E5F00C6D787 /* math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
+		1F10A92012D6C0C000A2FF19 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = view.h; sourceTree = "<group>"; };
 		1F16FBB612D507190043C2D1 /* hotelguest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotelguest.h; sourceTree = "<group>"; };
 		1F16FBB712D507190043C2D1 /* hotelguest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotelguest.cpp; sourceTree = "<group>"; };
 		1F16FBC612D50B4E0043C2D1 /* occupiableitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = occupiableitem.h; sourceTree = "<group>"; };
@@ -344,6 +345,14 @@
 			path = math;
 			sourceTree = "<group>";
 		};
+		1F10A91F12D6C05E00A2FF19 /* gui */ = {
+			isa = PBXGroup;
+			children = (
+				1F10A92012D6C0C000A2FF19 /* view.h */,
+			);
+			path = gui;
+			sourceTree = "<group>";
+		};
 		1F16FBB512D507070043C2D1 /* people */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,6 +502,7 @@
 				1F0D411111FEF95A00C6D787 /* base */,
 				1F0D416511FEFFBE00C6D787 /* core */,
 				1F21FDF712003361000A8AC3 /* game */,
+				1F10A91F12D6C05E00A2FF19 /* gui */,
 				1F0D40DF11FEF7C900C6D787 /* main.cpp */,
 				1F21FF3912008046000A8AC3 /* os */,
 				1F0D41A211FF0DF000C6D787 /* math */,
