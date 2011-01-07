@@ -17,6 +17,9 @@
 		1F0D418611FF00D700C6D787 /* platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D418511FF00D700C6D787 /* platform.cpp */; };
 		1F0D419711FF0D1C00C6D787 /* openglcanvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D419611FF0D1C00C6D787 /* openglcanvas.cpp */; };
 		1F0E741012D764D200C311CC /* responder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E740F12D764D200C311CC /* responder.cpp */; };
+		1F0E745012D76FAE00C311CC /* responder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E744F12D76FAE00C311CC /* responder.cpp */; };
+		1F0E747212D7768A00C311CC /* object~.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E747112D7768A00C311CC /* object~.cpp */; };
+		1F0E751812D7A50900C311CC /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E751712D7A50900C311CC /* application.cpp */; };
 		1F16FBB812D507190043C2D1 /* hotelguest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F16FBB712D507190043C2D1 /* hotelguest.cpp */; };
 		1F16FBC812D50B4E0043C2D1 /* occupiableitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F16FBC712D50B4E0043C2D1 /* occupiableitem.cpp */; };
 		1F21FCCD120020CE000A8AC3 /* loadertask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FCCC120020CE000A8AC3 /* loadertask.cpp */; };
@@ -124,6 +127,20 @@
 		1F0E73EE12D73A5A00C311CC /* autoreleasequeue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoreleasequeue.h; sourceTree = "<group>"; };
 		1F0E740F12D764D200C311CC /* responder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = responder.cpp; sourceTree = "<group>"; };
 		1F0E741B12D7674500C311CC /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
+		1F0E744412D76ED600C311CC /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
+		1F0E744E12D76FAE00C311CC /* responder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = responder.h; sourceTree = "<group>"; };
+		1F0E744F12D76FAE00C311CC /* responder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = responder.cpp; sourceTree = "<group>"; };
+		1F0E746F12D7763500C311CC /* object~.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "object~.h"; sourceTree = "<group>"; };
+		1F0E747112D7768A00C311CC /* object~.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "object~.cpp"; sourceTree = "<group>"; };
+		1F0E749C12D778DA00C311CC /* mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mouse.h; sourceTree = "<group>"; };
+		1F0E749F12D779FE00C311CC /* mousebutton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mousebutton.h; sourceTree = "<group>"; };
+		1F0E74AE12D77BF500C311CC /* mousemoved.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mousemoved.h; sourceTree = "<group>"; };
+		1F0E74C012D7959C00C311CC /* mousedragged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mousedragged.h; sourceTree = "<group>"; };
+		1F0E74D512D7973600C311CC /* scrollwheel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scrollwheel.h; sourceTree = "<group>"; };
+		1F0E74D812D7986200C311CC /* key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = key.h; sourceTree = "<group>"; };
+		1F0E751212D7A04500C311CC /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
+		1F0E751512D7A2F400C311CC /* eventpump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eventpump.h; sourceTree = "<group>"; };
+		1F0E751712D7A50900C311CC /* application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = application.cpp; sourceTree = "<group>"; };
 		1F10A92012D6C0C000A2FF19 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = view.h; sourceTree = "<group>"; };
 		1F16FBB612D507190043C2D1 /* hotelguest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotelguest.h; sourceTree = "<group>"; };
 		1F16FBB712D507190043C2D1 /* hotelguest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotelguest.cpp; sourceTree = "<group>"; };
@@ -311,6 +328,8 @@
 				1F96D15112D7457E00F6398A /* managedmemory.cpp */,
 				1F0D411411FEF95A00C6D787 /* object.h */,
 				1FD0EA7411FF72AD004F4D4E /* object.cpp */,
+				1F0E746F12D7763500C311CC /* object~.h */,
+				1F0E747112D7768A00C311CC /* object~.cpp */,
 				1F0D411511FEF95A00C6D787 /* pointer.h */,
 				1F0E73E712D7334700C311CC /* responder.h */,
 				1F0E740F12D764D200C311CC /* responder.cpp */,
@@ -358,6 +377,33 @@
 				1F0D41A411FF0DF000C6D787 /* vector2D.h */,
 			);
 			path = math;
+			sourceTree = "<group>";
+		};
+		1F0E743E12D76E8A00C311CC /* core~ */ = {
+			isa = PBXGroup;
+			children = (
+				1F0E751212D7A04500C311CC /* application.h */,
+				1F0E751712D7A50900C311CC /* application.cpp */,
+				1F0E744412D76ED600C311CC /* event.h */,
+				1F0E751512D7A2F400C311CC /* eventpump.h */,
+				1F0E749B12D778B000C311CC /* events */,
+				1F0E744E12D76FAE00C311CC /* responder.h */,
+				1F0E744F12D76FAE00C311CC /* responder.cpp */,
+			);
+			path = "core~";
+			sourceTree = "<group>";
+		};
+		1F0E749B12D778B000C311CC /* events */ = {
+			isa = PBXGroup;
+			children = (
+				1F0E749C12D778DA00C311CC /* mouse.h */,
+				1F0E749F12D779FE00C311CC /* mousebutton.h */,
+				1F0E74AE12D77BF500C311CC /* mousemoved.h */,
+				1F0E74C012D7959C00C311CC /* mousedragged.h */,
+				1F0E74D512D7973600C311CC /* scrollwheel.h */,
+				1F0E74D812D7986200C311CC /* key.h */,
+			);
+			path = events;
 			sourceTree = "<group>";
 		};
 		1F10A91F12D6C05E00A2FF19 /* gui */ = {
@@ -515,6 +561,7 @@
 				1F0D412711FEFA1D00C6D787 /* macros.h */,
 				1F0D412811FEFA1D00C6D787 /* types.h */,
 				1F0D411111FEF95A00C6D787 /* base */,
+				1F0E743E12D76E8A00C311CC /* core~ */,
 				1F0D416511FEFFBE00C6D787 /* core */,
 				1F21FDF712003361000A8AC3 /* game */,
 				1F10A91F12D6C05E00A2FF19 /* gui */,
@@ -702,6 +749,9 @@
 				1F96D15212D7457E00F6398A /* managedmemory.cpp in Sources */,
 				1F96D16D12D7498100F6398A /* autoreleasequeue.cpp in Sources */,
 				1F0E741012D764D200C311CC /* responder.cpp in Sources */,
+				1F0E745012D76FAE00C311CC /* responder.cpp in Sources */,
+				1F0E747212D7768A00C311CC /* object~.cpp in Sources */,
+				1F0E751812D7A50900C311CC /* application.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

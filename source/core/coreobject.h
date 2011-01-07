@@ -1,5 +1,5 @@
-#ifndef OSS_CORE_OBJECT_H
-#define OSS_CORE_OBJECT_H
+#ifndef OSS_COREOBJECT_H
+#define OSS_COREOBJECT_H
 
 #include "../general.h"
 #include "../base/object.h"

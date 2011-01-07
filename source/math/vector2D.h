@@ -1,7 +1,7 @@
 #ifndef OSS_VECTOR2D_H
 #define OSS_VECTOR2D_H
 
-#include "../general.h"
+#include <string>
 
 
 namespace OSS {

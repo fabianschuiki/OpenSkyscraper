@@ -1,12 +1,12 @@
 #ifndef OSS_BASE_RESPONDER_H
 #define OSS_BASE_RESPONDER_H
 
-#include "object.h"
+#include "event.h"
 
 
 namespace OSS {
 	namespace Base {
-		class Responder : public Object {
+		class Responder {
 			
 			/**
 			 * Sending

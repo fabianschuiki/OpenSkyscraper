@@ -1,10 +1,13 @@
 #ifndef OSS_BASE_EVENT_H
 #define OSS_BASE_EVENT_H
 
+#include "object~.h"
+
 
 namespace OSS {
 	namespace Base {
-		class Event {
+		class Event : public Object {
+			
 			/**
 			 * Types
 			 *
