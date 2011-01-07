@@ -7,24 +7,17 @@
 namespace OSS {
 	namespace Base {
 		class Responder : public Object {
-			/**
-			 * Types
-			 */
-		public:
-			//List
-			typedef std::list< Pointer<Responder> > List;
-			
 			
 			/**
-			 * Event Sending
+			 * Sending
 			 */
 		public:
 			bool sendEvent(Event * event);
-			virtual const List & getNextResponders() { return List(); }
+			virtual bool sendEventToNextResponders(Event * event) { return false; }
 			
 			
 			/**
-			 * Event Handling
+			 * Handling
 			 */
 		public:
 			virtual bool handleEvent(Event * event) { return false; }

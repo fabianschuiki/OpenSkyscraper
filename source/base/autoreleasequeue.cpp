@@ -44,7 +44,7 @@ void AutoreleaseQueue::addGarbage(ManagedMemory * garbage)
 
 void AutoreleaseQueue::autorelease(ManagedMemory * garbage)
 {
-	assert(!stack.empty() && "autorelease without a queue in place; memory leaking!");
+	assert(!stack.empty() && "autorelease without a queue in place; memory leaking");
 	stack.top()->addGarbage(garbage);
 }
 

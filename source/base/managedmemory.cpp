@@ -46,7 +46,7 @@ ManagedMemory * ManagedMemory::retain()
 
 ManagedMemory * ManagedMemory::release()
 {
-	assert(retainCount > 0 && "trying to release instance already released!");
+	assert(retainCount > 0 && "trying to release instance already released");
 	
 	//If the retain count is one, this release yields a deconstruction. Note that we don't have to
 	//reduce the retain count to 0 since this is done in the destructor for static instantiation
