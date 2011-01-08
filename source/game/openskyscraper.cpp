@@ -1,8 +1,9 @@
 #include "openskyscraper.h"
 
-#include "simtower.h"
+#include "../classic/simtower.h"
 
 using namespace OSS;
+using namespace Game;
 
 
 //----------------------------------------------------------------------------------------------------
@@ -15,14 +16,14 @@ OpenSkyscraper::OpenSkyscraper() : Engine::Application()
 	//Initialize the SimTower singleton
 	new SimTower;
 	
-	//Initialize the scenes
-	towerScene = new TowerScene;
+	//Initialize the game scene with an empty tower
+	gameScene = new Classic::GameScene(new Tower);
 }
 
 OpenSkyscraper::~OpenSkyscraper()
 {
 	//Get rid of the scenes
-	towerScene = NULL;
+	gameScene = NULL;
 	
 	//Get rid of SimTower
 	delete SimTower::shared();
@@ -34,11 +35,8 @@ void OpenSkyscraper::willRun()
 	SimTower::shared()->loadResources();
 	SimTower::shared()->extractAll();
 	
-	//Load an empty tower
-	towerScene->setTower(new Tower);
-	
 	//Switch to the tower scene
-	engine->setScene(towerScene);
+	engine->setScene(gameScene);
 }
 
 

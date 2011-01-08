@@ -1,7 +1,9 @@
 #ifndef OSS_ENGINE_DRAWABLE_H
 #define OSS_ENGINE_DRAWABLE_H
 
-#include "../math/rect.h"
+#include "external.h"
+
+#include "scene.h"
 
 
 namespace OSS {
@@ -13,6 +15,7 @@ namespace OSS {
 			 */
 		public:
 			virtual void draw(rectd dirtyRect) {}
+			virtual void draw(Scene * scene, rectd dirtyRect) { draw(dirtyRect); }
 		};
 	}
 }

@@ -15,6 +15,10 @@
 virtual bool isKindOfClass(Class c) { if (c == typeid(this)) return true; \
 return superclass::isKindOfClass(c); }
 
+//Logging
+#define OSSObjectLog std::cout << this->description() << " " << __FUNCTION__ << ": "
+#define OSSObjectError std::cout << this->description() << " " << __FUNCTION__ << ": *** "
+
 
 namespace OSS {
 	namespace Base {

@@ -1,6 +1,7 @@
-#include "hotelitem.h"
+#include "hotel.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 

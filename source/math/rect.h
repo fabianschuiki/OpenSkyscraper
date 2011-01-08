@@ -1,8 +1,9 @@
 #ifndef OSS_RECT_H
 #define OSS_RECT_H
 
-#include "../general.h"
-#include "../base/object.h"
+#include "external.h"
+
+#include "vector2D.h"
 
 
 namespace OSS {

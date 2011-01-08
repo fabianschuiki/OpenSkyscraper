@@ -1,9 +1,13 @@
 #include "tower.h"
-#include "../classes.h"
 
-#include "../resources/sound.h"
+#include "../items/item.h"
+#include "../../resources/sound.h"
 
 using namespace OSS;
+using namespace Classic;
+
+
+
 
 
 //----------------------------------------------------------------------------------------------------
@@ -11,7 +15,7 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Tower::Tower() : GameObject()
+Tower::Tower() : Responder()
 {
 	//Setup some basic tower layout attributes
 	ceilingHeight = 12;
@@ -34,32 +38,32 @@ Tower::Tower() : GameObject()
 void Tower::initBackground()
 {
 	//Initialize the ground sprite
-	groundSprite = new Sprite;
+	groundSprite = new Engine::Sprite;
 	groundSprite->texture = Texture::named("simtower/background/ground");
 	groundSprite->rect = rectd(-800, -360, 1600, 360);
-	groundSprite->textureMode = Sprite::kRepeatTextureMode;
+	groundSprite->textureMode = Engine::Sprite::kRepeatTextureMode;
 	groundSprite->autoTexRectX = true;
 	groundSprite->autoTexRectY = true;
 	
 	//Initialize the sky sprites
 	for (int i = 0; i < 10; i++) {
 		for (int n = 0; n < 2; n++) {
-			skySprites[i][n] = new Sprite;
+			skySprites[i][n] = new Engine::Sprite;
 			skySprites[i][n]->rect = rectd(-800, i * 360, 1600, 360);
-			skySprites[i][n]->textureMode = Sprite::kRepeatTextureMode;
+			skySprites[i][n]->textureMode = Engine::Sprite::kRepeatTextureMode;
 			skySprites[i][n]->autoTexRectX = true;
 		}
 	}
 	
 	//Initialize the city sprite
-	citySprite = new Sprite;
+	citySprite = new Engine::Sprite;
 	citySprite->texture = Texture::named("simtower/background/city");
 	citySprite->rect = rectd(-800, 0, 1600, 55);
-	citySprite->textureMode = Sprite::kRepeatTextureMode;
+	citySprite->textureMode = Engine::Sprite::kRepeatTextureMode;
 	citySprite->autoTexRectX = true;
 	
 	//Initialize the crane sprite
-	craneSprite = new Sprite;
+	craneSprite = new Engine::Sprite;
 	craneSprite->texture = Texture::named("simtower/decoration/crane");
 	craneSprite->rect.size = double2(36, 36);
 	
@@ -90,7 +94,7 @@ void Tower::initEnvironment()
 	
 	//Initialize the funds transfer sound effect
 	fundsTransferSound.sound = Sound::named("simtower/cash");
-	fundsTransferSound.layer = SoundEffect::kTopLayer;
+	fundsTransferSound.layer = Engine::SoundEffect::kTopLayer;
 	fundsTransferSound.minIntervalBetweenPlaybacks = 0.1;
 	fundsTransferSound.loopCount = 2;
 	fundsTransferSound.copyBeforeUse = true;
@@ -103,7 +107,7 @@ void Tower::initConstruction()
 	
 	//Initialize the flexible construction sound effect
 	constructionSoundFlexible.sound = Sound::named("simtower/construction/flexible");
-	constructionSoundFlexible.layer = SoundEffect::kTopLayer;
+	constructionSoundFlexible.layer = Engine::SoundEffect::kTopLayer;
 	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.4;
 	constructionSoundFlexible.copyBeforeUse = true;
 }
@@ -1041,11 +1045,19 @@ bool Tower::findRoute(recti origin, recti destination, TransportItem * transport
 	return false;
 }
 
-bool Tower::handleEvent(GameEvent * event)
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Event Sending
+//----------------------------------------------------------------------------------------------------
+
+bool Tower::sendEventToNextResponders(Event * event)
 {
-	if (event->type > kNumEventsCore)
-		for (ItemIDMap::iterator i = items.begin(); i != items.end(); i++)
-			if (i->second->handleEvent(event))
-				return true;
-	return GameObject::handleEvent(event);
+	for (ItemIDMap::iterator i = items.begin(); i != items.end(); i++)
+		if (i->second->sendEvent(event))
+			return true;
+	return Classic::Responder::sendEventToNextResponders(event);
 }

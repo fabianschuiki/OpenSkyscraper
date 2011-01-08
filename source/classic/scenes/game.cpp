@@ -1,8 +1,13 @@
-#include "towerscene.h"
-#include "../../classes.h"
+#include "game.h"
+
+#include "../gui/gui.h"
 #include "../../resources/sound.h"
 
 using namespace OSS;
+using namespace Classic;
+
+
+
 
 
 //----------------------------------------------------------------------------------------------------
@@ -10,9 +15,10 @@ using namespace OSS;
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-TowerScene::TowerScene() : constructionItemDescriptor(NULL), toolboxWindow(this)
+GameScene::GameScene(Tower * tower, Engine::EngineCore * engine) :
+Engine::Scene(engine), tower(tower)
 {	
-	isDraggingConstruction = false;
+	/*isDraggingConstruction = false;
 	
 	tool = ToolboxWindow::kInspectTool;
 	
@@ -21,7 +27,10 @@ TowerScene::TowerScene() : constructionItemDescriptor(NULL), toolboxWindow(this)
 	debugConstructionToolSprite.rect = recti(0, 0, 32, 32);
 	debugConstructionToolSprite.textureRect.size.x = 1.0 / 8;
 	debugConstructionToolSprite.textureRect.size.y = 1.0 / 4;
-	debugItemType = Item::kLobbyType;
+	debugItemType = Item::kLobbyType;*/
+	
+	//Initialize the GUI
+	gui = new GUI(this);
 }
 
 
@@ -33,7 +42,7 @@ TowerScene::TowerScene() : constructionItemDescriptor(NULL), toolboxWindow(this)
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-void TowerScene::advance(double dt)
+void GameScene::advance(double dt)
 {
 	//Update the visible rect
 	int2 canvasSize = OpenGLCanvas::shared()->currentMode.resolution;
@@ -82,7 +91,7 @@ void TowerScene::advance(double dt)
 #pragma mark Rendering
 //----------------------------------------------------------------------------------------------------
 
-void TowerScene::render()
+void GameScene::render()
 {
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -137,13 +146,13 @@ void TowerScene::render()
 	OpenGLCanvas::shared()->swapBuffers();
 }
 
-void TowerScene::renderBackground()
+void GameScene::renderBackground()
 {
 	//Render the background
 	tower->renderBackground(visibleRect);
 }
 
-void TowerScene::renderFacilities()
+void GameScene::renderFacilities()
 {
 	//OSSObjectLog << "rendering " << visibleFacilities.size() << " facilities..." << std::endl;
 	std::set<unsigned int>::iterator it;
@@ -154,7 +163,7 @@ void TowerScene::renderFacilities()
 	}
 }
 
-void TowerScene::renderTransports()
+void GameScene::renderTransports()
 {
 	//OSSObjectLog << "rendering " << visibleFacilities.size() << " facilities..." << std::endl;
 	std::set<unsigned int>::iterator it;
@@ -165,7 +174,7 @@ void TowerScene::renderTransports()
 	}
 }
 
-void TowerScene::renderGUI()
+void GameScene::renderGUI()
 {
 	//DEBUG: draw the current construction tool
 	debugConstructionToolSprite.draw(visibleRect);
@@ -191,7 +200,7 @@ void TowerScene::renderGUI()
 #pragma mark OpenGL State
 //----------------------------------------------------------------------------------------------------
 
-void TowerScene::onMoveOnScreen()
+void GameScene::onMoveOnScreen()
 {
 	//Engine::shared()->audioTask.playSound(Sound::named("simtower/#4E20"), SoundEffect::kTopLayer);
 	
@@ -208,7 +217,7 @@ void TowerScene::onMoveOnScreen()
 	TwAddButton(myBar, "Hello, World!", NULL, NULL, NULL);*/
 }
 
-void TowerScene::onMoveOffScreen()
+void GameScene::onMoveOffScreen()
 {	
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
@@ -225,7 +234,7 @@ void TowerScene::onMoveOffScreen()
 #pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
-bool TowerScene::handleEvent(CoreEvent * event)
+bool GameScene::handleEvent(CoreEvent * event)
 {
 	if (toolboxWindow.handleEvent((GameEvent *)event)) return true;
 	if (controlWindow.handleEvent((GameEvent *)event)) return true;
@@ -233,7 +242,7 @@ bool TowerScene::handleEvent(CoreEvent * event)
 	return Scene::handleEvent(event);
 }
 
-bool TowerScene::eventKeyDown(SDL_Event * event)
+bool GameScene::eventKeyDown(SDL_Event * event)
 {
 	double factor = (event->key.keysym.mod & KMOD_SHIFT ? 10 : 1);
 	switch (event->key.keysym.sym) {
@@ -268,7 +277,7 @@ bool TowerScene::eventKeyDown(SDL_Event * event)
 	return false;
 }
 
-bool TowerScene::eventMouseDown(SDL_Event * event)
+bool GameScene::eventMouseDown(SDL_Event * event)
 {
 	switch (event->button.button) {
 		case SDL_BUTTON_WHEELUP:	POI.y += 10; return true; break;
@@ -286,7 +295,7 @@ bool TowerScene::eventMouseDown(SDL_Event * event)
 	return false;
 }
 
-bool TowerScene::eventMouseUp(SDL_Event * event)
+bool GameScene::eventMouseUp(SDL_Event * event)
 {
 	switch (event->button.button) {
 		case SDL_BUTTON_LEFT: {
@@ -310,7 +319,7 @@ bool TowerScene::eventMouseUp(SDL_Event * event)
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-void TowerScene::updateConstruction()
+void GameScene::updateConstruction()
 {
 	if (!constructionItemDescriptor)
 		return;
@@ -330,7 +339,7 @@ void TowerScene::updateConstruction()
 	}
 }
 
-void TowerScene::startConstruction()
+void GameScene::startConstruction()
 {	
 	if (!constructionItemDescriptor)
 		return;
@@ -361,7 +370,7 @@ void TowerScene::startConstruction()
 											  SoundEffect::kTopLayer);
 }
 
-void TowerScene::endConstruction()
+void GameScene::endConstruction()
 {
 	isDraggingConstruction = false;
 	
@@ -378,12 +387,12 @@ void TowerScene::endConstruction()
 #pragma mark Uncategorized
 //----------------------------------------------------------------------------------------------------
 
-ToolboxWindow::Tool TowerScene::getTool()
+ToolboxWindow::Tool GameScene::getTool()
 {
 	return tool;
 }
 
-void TowerScene::setTool(ToolboxWindow::Tool tool)
+void GameScene::setTool(ToolboxWindow::Tool tool)
 {
 	if (this->tool != tool) {
 		this->tool = tool;
@@ -391,7 +400,7 @@ void TowerScene::setTool(ToolboxWindow::Tool tool)
 	}
 }
 
-void TowerScene::setConstructionTool(Item::Type itemType)
+void GameScene::setConstructionTool(Item::Type itemType)
 {	
 	setTool(ToolboxWindow::kConstructionTool);
 	
@@ -409,18 +418,18 @@ void TowerScene::setConstructionTool(Item::Type itemType)
 	toolboxWindow.updateItemButtons();
 }
 
-void TowerScene::eventPrepare()
+void GameScene::eventPrepare()
 {
 }
 
-void TowerScene::setTower(Tower * tower)
+void GameScene::setTower(Tower * tower)
 {
 	this->tower = tower;
 	controlWindow.tower = tower;
 	toolboxWindow.updateButtons();
 }
 
-void TowerScene::buildDebugTower()
+void GameScene::buildDebugTower()
 {
 	Engine::shared()->audioTask.disableSoundEffects();
 	

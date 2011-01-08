@@ -1,9 +1,7 @@
 #include "item.h"
-#include "items.h"
-#include "tower.h"
-#include "person.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 static Item::Descriptor floorItemDescriptor = {
@@ -26,7 +24,7 @@ static Item::Descriptor floorItemDescriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Item::Item(Tower * tower, Descriptor * descriptor) : GameObject(), tower(tower), descriptor(descriptor)
+Item::Item(Tower * tower, Descriptor * descriptor) : Responder(), tower(tower), descriptor(descriptor)
 {
 	assert(tower && descriptor);
 	

@@ -14,6 +14,12 @@ namespace OSS {
 		public:
 			virtual void init() {}
 			virtual void update() {}
+			
+		private:
+			bool needsUpdate;
+		public:
+			void updateIfNeeded() { if (needsUpdate) update(); needsUpdate = false; }
+			void setNeedsUpdate() { needsUpdate = true; }
 		};
 	}
 }

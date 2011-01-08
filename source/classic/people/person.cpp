@@ -1,8 +1,7 @@
 #include "person.h"
-#include "item.h"
-#include "tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -13,7 +12,7 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Person::Person(Tower * tower) : tower(tower), GameObject()
+Person::Person(Tower * tower) : Core::Object(), tower(tower)
 {
 	assert(tower);
 	

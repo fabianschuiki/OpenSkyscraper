@@ -20,11 +20,11 @@ namespace OSS {
 			bool handleClassicEvent(Event * event);
 			
 			//Transport
-			virtual void eventTransportIncreased(ItemEvent<TransportItem> event) {}
-			virtual void eventTransportDecreased(ItemEvent<TransportItem> event) {}
+			virtual void eventTransportIncreased(ItemEvent<TransportItem> * event) {}
+			virtual void eventTransportDecreased(ItemEvent<TransportItem> * event) {}
 			
 			//Hotel
-			virtual void eventHotelVacated(ItemEvent<HotelItem> event) {}
+			virtual void eventHotelVacated(ItemEvent<HotelItem> * event) {}
 		};
 	}
 }

@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	app.run();
 	app.cleanUp();*/
 	
-	OSS::OpenSkyscraper * app = new OSS::OpenSkyscraper;
+	OSS::Game::OpenSkyscraper * app = new OSS::Game::OpenSkyscraper;
 	app->run();
 	app->release();
 	

@@ -1,8 +1,8 @@
-#ifndef OSS_TRANSPORTITEM_H
-#define OSS_TRANSPORTITEM_H
+#ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_TRANSPORT_H
+#define OSS_CLASSIC_ITEMS_TRANSPORTS_TRANSPORT_H
 
-#include "../general.h"
-#include "item.h"
+#include "../../external.h"
+#include "../item.h"
 
 
 namespace OSS {

@@ -18,8 +18,10 @@ namespace OSS {
 			typedef enum {
 				None = 0,
 				
-				Transport,
-				Hotel
+				TransportIncreased,
+				TransportDecreased,
+				
+				HotelVacated
 			} Type;
 			
 			
