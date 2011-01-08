@@ -3,10 +3,10 @@
 
 #include "../core~/application.h"
 
-#include "audio.h"
+#include "audio/audio.h"
 #include "engine.h"
 #include "eventpump.h"
-#include "video.h"
+#include "video/video.h"
 
 //This is where SDL is included
 #ifdef __APPLE__

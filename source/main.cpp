@@ -1,6 +1,6 @@
 //#include "general.h"
-//#include "game/openskyscraper.h"
-#include "engine/application.h"
+#include "game/openskyscraper.h"
+//#include "engine/application.h"
 
 int main(int argc, char *argv[])
 {	
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	app.run();
 	app.cleanUp();*/
 	
-	OSS::Engine::Application * app = new OSS::Engine::Application;
+	OSS::OpenSkyscraper * app = new OSS::OpenSkyscraper;
 	app->run();
 	app->release();
 	

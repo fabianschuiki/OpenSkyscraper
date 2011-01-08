@@ -1,7 +1,7 @@
 #include "video.h"
 
-#include "application.h"
-#include "event.h"
+#include "../application.h"
+#include "../event.h"
 
 using namespace OSS;
 using namespace Engine;

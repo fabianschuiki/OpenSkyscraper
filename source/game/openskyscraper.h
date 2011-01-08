@@ -1,13 +1,13 @@
 #ifndef OSS_OPENSKYSCRAPER_H
 #define OSS_OPENSKYSCRAPER_H
 
-#include "../general.h"
-#include "../core/core.h"
-#include "scenes/scenes.h"
+#include "../engine/application.h"
+
+#include "scenes/towerscene.h"
 
 
 namespace OSS {
-	class OpenSkyscraper : public Application {
+	class OpenSkyscraper : public Engine::Application {
 	public:
 		//Scenes
 		Pointer<TowerScene> towerScene;
@@ -16,11 +16,7 @@ namespace OSS {
 		OpenSkyscraper();
 		~OpenSkyscraper();
 		
-		//Events
-		virtual bool handleEvent(CoreEvent * event);
-		
-		//Birth and death
-		virtual void eventPrepare();
+		void willRun();
 	};
 }
 

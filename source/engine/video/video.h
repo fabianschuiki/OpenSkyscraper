@@ -1,9 +1,9 @@
 #ifndef OSS_ENGINE_VIDEO_H
 #define OSS_ENGINE_VIDEO_H
 
-#include "../core~/responder.h"
+#include "../../core~/responder.h"
 
-#include "../base/pointer.h"
+#include "../../base/pointer.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

@@ -7,6 +7,10 @@
 #include "item.h"
 #include "route.h"
 
+#include "../engine/audio/soundeffect.h"
+
+using namespace OSS::Engine;
+
 
 namespace OSS {
 	class Tower : public GameObject {

@@ -3,7 +3,7 @@
 
 #include "../event.h"
 
-#include "../video.h"
+#include "../video/video.h"
 #include "../../base/pointer.h"
 
 
