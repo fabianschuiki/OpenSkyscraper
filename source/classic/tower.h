@@ -1,19 +1,15 @@
-#ifndef OSS_TOWER_H
-#define OSS_TOWER_H
+#ifndef OSS_GAME_TOWER_H
+#define OSS_GAME_TOWER_H
 
-#include "../general.h"
-#include "../base/base.h"
-#include "gameobject.h"
+#include "external.h"
+#include "responder.h"
+
 #include "item.h"
 #include "route.h"
 
-#include "../engine/audio/soundeffect.h"
-
-using namespace OSS::Engine;
-
 
 namespace OSS {
-	class Tower : public GameObject {
+	class Tower : public Responder {
 	public:
 		/**
 		 * Initialization

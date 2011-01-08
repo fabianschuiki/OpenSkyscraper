@@ -1,10 +1,10 @@
 #ifndef OSS_ENGINE_EVENTS_AUDIO_H
 #define OSS_ENGINE_EVENTS_AUDIO_H
 
+#include "../external.h"
 #include "../event.h"
 
 #include "../audio/audio.h"
-#include "../../base/pointer.h"
 
 
 namespace OSS {

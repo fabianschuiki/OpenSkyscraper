@@ -2,6 +2,7 @@
 #define OSS_BASE_MANAGEDMEMORY_H
 
 #include <cstddef> //for operator new, delete
+#include "external.h"
 
 
 namespace OSS {

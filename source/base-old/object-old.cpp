@@ -1,7 +1,6 @@
-#include "object~.h"
+#include "object.h"
 
 using namespace OSS;
-using namespace Base;
 
 
 
@@ -9,32 +8,13 @@ using namespace Base;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Class Inheritance
+#pragma mark Runtime Type Information
 //----------------------------------------------------------------------------------------------------
 
-Object::Class Object::getClass()
+bool Object::isKindOfClass(const std::type_info & typeidClass)
 {
-	return (Class)typeid(*this);
+	return (typeid(*this) == typeidClass);
 }
-
-bool Object::isMemberOfClass(Class c)
-{
-	return (typeid(*this) == c);
-}
-
-bool Object::isKindOfClass(Class c)
-{
-	return isMemberOfClass(c);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Description
-//----------------------------------------------------------------------------------------------------
 
 /**
  * Returns the object's class name. This function may be realized in various ways,
@@ -59,10 +39,19 @@ std::string Object::className()
  */
 std::string Object::instanceName()
 {
-	char str[128];
+	char str[64];
 	sprintf(str, "%s %p", this->className().c_str(), this);
 	return str;
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Description
+//----------------------------------------------------------------------------------------------------
 
 /**
  * Returns the object's description in human-readable form. This is a convenient
@@ -81,4 +70,48 @@ std::string Object::description()
 	res += this->instanceName();
 	res += ">";
 	return res;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+bool Object::handleEvent(Event * event)
+{
+	switch (event->type) {
+		case kEventSDL: return eventSDL(event->sdl.event); break;
+	}
+	return false;
+}
+
+bool Object::eventSDL(SDL_Event * event)
+{
+	if ((SDL_EVENTMASK(event->type) & SDL_KEYEVENTMASK) && eventKey(event)) return true;
+	if ((SDL_EVENTMASK(event->type) & SDL_MOUSEEVENTMASK) && eventMouse(event)) return true;
+	return false;
+}
+
+bool Object::eventKey(SDL_Event * event)
+{
+	if (event->type == SDL_KEYDOWN && eventKeyDown(event)) return true;
+	if (event->type == SDL_KEYUP && eventKeyUp(event)) return true;
+	return false;
+}
+
+bool Object::eventMouse(SDL_Event * event)
+{
+	if (event->type == SDL_MOUSEMOTION && eventMouseMoved(event)) return true;
+	if (event->type == SDL_MOUSEBUTTONDOWN && eventMouseDown(event)) return true;
+	if (event->type == SDL_MOUSEBUTTONUP && eventMouseUp(event)) return true;
+	
+	//Fortunately SDL 1.3 supports mouse wheel events with different wheel speeds...
+#if SDL_VERSION_ATLEAST(1, 3, 0)
+	if (event->type == SDL_MOUSEWHEEL && eventMouseWheel(event)) return true;
+#endif
+	return false;
 }

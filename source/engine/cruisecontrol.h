@@ -1,7 +1,7 @@
 #ifndef OSS_ENGINE_CRUISECONTROL_H
 #define OSS_ENGINE_CRUISECONTROL_H
 
-#include "../base/object~.h"
+#include "../base/object.h"
 
 #include "../base/pointer.h"
 

@@ -1,8 +1,7 @@
 #ifndef OSS_SINGLETON_H
 #define OSS_SINGLETON_H
 
-#include "../general.h"
-#include "object.h"
+#include "external.h"
 
 
 namespace OSS {

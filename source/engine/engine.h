@@ -1,8 +1,8 @@
 #ifndef OSS_ENGINE_H
 #define OSS_ENGINE_H
 
-#include "../core~/responder.h"
-#include "../core~/invocation.h"
+#include "../core/responder.h"
+#include "../core/invocation.h"
 
 #include "cruisecontrol.h"
 

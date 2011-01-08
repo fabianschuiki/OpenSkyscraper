@@ -1,8 +1,8 @@
 #ifndef OSS_TOWERSCENE_H
 #define OSS_TOWERSCENE_H
 
-#include "../../general.h"
-#include "../../core/scene.h"
+#include "../../engine/headers.h"
+
 #include "../tower.h"
 #include "../item.h"
 #include "../gui/toolboxwindow.h"
@@ -10,7 +10,7 @@
 
 
 namespace OSS {
-	class TowerScene : public Scene {
+	class TowerScene : public Engine::Scene {
 	public:
 		TowerScene();
 		
@@ -50,7 +50,7 @@ namespace OSS {
 		void onMoveOffScreen();
 		
 		//Events
-		bool handleEvent(CoreEvent * event);
+		bool handleEvent(Base::Event * event);
 		bool eventKeyDown(SDL_Event * event);
 		bool eventMouseDown(SDL_Event * event);
 		bool eventMouseUp(SDL_Event * event);

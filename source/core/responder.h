@@ -1,7 +1,7 @@
 #ifndef OSS_CORE_RESPONDER_H
 #define OSS_CORE_RESPONDER_H
 
-#include "../base/responder.h"
+#include "external.h"
 #include "objectextension.h"
 
 #include "event.h"

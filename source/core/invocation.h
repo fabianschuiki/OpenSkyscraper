@@ -1,7 +1,7 @@
 #ifndef OSS_CORE_INVOCATION_H
 #define OSS_CORE_INVOCATION_H
 
-#include "../base/object~.h"
+#include "external.h"
 
 
 namespace OSS {

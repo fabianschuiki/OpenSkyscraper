@@ -1,7 +1,7 @@
 #ifndef OSS_ENGINE_RESPONDER_H
 #define OSS_ENGINE_RESPONDER_H
 
-#include "../core~/responder.h"
+#include "external.h"
 
 #include "event.h"
 

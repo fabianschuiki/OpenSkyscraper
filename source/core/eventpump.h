@@ -1,8 +1,8 @@
 #ifndef OSS_CORE_EVENTPUMP_H
 #define OSS_CORE_EVENTPUMP_H
 
-#include "../base/object.h"
 #include "event.h"
+#include "object.h"
 
 
 namespace OSS {

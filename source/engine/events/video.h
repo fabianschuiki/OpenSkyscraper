@@ -1,10 +1,10 @@
 #ifndef OSS_ENGINE_EVENTS_VIDEO_H
 #define OSS_ENGINE_EVENTS_VIDEO_H
 
+#include "../external.h"
 #include "../event.h"
 
 #include "../video/video.h"
-#include "../../base/pointer.h"
 
 
 namespace OSS {

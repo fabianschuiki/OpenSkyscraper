@@ -1,8 +1,7 @@
 #ifndef OSS_BASE_AUTORELEASEQUEUE_H
 #define OSS_BASE_AUTORELEASEQUEUE_H
 
-#include <queue>
-#include <stack>
+#include "external.h"
 
 
 namespace OSS {

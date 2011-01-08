@@ -1,6 +1,5 @@
 #include "managedmemory.h"
 
-#include <assert.h>
 #include "autoreleasequeue.h"
 
 using namespace OSS;

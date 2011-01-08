@@ -1,7 +1,7 @@
 #ifndef OSS_CORE_OBJECT_H
 #define OSS_CORE_OBJECT_H
 
-#include "../base/object~.h"
+#include "external.h"
 #include "objectextension.h"
 
 

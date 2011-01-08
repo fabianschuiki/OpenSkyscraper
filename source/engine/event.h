@@ -1,7 +1,7 @@
 #ifndef OSS_ENGINE_EVENT_H
 #define OSS_ENGINE_EVENT_H
 
-#include "../core~/event.h"
+#include "external.h"
 
 
 namespace OSS {

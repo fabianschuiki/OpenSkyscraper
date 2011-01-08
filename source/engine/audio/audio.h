@@ -1,9 +1,9 @@
 #ifndef OSS_ENGINE_AUDIO_H
 #define OSS_ENGINE_AUDIO_H
 
-#include "../../core~/responder.h"
+#include "../../core/responder.h"
 
-#include "../../core~/application.h"
+#include "../../core/application.h"
 
 //OpenAL
 #ifdef __APPLE__

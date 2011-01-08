@@ -1,7 +1,7 @@
 #ifndef OSS_ENGINE_EVENTPUMP_H
 #define OSS_ENGINE_EVENTPUMP_H
 
-#include "../core~/eventpump.h"
+#include "../core/eventpump.h"
 
 #include "../base/pointer.h"
 

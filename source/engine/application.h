@@ -1,16 +1,17 @@
 #ifndef OSS_ENGINE_APPLICATION_H
 #define OSS_ENGINE_APPLICATION_H
 
-#include "../core~/application.h"
+#include "../core/application.h"
 
 #include "audio/audio.h"
 #include "engine.h"
 #include "eventpump.h"
 #include "video/video.h"
 
-//This is where SDL is included
+//Include the external libraries
 #ifdef __APPLE__
 #include <SDL/SDL.h>
+#include <IL/il.h>
 #endif
 
 
