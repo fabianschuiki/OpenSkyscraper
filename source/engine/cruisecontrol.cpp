@@ -19,7 +19,7 @@ CruiseControl::CruiseControl(EngineCore * engine) : Base::Object(), engine(engin
 {
 	//Setup some basic limiting values
 	freq_lowerLimit = 15;
-	freq_upperLimit = 100;
+	freq_upperLimit = 60;
 }
 
 
