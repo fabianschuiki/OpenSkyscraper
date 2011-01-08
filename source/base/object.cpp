@@ -1,7 +1,6 @@
 #include "object.h"
 
 using namespace OSS;
-using namespace Base;
 
 
 

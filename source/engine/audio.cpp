@@ -12,7 +12,7 @@ using namespace Engine;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-Audio::Audio(Core::Application * application)
+Audio::Audio(Core::Application * application) : Core::Responder(), application(application)
 {
 	//DEBUG: Setup some OpenAL context so we can at least play sounds
 	ALCdevice * device = alcOpenDevice(NULL);

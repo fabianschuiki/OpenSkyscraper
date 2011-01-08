@@ -10,6 +10,7 @@
 namespace OSS {
 	namespace Engine {
 		class Application;
+		class Scene;
 		
 		class EngineCore : public Core::Responder {
 			
@@ -18,6 +19,7 @@ namespace OSS {
 			 */
 		public:
 			EngineCore(Application * application);
+			~EngineCore();
 			
 			
 			/**
@@ -48,6 +50,23 @@ namespace OSS {
 			 */
 		public:
 			Base::Pointer<CruiseControl> timing;
+			
+			
+			/**
+			 * Scene
+			 */
+		private:
+			Base::Pointer<Scene> scene;
+			
+		public:
+			Scene * getScene();
+			void setScene(Scene * scene);
+			
+			virtual void willSwitchToScene(Scene * scene) {}
+			virtual void didSwitchToScene(Scene * scene) {}
+			
+			void drawScene();
+			void simulateScene();
 		};
 	}
 }

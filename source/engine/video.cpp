@@ -1,6 +1,7 @@
 #include "video.h"
 
 #include "application.h"
+#include "event.h"
 
 using namespace OSS;
 using namespace Engine;
@@ -14,7 +15,7 @@ using namespace Engine;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-Video::Video(Application * application)
+Video::Video(Application * application) : Core::Responder(), application(application)
 {
 	//Initialize the video subsystem
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
@@ -58,7 +59,10 @@ bool Video::activateMode()
 		currentMode.resolution.y = surface->h;
 		currentMode.fullscreen = (surface->flags & SDL_FULLSCREEN);
 		
-		//TODO: Issue an event to inform the game about the mode change
+		//Issue an event to inform the game about the mode change
+		VideoEvent * e = new VideoEvent(Event::VideoChanged, this);
+		application->sendEvent(e);
+		e->release();
 	}
 	return success;
 }

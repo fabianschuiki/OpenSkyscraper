@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include "application.h"
+#include "scene.h"
 
 using namespace OSS;
 using namespace Engine;
@@ -19,7 +20,14 @@ EngineCore::EngineCore(Application * application)
 	//Initialize the cruise control which times the animation and slows the loop if required
 	timing = new CruiseControl(this);
 	
+	//Attach the engine to the application's run loop
 	attachToApplication(application);
+}
+
+EngineCore::~EngineCore()
+{
+	//Detach us from the application
+	detachFromApplication();
 }
 
 
@@ -70,6 +78,10 @@ void EngineCore::update()
 {
 	//Perform cruise control
 	timing->frameStart();
+	
+	//Do the magic
+	simulateScene();
+	drawScene();
 		
 	//We're done rendering
 	timing->renderingDone();
@@ -81,4 +93,65 @@ void EngineCore::update()
 			timing->damped_dt * 1000,
 			timing->damped_idle_ratio * 100);
 	SDL_WM_SetCaption(title, NULL);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Scene
+//----------------------------------------------------------------------------------------------------
+
+Scene * EngineCore::getScene()
+{
+	return scene;
+}
+
+void EngineCore::setScene(Scene * scene)
+{
+	willSwitchToScene(scene);
+	
+	//Notify the scene that it gets moved off screen
+	if (this->scene) {		
+		this->scene->willMoveOffScreen();
+		
+		Event * e = new Event(Event::MovedOffScreen);
+		this->scene->sendEvent(e);
+		e->release();
+		
+		this->scene->didMoveOffScreen();
+	}
+	
+	//Set the new scene
+	this->scene = scene;
+	
+	//Notify the scene that it gets moved on screen
+	if (this->scene) {		
+		this->scene->willMoveOnScreen();
+		
+		Event * e = new Event(Event::MovedOnScreen);
+		this->scene->sendEvent(e);
+		e->release();
+		
+		this->scene->didMoveOnScreen();
+	}
+	
+	didSwitchToScene(scene);
+}
+
+void EngineCore::drawScene()
+{
+	if (scene) {
+		scene->draw(rectd(int2(), application->video->currentMode.resolution));
+	} else {
+		glClearColor(0, 0, 1, 1);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+}
+
+void EngineCore::simulateScene()
+{
+	if (scene) scene->advance(timing->dt);
 }

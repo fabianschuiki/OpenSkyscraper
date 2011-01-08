@@ -5,6 +5,10 @@
 
 #include "../base/pointer.h"
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#endif
+
 
 namespace OSS {
 	namespace Engine {

@@ -29,7 +29,6 @@ bool Responder::handleCoreEvent(Core::Event * event)
 		if (eventMouseDragged((MouseDraggedEvent *)event)) return true;
 	if (event->isType(Event::ScrollWheel))
 		if (eventScrollWheel((ScrollWheelEvent *)event)) return true;
-	
 	if (event->isType(Event::Key))
 		if (eventKey((KeyEvent *)event)) return true;
 	

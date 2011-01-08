@@ -1,6 +1,8 @@
 #ifndef OSS_POINTER_H
 #define OSS_POINTER_H
 
+#include <assert.h>
+
 
 namespace OSS {
 	namespace Base {

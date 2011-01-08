@@ -48,6 +48,8 @@
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
 		1F96D15212D7457E00F6398A /* managedmemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D15112D7457E00F6398A /* managedmemory.cpp */; };
 		1F96D16D12D7498100F6398A /* autoreleasequeue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */; };
+		1F96D26812D811C700F6398A /* responder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D26712D811C700F6398A /* responder.cpp */; };
+		1F96D2C212D8164200F6398A /* scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D2C112D8164200F6398A /* scene.cpp */; };
 		1FAD1B3812C8E094004E5286 /* sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD1B3712C8E094004E5286 /* sound.cpp */; };
 		1FAD1B8412C8E362004E5286 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAD1B8312C8E362004E5286 /* OpenAL.framework */; };
 		1FBE226E12D30D9100311E16 /* timedperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FBE226D12D30D9100311E16 /* timedperson.cpp */; };
@@ -208,6 +210,15 @@
 		1F96D15012D7423000F6398A /* managedmemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = managedmemory.h; sourceTree = "<group>"; };
 		1F96D15112D7457E00F6398A /* managedmemory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = managedmemory.cpp; sourceTree = "<group>"; };
 		1F96D16C12D7498100F6398A /* autoreleasequeue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = autoreleasequeue.cpp; sourceTree = "<group>"; };
+		1F96D23D12D8102E00F6398A /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
+		1F96D25A12D8111100F6398A /* audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio.h; sourceTree = "<group>"; };
+		1F96D26612D811C700F6398A /* responder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = responder.h; sourceTree = "<group>"; };
+		1F96D26712D811C700F6398A /* responder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = responder.cpp; sourceTree = "<group>"; };
+		1F96D27512D8130900F6398A /* video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = video.h; sourceTree = "<group>"; };
+		1F96D2C012D8164200F6398A /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scene.h; sourceTree = "<group>"; };
+		1F96D2C112D8164200F6398A /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scene.cpp; sourceTree = "<group>"; };
+		1F96D2D012D8196C00F6398A /* drawable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = drawable.h; sourceTree = "<group>"; };
+		1F96D2D412D819C600F6398A /* simulatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simulatable.h; sourceTree = "<group>"; };
 		1FAD1B3612C8E094004E5286 /* sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound.h; sourceTree = "<group>"; };
 		1FAD1B3712C8E094004E5286 /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sound.cpp; sourceTree = "<group>"; };
 		1FAD1B8312C8E362004E5286 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
@@ -439,10 +450,18 @@
 				1F0E75F712D7E6C100C311CC /* audio.cpp */,
 				1F0E76CA12D7F91200C311CC /* cruisecontrol.h */,
 				1F0E76CB12D7F91200C311CC /* cruisecontrol.cpp */,
+				1F96D2D012D8196C00F6398A /* drawable.h */,
 				1F0E756012D7C9D400C311CC /* engine.h */,
 				1F0E756112D7C9D400C311CC /* engine.cpp */,
+				1F96D23D12D8102E00F6398A /* event.h */,
 				1F0E763412D7EC0A00C311CC /* eventpump.h */,
 				1F0E763512D7EC0A00C311CC /* eventpump.cpp */,
+				1F96D25912D810FB00F6398A /* events */,
+				1F96D26612D811C700F6398A /* responder.h */,
+				1F96D26712D811C700F6398A /* responder.cpp */,
+				1F96D2C012D8164200F6398A /* scene.h */,
+				1F96D2C112D8164200F6398A /* scene.cpp */,
+				1F96D2D412D819C600F6398A /* simulatable.h */,
 				1F0E75EA12D7E4B400C311CC /* video.h */,
 				1F0E75EB12D7E4B400C311CC /* video.cpp */,
 			);
@@ -580,6 +599,15 @@
 				1FFECEA012D63724006F320C /* standardelevator.cpp */,
 			);
 			path = items;
+			sourceTree = "<group>";
+		};
+		1F96D25912D810FB00F6398A /* events */ = {
+			isa = PBXGroup;
+			children = (
+				1F96D25A12D8111100F6398A /* audio.h */,
+				1F96D27512D8130900F6398A /* video.h */,
+			);
+			path = events;
 			sourceTree = "<group>";
 		};
 		1FC821C312CA1A9C00168481 /* gui */ = {
@@ -802,6 +830,8 @@
 				1F0E75F812D7E6C100C311CC /* audio.cpp in Sources */,
 				1F0E763612D7EC0A00C311CC /* eventpump.cpp in Sources */,
 				1F0E76CC12D7F91200C311CC /* cruisecontrol.cpp in Sources */,
+				1F96D26812D811C700F6398A /* responder.cpp in Sources */,
+				1F96D2C212D8164200F6398A /* scene.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

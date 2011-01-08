@@ -61,10 +61,10 @@ Application::~Application()
 
 bool Application::sendEventToNextResponders(Base::Event * event)
 {
-	if (video->sendEvent(event)) return true;
-	if (audio->sendEvent(event)) return true;
+	if (video && video->sendEvent(event)) return true;
+	if (audio && audio->sendEvent(event)) return true;
 	
-	if (engine->sendEvent(event)) return true;
+	if (engine && engine->sendEvent(event)) return true;
 	
 	return Core::Application::sendEventToNextResponders(event);
 }

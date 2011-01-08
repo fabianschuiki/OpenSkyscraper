@@ -7,6 +7,7 @@
 namespace OSS {
 	namespace Core {
 		class Event : public Base::Event {
+		public:
 			synthesizeClassInheritance(Base::Event);
 			
 			/**
@@ -20,11 +21,7 @@ namespace OSS {
 				MouseDragged,
 				MouseMoved,
 				ScrollWheel,
-				
-				Key,
-				
-				VideoChanged,
-				AudioChanged
+				Key
 			} Type;
 			
 			
@@ -51,7 +48,6 @@ namespace OSS {
 #include "events/mousedragged.h"
 #include "events/mousemoved.h"
 #include "events/scrollwheel.h"
-
 #include "events/key.h"
 
 
