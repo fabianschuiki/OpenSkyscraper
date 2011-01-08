@@ -3,6 +3,7 @@
 
 #include "responder.h"
 
+#include "../base/autoreleasequeue.h"
 #include "eventpump.h"
 #include "invocation.h"
 #include "../base/pointer.h"
@@ -10,7 +11,11 @@
 
 namespace OSS {
 	namespace Core {
-		class Application : public Base::Responder {
+		class Application : public Responder {
+			
+			//The application has a basic autorelease queue in order to catch the early garbage
+			Base::AutoreleaseQueue autoreleaseQueue;
+			
 			
 			/**
 			 * Types
@@ -41,6 +46,8 @@ namespace OSS {
 			bool isRunning();
 			
 			virtual void willRun() {}
+			virtual void willIterateRunLoop() {}
+			virtual void didIterateRunLoop() {}
 			virtual void didRun() {}
 			
 			void terminate();
@@ -73,7 +80,7 @@ namespace OSS {
 			/**
 			 * Events
 			 */
-		private:
+		protected:
 			Base::Pointer<EventPump> eventPump;
 			
 		public:

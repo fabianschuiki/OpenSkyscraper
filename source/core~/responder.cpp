@@ -9,7 +9,7 @@ using namespace Core;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Handling
+#pragma mark Event Handling
 //----------------------------------------------------------------------------------------------------
 
 bool Responder::handleEvent(Base::Event * event)

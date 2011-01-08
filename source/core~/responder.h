@@ -2,16 +2,17 @@
 #define OSS_CORE_RESPONDER_H
 
 #include "../base/responder.h"
+#include "objectextension.h"
 
 #include "event.h"
 
 
 namespace OSS {
 	namespace Core {
-		class Responder : public Base::Responder {
+		class Responder : public Base::Responder, public ObjectExtension {
 			
 			/**
-			 * Handling
+			 * Event Handling
 			 */
 		public:
 			virtual bool handleEvent(Base::Event * event);

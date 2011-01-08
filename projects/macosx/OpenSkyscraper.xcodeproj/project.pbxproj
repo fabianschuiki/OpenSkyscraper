@@ -20,6 +20,12 @@
 		1F0E745012D76FAE00C311CC /* responder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E744F12D76FAE00C311CC /* responder.cpp */; };
 		1F0E747212D7768A00C311CC /* object~.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E747112D7768A00C311CC /* object~.cpp */; };
 		1F0E751812D7A50900C311CC /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E751712D7A50900C311CC /* application.cpp */; };
+		1F0E756212D7C9D400C311CC /* engine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E756112D7C9D400C311CC /* engine.cpp */; };
+		1F0E75DB12D7E07F00C311CC /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E75DA12D7E07F00C311CC /* application.cpp */; };
+		1F0E75EC12D7E4B400C311CC /* video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E75EB12D7E4B400C311CC /* video.cpp */; };
+		1F0E75F812D7E6C100C311CC /* audio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E75F712D7E6C100C311CC /* audio.cpp */; };
+		1F0E763612D7EC0A00C311CC /* eventpump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E763512D7EC0A00C311CC /* eventpump.cpp */; };
+		1F0E76CC12D7F91200C311CC /* cruisecontrol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E76CB12D7F91200C311CC /* cruisecontrol.cpp */; };
 		1F16FBB812D507190043C2D1 /* hotelguest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F16FBB712D507190043C2D1 /* hotelguest.cpp */; };
 		1F16FBC812D50B4E0043C2D1 /* occupiableitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F16FBC712D50B4E0043C2D1 /* occupiableitem.cpp */; };
 		1F21FCCD120020CE000A8AC3 /* loadertask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FCCC120020CE000A8AC3 /* loadertask.cpp */; };
@@ -142,6 +148,20 @@
 		1F0E751512D7A2F400C311CC /* eventpump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eventpump.h; sourceTree = "<group>"; };
 		1F0E751712D7A50900C311CC /* application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = application.cpp; sourceTree = "<group>"; };
 		1F0E752B12D7BE8D00C311CC /* invocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = invocation.h; sourceTree = "<group>"; };
+		1F0E756012D7C9D400C311CC /* engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engine.h; sourceTree = "<group>"; };
+		1F0E756112D7C9D400C311CC /* engine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = engine.cpp; sourceTree = "<group>"; };
+		1F0E757312D7D0F400C311CC /* objectextension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objectextension.h; sourceTree = "<group>"; };
+		1F0E757412D7D1A700C311CC /* object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = object.h; sourceTree = "<group>"; };
+		1F0E75D912D7E07F00C311CC /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
+		1F0E75DA12D7E07F00C311CC /* application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = application.cpp; sourceTree = "<group>"; };
+		1F0E75EA12D7E4B400C311CC /* video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = video.h; sourceTree = "<group>"; };
+		1F0E75EB12D7E4B400C311CC /* video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = video.cpp; sourceTree = "<group>"; };
+		1F0E75F612D7E6C100C311CC /* audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audio.h; sourceTree = "<group>"; };
+		1F0E75F712D7E6C100C311CC /* audio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audio.cpp; sourceTree = "<group>"; };
+		1F0E763412D7EC0A00C311CC /* eventpump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eventpump.h; sourceTree = "<group>"; };
+		1F0E763512D7EC0A00C311CC /* eventpump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = eventpump.cpp; sourceTree = "<group>"; };
+		1F0E76CA12D7F91200C311CC /* cruisecontrol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cruisecontrol.h; sourceTree = "<group>"; };
+		1F0E76CB12D7F91200C311CC /* cruisecontrol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cruisecontrol.cpp; sourceTree = "<group>"; };
 		1F10A92012D6C0C000A2FF19 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = view.h; sourceTree = "<group>"; };
 		1F16FBB612D507190043C2D1 /* hotelguest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hotelguest.h; sourceTree = "<group>"; };
 		1F16FBB712D507190043C2D1 /* hotelguest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hotelguest.cpp; sourceTree = "<group>"; };
@@ -389,6 +409,8 @@
 				1F0E751512D7A2F400C311CC /* eventpump.h */,
 				1F0E749B12D778B000C311CC /* events */,
 				1F0E752B12D7BE8D00C311CC /* invocation.h */,
+				1F0E757412D7D1A700C311CC /* object.h */,
+				1F0E757312D7D0F400C311CC /* objectextension.h */,
 				1F0E744E12D76FAE00C311CC /* responder.h */,
 				1F0E744F12D76FAE00C311CC /* responder.cpp */,
 			);
@@ -406,6 +428,25 @@
 				1F0E74D812D7986200C311CC /* key.h */,
 			);
 			path = events;
+			sourceTree = "<group>";
+		};
+		1F0E755D12D7C54000C311CC /* engine */ = {
+			isa = PBXGroup;
+			children = (
+				1F0E75D912D7E07F00C311CC /* application.h */,
+				1F0E75DA12D7E07F00C311CC /* application.cpp */,
+				1F0E75F612D7E6C100C311CC /* audio.h */,
+				1F0E75F712D7E6C100C311CC /* audio.cpp */,
+				1F0E76CA12D7F91200C311CC /* cruisecontrol.h */,
+				1F0E76CB12D7F91200C311CC /* cruisecontrol.cpp */,
+				1F0E756012D7C9D400C311CC /* engine.h */,
+				1F0E756112D7C9D400C311CC /* engine.cpp */,
+				1F0E763412D7EC0A00C311CC /* eventpump.h */,
+				1F0E763512D7EC0A00C311CC /* eventpump.cpp */,
+				1F0E75EA12D7E4B400C311CC /* video.h */,
+				1F0E75EB12D7E4B400C311CC /* video.cpp */,
+			);
+			path = engine;
 			sourceTree = "<group>";
 		};
 		1F10A91F12D6C05E00A2FF19 /* gui */ = {
@@ -565,6 +606,7 @@
 				1F0D411111FEF95A00C6D787 /* base */,
 				1F0E743E12D76E8A00C311CC /* core~ */,
 				1F0D416511FEFFBE00C6D787 /* core */,
+				1F0E755D12D7C54000C311CC /* engine */,
 				1F21FDF712003361000A8AC3 /* game */,
 				1F10A91F12D6C05E00A2FF19 /* gui */,
 				1F0D40DF11FEF7C900C6D787 /* main.cpp */,
@@ -754,6 +796,12 @@
 				1F0E745012D76FAE00C311CC /* responder.cpp in Sources */,
 				1F0E747212D7768A00C311CC /* object~.cpp in Sources */,
 				1F0E751812D7A50900C311CC /* application.cpp in Sources */,
+				1F0E756212D7C9D400C311CC /* engine.cpp in Sources */,
+				1F0E75DB12D7E07F00C311CC /* application.cpp in Sources */,
+				1F0E75EC12D7E4B400C311CC /* video.cpp in Sources */,
+				1F0E75F812D7E6C100C311CC /* audio.cpp in Sources */,
+				1F0E763612D7EC0A00C311CC /* eventpump.cpp in Sources */,
+				1F0E76CC12D7F91200C311CC /* cruisecontrol.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

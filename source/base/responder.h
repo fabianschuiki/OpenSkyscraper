@@ -1,15 +1,17 @@
 #ifndef OSS_BASE_RESPONDER_H
 #define OSS_BASE_RESPONDER_H
 
+#include "object~.h"
+
 #include "event.h"
 
 
 namespace OSS {
 	namespace Base {
-		class Responder {
+		class Responder : public Object {
 			
 			/**
-			 * Sending
+			 * Event Sending
 			 */
 		public:
 			bool sendEvent(Event * event);
@@ -17,7 +19,7 @@ namespace OSS {
 			
 			
 			/**
-			 * Handling
+			 * Event Handling
 			 */
 		public:
 			virtual bool handleEvent(Event * event) { return false; }

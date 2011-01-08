@@ -7,6 +7,7 @@
 namespace OSS {
 	namespace Core {
 		class Event : public Base::Event {
+			synthesizeClassInheritance(Base::Event);
 			
 			/**
 			 * Types
@@ -21,6 +22,9 @@ namespace OSS {
 				ScrollWheel,
 				
 				Key,
+				
+				VideoChanged,
+				AudioChanged
 			} Type;
 			
 			

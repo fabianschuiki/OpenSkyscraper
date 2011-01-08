@@ -3,9 +3,17 @@
 
 #include "managedmemory.h"
 
+#include <string>
 #include <typeinfo>
 
+
+//Returns the class of a given object
 #define Class(cls) typeid(cls)
+
+//Synthesizes the isKindOfClass override required to support class inheritance checking.
+#define synthesizeClassInheritance(superclass) \
+virtual bool isKindOfClass(Class c) { if (c == typeid(this)) return true; \
+return superclass::isKindOfClass(c); }
 
 
 namespace OSS {
@@ -22,6 +30,18 @@ namespace OSS {
 			
 			bool isMemberOfClass(Class c);
 			virtual bool isKindOfClass(Class c);
+			
+			
+			/**
+			 * Description
+			 *
+			 * Methods related to describing objects in human-readable form.
+			 */
+		public:
+			std::string className();
+			std::string instanceName();
+			
+			std::string description();
 		};
 	}
 }

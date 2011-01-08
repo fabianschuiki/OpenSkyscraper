@@ -17,7 +17,13 @@ void Application::run()
 	terminateReply = TerminateCancel;
 	willRun();
 	
+	//The run loop gets its own autorelease queue
+	Base::AutoreleaseQueue * runLoopGarbage = new Base::AutoreleaseQueue;
+	
 	while (terminateReply != TerminateNow) {
+		//Notify
+		willIterateRunLoop();
+		
 		//Send the events from the pump down the responder chain
 		pumpEvents();
 		
@@ -27,7 +33,16 @@ void Application::run()
 		
 		//Perform the invocations
 		performInvocations();
+		
+		//Notify
+		didIterateRunLoop();
+		
+		//Get rid of the garbage
+		runLoopGarbage->drain();
 	}
+	
+	//Get rid of the garbage queue
+	delete runLoopGarbage;
 	
 	didRun();
 }

@@ -9,7 +9,7 @@ using namespace Base;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Sending
+#pragma mark Event Sending
 //----------------------------------------------------------------------------------------------------
 
 bool Responder::sendEvent(Event * event)

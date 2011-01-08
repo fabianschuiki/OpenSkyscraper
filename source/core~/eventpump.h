@@ -7,7 +7,7 @@
 
 namespace OSS {
 	namespace Core {
-		class EventPump : public Base::Object {
+		class EventPump : public Object {
 			
 			/**
 			 * The event pump is simply put a basic abstract superclass for other event pumps. It

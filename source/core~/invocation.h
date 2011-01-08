@@ -20,9 +20,9 @@ namespace OSS {
 		 */
 		template <class T> class Invocation : public AbstractInvocation {
 		protected:
-			T* object;
+			T* const object;
 			typedef void (T::*functionType)();
-			functionType function;
+			functionType const function;
 			
 		public:
 			Invocation(T* object, functionType function)
