@@ -1,15 +1,17 @@
 #include "item.h"
 
+#include "items.h"
+
 using namespace OSS;
 using namespace Classic;
 
 
-static Item::Descriptor floorItemDescriptor = {
-	Item::kFloorType,
-	Item::kStructureGroup,
-	Item::kFacilityCategory,
+static ItemDescriptor floorItemDescriptor = {
+	kFloorType,
+	kStructureGroup,
+	kFacilityCategory,
 	1,
-	(Item::kFlexibleWidthAttribute),
+	(kFlexibleWidthAttribute),
 	500,
 	int2(1, 1),
 	int2(1, 1)
@@ -24,7 +26,7 @@ static Item::Descriptor floorItemDescriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Item::Item(Tower * tower, Descriptor * descriptor) : Responder(), tower(tower), descriptor(descriptor)
+Item::Item(Tower * tower, ItemDescriptor * descriptor) : Responder(), tower(tower), descriptor(descriptor)
 {
 	assert(tower && descriptor);
 	
@@ -68,7 +70,7 @@ void Item::update()
 #pragma mark Factory
 //----------------------------------------------------------------------------------------------------
 
-Item * Item::make(Tower * tower, Descriptor * descriptor)
+Item * Item::make(Tower * tower, ItemDescriptor * descriptor)
 {
 	if (!tower || !descriptor)
 		return NULL;
@@ -77,23 +79,23 @@ Item * Item::make(Tower * tower, Descriptor * descriptor)
 	Item * instance = NULL;
 	switch (descriptor->type) {
 			//Structure
-		case Item::kLobbyType:		instance = new LobbyItem(tower); break;
-		case Item::kStairsType:		instance = new StairsItem(tower); break;
-		case Item::kEscalatorType:	instance = new EscalatorItem(tower); break;
+		case kLobbyType:			instance = new LobbyItem(tower); break;
+		case kStairsType:			instance = new StairsItem(tower); break;
+		case kEscalatorType:		instance = new EscalatorItem(tower); break;
 			
 			//Elevator
-		case Item::kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
+		case kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
 			
 			//Office
-		case Item::kOfficeType:		instance = new OfficeItem(tower); break;
+		case kOfficeType:			instance = new OfficeItem(tower); break;
 			
 			//Hotel
-		case Item::kSingleRoomType:	instance = new SingleRoomItem(tower); break;
-		case Item::kDoubleRoomType:	instance = new DoubleRoomItem(tower); break;
-		case Item::kSuiteType:		instance = new SuiteItem(tower); break;
+		case kSingleRoomType:		instance = new SingleRoomItem(tower); break;
+		case kDoubleRoomType:		instance = new DoubleRoomItem(tower); break;
+		case kSuiteType:			instance = new SuiteItem(tower); break;
 			
 			//Services
-		case Item::kHousekeepingType:	instance = new HousekeepingItem(tower); break;
+		case kHousekeepingType:		instance = new HousekeepingItem(tower); break;
 	}
 	
 	//Initialize the item
@@ -103,7 +105,7 @@ Item * Item::make(Tower * tower, Descriptor * descriptor)
 	return instance;
 }
 
-Item * Item::make(Tower * tower, Descriptor * descriptor, unsigned int itemID)
+Item * Item::make(Tower * tower, ItemDescriptor * descriptor, unsigned int itemID)
 {
 	Item * instance = make(tower, descriptor);
 	if (instance)
@@ -111,7 +113,7 @@ Item * Item::make(Tower * tower, Descriptor * descriptor, unsigned int itemID)
 	return instance;
 }
 
-Item * Item::make(Tower * tower, Descriptor * descriptor, unsigned int itemID, recti rect)
+Item * Item::make(Tower * tower, ItemDescriptor * descriptor, unsigned int itemID, recti rect)
 {
 	Item * instance = make(tower, descriptor, itemID);
 	if (instance)
@@ -128,17 +130,17 @@ Item * Item::make(Tower * tower, Descriptor * descriptor, unsigned int itemID, r
 #pragma mark Basic Attributes
 //----------------------------------------------------------------------------------------------------
 
-Item::Type Item::getType()
+ItemType Item::getType()
 {
 	return descriptor->type;
 }
 
-Item::Group Item::getGroup()
+ItemGroup Item::getGroup()
 {
 	return descriptor->group;
 }
 
-Item::Category Item::getCategory()
+ItemCategory Item::getCategory()
 {
 	return descriptor->category;
 }
@@ -281,28 +283,28 @@ void Item::updateBackground()
 #pragma mark Descriptors
 //----------------------------------------------------------------------------------------------------
 
-Item::Descriptor * Item::descriptorForItemType(Item::Type itemType)
+ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 {
 	switch (itemType) {
 			//Structure
-		case Item::kLobbyType:		return &LobbyItem::descriptor; break;
-		case Item::kFloorType:		return &floorItemDescriptor; break;
-		case Item::kStairsType:		return &StairsItem::descriptor; break;
-		case Item::kEscalatorType:	return &EscalatorItem::descriptor; break;
+		case kLobbyType:			return &LobbyItem::descriptor; break;
+		case kFloorType:			return &floorItemDescriptor; break;
+		case kStairsType:			return &StairsItem::descriptor; break;
+		case kEscalatorType:		return &EscalatorItem::descriptor; break;
 			
 			//Elevator
-		case Item::kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
+		case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
 			
 			//Office
-		case Item::kOfficeType:		return &OfficeItem::descriptor; break;
+		case kOfficeType:			return &OfficeItem::descriptor; break;
 			
 			//Hotel
-		case Item::kSingleRoomType:	return &SingleRoomItem::descriptor; break;
-		case Item::kDoubleRoomType:	return &DoubleRoomItem::descriptor; break;
-		case Item::kSuiteType:		return &SuiteItem::descriptor; break;
+		case kSingleRoomType:		return &SingleRoomItem::descriptor; break;
+		case kDoubleRoomType:		return &DoubleRoomItem::descriptor; break;
+		case kSuiteType:			return &SuiteItem::descriptor; break;
 			
 			//Services
-		case Item::kHousekeepingType:	return &HousekeepingItem::descriptor; break;
+		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;
 	}
 	return NULL;
 }
@@ -407,15 +409,15 @@ void Item::setUnderConstruction(bool uc)
 	if (underConstruction) {
 		//Setup the construction sprite if required
 		if (!constructionSprite) {
-			constructionSprite = new Sprite;
-			constructionSprite->textureMode = Sprite::kRepeatTextureMode;
+			constructionSprite = new Engine::Sprite;
+			constructionSprite->textureMode = Engine::Sprite::kRepeatTextureMode;
 			constructionSprite->autoTexRectX = true;
 			
 			//Depending on whether the item is draggable the construction sprite differs
 			drawFlexibleConstruction = (this->descriptor->attributes & kFlexibleWidthAttribute);
 			std::string textureName = "simtower/construction/";
 			textureName += (drawFlexibleConstruction ? "floor" : "facility");
-			constructionSprite->texture = Texture::named(textureName);
+			constructionSprite->texture = Engine::Texture::named(textureName);
 		}
 		
 		//Setup the construction
@@ -424,9 +426,9 @@ void Item::setUnderConstruction(bool uc)
 		//Setup the construction worker sprites
 		for (int i = 0; i < 3; i++) {
 			if (!constructionWorkerSprite[i] && rect.size.y > i) {
-				Sprite * sprite = new Sprite;
+				Engine::Sprite * sprite = new Engine::Sprite;
 				sprite->rect.size = double2(16, 24);
-				sprite->texture = Texture::named("simtower/construction/workers");
+				sprite->texture = Engine::Texture::named("simtower/construction/workers");
 				sprite->textureRect.size = double2(1.0 / 6, 1);
 				constructionWorkerSprite[i] = sprite;
 			}
@@ -448,7 +450,7 @@ void Item::setUnderConstruction(bool uc)
 void Item::updateConstructionWorkerSprites()
 {
 	for (int i = 0; i < 3; i++) {
-		Sprite * sprite = constructionWorkerSprite[i];
+		Engine::Sprite * sprite = constructionWorkerSprite[i];
 		if (!sprite) continue;
 		
 		//Position the sprite

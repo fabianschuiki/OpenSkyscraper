@@ -2,14 +2,14 @@
 #define OSS_CORE_RESPONDER_H
 
 #include "external.h"
-#include "objectextension.h"
+#include "updatable.h"
 
 #include "event.h"
 
 
 namespace OSS {
 	namespace Core {
-		class Responder : public Base::Responder, public ObjectExtension {
+		class Responder : public Base::Responder, public Updatable {
 			
 			/**
 			 * Event Handling

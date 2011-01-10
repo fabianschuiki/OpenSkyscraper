@@ -1,15 +1,15 @@
 #include "office.h"
-#include "../tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor OfficeItem::descriptor = {
-	Item::kOfficeType,
-	Item::kOfficeGroup,
-	Item::kFacilityCategory,
+ItemDescriptor OfficeItem::descriptor = {
+	kOfficeType,
+	kOfficeGroup,
+	kFacilityCategory,
 	1,
-	(Item::kNotBelowGroundAttribute),
+	(kNotBelowGroundAttribute),
 	40000,
 	int2(9, 1)
 };
@@ -100,13 +100,13 @@ void OfficeItem::updateBackground()
 	
 	//Load the appropriate office texture
 	if (vacant) {
-		backgrounds[0].texture = Texture::named("simtower/facilities/office/vacant");
+		backgrounds[0].texture = Engine::Texture::named("simtower/facilities/office/vacant");
 		backgrounds[0].textureRect.size.x = 0.5;
 		backgrounds[0].textureRect.origin.x = 0;
 	} else {
 		char str[256];
 		sprintf(str, "simtower/facilities/office/inhabited/%i", type / 2);
-		backgrounds[0].texture = Texture::named(str);
+		backgrounds[0].texture = Engine::Texture::named(str);
 		backgrounds[0].textureRect.size.x = 0.25;
 		backgrounds[0].textureRect.origin.x = (type % 2) * 0.5;
 	}
@@ -271,7 +271,7 @@ void OfficeItem::updateRouteFromLobby()
 	
 	//If there's no route from the lobby, try to calculate one
 	if (!route)
-		route = tower->findRoute(tower->getGroundFloorRect(), getRect());
+		route = Route::findRoute(tower, tower->getGroundFloorRect(), getRect());
 	
 	//Store the route
 	setRouteFromLobby(route);

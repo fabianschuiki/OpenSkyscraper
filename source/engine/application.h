@@ -1,7 +1,7 @@
 #ifndef OSS_ENGINE_APPLICATION_H
 #define OSS_ENGINE_APPLICATION_H
 
-#include "../core/application.h"
+#include "external.h"
 
 #include "audio/audio.h"
 #include "engine.h"
@@ -17,7 +17,7 @@
 
 namespace OSS {
 	namespace Engine {
-		class Application : public Core::Application {			
+		class Application : public Core::Application, public Core::Currentable<Application> {			
 			
 			/**
 			 * Construction

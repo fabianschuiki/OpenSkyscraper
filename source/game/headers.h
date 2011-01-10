@@ -3,6 +3,6 @@
 
 #include "external.h"
 
-#include "openskyscraper.h"
+#include "application.h"
 
 #endif

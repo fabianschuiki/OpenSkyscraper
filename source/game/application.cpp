@@ -1,6 +1,7 @@
-#include "openskyscraper.h"
+#include "application.h"
 
-#include "../classic/simtower.h"
+#include "../classic/scenes/game.h"
+#include "simtower.h"
 
 using namespace OSS;
 using namespace Game;
@@ -11,16 +12,16 @@ using namespace Game;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-OpenSkyscraper::OpenSkyscraper() : Engine::Application()
+Application::Application() : Engine::Application()
 {
 	//Initialize the SimTower singleton
-	new SimTower;
+	new SimTower(this);
 	
 	//Initialize the game scene with an empty tower
-	gameScene = new Classic::GameScene(new Tower);
+	gameScene = new Classic::GameScene(new Classic::Tower, engine);
 }
 
-OpenSkyscraper::~OpenSkyscraper()
+Application::~Application()
 {
 	//Get rid of the scenes
 	gameScene = NULL;
@@ -29,7 +30,7 @@ OpenSkyscraper::~OpenSkyscraper()
 	delete SimTower::shared();
 }
 
-void OpenSkyscraper::willRun()
+void Application::willRun()
 {
 	//Reload the resources of the SimTower singleton
 	SimTower::shared()->loadResources();
@@ -48,7 +49,7 @@ void OpenSkyscraper::willRun()
 #pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
-/*bool OpenSkyscraper::handleEvent(CoreEvent * event)
+/*bool Application::handleEvent(CoreEvent * event)
 {
 	if (event->type == kCoreEventPrepare || event->type == kCoreEventCleanUp) {
 		if (towerScene && towerScene->handleEvent(event)) return true;
@@ -65,7 +66,7 @@ void OpenSkyscraper::willRun()
 #pragma mark Birth and death
 //----------------------------------------------------------------------------------------------------
 
-/*void OpenSkyscraper::eventPrepare()
+/*void Application::eventPrepare()
 {	
 	//Reload the resources of the SimTower singleton
 	SimTower::shared()->loadResources();

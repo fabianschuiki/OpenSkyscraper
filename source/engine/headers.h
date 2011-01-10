@@ -11,10 +11,15 @@
 #include "engine.h"
 #include "event.h"
 #include "eventpump.h"
+#include "object.h"
+#include "resources/sound.h"
+#include "resources/texture.h"
 #include "responder.h"
 #include "scene.h"
 #include "simulatable.h"
+#include "video/interpolatedtexturequad.h"
 #include "video/sprite.h"
+#include "video/texturedquad.h"
 #include "video/video.h"
 
 #endif

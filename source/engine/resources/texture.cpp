@@ -1,7 +1,9 @@
 #include "texture.h"
-#include "../core/platform.h"
+
+#include "../application.h"
 
 using namespace OSS;
+using namespace Engine;
 
 
 //Store
@@ -80,7 +82,7 @@ void Texture::load()
 	ILboolean success = false;
 	if (!tempImage) {
 		//Assemble the path to the texture PNG
-		std::string path = Platform::shared()->pathToResource("textures", name);
+		std::string path = Engine::Application::getCurrent()->pathToResource("textures", name);
 		//OSSObjectLog << "Loading '" << path << "'..." << std::endl;
 		
 		//Create a new IL image

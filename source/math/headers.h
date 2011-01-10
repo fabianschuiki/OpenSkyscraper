@@ -3,6 +3,7 @@
 
 #include "external.h"
 
+#include "clamp.h"
 #include "rand.h"
 #include "rect.h"
 #include "rectmask.h"

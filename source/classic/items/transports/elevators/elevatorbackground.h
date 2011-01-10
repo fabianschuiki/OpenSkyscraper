@@ -1,41 +1,41 @@
-#ifndef OSS_ELEVATORBACKGROUND_H
-#define OSS_ELEVATORBACKGROUND_H
+#ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_ELEVATORBACKGROUND_H
+#define OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_ELEVATORBACKGROUND_H
 
-
-#include "../../general.h"
-#include "../../resources/texture.h"
+#include "../../../external.h"
 
 
 namespace OSS {
-	class ElevatorItem;
-	
-	class ElevatorBackground : public Texture {
-	public:
-		const Pointer<ElevatorItem> elevator;
+	namespace Classic {
+		class ElevatorItem;
 		
-		//Initialization
-		ElevatorBackground(ElevatorItem * elevator);
-		
-		//Required textures
-	private:
-		Pointer<Texture> backgroundNormal;
-		Pointer<Texture> backgroundHighlighted;
-		Pointer<Texture> lsNormal;
-		Pointer<Texture> lsHighlighted;
-		Pointer<Texture> msNormal;
-		Pointer<Texture> msHighlighted;
-		
-		//Update
-	private:
-		bool needsUpdate;
-	public:
-		void setNeedsUpdate();
-		void update();
-		
-		void drawFloor(int floor, rectd rect);
-		void drawFloorBackground(rectd rect);
-		void drawFloorNumber(int floor, rectd rect);
-	};
+		class ElevatorBackground : public Engine::Texture {
+		public:
+			const Pointer<ElevatorItem> elevator;
+			
+			//Initialization
+			ElevatorBackground(ElevatorItem * elevator);
+			
+			//Required textures
+		private:
+			Pointer<Engine::Texture> backgroundNormal;
+			Pointer<Engine::Texture> backgroundHighlighted;
+			Pointer<Engine::Texture> lsNormal;
+			Pointer<Engine::Texture> lsHighlighted;
+			Pointer<Engine::Texture> msNormal;
+			Pointer<Engine::Texture> msHighlighted;
+			
+			//Update
+		private:
+			bool needsUpdate;
+		public:
+			void setNeedsUpdate();
+			void update();
+			
+			void drawFloor(int floor, rectd rect);
+			void drawFloorBackground(rectd rect);
+			void drawFloorNumber(int floor, rectd rect);
+		};
+	}
 }
 
 

@@ -9,7 +9,7 @@
 
 namespace OSS {
 	namespace Classic {
-		class GUI;
+		//class GUI;
 		
 		class GameScene : public Engine::Scene {
 			/**
@@ -25,7 +25,7 @@ namespace OSS {
 			 * GUI
 			 */
 		private:
-			Pointer<GUI> gui;
+			//Pointer<GUI> gui;
 			
 			
 			
@@ -54,14 +54,21 @@ namespace OSS {
 			
 			
 			/**
+			 * State
+			 */
+		public:
+			virtual void update();
+			
+			
+			/**
 			 * Drawing
 			 */
 		public:
-			virtual void draw(rectd dirtyRect);
-			void drawBackground(rectd dirtyRect);
-			void drawFacilities(rectd dirtyRect);
-			void drawTransports(rectd dirtyRect);
-			void drawGUI(rectd dirtyRect);
+			virtual void draw();
+			/*void drawBackground();
+			void drawFacilities();
+			void drawTransports();
+			void drawGUI();*/
 			
 			/**
 			 * Presentation
@@ -74,8 +81,8 @@ namespace OSS {
 			/**
 			 * Construction
 			 */		
-		public:
-			Item::Descriptor * constructionItemDescriptor;
+		/*public:
+			ItemDescriptor * constructionItemDescriptor;
 			recti constructionTemplate;
 			
 			bool isDraggingConstruction;
@@ -83,13 +90,13 @@ namespace OSS {
 			
 			void updateConstruction();
 			void startConstruction();
-			void endConstruction();
+			void endConstruction();*/
 			
 			
 			/**
 			 * Uncategorized
 			 */		
-		private:
+		/*private:
 			ToolboxWindow::Tool tool;
 			
 		public:
@@ -102,9 +109,9 @@ namespace OSS {
 			Engine::Sprite debugConstructionToolSprite;
 			unsigned char debugItemType;
 			
-			virtual void eventPrepare();
+			virtual void eventPrepare();*/
 			
-			void buildDebugTower();
+			//void buildDebugTower();
 		};
 	}
 }

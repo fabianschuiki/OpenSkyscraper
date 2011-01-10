@@ -12,7 +12,7 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-HotelItem::HotelItem(Tower * tower, Item::Descriptor * descriptor) : OccupiableItem(tower, descriptor)
+HotelItem::HotelItem(Tower * tower, ItemDescriptor * descriptor) : OccupiableItem(tower, descriptor)
 {
 	state = kEmptyState;
 }
@@ -92,10 +92,10 @@ void HotelItem::updateBackground()
 	
 	//The first slice is in its own texture for some reason
 	if (slice == 0) {
-		backgrounds[0].texture = Texture::named(getTextureBaseName() + "/0");
+		backgrounds[0].texture = Engine::Texture::named(getTextureBaseName() + "/0");
 		backgrounds[0].textureRect = rectd(0, 0, 1, 1);
 	} else {
-		backgrounds[0].texture = Texture::named(getTextureBaseName() + "/1");
+		backgrounds[0].texture = Engine::Texture::named(getTextureBaseName() + "/1");
 		backgrounds[0].textureRect = rectd((slice - 1) * 0.125, 0, 0.125, 1);
 	}
 }
@@ -292,9 +292,9 @@ void HotelItem::onChangeOccupied()
 		clearGuests();
 		
 		//Dispatch the event
-		GameEvent event = {kGameEventHotelVacated};
+		/*GameEvent event = {kGameEventHotelVacated};
 		event.hotel.hotel = this;
-		tower->handleEvent(&event);
+		tower->handleEvent(&event);*/
 	}
 }
 

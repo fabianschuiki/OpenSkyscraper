@@ -1,9 +1,9 @@
 #ifndef OSS_ENGINE_AUDIO_SOUNDEFFECT_H
 #define OSS_ENGINE_AUDIO_SOUNDEFFECT_H
 
-#include "../../core/object.h"
+#include "../external.h"
 
-#include "../../resources/sound.h"
+#include "../resources/sound.h"
 
 
 namespace OSS {

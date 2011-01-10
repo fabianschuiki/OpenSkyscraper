@@ -3,12 +3,14 @@
 
 #include "external.h"
 
+#include "drawable.h"
 #include "event.h"
+#include "simulatable.h"
 
 
 namespace OSS {
 	namespace Engine {
-		class Responder : public Core::Responder {
+		class Responder : public Core::Responder, public Drawable, public Simulatable {
 			
 			/**
 			 * Event Handling

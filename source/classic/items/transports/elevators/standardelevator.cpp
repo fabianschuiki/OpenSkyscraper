@@ -1,12 +1,13 @@
 #include "standardelevator.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor StandardElevatorItem::descriptor = {
-	Item::kStandardElevatorType,
-	Item::kElevatorGroup,
-	Item::kTransportCategory,
+ItemDescriptor StandardElevatorItem::descriptor = {
+	kStandardElevatorType,
+	kElevatorGroup,
+	kTransportCategory,
 	1,
 	(0),
 	200000,

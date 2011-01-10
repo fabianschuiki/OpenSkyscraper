@@ -1,15 +1,15 @@
 #include "suite.h"
-#include "../tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor SuiteItem::descriptor = {
-	Item::kSuiteType,
-	Item::kHotelGroup,
-	Item::kFacilityCategory,
+ItemDescriptor SuiteItem::descriptor = {
+	kSuiteType,
+	kHotelGroup,
+	kFacilityCategory,
 	1,
-	(Item::kNotBelowGroundAttribute),
+	(kNotBelowGroundAttribute),
 	100000,
 	int2(10, 1)
 };

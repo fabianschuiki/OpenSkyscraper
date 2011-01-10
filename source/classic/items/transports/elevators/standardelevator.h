@@ -1,19 +1,19 @@
-#ifndef OSS_STANDARDELEVATOR_H
-#define OSS_STANDARDELEVATOR_H
+#ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_STANDARDELEVATOR_H
+#define OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_STANDARDELEVATOR_H
 
-
-#include "../../general.h"
 #include "elevator.h"
 
 
 namespace OSS {
-	class StandardElevatorItem : public ElevatorItem {
-	public:
-		static Item::Descriptor descriptor;
-		
-		//Initialization
-		StandardElevatorItem(Tower * tower);
-	};
+	namespace Classic {
+		class StandardElevatorItem : public ElevatorItem {
+		public:
+			static ItemDescriptor descriptor;
+			
+			//Initialization
+			StandardElevatorItem(Tower * tower);
+		};
+	}
 }
 
 

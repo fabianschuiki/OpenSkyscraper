@@ -1,18 +1,18 @@
-#ifndef OSS_ENGINE_H
-#define OSS_ENGINE_H
+#ifndef OSS_ENGINE_ENGINE_H
+#define OSS_ENGINE_ENGINE_H
 
-#include "../core/responder.h"
-#include "../core/invocation.h"
+#include "external.h"
 
 #include "cruisecontrol.h"
 
 
 namespace OSS {
 	namespace Engine {
+		class AbstractStore;
 		class Application;
 		class Scene;
 		
-		class EngineCore : public Core::Responder {
+		class EngineCore : public Singleton<EngineCore, Core::Responder> {
 			
 			/**
 			 * Construction
@@ -65,8 +65,24 @@ namespace OSS {
 			virtual void willSwitchToScene(Scene * scene) {}
 			virtual void didSwitchToScene(Scene * scene) {}
 			
-			void drawScene();
 			void simulateScene();
+			void updateScene();
+			void drawScene();
+			
+			
+			/**
+			 * Stores
+			 *
+			 * We need to keep a memory-managed list of stores somewhere for them to work properly.
+			 * The stores concept is pretty bad software design and should be replaced sometime by
+			 * something that actually works :D.
+			 */
+		private:
+			typedef std::vector< Pointer<AbstractStore> > StoreList;
+			StoreList stores;
+			
+		public:
+			void performLoadingAndFinalizing();
 		};
 	}
 }

@@ -1,20 +1,20 @@
-#ifndef OSS_DOUBLEROOM_H
-#define OSS_DOUBLEROOM_H
+#ifndef OSS_CLASSIC_ITEMS_FACILITIES_HOTEL_DOUBLEROOM_H
+#define OSS_CLASSIC_ITEMS_FACILITIES_HOTEL_DOUBLEROOM_H
 
-
-#include "../../general.h"
-#include "hotelitem.h"
+#include "hotel.h"
 
 
 namespace OSS {
-	class DoubleRoomItem : public HotelItem {
-	public:
-		static Item::Descriptor descriptor;
-		
-		//Initialization
-		DoubleRoomItem(Tower * tower);
-		std::string getTypeName();
-	};
+	namespace Classic {
+		class DoubleRoomItem : public HotelItem {
+		public:
+			static ItemDescriptor descriptor;
+			
+			//Initialization
+			DoubleRoomItem(Tower * tower);
+			std::string getTypeName();
+		};
+	}
 }
 
 

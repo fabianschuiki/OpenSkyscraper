@@ -1,13 +1,13 @@
 #include "escalator.h"
-#include "../tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor EscalatorItem::descriptor = {
-	Item::kEscalatorType,
-	Item::kStructureGroup,
-	Item::kTransportCategory,
+ItemDescriptor EscalatorItem::descriptor = {
+	kEscalatorType,
+	kStructureGroup,
+	kTransportCategory,
 	1,
 	(0),
 	20000,

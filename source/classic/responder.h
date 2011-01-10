@@ -4,12 +4,13 @@
 #include "external.h"
 
 #include "event.h"
-#include "transportitem.h"
-#include "items/hotelitem.h"
 
 
 namespace OSS {
 	namespace Classic {
+		class TransportItem;
+		class HotelItem;
+		
 		class Responder : public Engine::Responder {
 			
 			/**

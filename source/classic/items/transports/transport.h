@@ -4,24 +4,28 @@
 #include "../../external.h"
 #include "../item.h"
 
+#include "../../people/person.h"
+
 
 namespace OSS {
-	class TransportItem : public Item {
-	public:
-		//Initialization
-		TransportItem(Tower * tower, Item::Descriptor * descriptor) : Item(tower, descriptor) {}
-		
-		//Connection
-		virtual bool connectsToFloor(int floor);
-		std::set<int> getConnectedLobbies();
-		virtual std::set<int> getConnectionFloors();
-		
-		//Identity
-		bool isElevator();
-		bool isStairslike();
-		bool isStairs();
-		bool isEscalator();
-	};
+	namespace Classic {
+		class TransportItem : public Item {
+		public:
+			//Initialization
+			TransportItem(Tower * tower, ItemDescriptor * descriptor) : Item(tower, descriptor) {}
+			
+			//Connection
+			virtual bool connectsToFloor(int floor);
+			std::set<int> getConnectedLobbies();
+			virtual std::set<int> getConnectionFloors();
+			
+			//Identity
+			bool isElevator();
+			bool isStairslike();
+			bool isStairs();
+			bool isEscalator();
+		};
+	}
 }
 
 

@@ -1,10 +1,10 @@
 #include "simtower.h"
 
-#include "../core/platform.h"
-
 #include <sys/stat.h>
 
 using namespace OSS;
+using namespace Game;
+using namespace Engine;
 
 
 /**
@@ -107,7 +107,7 @@ void SimTower::loadResources()
 	resources.clear();
 	
 	//Get the path to the SimTower instance
-	std::string path = Platform::shared()->pathToResource("SIMTOWER.EXE");
+	std::string path = application->pathToResource("SIMTOWER.EXE");
 	
 	//Open the file
 	FILE * fsimtower = fopen(path.c_str(), "rb");

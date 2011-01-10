@@ -93,9 +93,6 @@ void Sprite::draw(rectd visibleRect)
 	if (texture) {
 		switch (textureMode) {
 			case kRepeatTextureMode: {
-				/*if (autoTexRelativeX) {
-					sqrt(9);
-				}*/
 				
 				//Move the texture rect into a positive coordinate space to simplify the rest of the process
 				rectd transformedTextureRect = textureRect;

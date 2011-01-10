@@ -1,7 +1,7 @@
-#include "facilityitem.h"
-#include "tower.h"
+#include "facility.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -12,7 +12,7 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-FacilityItem::FacilityItem(Tower * tower, Item::Descriptor * descriptor) : Item(tower, descriptor)
+FacilityItem::FacilityItem(Tower * tower, ItemDescriptor * descriptor) : Item(tower, descriptor)
 {
 	hasCeiling = true;
 	variant = 0;
@@ -46,8 +46,8 @@ void FacilityItem::updateBasicSprites()
 void FacilityItem::initCeiling()
 {
 	ceiling.autoTexRectX = true;
-	ceiling.textureMode = Sprite::kRepeatTextureMode;
-	ceiling.texture = Texture::named("ceiling.png");
+	ceiling.textureMode = Engine::Sprite::kRepeatTextureMode;
+	ceiling.texture = Engine::Texture::named("ceiling.png");
 }
 
 
@@ -79,7 +79,7 @@ void FacilityItem::updateBackground()
 	
 	//Adjust the topmost background's height if we have a ceiling
 	if (hasCeiling) {
-		Sprite * background = &backgrounds[getNumFloors() - 1];
+		Engine::Sprite * background = &backgrounds[getNumFloors() - 1];
 		rectd rect = background->getRect();
 		rect.size.y -= ceiling.getRect().size.y;
 		background->setRect(rect);

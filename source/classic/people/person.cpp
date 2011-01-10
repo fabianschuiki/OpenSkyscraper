@@ -108,7 +108,7 @@ void Person::onChangeStress()
 #pragma mark Managed Sprites
 //----------------------------------------------------------------------------------------------------
 
-void Person::addManagedSprite(Sprite * sprite, SpriteType type, SpriteHeading heading)
+void Person::addManagedSprite(Engine::Sprite * sprite, SpriteType type, SpriteHeading heading)
 {
 	managedSprites.insert(sprite);
 	managedSpriteTypes[sprite] = type;
@@ -116,7 +116,7 @@ void Person::addManagedSprite(Sprite * sprite, SpriteType type, SpriteHeading he
 	initManagedSprite(sprite);
 }
 
-void Person::removeManagedSprite(Sprite * sprite)
+void Person::removeManagedSprite(Engine::Sprite * sprite)
 {
 	managedSprites.erase(sprite);
 	managedSpriteTypes.erase(sprite);
@@ -125,7 +125,7 @@ void Person::removeManagedSprite(Sprite * sprite)
 
 
 
-void Person::setManagedSpriteType(Sprite * sprite, SpriteType type)
+void Person::setManagedSpriteType(Engine::Sprite * sprite, SpriteType type)
 {
 	if (managedSpriteTypes[sprite] != type) {
 		managedSpriteTypes[sprite] = type;
@@ -133,7 +133,7 @@ void Person::setManagedSpriteType(Sprite * sprite, SpriteType type)
 	}
 }
 
-void Person::setManagedSpriteHeading(Sprite * sprite, SpriteHeading heading)
+void Person::setManagedSpriteHeading(Engine::Sprite * sprite, SpriteHeading heading)
 {
 	if (managedSpriteHeadings[sprite] != heading) {
 		managedSpriteHeadings[sprite] = heading;
@@ -143,11 +143,11 @@ void Person::setManagedSpriteHeading(Sprite * sprite, SpriteHeading heading)
 
 
 
-void Person::initManagedSprite(Sprite * sprite)
+void Person::initManagedSprite(Engine::Sprite * sprite)
 {
 }
 
-void Person::updateManagedSprite(Sprite * sprite)
+void Person::updateManagedSprite(Engine::Sprite * sprite)
 {
 }
 
@@ -166,7 +166,7 @@ void Person::updateManagedSprites()
 #pragma mark Animation Sprite
 //----------------------------------------------------------------------------------------------------
 
-Sprite & Person::getAnimationSprite()
+Engine::Sprite & Person::getAnimationSprite()
 {
 	return animationSprite;
 }
@@ -400,7 +400,7 @@ void Person::advanceJourney()
 		
 		//Attach to the transport
 		assert(node->transport);
-		setItem(node->transport);
+		setItem((Item *)((TransportItem *)node->transport));
 		
 		//Increase the node index
 		nodeIndex++;
@@ -472,7 +472,7 @@ void Person::updateRoute()
 	
 	//Otherwise find a route to the destination
 	else {
-		Route * route = tower->findRoute(start, destination);
+		Route * route = Route::findRoute(tower, start, destination);
 		setRoute(route);
 		if (!route)
 			OSSObjectError << "cannot find route from " << start.description()

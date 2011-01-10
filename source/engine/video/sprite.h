@@ -1,10 +1,9 @@
-#ifndef OSS_SPRITE_H
-#define OSS_SPRITE_H
+#ifndef OSS_ENGINE_VIDEO_SPRITE_H
+#define OSS_ENGINE_VIDEO_SPRITE_H
 
 #include "../external.h"
 
-#include "../../resources/texture.h"
-#include "video.h"
+#include "../resources/texture.h"
 
 
 namespace OSS {

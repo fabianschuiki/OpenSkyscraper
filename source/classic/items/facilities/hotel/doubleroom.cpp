@@ -1,15 +1,15 @@
 #include "doubleroom.h"
-#include "../tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor DoubleRoomItem::descriptor = {
-	Item::kDoubleRoomType,
-	Item::kHotelGroup,
-	Item::kFacilityCategory,
+ItemDescriptor DoubleRoomItem::descriptor = {
+	kDoubleRoomType,
+	kHotelGroup,
+	kFacilityCategory,
 	1,
-	(Item::kNotBelowGroundAttribute),
+	(kNotBelowGroundAttribute),
 	50000,
 	int2(6, 1)
 };

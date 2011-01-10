@@ -1,42 +1,43 @@
-#ifndef OSS_LOBBY_H
-#define OSS_LOBBY_H
+#ifndef OSS_CLASSIC_ITEMS_FACILITIES_STRUCTURE_LOBBY_H
+#define OSS_CLASSIC_ITEMS_FACILITIES_STRUCTURE_LOBBY_H
 
-#include "../../general.h"
-#include "../facilityitem.h"
+#include "../facility.h"
 
 
 namespace OSS {
-	class LobbyItem : public FacilityItem {
-	public:
-		static Item::Descriptor descriptor;
-		
-		//Initialization
-	public:
-		LobbyItem(Tower * tower);
-		
-		void init();
-		void update();
-		
-		std::string getLobbyTextureBaseName();
-		
-		//Entrances
-	private:
-		Sprite outsideEntrances[2];
-		Sprite insideEntrance;
-	public:
-		void initEntrances();
-		void updateEntrances();
-		
-		//Basic Sprites
-		void initBackground();
-		void updateBackground();
-		
-		//Drawing
-		void draw(rectd visibleRect);
-		
-		//Notifications
-		void onChangeLocation();
-	};
+	namespace Classic {
+		class LobbyItem : public FacilityItem {
+		public:
+			static ItemDescriptor descriptor;
+			
+			//Initialization
+		public:
+			LobbyItem(Tower * tower);
+			
+			void init();
+			void update();
+			
+			std::string getLobbyTextureBaseName();
+			
+			//Entrances
+		private:
+			Engine::Sprite outsideEntrances[2];
+			Engine::Sprite insideEntrance;
+		public:
+			void initEntrances();
+			void updateEntrances();
+			
+			//Basic Sprites
+			void initBackground();
+			void updateBackground();
+			
+			//Drawing
+			void draw(rectd visibleRect);
+			
+			//Notifications
+			void onChangeLocation();
+		};
+	}
 }
 
 

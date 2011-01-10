@@ -4,112 +4,21 @@
 #include "../external.h"
 #include "../responder.h"
 
+#include "itemdescriptor.h"
 #include "../tower/tower.h"
-#include "../people/person.h"
 
 
 namespace OSS {
 	namespace Classic {		
-		class Item : public Responder {
-		public:
-			//Item Types
-			typedef enum {
-				kNoneType = 0,
-				
-				//Structure
-				kLobbyType,
-				kFloorType,
-				kStairsType,
-				kEscalatorType,
-				
-				//Elevator
-				kStandardElevatorType,
-				kServiceElevatorType,
-				kExpressElevatorType,
-				
-				//Office
-				kOfficeType,
-				
-				//Hotel
-				kSingleRoomType,
-				kDoubleRoomType,
-				kSuiteType,
-				
-				//Entertainment
-				kFastFoodType,
-				kRestaurantType,
-				kShopType,
-				kCinemaType,
-				kPartyHall,
-				
-				//Infrastructure
-				kParkingRampType,
-				kParkingSpaceType,
-				kRecyclingCenterType,
-				kMetroType,
-				
-				//Services
-				kCathedrakType,
-				kSecurityType,
-				kMedicalCenterType,
-				kHousekeepingType,
-				
-				//Condo
-				kCondoType,
-				
-				kMaxType
-			} Type;
-			
-			//Item Groups
-			typedef enum {
-				kNoneGroup = 0,
-				
-				kStructureGroup,
-				kElevatorGroup,
-				kOfficeGroup,
-				kHotelGroup,
-				kEntertainmentGroup,
-				kInfrastructureGroup,
-				kServicesGroup,
-				
-				kMaxGroup
-			} Group;
-			
-			//Item Categories
-			typedef enum {
-				kFacilityCategory,
-				kTransportCategory
-			} Category;
-			
-			//Item Attributes
-			enum {
-				kFlexibleWidthAttribute		= (1 << 0),
-				kEvery15thFloorAttribute	= (1 << 1),
-				kNotAboveGroundAttribute	= (1 << 2),
-				kNotBelowGroundAttribute	= (1 << 3),
-				kAllowedOnGroundAttribute	= (1 << 4),
-				kUndestructibleAttribute	= (1 << 5)
-			};
-			
-			//Item Descriptor
-			typedef struct {
-				Type type;
-				Group group;
-				Category category;
-				unsigned short minRating;
-				unsigned short attributes;
-				unsigned int price;
-				int2 cells;
-				int2 minUnit;
-				rectmaski mask;
-			} Descriptor;
-			
+		class Person;
+		
+		class Item : public Responder {			
 			
 			/**
 			 * Initialization
 			 */
 		public:
-			Item(Tower * tower, Descriptor * descriptor);
+			Item(Tower * tower, ItemDescriptor * descriptor);
 			virtual ~Item();
 			
 			//Note that the init() function is separate from the constructor since we want to be able
@@ -119,10 +28,10 @@ namespace OSS {
 			virtual void update();	//calls the update tree
 			
 			//Factory
-			static Item * make(Tower * tower, Descriptor * descriptor);
-			static Item * make(Tower * tower, Descriptor * descriptor,
+			static Item * make(Tower * tower, ItemDescriptor * descriptor);
+			static Item * make(Tower * tower, ItemDescriptor * descriptor,
 							   unsigned int itemID);
-			static Item * make(Tower * tower, Descriptor * descriptor,
+			static Item * make(Tower * tower, ItemDescriptor * descriptor,
 							   unsigned int itemID, recti rect);
 			
 			
@@ -130,10 +39,10 @@ namespace OSS {
 			 * Basic Attributes
 			 */
 			const Pointer<Tower> tower;
-			const Descriptor * descriptor;
-			Type getType();
-			Group getGroup();
-			Category getCategory();
+			const ItemDescriptor * descriptor;
+			ItemType getType();
+			ItemGroup getGroup();
+			ItemCategory getCategory();
 			
 			
 			/**
@@ -194,7 +103,7 @@ namespace OSS {
 			void updateConstructionWorkerSprites();
 			
 			//Descriptors
-			static Descriptor * descriptorForItemType(Type itemType);
+			static ItemDescriptor * descriptorForItemType(ItemType itemType);
 			
 			//Simulation
 			virtual void advance(double dt);
@@ -228,19 +137,6 @@ namespace OSS {
 		};
 	}
 }
-
-//Include the various facilities
-#include "facilities/hotel/singleroom.h"
-#include "facilities/hotel/doubleroom.h"
-#include "facilities/hotel/suite.h"
-#include "facilities/hotel/housekeeping.h"
-#include "facilities/office/office.h"
-#include "facilities/structure/lobby.h"
-
-//Include the various transports
-#include "transports/elevators/standardelevator.h"
-#include "transports/stairslike/escalator.h"
-#include "transports/stairslike/stairs.h"
 
 
 #endif

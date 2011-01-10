@@ -1,20 +1,20 @@
-#ifndef OSS_SUITE_H
-#define OSS_SUITE_H
+#ifndef OSS_CLASSIC_ITEMS_FACILITIES_HOTEL_SUITE_H
+#define OSS_CLASSIC_ITEMS_FACILITIES_HOTEL_SUITE_H
 
-
-#include "../../general.h"
-#include "hotelitem.h"
+#include "hotel.h"
 
 
 namespace OSS {
-	class SuiteItem : public HotelItem {
-	public:
-		static Item::Descriptor descriptor;
-		
-		//Initialization
-		SuiteItem(Tower * tower);
-		std::string getTypeName();
-	};
+	namespace Classic {
+		class SuiteItem : public HotelItem {
+		public:
+			static ItemDescriptor descriptor;
+			
+			//Initialization
+			SuiteItem(Tower * tower);
+			std::string getTypeName();
+		};
+	}
 }
 
 

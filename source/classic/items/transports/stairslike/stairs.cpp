@@ -1,13 +1,13 @@
 #include "stairs.h"
-#include "../tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor StairsItem::descriptor = {
-	Item::kStairsType,
-	Item::kStructureGroup,
-	Item::kTransportCategory,
+ItemDescriptor StairsItem::descriptor = {
+	kStairsType,
+	kStructureGroup,
+	kTransportCategory,
 	1,
 	(0),
 	5000,

@@ -11,7 +11,7 @@ namespace OSS {
 		class OccupiableItem : public FacilityItem {
 		public:
 			//Initialization
-			OccupiableItem(Tower * tower, Item::Descriptor * descriptor);
+			OccupiableItem(Tower * tower, ItemDescriptor * descriptor);
 			
 			
 			/**

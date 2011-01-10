@@ -3,6 +3,7 @@
 
 #include "../../external.h"
 #include "../item.h"
+#include "../../people/person.h"
 
 
 namespace OSS {
@@ -10,7 +11,7 @@ namespace OSS {
 		class FacilityItem : public Item {
 		public:
 			//Initialization
-			FacilityItem(Tower * tower, Item::Descriptor * descriptor);
+			FacilityItem(Tower * tower, ItemDescriptor * descriptor);
 			
 			/**
 			 * Basic Sprites
@@ -20,7 +21,7 @@ namespace OSS {
 			
 			//Ceiling
 		protected:
-			Sprite ceiling;
+			Engine::Sprite ceiling;
 		private:
 			bool hasCeiling;
 		public:

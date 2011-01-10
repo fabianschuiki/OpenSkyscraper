@@ -1,7 +1,6 @@
 #include "game.h"
 
-#include "../gui/gui.h"
-#include "../../resources/sound.h"
+//#include "../gui/gui.h"
 
 using namespace OSS;
 using namespace Classic;
@@ -30,7 +29,7 @@ Engine::Scene(engine), tower(tower)
 	debugItemType = Item::kLobbyType;*/
 	
 	//Initialize the GUI
-	gui = new GUI(this);
+	//gui = new GUI(this);
 }
 
 
@@ -45,7 +44,7 @@ Engine::Scene(engine), tower(tower)
 void GameScene::advance(double dt)
 {
 	//Update the visible rect
-	int2 canvasSize = OpenGLCanvas::shared()->currentMode.resolution;
+	int2 canvasSize = Engine::Video::getCurrent()->currentMode.resolution;
 	visibleRect.origin = POI - canvasSize / 2;
 	visibleRect.size = canvasSize;
 	
@@ -58,9 +57,9 @@ void GameScene::advance(double dt)
 	mouseMoved = (worldMouse != previousWorldMouse);
 	
 	//Update the construction if the mouse was moved
-	if (mouseMoved) {
+	/*if (mouseMoved) {
 		updateConstruction();
-	}
+	}*/
 	
 	//Calculate the visible cells rect
 	visibleCells = tower->convertWorldToCellRect(visibleRect);
@@ -88,10 +87,25 @@ void GameScene::advance(double dt)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Rendering
+#pragma mark State
 //----------------------------------------------------------------------------------------------------
 
-void GameScene::render()
+void GameScene::update()
+{
+	//Update the tower
+	tower->update();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
+//----------------------------------------------------------------------------------------------------
+
+void GameScene::draw()
 {
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -100,25 +114,21 @@ void GameScene::render()
 	//Translate modelview matrix so that the POI is centered on screen
 	glTranslated(-visibleRect.origin.x, -visibleRect.origin.y, 0);
 	
-	//Render the background
-	renderBackground();
+	//Draw the tower
+	tower->draw(visibleRect);
 	
-	//Render the items
-	renderFacilities();
-	renderTransports();
-	
-	//Draw the construction template
+	/*//Draw the construction template
 	rectd worldConstructionRect = tower->convertCellToWorldRect(constructionTemplate);
 	worldConstructionRect.inset(0.5, 0.5);
 	glColor3f(1, 1, 1);
-	Texture::unbind();
+	Engine::Texture::unbind();
 	glBegin(GL_LINE_STRIP);
 	glVertex2d(worldConstructionRect.minX(), worldConstructionRect.minY());
 	glVertex2d(worldConstructionRect.maxX(), worldConstructionRect.minY());
 	glVertex2d(worldConstructionRect.maxX(), worldConstructionRect.maxY());
 	glVertex2d(worldConstructionRect.minX(), worldConstructionRect.maxY());
 	glVertex2d(worldConstructionRect.minX(), worldConstructionRect.minY());
-	glEnd();
+	glEnd();*/
 	
 	//Draw a red cross at the origin of the world
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
@@ -141,18 +151,10 @@ void GameScene::render()
 	
 	//Draw the GUI
 	glLoadIdentity();
-	renderGUI();
-	
-	OpenGLCanvas::shared()->swapBuffers();
+	//drawGUI();
 }
 
-void GameScene::renderBackground()
-{
-	//Render the background
-	tower->renderBackground(visibleRect);
-}
-
-void GameScene::renderFacilities()
+/*void GameScene::renderFacilities()
 {
 	//OSSObjectLog << "rendering " << visibleFacilities.size() << " facilities..." << std::endl;
 	std::set<unsigned int>::iterator it;
@@ -184,12 +186,7 @@ void GameScene::renderGUI()
 	
 	//Draw the toolbox window
 	toolboxWindow.draw(visibleRect);
-	
-	//Draw AntTweakBar
-	/*glDisable(GL_TEXTURE_RECTANGLE_EXT);
-	TwDraw();
-	glEnable(GL_TEXTURE_RECTANGLE_EXT);*/
-}
+}*/
 
 
 
@@ -200,29 +197,29 @@ void GameScene::renderGUI()
 #pragma mark OpenGL State
 //----------------------------------------------------------------------------------------------------
 
-void GameScene::onMoveOnScreen()
+void GameScene::didMoveOnScreen()
 {
 	//Engine::shared()->audioTask.playSound(Sound::named("simtower/#4E20"), SoundEffect::kTopLayer);
 	
-	Scene::onMoveOnScreen();
+	Scene::didMoveOnScreen();
 	
 	glEnable(GL_TEXTURE_RECTANGLE_EXT);
 	glEnable(GL_BLEND);
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	setConstructionTool(Item::kLobbyType);
+	//setConstructionTool(kLobbyType);
 	
 	/*TwBar * myBar = TwNewBar("NameOfMyTweakBar");
 	TwAddButton(myBar, "Hello, World!", NULL, NULL, NULL);*/
 }
 
-void GameScene::onMoveOffScreen()
+void GameScene::willMoveOffScreen()
 {	
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_RECTANGLE_EXT);
 	
-	Scene::onMoveOffScreen();
+	Scene::willMoveOffScreen();
 }
 
 
@@ -234,7 +231,7 @@ void GameScene::onMoveOffScreen()
 #pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
-bool GameScene::handleEvent(CoreEvent * event)
+/*bool GameScene::handleEvent(CoreEvent * event)
 {
 	if (toolboxWindow.handleEvent((GameEvent *)event)) return true;
 	if (controlWindow.handleEvent((GameEvent *)event)) return true;
@@ -308,7 +305,7 @@ bool GameScene::eventMouseUp(SDL_Event * event)
 		} break;
 	}
 	return false;
-}
+}*/
 
 
 
@@ -319,7 +316,7 @@ bool GameScene::eventMouseUp(SDL_Event * event)
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-void GameScene::updateConstruction()
+/*void GameScene::updateConstruction()
 {
 	if (!constructionItemDescriptor)
 		return;
@@ -376,7 +373,7 @@ void GameScene::endConstruction()
 	
 	//Resume the constructions
 	tower->setConstructionsHalted(false);
-}
+}*/
 
 
 
@@ -387,7 +384,7 @@ void GameScene::endConstruction()
 #pragma mark Uncategorized
 //----------------------------------------------------------------------------------------------------
 
-ToolboxWindow::Tool GameScene::getTool()
+/*ToolboxWindow::Tool GameScene::getTool()
 {
 	return tool;
 }
@@ -427,9 +424,9 @@ void GameScene::setTower(Tower * tower)
 	this->tower = tower;
 	controlWindow.tower = tower;
 	toolboxWindow.updateButtons();
-}
+}*/
 
-void GameScene::buildDebugTower()
+/*void GameScene::buildDebugTower()
 {
 	Engine::shared()->audioTask.disableSoundEffects();
 	
@@ -461,7 +458,7 @@ void GameScene::buildDebugTower()
 	tower->constructItem(Item::descriptorForItemType(Item::kEscalatorType),
 						 recti(-4, 5, 8, 2));
 	
-	/*//Offices
+	//Offices
 	for (int y = 1; y < 15; y++) {
 		for (int x = 0; x < 1; x++) {
 			tower->constructItem(Item::descriptorForItemType(Item::kOfficeType),
@@ -471,12 +468,12 @@ void GameScene::buildDebugTower()
 		}
 	}
 	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
-									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));*/
+									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));
 	
 	//Stairs
-	/*for (int y = 0; y < 1; y++) {
+	for (int y = 0; y < 1; y++) {
 		tower->constructItem(Item::descriptorForItemType(Item::kStairsType),
 							 recti(-4, y, 8, 2));
-	 }*/
-	Engine::shared()->audioTask.enableSoundEffects();
-}
+	 }
+	//Engine::shared()->audioTask.enableSoundEffects();
+}*/

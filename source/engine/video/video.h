@@ -1,7 +1,7 @@
-#ifndef OSS_ENGINE_VIDEO_H
-#define OSS_ENGINE_VIDEO_H
+#ifndef OSS_ENGINE_VIDEO_VIDEO_H
+#define OSS_ENGINE_VIDEO_VIDEO_H
 
-#include "external.h"
+#include "../external.h"
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -12,7 +12,7 @@ namespace OSS {
 	namespace Engine {
 		class Application;
 		
-		class Video : public Core::Responder {
+		class Video : public Core::Responder, public Core::Currentable<Video> {
 			
 			/**
 			 * Construction

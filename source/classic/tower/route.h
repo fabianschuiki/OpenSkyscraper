@@ -30,7 +30,6 @@ namespace OSS {
 			/**
 			 * Route
 			 */
-			
 			const Pointer<Tower> tower;
 			recti origin;
 			recti destination;
@@ -56,6 +55,25 @@ namespace OSS {
 			
 			//Validation
 			bool isValid();
+			
+			
+			/**
+			 * Pathfinder
+			 */
+		private:
+			typedef struct {
+				unsigned int elevatorsUsed;
+				unsigned int stairsUsed;
+				unsigned int escalatorsUsed;
+			} PathfinderStats;
+			typedef std::set<TransportItem *> UsedTransportsSet;
+			static bool findRoute(Tower * tower, recti origin, recti destination,
+								  TransportItem * transport,
+								  UsedTransportsSet usedTransports, PathfinderStats stats,
+								  Route * route);
+			
+		public:
+			static Route * findRoute(Tower * tower, recti origin, recti destination);
 		};
 	}
 }

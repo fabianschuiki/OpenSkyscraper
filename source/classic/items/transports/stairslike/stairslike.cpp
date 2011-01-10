@@ -1,8 +1,7 @@
 #include "stairslike.h"
-#include "../tower.h"
-#include "../person.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -13,7 +12,7 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-StairslikeItem::StairslikeItem(Tower * tower, Descriptor * descriptor) : TransportItem(tower, descriptor)
+StairslikeItem::StairslikeItem(Tower * tower, ItemDescriptor * descriptor) : TransportItem(tower, descriptor)
 {
 	animationFrame = 0;
 	animationProgress = 0;
@@ -118,7 +117,7 @@ void StairslikeItem::updateBackground()
 		sprintf(textureName, "/floor%i", i);
 		if (numAnimationFrames > numAnimationFramesPerTexture)
 			sprintf(textureName, "%s/%i", textureName, getAnimationFrame() / numAnimationFramesPerTexture);
-		backgrounds[i].texture = Texture::named(baseTextureName + textureName);
+		backgrounds[i].texture = Engine::Texture::named(baseTextureName + textureName);
 		
 		//Calculate the texture x coordinate
 		double x = (getAnimationFrame() % numAnimationFramesPerTexture);

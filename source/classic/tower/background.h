@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Classic {
 		class Tower;
 		
-		class TowerBackground : public Core::Object {
+		class TowerBackground : public Engine::Object {
 			
 			/**
 			 * Construction
@@ -17,21 +17,6 @@ namespace OSS {
 			const Pointer<Tower> tower;
 			
 			TowerBackground(Tower * tower);
-			
-			
-			/**
-			 * State
-			 */
-		private:
-			bool needsUpdateSkyTextures;
-			
-		public:
-			virtual void update();
-			virtual void updateSky();
-			virtual void updateSkyTextures();
-			
-			void updateSkyTexturesIfNeeded();
-			void setNeedsUpdateSkyTextures();
 			
 			
 			/**
@@ -44,15 +29,37 @@ namespace OSS {
 			double getRainAnimation();
 			void setRainAnimation(double animation);
 			
-			virtual void advance(EngineCore * engine, double dt);
+			virtual void advance(double dt);
+			
+			
+			/**
+			 * State
+			 */			
+		public:
+			virtual void update();
+			virtual void updateSky();
+			virtual void updateSkyTextures();
+			virtual void updateGroundTextures();
+			
+			Conditional<TowerBackground> updateSkyTexturesIfNeeded;
+			Conditional<TowerBackground> updateGroundTexturesIfNeeded;
+			
+			
+			/**
+			 * Drawing
+			 */
+		public:
+			virtual void draw(rectd dirtyRect);
+			virtual void drawSky(rectd dirtyRect);
+			virtual void drawGround(rectd dirtyRect);
 			
 			
 			/**
 			 * Sky
 			 */
 		private:
-			Pointer<Texture> currentSkyTextures[10];
-			Pointer<Texture> targetSkyTextures[10];
+			Pointer<Engine::Texture> currentSkyTextures[10];
+			Pointer<Engine::Texture> targetSkyTextures[10];
 			
 			double skyInterpolation;
 			
@@ -69,6 +76,8 @@ namespace OSS {
 			} SkyState;
 			SkyState skyState;
 			
+			unsigned int rainAnimationFrame;
+			
 		public:
 			std::string getSkyTextureName(unsigned int index, std::string variant);
 			
@@ -79,6 +88,21 @@ namespace OSS {
 			void setSkyState(SkyState state);
 			
 			void setSky(SkyState state, double interpolation);
+			
+			unsigned int getRainAnimationFrame();
+			void setRainAnimationFrame(unsigned int frame);
+			
+			
+			/**
+			 * Ground
+			 */
+		private:
+			Pointer<Engine::Texture> cityTexture;
+			Pointer<Engine::Texture> groundTexture;
+			
+		public:
+			std::string getCityTextureName();
+			std::string getGroundTextureName();
 		};
 	}
 }

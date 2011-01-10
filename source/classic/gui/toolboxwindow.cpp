@@ -86,7 +86,7 @@ void ToolboxWindow::initItemButtons()
 		i->second.textureRect.origin = origin;
 		
 		//Fetch the item descriptor
-		Item::Descriptor * desc = Item::descriptorForItemType(i->first);
+		ItemDescriptor * desc = Item::descriptorForItemType(i->first);
 		if (desc)
 			groups[desc->group].push_back(i->first);
 	}
@@ -125,7 +125,7 @@ void ToolboxWindow::updateItemButtons()
 	std::string baseName = "simtower/ui/toolbox/construction/";
 	
 	//Fetch the construction item descriptor
-	Item::Descriptor * desc = towerScene->constructionItemDescriptor;
+	ItemDescriptor * desc = towerScene->constructionItemDescriptor;
 	Item::Type type = (desc ? desc->type : Item::kNoneType);
 	
 	for (ItemButtonMap::iterator i = itemButtons.begin(); i != itemButtons.end(); i++) {

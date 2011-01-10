@@ -1,8 +1,9 @@
 #include "janitor.h"
-#include "../items/housekeeping.h"
-#include "../items/hotelitem.h"
+#include "../../items/facilities/hotel/housekeeping.h"
+#include "../../items/facilities/hotel/hotel.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -95,7 +96,7 @@ void Janitor::think()
 void Janitor::initAnimationSprite()
 {	
 	//Load the texture and set the slice size
-	animationSprite.texture = Texture::named("simtower/facilities/hotel/janitor");
+	animationSprite.texture = Engine::Texture::named("simtower/facilities/hotel/janitor");
 	animationSprite.setRect(rectd(0, 0, 16, 24));
 	animationSprite.textureRect.size.x = (1.0 / 3);
 	
@@ -113,7 +114,7 @@ void Janitor::updateAnimationSprite()
 
 bool Janitor::shouldAnimate()
 {
-	return (getItem() && getItem()->getGroup() == Item::kHotelGroup);
+	return (getItem() && getItem()->getGroup() == kHotelGroup);
 }
 
 void Janitor::shuffleAnimation()

@@ -87,6 +87,17 @@ namespace OSS {
 			
 			virtual void willPumpEvents() {}
 			virtual void didPumpEvents() {}
+			
+			
+			/**
+			 * Resources
+			 */
+			
+			//TODO: Move these functions to an appropriate location
+			std::vector<std::string> resourcesPaths();
+			std::string pathToResource(std::string resourceName);
+			std::string pathToResource(std::string resourceGroup, std::string resourceName);
+			std::string pathToResource(std::string resourceGroup, std::string resourceName, std::string resourceType);
 		};
 	}
 }

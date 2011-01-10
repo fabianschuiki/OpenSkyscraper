@@ -4,11 +4,12 @@
 #include "external.h"
 
 #include "application.h"
+#include "currentable.h"
 #include "event.h"
 #include "eventpump.h"
 #include "invocation.h"
 #include "object.h"
-#include "objectextension.h"
 #include "responder.h"
+#include "updatable.h"
 
 #endif

@@ -1,6 +1,8 @@
 #include "engine.h"
 
 #include "application.h"
+#include "resources/sound.h"
+#include "resources/texture.h"
 #include "scene.h"
 
 using namespace OSS;
@@ -17,6 +19,10 @@ using namespace Engine;
 
 EngineCore::EngineCore(Application * application)
 {
+	//Initialize the stores
+	stores.push_back(new TextureStore);
+	stores.push_back(new SoundStore);
+	
 	//Initialize the cruise control which times the animation and slows the loop if required
 	timing = new CruiseControl(this);
 	
@@ -79,9 +85,23 @@ void EngineCore::update()
 	//Perform cruise control
 	timing->frameStart();
 	
+	//Setup the current instances
+	application->pushCurrent();
+	application->audio->pushCurrent();
+	application->video->pushCurrent();
+	
+	//Load stuff
+	performLoadingAndFinalizing();
+	
 	//Do the magic
 	simulateScene();
+	updateScene();
 	drawScene();
+	
+	//Release the current instances
+	application->popCurrent();
+	application->audio->popCurrent();
+	application->video->popCurrent();
 		
 	//We're done rendering
 	timing->renderingDone();
@@ -141,17 +161,49 @@ void EngineCore::setScene(Scene * scene)
 	didSwitchToScene(scene);
 }
 
+void EngineCore::simulateScene()
+{
+	if (scene) scene->advance(timing->dt);
+}
+
+void EngineCore::updateScene()
+{
+	if (scene) scene->update();
+}
+
 void EngineCore::drawScene()
 {
 	if (scene) {
-		scene->draw(rectd(int2(), application->video->currentMode.resolution));
+		scene->draw();
 	} else {
 		glClearColor(0, 0, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 }
 
-void EngineCore::simulateScene()
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Stores
+//----------------------------------------------------------------------------------------------------
+
+void EngineCore::performLoadingAndFinalizing()
 {
-	if (scene) scene->advance(timing->dt);
+	double start = application->getTimeElapsed();
+	double now = start;
+	for (StoreList::iterator store = stores.begin(); store != stores.end() && (now - start < 0.01);
+		 store++) {
+		bool workDone = false;
+		while (!workDone && (now - start < 0.01)) {
+			now = application->getTimeElapsed();
+			if ((*store)->unfinalizeNext()) continue;
+			if ((*store)->unloadNext()) continue;
+			if ((*store)->loadNext()) continue;
+			if ((*store)->finalizeNext()) continue;
+			workDone = true;
+		}
+	}
 }

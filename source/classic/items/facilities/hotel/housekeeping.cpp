@@ -1,15 +1,17 @@
 #include "housekeeping.h"
-#include "hotelitem.h"
+
+#include "hotel.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor HousekeepingItem::descriptor = {
-	Item::kHousekeepingType,
-	Item::kHotelGroup,
-	Item::kFacilityCategory,
+ItemDescriptor HousekeepingItem::descriptor = {
+	kHousekeepingType,
+	kHotelGroup,
+	kFacilityCategory,
 	1,
-	(Item::kUndestructibleAttribute),
+	(kUndestructibleAttribute),
 	50000,
 	int2(15, 1)
 };
@@ -45,7 +47,7 @@ void HousekeepingItem::init()
 void HousekeepingItem::initBackground()
 {
 	FacilityItem::initBackground();
-	backgrounds[0].texture = Texture::named("simtower/facilities/housekeeping");
+	backgrounds[0].texture = Engine::Texture::named("simtower/facilities/housekeeping");
 }
 
 
@@ -98,7 +100,7 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 	for (Tower::ItemIDMap::iterator i = tower->items.begin(); i != tower->items.end(); i++) {
 		
 		//Skip non-hotel items
-		if (i->second->getGroup() != Item::kHotelGroup)
+		if (i->second->getGroup() != kHotelGroup)
 			continue;
 		HotelItem * hotel = (HotelItem *)((Item *)i->second);
 		

@@ -1,7 +1,8 @@
 #include "hotelguest.h"
-#include "../items/hotelitem.h"
+#include "../../items/facilities/hotel/hotel.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -154,7 +155,7 @@ void HotelGuest::setAsleep(bool asleep)
 void HotelGuest::initAnimationSprite()
 {	
 	//Load the texture and set the slice size
-	animationSprite.texture = Texture::named("simtower/facilities/hotel/guests");
+	animationSprite.texture = Engine::Texture::named("simtower/facilities/hotel/guests");
 	animationSprite.setRect(rectd(0, 0, 16, 24));
 	animationSprite.textureRect.size.x = (1.0 / 16);
 	

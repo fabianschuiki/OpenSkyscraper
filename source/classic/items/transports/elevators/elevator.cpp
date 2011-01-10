@@ -1,7 +1,7 @@
 #include "elevator.h"
-#include "../tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -12,7 +12,7 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-ElevatorItem::ElevatorItem(Tower * tower, Descriptor * descriptor)
+ElevatorItem::ElevatorItem(Tower * tower, ItemDescriptor * descriptor)
 : TransportItem(tower, descriptor), background(this)
 {
 	motorbufferAnimationIndex = 0;
@@ -103,7 +103,7 @@ void ElevatorItem::updateMotorBuffer()
 	char textureName[512];
 	sprintf(textureName, "simtower/transport/elevator/standard/motorbuffer/%i",
 			getMotorbufferAnimationIndex());
-	motorSprite.texture = Texture::named(textureName);
+	motorSprite.texture = Engine::Texture::named(textureName);
 	bufferSprite.texture = motorSprite.texture;
 }
 

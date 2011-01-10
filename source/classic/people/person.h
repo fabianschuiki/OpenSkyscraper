@@ -5,10 +5,11 @@
 
 #include "../items/item.h"
 #include "../tower/tower.h"
+#include "../tower/route.h"
 
 
 namespace OSS {
-	namespace Classic {
+	namespace Classic {		
 		class Person : public Core::Object {
 		protected:
 			const Pointer<Tower> tower;

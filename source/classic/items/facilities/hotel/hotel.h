@@ -3,8 +3,8 @@
 
 #include "../../../external.h"
 #include "../occupiable.h"
-#include "../../people/individuals/hotelguest.h"
-#include "../../people/individuals/janitor.h"
+#include "../../../people/individuals/hotelguest.h"
+#include "../../../people/individuals/janitor.h"
 
 
 namespace OSS {	
@@ -12,7 +12,7 @@ namespace OSS {
 		class HotelItem : public OccupiableItem {
 		public:
 			//Initialization
-			HotelItem(Tower * tower, Item::Descriptor * descriptor);
+			HotelItem(Tower * tower, ItemDescriptor * descriptor);
 			virtual std::string getTypeName() = 0;
 			
 			

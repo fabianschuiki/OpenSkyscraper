@@ -1,15 +1,15 @@
 #include "lobby.h"
-#include "tower.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
-Item::Descriptor LobbyItem::descriptor = {
-	Item::kLobbyType,
-	Item::kStructureGroup,
-	Item::kFacilityCategory,
+ItemDescriptor LobbyItem::descriptor = {
+	kLobbyType,
+	kStructureGroup,
+	kFacilityCategory,
 	1,
-	(Item::kFlexibleWidthAttribute | Item::kEvery15thFloorAttribute | Item::kNotBelowGroundAttribute),
+	(ItemAttributes)(kFlexibleWidthAttribute | kEvery15thFloorAttribute | kNotBelowGroundAttribute),
 	5000, 
 	int2(1, 1),
 	int2(4, 1)
@@ -64,7 +64,7 @@ void LobbyItem::initEntrances()
 {
 	//Setup the two entrance sprites
 	for (int i = 0; i < 2; i++) {
-		outsideEntrances[i].texture = Texture::named("simtower/decoration/entrance");
+		outsideEntrances[i].texture = Engine::Texture::named("simtower/decoration/entrance");
 		outsideEntrances[i].textureRect = rectd(i * 0.5, 0, 0.5, 1);
 	}
 	
@@ -98,7 +98,7 @@ void LobbyItem::updateEntrances()
 	}
 	
 	//Set the inside entrance
-	insideEntrance.texture = Texture::named(getLobbyTextureBaseName() + "/entrance");
+	insideEntrance.texture = Engine::Texture::named(getLobbyTextureBaseName() + "/entrance");
 	insideEntrance.setRect(insideRect);
 }
 
@@ -117,7 +117,7 @@ void LobbyItem::initBackground()
 		
 	//Load the background sprite
 	backgrounds[0].autoTexRectX = true;
-	backgrounds[0].textureMode = Sprite::kRepeatTextureMode;
+	backgrounds[0].textureMode = Engine::Sprite::kRepeatTextureMode;
 }
 
 void LobbyItem::updateBackground()
@@ -125,7 +125,7 @@ void LobbyItem::updateBackground()
 	FacilityItem::updateBackground();
 	
 	//Update the background sprite
-	backgrounds[0].texture = Texture::named(getLobbyTextureBaseName() + "/pattern");
+	backgrounds[0].texture = Engine::Texture::named(getLobbyTextureBaseName() + "/pattern");
 }
 
 

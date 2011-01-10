@@ -12,14 +12,14 @@ using namespace Core;
 #pragma mark Event Handling
 //----------------------------------------------------------------------------------------------------
 
-bool Responder::handleEvent(Base::Event * event)
+bool Core::Responder::handleEvent(Base::Event * event)
 {
 	if (event->isKindOfClass(Class(Event)))
 		return handleCoreEvent((Event *)event);
 	return Base::Responder::handleEvent(event);
 }
 
-bool Responder::handleCoreEvent(Core::Event * event)
+bool Core::Responder::handleCoreEvent(Core::Event * event)
 {
 	if (event->isType(Event::MouseButton))
 		if (eventMouseButton((MouseButtonEvent *)event)) return true;
@@ -35,7 +35,7 @@ bool Responder::handleCoreEvent(Core::Event * event)
 	return false;
 }
 
-bool Responder::eventMouseButton(MouseButtonEvent * event)
+bool Core::Responder::eventMouseButton(MouseButtonEvent * event)
 {
 	if (event->pressed)
 		return eventMouseDown(event);
@@ -43,7 +43,7 @@ bool Responder::eventMouseButton(MouseButtonEvent * event)
 		return eventMouseUp(event);
 }
 
-bool Responder::eventKey(KeyEvent * event)
+bool Core::Responder::eventKey(KeyEvent * event)
 {
 	if (event->pressed)
 		return eventKeyDown(event);

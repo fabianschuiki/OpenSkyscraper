@@ -1,7 +1,7 @@
-#include "occupiableitem.h"
-#include "tower.h"
+#include "occupiable.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -12,7 +12,7 @@ using namespace OSS;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-OccupiableItem::OccupiableItem(Tower * tower, Item::Descriptor * descriptor) : FacilityItem(tower, descriptor)
+OccupiableItem::OccupiableItem(Tower * tower, ItemDescriptor * descriptor) : FacilityItem(tower, descriptor)
 {
 	occupied = false;
 	autooccupyTime = 25;

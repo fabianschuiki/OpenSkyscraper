@@ -1,7 +1,9 @@
 #include "elevatorbackground.h"
+
 #include "elevator.h"
 
 using namespace OSS;
+using namespace Classic;
 
 
 
@@ -13,18 +15,18 @@ using namespace OSS;
 //----------------------------------------------------------------------------------------------------
 
 ElevatorBackground::ElevatorBackground(ElevatorItem * elevator)
-: Texture("elevatorBackground"), elevator(elevator)
+: Engine::Texture("elevatorBackground"), elevator(elevator)
 {
 	assert(elevator);
 	needsUpdate = false;
 	
 	//Fetch the textures
-	backgroundNormal		= Texture::named("simtower/transport/floordigits/one/normal");
-	backgroundHighlighted	= Texture::named("simtower/transport/floordigits/one/highlighted");
-	lsNormal				= Texture::named("simtower/transport/floordigits/two/ls/normal");
-	lsHighlighted			= Texture::named("simtower/transport/floordigits/two/ls/highlighted");
-	msNormal				= Texture::named("simtower/transport/floordigits/two/ms/normal");
-	msHighlighted			= Texture::named("simtower/transport/floordigits/two/ms/highlighted");
+	backgroundNormal		= Engine::Texture::named("simtower/transport/floordigits/one/normal");
+	backgroundHighlighted	= Engine::Texture::named("simtower/transport/floordigits/one/highlighted");
+	lsNormal				= Engine::Texture::named("simtower/transport/floordigits/two/ls/normal");
+	lsHighlighted			= Engine::Texture::named("simtower/transport/floordigits/two/ls/highlighted");
+	msNormal				= Engine::Texture::named("simtower/transport/floordigits/two/ms/normal");
+	msHighlighted			= Engine::Texture::named("simtower/transport/floordigits/two/ms/highlighted");
 }
 
 

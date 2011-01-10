@@ -1,19 +1,19 @@
-#ifndef OSS_ESCALATOR_H
-#define OSS_ESCALATOR_H
+#ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_STAIRSLIKE_ESCALATOR_H
+#define OSS_CLASSIC_ITEMS_TRANSPORTS_STAIRSLIKE_ESCALATOR_H
 
-
-#include "../../general.h"
 #include "stairslike.h"
 
 
 namespace OSS {
-	class EscalatorItem : public StairslikeItem {
-	public:
-		static Item::Descriptor descriptor;
-		
-		//Initialization
-		EscalatorItem(Tower * tower);
-	};
+	namespace Classic {
+		class EscalatorItem : public StairslikeItem {
+		public:
+			static ItemDescriptor descriptor;
+			
+			//Initialization
+			EscalatorItem(Tower * tower);
+		};
+	}
 }
 
 

@@ -4,13 +4,13 @@
 #include "../external.h"
 #include "../responder.h"
 
-#include "route.h"
+#include "../items/itemdescriptor.h"
+#include "background.h"
 
 
 namespace OSS {
 	namespace Classic {
 		class Item;
-		class TransportItem;
 		
 		class Tower : public Responder {
 		public:
@@ -54,10 +54,54 @@ namespace OSS {
 			
 			
 			/**
+			 * Background
+			 */
+		private:
+			Pointer<TowerBackground> background;
+			
+			
+			/**
+			 * Time
+			 */
+		private:
+		public: //TODO: Remove this public thing and make the time private!
+			double time;
+			
+		public:
+			double getTime();				//0..inf
+			void setTime(double t);
+			
+			double getTimeOfDay();
+			
+			unsigned int getDate();
+			unsigned int getDayOfWeek();	//0,1 = WD; 2 = WE
+			unsigned int getQuarter();		//0..3
+			unsigned int getYear();			//0..inf
+			bool isWeekday();
+			bool isWeekend();
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void update();
+			
+			
+			/**
+			 * Drawing
+			 */
+		public:
+			virtual void draw(rectd dirtyRect);
+			
+			
+			/**
 			 * Simulation
 			 */
+		public:
 			void advance(double dt);
 			void advanceTime(double dt);
+			
 			void advanceFacilities(double dt);
 			void advanceTransport(double dt);
 			void advanceBackground(double dt);
@@ -145,9 +189,9 @@ namespace OSS {
 			/**
 			 * Construction
 			 */
-			bool constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect);
-			bool constructItem(Item::Descriptor * descriptor, recti rect);
-			bool checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor, recti rect);
+			bool constructFlexibleWidthItem(ItemDescriptor * descriptor, recti currentRect, recti previousRect);
+			bool constructItem(ItemDescriptor * descriptor, recti rect);
+			bool checkIfRectMeetsDescriptorRequirements(ItemDescriptor * descriptor, recti rect);
 			
 			typedef struct {
 				unsigned int empty;
@@ -164,7 +208,7 @@ namespace OSS {
 			} CellAnalysis;
 			CellAnalysis analyzeCellsInRect(recti rect, rectmaski mask);
 			
-			void insertNewItem(Item::Descriptor * descriptor, recti rect);
+			void insertNewItem(ItemDescriptor * descriptor, recti rect);
 			void eraseItem(Item * item);
 			void eraseItem(unsigned int itemID);
 			void eraseItem(unsigned int itemID, Item * item);
@@ -192,13 +236,7 @@ namespace OSS {
 			
 			bool paused;
 			int debugSpeed;
-			double time;
-			unsigned int date;
-			unsigned int getDayOfWeek();	//0,1 = WD; 2 = WE
-			unsigned int getQuarter();		//0..3
-			unsigned int getYear();			//0..inf
-			bool isWeekday();
-			bool isWeekend();
+			
 			
 			//Rating
 			unsigned short rating;
@@ -230,20 +268,6 @@ namespace OSS {
 		public:
 			bool checkTime(double previousTime, double alarmTime);
 			bool checkTime(double alarmTime);
-			
-			
-			/**
-			 * Pathfinder
-			 */
-			Route * findRoute(recti origin, recti destination);
-		private:
-			typedef struct {
-				unsigned int elevatorsUsed;
-				unsigned int stairsUsed;
-				unsigned int escalatorsUsed;
-			} PathfinderStats;
-			bool findRoute(recti origin, recti destination, TransportItem * transport,
-						   ItemSet usedTransports, PathfinderStats stats, Route * route);
 			
 			
 			/**

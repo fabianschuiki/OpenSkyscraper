@@ -1,22 +1,22 @@
-#ifndef OSS_STAIRS_H
-#define OSS_STAIRS_H
+#ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_STAIRSLIKE_STAIRS_H
+#define OSS_CLASSIC_ITEMS_TRANSPORTS_STAIRSLIKE_STAIRS_H
 
-
-#include "../../general.h"
 #include "stairslike.h"
 
 
 namespace OSS {
-	class StairsItem : public StairslikeItem {
-	public:
-		static Item::Descriptor descriptor;
-		
-		//Initialization
-		StairsItem(Tower * tower);
-		
-		//Basic Sprites
-		void updateBackground();
-	};
+	namespace Classic {
+		class StairsItem : public StairslikeItem {
+		public:
+			static ItemDescriptor descriptor;
+			
+			//Initialization
+			StairsItem(Tower * tower);
+			
+			//Basic Sprites
+			void updateBackground();
+		};
+	}
 }
 
 

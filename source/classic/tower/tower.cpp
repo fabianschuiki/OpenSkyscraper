@@ -1,7 +1,6 @@
 #include "tower.h"
 
 #include "../items/item.h"
-#include "../../resources/sound.h"
 
 using namespace OSS;
 using namespace Classic;
@@ -21,10 +20,16 @@ Tower::Tower() : Responder()
 	ceilingHeight = 12;
 	cellSize = int2(8, 24 + ceilingHeight);
 	
+	//Initialize the tower background
+	background = new TowerBackground(this);
+	
+	
+	//--- old stuff
+	
 	//Initialize various components
-	initBackground();
+	//initBackground();
 	initEnvironment();
-	initConstruction();
+	//initConstruction();
 	
 	//Initialize the timer
 	previousTime = time;
@@ -39,7 +44,7 @@ void Tower::initBackground()
 {
 	//Initialize the ground sprite
 	groundSprite = new Engine::Sprite;
-	groundSprite->texture = Texture::named("simtower/background/ground");
+	groundSprite->texture = Engine::Texture::named("simtower/background/ground");
 	groundSprite->rect = rectd(-800, -360, 1600, 360);
 	groundSprite->textureMode = Engine::Sprite::kRepeatTextureMode;
 	groundSprite->autoTexRectX = true;
@@ -57,23 +62,23 @@ void Tower::initBackground()
 	
 	//Initialize the city sprite
 	citySprite = new Engine::Sprite;
-	citySprite->texture = Texture::named("simtower/background/city");
+	citySprite->texture = Engine::Texture::named("simtower/background/city");
 	citySprite->rect = rectd(-800, 0, 1600, 55);
 	citySprite->textureMode = Engine::Sprite::kRepeatTextureMode;
 	citySprite->autoTexRectX = true;
 	
 	//Initialize the crane sprite
 	craneSprite = new Engine::Sprite;
-	craneSprite->texture = Texture::named("simtower/decoration/crane");
+	craneSprite->texture = Engine::Texture::named("simtower/decoration/crane");
 	craneSprite->rect.size = double2(36, 36);
 	
 	//Initialize the birds morning sound effect
-	birdsMorningSound.sound = Sound::named("simtower/background/birds/morning");
+	birdsMorningSound.sound = Engine::Sound::named("simtower/background/birds/morning");
 	birdsMorningSound.loopCount = 2;
 	birdsMorningSound.copyBeforeUse = true;
 	
 	//Initialize the rain sound effect
-	rainSound.sound = Sound::named("simtower/background/rain");
+	rainSound.sound = Engine::Sound::named("simtower/background/rain");
 	rainSound.loopInfinitely = true;
 	
 	//Set sky state
@@ -87,13 +92,13 @@ void Tower::initEnvironment()
 {
 	//Initialize the basic environment variables
 	time = 5.0;
-	date = 0;
+	//date = 0;
 	rating = 1;
 	funds = 2e6;
 	population = 0;
 	
 	//Initialize the funds transfer sound effect
-	fundsTransferSound.sound = Sound::named("simtower/cash");
+	fundsTransferSound.sound = Engine::Sound::named("simtower/cash");
 	fundsTransferSound.layer = Engine::SoundEffect::kTopLayer;
 	fundsTransferSound.minIntervalBetweenPlaybacks = 0.1;
 	fundsTransferSound.loopCount = 2;
@@ -106,7 +111,7 @@ void Tower::initConstruction()
 	constructionsHalted = false;
 	
 	//Initialize the flexible construction sound effect
-	constructionSoundFlexible.sound = Sound::named("simtower/construction/flexible");
+	constructionSoundFlexible.sound = Engine::Sound::named("simtower/construction/flexible");
 	constructionSoundFlexible.layer = Engine::SoundEffect::kTopLayer;
 	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.4;
 	constructionSoundFlexible.copyBeforeUse = true;
@@ -175,6 +180,93 @@ void Tower::onChangeTransportItems()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Time
+//----------------------------------------------------------------------------------------------------
+
+double Tower::getTime()
+{
+	return time;
+}
+
+void Tower::setTime(double t)
+{
+	if (time != t) {
+		time = t;
+		background->updateIfNeeded.setNeeded();
+	}
+}
+
+double Tower::getTimeOfDay()
+{
+	return fmod(getTime(), 24);
+}
+
+unsigned int Tower::getDate()
+{
+	return (getTimeOfDay() / 24);
+}
+
+unsigned int Tower::getDayOfWeek()
+{
+	return (getDate() % 3);
+}
+
+unsigned int Tower::getQuarter()
+{
+	return ((getDate() / 3) % 4);
+}
+
+unsigned int Tower::getYear()
+{
+	return (getDate() / 12);
+}
+
+bool Tower::isWeekday()
+{
+	return (getDayOfWeek() < 2);
+}
+
+bool Tower::isWeekend()
+{
+	return (getDayOfWeek() == 2);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
+
+void Tower::update()
+{
+	//Update the background
+	background->updateIfNeeded();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
+//----------------------------------------------------------------------------------------------------
+
+void Tower::draw(rectd dirtyRect)
+{
+	//Draw the background
+	background->draw(dirtyRect);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
@@ -182,8 +274,11 @@ void Tower::advance(double dt)
 {
 	if (paused) return;
 	
-	//Advance the environment
+	//Advance the time
 	advanceTime(dt);
+	
+	//Advance the background
+	background->advance(dt);
 	
 	//Advance the tower itself
 	advanceFacilities(dt);
@@ -205,15 +300,8 @@ void Tower::advanceTime(double dt)
 	
 	//Advance the game time
 	previousTime = previousTimeBuffer;
-	time += dt * timeSpeed;
-	if (time > 24) {
-		dateAdvanced = true;
-		time -= 24;
-		date++;
-	} else {
-		dateAdvanced = false;
-	}
-	previousTimeBuffer = time;
+	setTime(getTime() + dt * timeSpeed);
+	previousTimeBuffer = getTime();
 }
 
 void Tower::advanceFacilities(double dt)
@@ -244,20 +332,20 @@ void Tower::advanceBackground(double dt)
 	
 	//Carking cock in the morning
 	if (checkTime(5.5))
-		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/cock"),
-											  SoundEffect::kTopLayer);
+		Engine::Audio::getCurrent()->play(Engine::Sound::named("simtower/background/cock"),
+										  Engine::SoundEffect::kTopLayer);
 	
 	//Birds
 	if (checkTime(6.0))
-		Engine::shared()->audioTask.addSoundEffect(&birdsMorningSound);
+		Engine::Audio::getCurrent()->play(&birdsMorningSound);
 	if (checkTime(18.0))
-		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/birds/evening"),
-											  SoundEffect::kTopLayer);
+		Engine::Audio::getCurrent()->play(Engine::Sound::named("simtower/background/birds/evening"),
+										  Engine::SoundEffect::kTopLayer);
 	
 	//Bells at 10 o'clock
 	if (checkTime(10.0))
-		Engine::shared()->audioTask.playSound(Sound::named("simtower/background/bells"),
-											  SoundEffect::kTopLayer);
+		Engine::Audio::getCurrent()->play(Engine::Sound::named("simtower/background/bells"),
+										  Engine::SoundEffect::kTopLayer);
 	
 	//Sky State
 	if (time < 5 || time >= 19)
@@ -287,7 +375,7 @@ void Tower::advanceBackground(double dt)
 	if (isRainyDay) {
 		//Start and stop the rain sound effect
 		if (checkTime(8))
-			Engine::shared()->audioTask.addSoundEffect(&rainSound);
+			Engine::Audio::getCurrent()->play(&rainSound);
 		if (checkTime(16))
 			rainSound.stop();
 		
@@ -298,8 +386,8 @@ void Tower::advanceBackground(double dt)
 		//Decrease the thunder countdown and play the sound effect if appropriate
 		nextThunderCountdown -= dt;
 		if (time >= 8 && time < 16 && nextThunderCountdown <= 0) {
-			Engine::shared()->audioTask.playSound(Sound::named("simtower/background/thunder"),
-												  SoundEffect::kTopLayer);
+			Engine::Audio::getCurrent()->play(Engine::Sound::named("simtower/background/thunder"),
+											  Engine::SoundEffect::kTopLayer);
 			nextThunderCountdown = randd(3, 15.0);
 			OSSObjectLog << "next thunder in " << nextThunderCountdown << "s" << std::endl;
 		}
@@ -396,7 +484,7 @@ void Tower::updateSkySpriteTextures(unsigned int stateIndex)
 		}
 		
 		//Load the appropriate texture
-		skySprites[i][stateIndex]->texture = Texture::named(textureName);
+		skySprites[i][stateIndex]->texture = Engine::Texture::named(textureName);
 	}
 }
 
@@ -471,12 +559,12 @@ Tower::Cell * Tower::getCell(int2 coordinates, bool createIfInexistent)
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti currentRect, recti previousRect)
+bool Tower::constructFlexibleWidthItem(ItemDescriptor * descriptor, recti currentRect, recti previousRect)
 {
 	OSSObjectLog << "attempting construction of " << descriptor->type << " from " << previousRect.description() << " to " << currentRect.description() << std::endl;
 	
 	//Check whether the basic construction limitations are given
-	if ((descriptor->attributes & Item::kEvery15thFloorAttribute) && (currentRect.origin.y % 15) != 0) {
+	if ((descriptor->attributes & kEvery15thFloorAttribute) && (currentRect.origin.y % 15) != 0) {
 		OSSObjectError << "failed because only every 15th floor" << std::endl;
 		return false;
 	}
@@ -549,7 +637,7 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	if (i < descriptor->minUnit.x) return false;
 	
 	//Calculate the cost of this construction
-	double cost = floorCellsRequired * Item::descriptorForItemType(Item::kFloorType)->price;
+	double cost = floorCellsRequired * Item::descriptorForItemType(kFloorType)->price;
 	cost += itemCellsRequired * descriptor->price;
 	
 	//Check whether the money is available...
@@ -613,12 +701,12 @@ bool Tower::constructFlexibleWidthItem(Item::Descriptor * descriptor, recti curr
 	insertNewItem(descriptor, itemRect);
 	
 	//Play the construction sound
-	Engine::shared()->audioTask.addSoundEffect(&constructionSoundFlexible);
+	Engine::Audio::getCurrent()->play(&constructionSoundFlexible);
 	
 	return true;
 }
 
-bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
+bool Tower::constructItem(ItemDescriptor * descriptor, recti rect)
 {
 	//Check whether the rect meets the descriptor's requirements
 	if (!checkIfRectMeetsDescriptorRequirements(descriptor, rect))
@@ -631,7 +719,7 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	//Perform category-specific checks
 	switch (descriptor->category) {
 			//Facility items
-		case Item::kFacilityCategory: {
+		case kFacilityCategory: {
 			//If the item is being built above ground the number of occupied cells below must match the
 			//rect's width.
 			if (rect.minY() >= 0 && analysis.facilityCellsBelow != rect.size.x) {
@@ -653,7 +741,7 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 		} break;
 			
 			//Transport items
-		case Item::kTransportCategory: {
+		case kTransportCategory: {
 			//The transport item must be entirely covered by facilities
 			if (analysis.all.facility != rect.area()) {
 				OSSObjectError << "not entirely occupied by facilities" << std::endl;
@@ -673,42 +761,42 @@ bool Tower::constructItem(Item::Descriptor * descriptor, recti rect)
 	
 	//Withdraw funds
 	long costs = descriptor->price;
-	costs += analysis.masked.empty * Item::descriptorForItemType(Item::kFloorType)->price;
+	costs += analysis.masked.empty * Item::descriptorForItemType(kFloorType)->price;
 	transferFunds(-costs);
 	
 	//Play the construction sound
-	Engine::shared()->audioTask.playSound(Sound::named("simtower/construction/normal"),
-										  SoundEffect::kTopLayer);
+	Engine::Audio::getCurrent()->play(Engine::Sound::named("simtower/construction/normal"),
+									  Engine::SoundEffect::kTopLayer);
 	
 	return true;
 }
 
-bool Tower::checkIfRectMeetsDescriptorRequirements(Item::Descriptor * descriptor, recti rect)
+bool Tower::checkIfRectMeetsDescriptorRequirements(ItemDescriptor * descriptor, recti rect)
 {
 	switch (descriptor->category) {
 			//Facility limitations
-		case Item::kFacilityCategory: {
-			if (!(descriptor->attributes & Item::kAllowedOnGroundAttribute) &&
+		case kFacilityCategory: {
+			if (!(descriptor->attributes & kAllowedOnGroundAttribute) &&
 				rect.maxY() >= 1 && rect.minY() <= 0) {
 				OSSObjectError << "not allowed on ground level" << std::endl;
 				return false;
 			}
-			if ((descriptor->attributes & Item::kNotAboveGroundAttribute) && rect.maxY() > 0) {
+			if ((descriptor->attributes & kNotAboveGroundAttribute) && rect.maxY() > 0) {
 				OSSObjectError << "above ground not allowed" << std::endl;
 				return false;
 			}
-			if ((descriptor->attributes & Item::kNotBelowGroundAttribute) && rect.minY() < 0) {
+			if ((descriptor->attributes & kNotBelowGroundAttribute) && rect.minY() < 0) {
 				OSSObjectError << "below ground not allowed" << std::endl;
 				return false;
 			}
-			if ((descriptor->attributes & Item::kEvery15thFloorAttribute) && (rect.origin.y % 15) != 0) {
+			if ((descriptor->attributes & kEvery15thFloorAttribute) && (rect.origin.y % 15) != 0) {
 				OSSObjectError << "only every 15th floor allowed" << std::endl;
 				return false;
 			}
 		} break;
 			
 			//Transport limitations
-		case Item::kTransportCategory: {
+		case kTransportCategory: {
 		} break;
 	}
 	return true;
@@ -755,7 +843,7 @@ Tower::CellAnalysis Tower::analyzeCellsInRect(recti rect, rectmaski mask)
 				analysis.all.empty++;
 				if (masked) analysis.masked.empty++;
 			}
-			else if (facilityItems[cell->facility]->descriptor->type == Item::kFloorType) {
+			else if (facilityItems[cell->facility]->descriptor->type == kFloorType) {
 				analysis.all.floor++;
 				if (masked) analysis.masked.floor++;
 			}
@@ -784,7 +872,7 @@ Tower::CellAnalysis Tower::analyzeCellsInRect(recti rect, rectmaski mask)
  * construction-related stuff like validation, funds transfer, etc. is accomplished. Use the
  * construct* functions instead.
  */
-void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
+void Tower::insertNewItem(ItemDescriptor * descriptor, recti rect)
 {
 	//Fetch a new item ID
 	unsigned int itemID = nextItemID();
@@ -799,8 +887,8 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 			if (!descriptor->mask.containsPoint(point - rect.origin)) continue;
 			Cell * cell = getCell(point, true);
 			switch (descriptor->category) {
-				case Item::kFacilityCategory:	cell->facility	= itemID; break;
-				case Item::kTransportCategory:	cell->transport	= itemID; break;
+				case kFacilityCategory:		cell->facility	= itemID; break;
+				case kTransportCategory:	cell->transport	= itemID; break;
 			}
 		}
 	}
@@ -810,12 +898,12 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	ItemIDMap * idMap = NULL;
 	ItemFloorMap * floorMap = NULL;
 	switch (descriptor->category) {
-		case Item::kFacilityCategory: {
+		case kFacilityCategory: {
 			idMap = &facilityItems;
 			floorMap = &facilityItemsByFloor;
 			item->setUnderConstruction(true);
 		} break;
-		case Item::kTransportCategory: {
+		case kTransportCategory: {
 			idMap = &transportItems;
 			floorMap = &transportItemsByFloor;
 		} break;
@@ -842,7 +930,7 @@ void Tower::insertNewItem(Item::Descriptor * descriptor, recti rect)
 	bounds.unify(rect);
 	
 	//Post a notification
-	if (descriptor->category == Item::kTransportCategory)
+	if (descriptor->category == kTransportCategory)
 		onChangeTransportItems();
 }
 
@@ -889,31 +977,6 @@ bool Tower::didDateAdvance()
 	return dateAdvanced;
 }
 
-unsigned int Tower::getDayOfWeek()
-{
-	return (date % 3);
-}
-
-unsigned int Tower::getQuarter()
-{
-	return ((date / 3) % 4);
-}
-
-unsigned int Tower::getYear()
-{
-	return (date / 12);
-}
-
-bool Tower::isWeekday()
-{
-	return (getDayOfWeek() < 2);
-}
-
-bool Tower::isWeekend()
-{
-	return (getDayOfWeek() == 2);
-}
-
 unsigned int Tower::getLobbyStyle()
 {
 	if (rating >= 4)
@@ -926,7 +989,7 @@ unsigned int Tower::getLobbyStyle()
 void Tower::transferFunds(long amount)
 {
 	funds += amount;
-	Engine::shared()->audioTask.addSoundEffect(&fundsTransferSound);
+	Engine::Audio::getCurrent()->play(&fundsTransferSound);
 }
 
 
@@ -946,103 +1009,6 @@ bool Tower::checkTime(double previousTime, double alarmTime)
 bool Tower::checkTime(double alarmTime)
 {
 	return checkTime(previousTime, alarmTime);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Pathfinder
-//----------------------------------------------------------------------------------------------------
-
-Route * Tower::findRoute(recti origin, recti destination)
-{
-	Route * route = new Route(this);
-	route->origin = origin;
-	route->destination = destination;
-	route->autorelease();
-	
-	if (!findRoute(origin, destination, NULL, ItemSet(), PathfinderStats(), route))
-		route = NULL;
-	
-	return route;
-}
-
-bool Tower::findRoute(recti origin, recti destination, TransportItem * transport,
-					  ItemSet usedTransports, PathfinderStats stats, Route * route)
-{
-	//If there is no transport and the origin and destination are on the same floor, we already
-	//have a route.
-	if (!transport && origin.minY() == destination.minY())
-		return true;
-	
-	//Check whether the transport connects directly to the destination floor
-	if (transport && transport->connectsToFloor(destination.minY())) {
-		route->addNode(origin, transport, transport->getFloorRect(destination.minY()));
-		return true;
-	}
-	
-	//Fetch the connection floors
-	std::set<int> connectionFloors;
-	if (transport) {
-		connectionFloors = transport->getConnectionFloors();
-		connectionFloors.erase(origin.minY());
-	} else {
-		connectionFloors.insert(origin.minY());
-	}
-	
-	//Update the stats and add this transport to the used ones
-	if (transport) {
-		if (transport->isElevator()) stats.elevatorsUsed++;
-		if (transport->isStairs()) stats.stairsUsed++;
-		if (transport->isEscalator()) stats.escalatorsUsed++;
-		usedTransports.insert(transport);
-	}
-	
-	//Abort if we exceed the stats limits
-	if (stats.elevatorsUsed >= 2 || stats.stairsUsed >= 4 || stats.escalatorsUsed >= 6)
-		return false;
-	
-	//Iterate through the connection floors
-	Pointer<Route> shortestRoute;
-	
-	for (std::set<int>::iterator floor = connectionFloors.begin(); floor != connectionFloors.end(); floor++) {
-		
-		//Find the transports on this floor
-		ItemSet * items = &transportItemsByFloor[*floor];
-		for (ItemSet::iterator item = items->begin(); item != items->end(); item++) {
-			TransportItem * t = (TransportItem *)((Item *)*item);
-			
-			//Skip transports we've already used
-			if (usedTransports.count(t))
-				continue;
-			
-			//Skip elevators if we aren't on a lobby and connecting from a previous transport
-			if (t->isElevator() && (*floor % 15) != 0 && transport)
-				continue;
-			
-			//Create a new temporary route
-			Pointer<Route> newRoute = new Route(*route);
-			if (transport)
-				newRoute->addNode(origin, transport, transport->getFloorRect(*floor));
-			
-			//Find routes using this transport
-			//OSSObjectLog << "finding routes using " << t->description() << std::endl;
-			if (findRoute(t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute))
-				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
-					shortestRoute = newRoute;
-		}
-	}
-	
-	//If we have found a route, copy it to the old one
-	if (shortestRoute) {
-		*route = *shortestRoute;
-		return true;
-	}
-	
-	return false;
 }
 
 
