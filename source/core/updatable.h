@@ -25,6 +25,8 @@ namespace OSS {
 		public:
 			template <class T> class Conditional {
 			private:
+				Conditional<T> * parent;
+				
 				T * const object;
 				typedef void (T::*functionType)();
 				functionType const function;
@@ -33,10 +35,12 @@ namespace OSS {
 				
 			public:
 				Conditional(T * object, functionType function) :
-				object(object), function(function), needed(true) {}
+				object(object), function(function), parent(NULL), needed(true) {}
+				Conditional(T * object, functionType function, Conditional<T> * parent) :
+				object(object), function(function), parent(parent), needed(true) {}
 				
 				bool isNeeded() { return needed; }
-				void setNeeded() { needed = true; }
+				void setNeeded() { needed = true; if (parent) parent->setNeeded(); }
 				
 				void execute() { needed = false; (object->*function)(); }
 				void operator ()() { if (needed) execute(); }
