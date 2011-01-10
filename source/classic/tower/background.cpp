@@ -131,7 +131,9 @@ void TowerBackground::updateSkyTextures()
 			targetVariant = "overcast";
 		} break;
 		case Rain: {
-			currentVariant = "rain";
+			std::stringstream s;
+			s << "rain/" << getRainAnimationFrame();
+			currentVariant = s.str();
 		} break;
 		case Improving: {
 			currentVariant = "overcast";
@@ -148,20 +150,12 @@ void TowerBackground::updateSkyTextures()
 		} break;
 	}
 	
-	//For rainy days, the sky textures have to show a rain animation, yet the clouds don't
-	std::string currentSkyVariant = currentVariant;
-	if (skyState == Rain) {
-		char index[3];
-		sprintf(index, "/%i", getRainAnimationFrame());
-		currentSkyVariant += index;
-	}
-	
 	//Load the required sky textures
 	for (unsigned int i = 0; i < 10; i++) {
 		
 		//Current
-		if (currentSkyVariant.size())
-			currentSkyTextures[i] = Engine::Texture::named(getSkyTextureName(i, currentSkyVariant));
+		if (currentVariant.size())
+			currentSkyTextures[i] = Engine::Texture::named(getSkyTextureName(i, currentVariant));
 		else
 			currentSkyTextures[i] = NULL;
 		
@@ -172,8 +166,12 @@ void TowerBackground::updateSkyTextures()
 			targetSkyTextures[i] = NULL;
 	}
 	
+	//Clouds don't have rain animation, so they're always showing overcast
+	if (skyState == Rain)
+		currentVariant = "overcast";
+	
 	//Load the required cloud textures
-	for (unsigned int i = 0; i < 6; i++) {
+	for (unsigned int i = 0; i < 4; i++) {
 		
 		//Current
 		if (currentVariant.size())
@@ -228,6 +226,33 @@ void TowerBackground::drawSky(rectd dirtyRect)
 		quad.state1.texture = targetSkyTextures[y];
 		quad.autogenerateTextureRect(true, false);
 		quad.draw();
+	}
+	
+	//Draw the clouds
+	const int2 cloudGrid(250, 100);
+	for (int x = dirtyRect.minX() / cloudGrid.x; x <= dirtyRect.maxX() / cloudGrid.x; x++) {
+		for (int y = dirtyRect.minY() / cloudGrid.y; y <= dirtyRect.maxY() / cloudGrid.y; y++) {
+			
+			//Decide whether to draw a cloud here at all
+			if (!hasCloudAt(int2(x, y)))
+				continue;
+			
+			//Decide what cloud texture to use
+			unsigned int textureIndex = (cloudNoise(x, y) + 1.0) * 2;
+			
+			Engine::Texture * texture0 = currentCloudTextures[textureIndex];
+			Engine::Texture * texture1 = targetCloudTextures[textureIndex];
+			if (!texture0 || !texture1)
+				continue;
+			
+			//Draw the quad
+			Engine::InterpolatedTextureQuad quad;
+			quad.rect = rectd(double2(x, y) * cloudGrid, texture0->size);
+			quad.rect.origin -= quad.rect.size / 2;
+			quad.state0.texture = texture0;
+			quad.state1.texture = texture1;
+			quad.draw();
+		}
 	}
 }
 
@@ -331,6 +356,19 @@ void TowerBackground::setRainAnimationFrame(unsigned int frame)
 		rainAnimationFrame = frame;
 		updateSkyTexturesIfNeeded.setNeeded();
 	}
+}
+
+bool TowerBackground::hasCloudAt(double2 location)
+{
+	return (cloudNoise(location.x, location.y) > 0.75);
+}
+
+double TowerBackground::cloudNoise(double x, double y)
+{
+	int n=(int)x+(int)y*57;
+	n=(n<<13)^n;
+	int nn=(n*(n*n*60493+19990303)+1376312589)&0x7fffffff;
+	return 1.0-((double)nn/1073741824.0);
 }
 
 

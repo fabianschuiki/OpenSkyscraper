@@ -409,7 +409,7 @@ void SimTower::postprocessTexture(std::string resourceName,
 	std::string textureName = texturePrefix + resourceName;
 	
 	//Sky textures
-	if (resourceName.find("background/sky") == 0) {
+	if (resourceName.find("background/sky") == 0 || resourceName.find("background/cloud") == 0) {
 		//Load the image
 		ILuint sky = ilGenImage();
 		ilBindImage(sky);
@@ -549,19 +549,23 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 	Texture * overcast = Texture::named(textureName + "/overcast");
 	overcast->assignLoadedImage(ilCloneCurImage());
 	
-	//Create the rain textures
-	for (int i = 0; i < 6; i++) {
-		sky[i] = brightDrops[i] = darkColors[i];
-		darkDrops[i] = brightColors[i];
+	//Create the rain textures if this is is a sky slice and not a cloud
+	Texture * rain0 = NULL;
+	Texture * rain1 = NULL;
+	if (textureName.find("background/sky") != std::string::npos) {
+		for (int i = 0; i < 6; i++) {
+			sky[i] = brightDrops[i] = darkColors[i];
+			darkDrops[i] = brightColors[i];
+		}
+		rain0 = Texture::named(textureName + "/rain/0");
+		rain0->assignLoadedImage(ilCloneCurImage());
+		for (int i = 0; i < 6; i++) {
+			sky[i] = darkDrops[i] = darkColors[i];
+			brightDrops[i] = brightColors[i];
+		}
+		rain1 = Texture::named(textureName + "/rain/1");
+		rain1->assignLoadedImage(ilCloneCurImage());
 	}
-	Texture * rain0 = Texture::named(textureName + "/rain/0");
-	rain0->assignLoadedImage(ilCloneCurImage());
-	for (int i = 0; i < 6; i++) {
-		sky[i] = darkDrops[i] = darkColors[i];
-		brightDrops[i] = brightColors[i];
-	}
-	Texture * rain1 = Texture::named(textureName + "/rain/1");
-	rain1->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the twilight texture
 	applyReplacementPalette(0x3E9);
@@ -576,6 +580,15 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 		darkDrops[i] = brightDrops[i] = sky[i];
 	Texture * night = Texture::named(textureName + "/night");
 	night->assignLoadedImage(ilCloneCurImage());
+	
+	//Cloud textures require transparency
+	Texture * textures[4] = {day, overcast, twilight, night};
+	if (textureName.find("background/cloud") != std::string::npos) {
+		for (unsigned int i = 0; i < 4; i++) {
+			textures[i]->useTransparentColor = true;
+			//textures[i]->transparentColors.push_back((color3d){});
+		}
+	}
 	
 	//Dump the textures
 	dumpTexture(day);
@@ -791,6 +804,7 @@ std::string SimTower::getDumpPath(std::string type, std::string name)
 
 void SimTower::dumpTexture(Texture * texture)
 {
+	if (!texture) return;
 	ilBindImage(texture->tempImage);
 	ilSaveImage(getDumpPath("textures", texture->name.substr(9) + ".bmp").c_str());
 }

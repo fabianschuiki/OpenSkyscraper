@@ -96,6 +96,9 @@ namespace OSS {
 			unsigned int getRainAnimationFrame();
 			void setRainAnimationFrame(unsigned int frame);
 			
+			bool hasCloudAt(double2 location);
+			double cloudNoise(double x, double y);
+			
 			
 			/**
 			 * Ground

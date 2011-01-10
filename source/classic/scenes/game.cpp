@@ -30,6 +30,8 @@ Engine::Scene(engine), tower(tower)
 	
 	//Initialize the GUI
 	//gui = new GUI(this);
+	
+	POI.y = 200;
 }
 
 
