@@ -61,6 +61,9 @@ namespace OSS {
 			Pointer<Engine::Texture> currentSkyTextures[10];
 			Pointer<Engine::Texture> targetSkyTextures[10];
 			
+			Pointer<Engine::Texture> currentCloudTextures[6];
+			Pointer<Engine::Texture> targetCloudTextures[6];
+			
 			double skyInterpolation;
 			
 			typedef enum {
@@ -80,6 +83,7 @@ namespace OSS {
 			
 		public:
 			std::string getSkyTextureName(unsigned int index, std::string variant);
+			std::string getCloudTextureName(unsigned int index, std::string variant);
 			
 			double getSkyInterpolation();
 			void setSkyInterpolation(double f);

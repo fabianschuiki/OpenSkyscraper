@@ -131,9 +131,7 @@ void TowerBackground::updateSkyTextures()
 			targetVariant = "overcast";
 		} break;
 		case Rain: {
-			std::stringstream n;
-			n << "rain/" << getRainAnimationFrame();
-			currentVariant = n.str();
+			currentVariant = "rain";
 		} break;
 		case Improving: {
 			currentVariant = "overcast";
@@ -150,12 +148,20 @@ void TowerBackground::updateSkyTextures()
 		} break;
 	}
 	
-	//Load the required textures
+	//For rainy days, the sky textures have to show a rain animation, yet the clouds don't
+	std::string currentSkyVariant = currentVariant;
+	if (skyState == Rain) {
+		char index[3];
+		sprintf(index, "/%i", getRainAnimationFrame());
+		currentSkyVariant += index;
+	}
+	
+	//Load the required sky textures
 	for (unsigned int i = 0; i < 10; i++) {
 		
 		//Current
-		if (currentVariant.size())
-			currentSkyTextures[i] = Engine::Texture::named(getSkyTextureName(i, currentVariant));
+		if (currentSkyVariant.size())
+			currentSkyTextures[i] = Engine::Texture::named(getSkyTextureName(i, currentSkyVariant));
 		else
 			currentSkyTextures[i] = NULL;
 		
@@ -164,6 +170,22 @@ void TowerBackground::updateSkyTextures()
 			targetSkyTextures[i] = Engine::Texture::named(getSkyTextureName(i, targetVariant));
 		else
 			targetSkyTextures[i] = NULL;
+	}
+	
+	//Load the required cloud textures
+	for (unsigned int i = 0; i < 6; i++) {
+		
+		//Current
+		if (currentVariant.size())
+			currentCloudTextures[i] = Engine::Texture::named(getCloudTextureName(i, currentVariant));
+		else
+			currentCloudTextures[i] = NULL;
+		
+		//Target
+		if (targetVariant.size())
+			targetCloudTextures[i] = Engine::Texture::named(getCloudTextureName(i, targetVariant));
+		else
+			targetCloudTextures[i] = NULL;
 	}
 }
 
@@ -255,6 +277,15 @@ std::string TowerBackground::getSkyTextureName(unsigned int index, std::string v
 {
 	std::stringstream name;
 	name << "simtower/background/sky/";
+	name << index << "/";
+	name << variant;
+	return name.str();
+}
+
+std::string TowerBackground::getCloudTextureName(unsigned int index, std::string variant)
+{
+	std::stringstream name;
+	name << "simtower/background/cloud/";
 	name << index << "/";
 	name << variant;
 	return name.str();
