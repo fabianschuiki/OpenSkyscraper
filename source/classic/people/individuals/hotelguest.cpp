@@ -66,7 +66,7 @@ void HotelGuest::think()
 		
 		//Have dinner if it is before 21:00
 		if (!hadDinner) {
-			if (tower->time >= 18.5 && tower->time < 21 && isAt(hotel)) {
+			if (tower->time->getTime() >= 18.5 && tower->time->getTime() < 21 && isAt(hotel)) {
 				OSSObjectLog << "going to have dinner" << std::endl;
 				setNextDestination(NULL, 0.75);
 				return;
@@ -84,10 +84,10 @@ void HotelGuest::think()
 		//Decide when to go to sleep
 		if (!didChooseSleepTime) {
 			//In case it is already the next day, we have to subtract 24h from our sleep times
-			double offset = (tower->time < 6 ? 24 : 0);
+			double offset = (tower->time->getTime() < 6 ? 24 : 0);
 			
 			//Calculate the sleep time
-			sleepTime = randd(std::max<double>(tower->time, 23 - offset), 25.5 - offset);
+			sleepTime = randd(std::max<double>(tower->time->getTime(), 23 - offset), 25.5 - offset);
 			OSSObjectLog << "decided to go to sleep at " << sleepTime << std::endl;
 			setPauseEndTime(sleepTime);
 			didChooseSleepTime = true;
@@ -120,7 +120,7 @@ void HotelGuest::think()
 	}
 	
 	//Leave
-	setNextDestination(randd(tower->time + 0.25, 8), NULL);
+	setNextDestination(randd(tower->time->getTime() + 0.25, 8), NULL);
 	OSSObjectLog << "leaving at " << getNextDestinationTime() << std::endl;
 	assert(getNextDestinationTime() <= 12);
 }

@@ -23,11 +23,15 @@ namespace OSS {
 			 * Simulation
 			 */
 		private:
+			bool rainyDay;
 			double rainAnimation;
 			
 		public:
 			double getRainAnimation();
 			void setRainAnimation(double animation);
+			
+			bool isRainyDay();
+			void setRainyDay(bool rainy);
 			
 			virtual void advance(double dt);
 			

@@ -83,7 +83,7 @@ void OccupiableItem::resetOccupancyAutomation()
 
 void OccupiableItem::updateOccupancyAutomation()
 {
-	if (tower->time >= getAutooccupyTime())
+	if (tower->time->getTime() >= getAutooccupyTime())
 		setOccupied(true);
 }
 

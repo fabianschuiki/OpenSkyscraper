@@ -73,7 +73,7 @@ void OfficeItem::setVacant(const bool vacant)
 		this->vacant = vacant;
 		
 		//Transfer some funds
-		tower->transferFunds(vacant ? -10000 : 10000);
+		tower->funds->transfer(vacant ? -10000 : 10000);
 		
 		//Populate or clear the office
 		if (vacant)
@@ -112,7 +112,7 @@ void OfficeItem::updateBackground()
 	}
 	
 	//Choose between day and night texture
-	if (tower && (tower->time < 7 || tower->time >= 17))
+	if (tower && (tower->time->getTime() < 7 || tower->time->getTime() >= 17))
 		backgrounds[0].textureRect.origin.x += backgrounds[0].textureRect.size.x;
 }
 
@@ -137,10 +137,10 @@ void OfficeItem::advance(double dt)
 			occupancyTime = 0;
 		
 		//Check whether it is time for occupancy operations
-		if (tower->time >= 7 && tower->time < 17) {
+		if (tower->time->getTime() >= 7 && tower->time->getTime() < 17) {
 			//If the occupancy time is invalid, set it to a proper value
 			if (occupancyTime < 7 || occupancyTime >= 17) {
-				occupancyTime = randd(tower->time, std::min<double>(tower->time + 2, 17));
+				occupancyTime = randd(tower->time->getTime(), std::min<double>(tower->time->getTime() + 2, 17));
 				OSSObjectLog << "reset occupancy time to " << occupancyTime << std::endl;
 			}
 			
@@ -151,7 +151,7 @@ void OfficeItem::advance(double dt)
 	}
 	
 	//Move out of unattractive offices monday morning
-	if (!isVacant() && !isAttractiveForUse() && tower->getDayOfWeek() == 0 && tower->checkTime(5))
+	if (!isVacant() && !isAttractiveForUse() && tower->time->getDayOfWeek() == 0 && tower->checkTime(5))
 		setVacant(true);
 	
 	//Update worker schedules
@@ -191,42 +191,42 @@ void OfficeItem::advanceWorker(std::string key, TimedPerson * worker)
 	OSSObjectLog << "advancing worker " << key << ": ";
 	
 	//Before 12:00, move to the office
-	if (tower->time < 12) {
+	if (tower->time->getTime() < 12) {
 		if (worker->isAt(this)) {
 			std::cout << "work at office until 12:00";
 			worker->setPauseEndTime(12);
 		} else {
-			worker->setNextDestination(randd(std::max<double>(tower->time, 7), 10), this, 0.25);
+			worker->setNextDestination(randd(std::max<double>(tower->time->getTime(), 7), 10), this, 0.25);
 			std::cout << "go to work at " << worker->getNextDestinationTime();
 		}
 	}
 	
 	//Between 12:00 and 12:45, go have lunch if at the office
-	else if (tower->time >= 12 && tower->time < 12.75 && worker->isAt(this) &&
+	else if (tower->time->getTime() >= 12 && tower->time->getTime() < 12.75 && worker->isAt(this) &&
 			 !worker->boolProps["hadLunch"]) {
-		worker->setNextDestination(randd(tower->time, tower->time + 1/6.0), NULL, 0.25);
+		worker->setNextDestination(randd(tower->time->getTime(), tower->time->getTime() + 1/6.0), NULL, 0.25);
 		std::cout << "go to have lunch at " << worker->getNextDestinationTime();
 	}
 	
 	//Between 12:00 and 17:00, return from lunch after spending 20 minutes there
-	else if (tower->time >= 12 && tower->time < 17) {
+	else if (tower->time->getTime() >= 12 && tower->time->getTime() < 17) {
 		if (worker->isAt(this)) {
 			std::cout << "work at office until 17:00";
 			worker->setPauseEndTime(17);
 		} else {
-			worker->setNextDestination(randd(tower->time, tower->time + 10 / 60.0), this, 0.25);
+			worker->setNextDestination(randd(tower->time->getTime(), tower->time->getTime() + 10 / 60.0), this, 0.25);
 			std::cout << "go back to work at " << worker->getNextDestinationTime();
 			worker->boolProps["hadLunch"] = true;
 		}
 	}
 	
 	//After 17:00, go home
-	else if (tower->time >= 17) {
+	else if (tower->time->getTime() >= 17) {
 		if (worker->isAt(NULL)) {
 			std::cout << "enjoy evening at home";
 			worker->setPauseEndTime(24);
 		} else {
-			worker->setNextDestination(randd(tower->time, 19), NULL);
+			worker->setNextDestination(randd(tower->time->getTime(), 19), NULL);
 			std::cout << "go home at " << worker->getNextDestinationTime();
 		}
 	}

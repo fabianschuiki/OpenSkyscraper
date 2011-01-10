@@ -92,7 +92,7 @@ void ScheduledPerson::updateFromSchedule()
 	if (!getSchedule())
 		return;
 	
-	Schedule::Node * node = getSchedule()->getNodeForTime(tower->time);
+	Schedule::Node * node = getSchedule()->getNodeForTime(tower->time->getTime());
 	if (node != previousNode) {
 		previousNode = node;
 		setDestination(node ? node->destination : NULL);

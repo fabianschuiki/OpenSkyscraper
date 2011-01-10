@@ -124,7 +124,7 @@ void TimedPerson::updateTimedDestination()
 	}
 	
 	//If there's a next destination and the time is right, advance
-	if (isNextDestinationValid() && getNextDestinationTime() <= tower->time) {
+	if (isNextDestinationValid() && getNextDestinationTime() <= tower->time->getTime()) {
 		setDestination(getNextDestination());
 		setPauseDurationAtDestination(getNextDestinationPauseDuration());
 		clearNextDestination();
@@ -159,7 +159,7 @@ void TimedPerson::setPauseDuration(double duration)
 {
 	//if (pauseDuration != duration) {
 	pauseDuration = duration;
-	setPauseEndTime(tower->time + duration);
+	setPauseEndTime(tower->time->getTime() + duration);
 	//}
 }
 
@@ -175,14 +175,14 @@ void TimedPerson::setPauseEndTime(double time)
 
 void TimedPerson::setPauseEndTimeFuture(double time)
 {
-	if (tower->time >= time)
+	if (tower->time->getTime() >= time)
 		time += 24;
 	setPauseEndTime(time);
 }
 
 bool TimedPerson::isPausing()
 {
-	return (tower->time <= getPauseEndTime());
+	return (tower->time->getTime() <= getPauseEndTime());
 }
 
 bool TimedPerson::hasNoPlans()

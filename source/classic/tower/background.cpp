@@ -42,6 +42,18 @@ void TowerBackground::setRainAnimation(double animation)
 	}
 }
 
+bool TowerBackground::isRainyDay()
+{
+	return rainyDay;
+}
+
+void TowerBackground::setRainyDay(bool rainy)
+{
+	if (rainyDay != rainy) {
+		rainyDay = rainy;
+	}
+}
+
 void TowerBackground::advance(double dt)
 {
 	Engine::Object::advance(dt);
@@ -68,7 +80,7 @@ void TowerBackground::update()
 
 void TowerBackground::updateSky()
 {
-	double time = tower->time;
+	double time = tower->time->getTime();
 	
 	//Night
 	if (time < 5 || time >= 19)
@@ -87,7 +99,7 @@ void TowerBackground::updateSky()
 		setSky(LateDusk, (time - 18));
 	
 	//Day
-	else if (!tower->isRainyDay)
+	else if (!isRainyDay())
 		setSky(Day, 0);
 	
 	//Rain

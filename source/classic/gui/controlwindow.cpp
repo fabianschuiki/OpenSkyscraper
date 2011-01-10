@@ -84,8 +84,8 @@ void ControlWindow::drawWatch(rectd visibleRect)
 	double watchRadius = watchRect.size.x / 2;
 	
 	//Calculate the rotation angles of the hour and minute hands
-	double hourHandAngle = 2 * M_PI * (tower->time / 12);
-	double minuteHandAngle = 2 * M_PI * (tower->time);
+	double hourHandAngle = 2 * M_PI * (tower->time->getTime() / 12);
+	double minuteHandAngle = 2 * M_PI * (tower->time->getTime());
 	
 	//Calculate the tip positions of the hands
 	double2 hourTip(sin(hourHandAngle), cos(hourHandAngle));

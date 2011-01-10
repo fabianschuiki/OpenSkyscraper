@@ -137,7 +137,7 @@ void FacilityItem::setLit(bool lit)
 
 bool FacilityItem::shouldBeLitDueToTime()
 {
-	return (tower->time >= 7 && tower->time < 17);
+	return tower->time->isBetween(7, 17);
 }
 
 void FacilityItem::updateLighting()

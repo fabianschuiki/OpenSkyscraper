@@ -313,7 +313,7 @@ void Person::setItem(Item * item)
 		this->item = item;
 		
 		//Update the arrival time
-		setArrivalTime(tower->time);
+		setArrivalTime(tower->time->getTime());
 		
 		//Add person to the new item
 		if (this->item)
@@ -332,7 +332,7 @@ double Person::getArrivalTime()
 	//Wrap around the arrival time if required. If the person arrived yesterday at 17:00 and it is
 	//10:00 today, the time since arrival would be -7h, which makes no sense. Instead it should
 	//read as 17h.
-	if (arrivalTime < tower->time)
+	if (arrivalTime < tower->time->getTime())
 		arrivalTime -= 24;
 	return arrivalTime;
 }
@@ -344,7 +344,7 @@ void Person::setArrivalTime(double time)
 
 double Person::getTimeSinceArrival()
 {
-	return (tower->time - getArrivalTime());
+	return (tower->time->getTime() - getArrivalTime());
 }
 
 bool Person::isAt(Item * item)

@@ -20,101 +20,14 @@ Tower::Tower() : Responder()
 	ceilingHeight = 12;
 	cellSize = int2(8, 24 + ceilingHeight);
 	
-	//Initialize the tower background
+	//Initialize the subsystems
+	time = new TowerTime(this);
+	environment = new TowerEnvironment(this);
+	funds = new TowerFunds(this);
 	background = new TowerBackground(this);
 	
-	
-	//--- old stuff
-	
-	//Initialize various components
-	//initBackground();
-	initEnvironment();
-	//initConstruction();
-	
-	//Initialize the timer
-	previousTime = time;
-	previousTimeBuffer = previousTime;
+	//DEBUG: setup the debug speed
 	debugSpeed = 0;
-	
-	//DEBUG: Initialize the pause state
-	paused = true;
-}
-
-void Tower::initBackground()
-{
-	//Initialize the ground sprite
-	groundSprite = new Engine::Sprite;
-	groundSprite->texture = Engine::Texture::named("simtower/background/ground");
-	groundSprite->rect = rectd(-800, -360, 1600, 360);
-	groundSprite->textureMode = Engine::Sprite::kRepeatTextureMode;
-	groundSprite->autoTexRectX = true;
-	groundSprite->autoTexRectY = true;
-	
-	//Initialize the sky sprites
-	for (int i = 0; i < 10; i++) {
-		for (int n = 0; n < 2; n++) {
-			skySprites[i][n] = new Engine::Sprite;
-			skySprites[i][n]->rect = rectd(-800, i * 360, 1600, 360);
-			skySprites[i][n]->textureMode = Engine::Sprite::kRepeatTextureMode;
-			skySprites[i][n]->autoTexRectX = true;
-		}
-	}
-	
-	//Initialize the city sprite
-	citySprite = new Engine::Sprite;
-	citySprite->texture = Engine::Texture::named("simtower/background/city");
-	citySprite->rect = rectd(-800, 0, 1600, 55);
-	citySprite->textureMode = Engine::Sprite::kRepeatTextureMode;
-	citySprite->autoTexRectX = true;
-	
-	//Initialize the crane sprite
-	craneSprite = new Engine::Sprite;
-	craneSprite->texture = Engine::Texture::named("simtower/decoration/crane");
-	craneSprite->rect.size = double2(36, 36);
-	
-	//Initialize the birds morning sound effect
-	birdsMorningSound.sound = Engine::Sound::named("simtower/background/birds/morning");
-	birdsMorningSound.loopCount = 2;
-	birdsMorningSound.copyBeforeUse = true;
-	
-	//Initialize the rain sound effect
-	rainSound.sound = Engine::Sound::named("simtower/background/rain");
-	rainSound.loopInfinitely = true;
-	
-	//Set sky state
-	rainAnimationTime = 0.0;
-	bzero(skyState, sizeof(skyState) * 2);
-	isRainyDay = false;
-	setSkyState(kDayState);
-}
-
-void Tower::initEnvironment()
-{
-	//Initialize the basic environment variables
-	time = 5.0;
-	//date = 0;
-	rating = 1;
-	funds = 2e6;
-	population = 0;
-	
-	//Initialize the funds transfer sound effect
-	fundsTransferSound.sound = Engine::Sound::named("simtower/cash");
-	fundsTransferSound.layer = Engine::SoundEffect::kTopLayer;
-	fundsTransferSound.minIntervalBetweenPlaybacks = 0.1;
-	fundsTransferSound.loopCount = 2;
-	fundsTransferSound.copyBeforeUse = true;
-}
-
-void Tower::initConstruction()
-{
-	//Initialize the basic construction variables
-	constructionsHalted = false;
-	
-	//Initialize the flexible construction sound effect
-	constructionSoundFlexible.sound = Engine::Sound::named("simtower/construction/flexible");
-	constructionSoundFlexible.layer = Engine::SoundEffect::kTopLayer;
-	constructionSoundFlexible.minIntervalBetweenPlaybacks = 0.4;
-	constructionSoundFlexible.copyBeforeUse = true;
 }
 
 
@@ -180,69 +93,15 @@ void Tower::onChangeTransportItems()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Time
-//----------------------------------------------------------------------------------------------------
-
-double Tower::getTime()
-{
-	return time;
-}
-
-void Tower::setTime(double t)
-{
-	if (time != t) {
-		time = t;
-		background->updateIfNeeded.setNeeded();
-	}
-}
-
-double Tower::getTimeOfDay()
-{
-	return fmod(getTime(), 24);
-}
-
-unsigned int Tower::getDate()
-{
-	return (getTimeOfDay() / 24);
-}
-
-unsigned int Tower::getDayOfWeek()
-{
-	return (getDate() % 3);
-}
-
-unsigned int Tower::getQuarter()
-{
-	return ((getDate() / 3) % 4);
-}
-
-unsigned int Tower::getYear()
-{
-	return (getDate() / 12);
-}
-
-bool Tower::isWeekday()
-{
-	return (getDayOfWeek() < 2);
-}
-
-bool Tower::isWeekend()
-{
-	return (getDayOfWeek() == 2);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
 #pragma mark State
 //----------------------------------------------------------------------------------------------------
 
 void Tower::update()
 {
-	//Update the background
+	//Update the subsystems
+	time->updateIfNeeded();
+	environment->updateIfNeeded();
+	funds->updateIfNeeded();
 	background->updateIfNeeded();
 }
 
@@ -273,35 +132,16 @@ void Tower::draw(rectd dirtyRect)
 void Tower::advance(double dt)
 {
 	if (paused) return;
-	
-	//Advance the time
-	advanceTime(dt);
-	
-	//Advance the background
+		
+	//Advance the subsystems
+	time->advance(dt);
+	environment->advance(dt);
+	funds->advance(dt);
 	background->advance(dt);
-	
-	//Advance the tower itself
-	advanceFacilities(dt);
-	advanceTransport(dt);
-	
-	//Advance the background
-	advanceBackground(dt);
 }
 
 void Tower::advanceTime(double dt)
 {
-	//Decide at what speed the game time should be running
-	double timeSpeed = 0.25;
-	if (time > 1.5 && time < 6.0)
-		timeSpeed = 1;
-	if (time > 12 && time < 13)
-		timeSpeed = 1.0 / 45;
-	timeSpeed *= pow(2, debugSpeed);
-	
-	//Advance the game time
-	previousTime = previousTimeBuffer;
-	setTime(getTime() + dt * timeSpeed);
-	previousTimeBuffer = getTime();
 }
 
 void Tower::advanceFacilities(double dt)
@@ -324,7 +164,7 @@ void Tower::advanceTransport(double dt)
 	}
 }
 
-void Tower::advanceBackground(double dt)
+/*void Tower::advanceBackground(double dt)
 {
 	//Decide whether this is going to be a rainy day
 	if (checkTime(5.0))
@@ -392,7 +232,7 @@ void Tower::advanceBackground(double dt)
 			OSSObjectLog << "next thunder in " << nextThunderCountdown << "s" << std::endl;
 		}
 	}
-}
+}*/
 
 
 
@@ -403,7 +243,7 @@ void Tower::advanceBackground(double dt)
 #pragma mark Background
 //----------------------------------------------------------------------------------------------------
 
-void Tower::renderBackground(rectd visibleRect)
+/*void Tower::renderBackground(rectd visibleRect)
 {
 	//Calculate the rectangles
 	rectd groundRect = visibleRect;
@@ -486,7 +326,7 @@ void Tower::updateSkySpriteTextures(unsigned int stateIndex)
 		//Load the appropriate texture
 		skySprites[i][stateIndex]->texture = Engine::Texture::named(textureName);
 	}
-}
+}*/
 
 
 
@@ -762,7 +602,7 @@ bool Tower::constructItem(ItemDescriptor * descriptor, recti rect)
 	//Withdraw funds
 	long costs = descriptor->price;
 	costs += analysis.masked.empty * Item::descriptorForItemType(kFloorType)->price;
-	transferFunds(-costs);
+	funds->transfer(-costs);
 	
 	//Play the construction sound
 	Engine::Audio::getCurrent()->play(Engine::Sound::named("simtower/construction/normal"),
@@ -922,8 +762,8 @@ void Tower::insertNewItem(ItemDescriptor * descriptor, recti rect)
 	if (rect.minY() >= bounds.maxY()) {
 		int2 origin = rect.origin;
 		origin.y += 1;
-		if (craneSprite)
-			craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);
+		/*if (craneSprite)
+			craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);*/
 	}
 	
 	//Make the bounds cover the newly built item too
@@ -977,7 +817,7 @@ bool Tower::didDateAdvance()
 	return dateAdvanced;
 }
 
-unsigned int Tower::getLobbyStyle()
+/*unsigned int Tower::getLobbyStyle()
 {
 	if (rating >= 4)
 		return 2;
@@ -990,7 +830,7 @@ void Tower::transferFunds(long amount)
 {
 	funds += amount;
 	Engine::Audio::getCurrent()->play(&fundsTransferSound);
-}
+}*/
 
 
 
@@ -1003,7 +843,8 @@ void Tower::transferFunds(long amount)
 
 bool Tower::checkTime(double previousTime, double alarmTime)
 {
-	return (alarmTime > previousTime && alarmTime <= time);
+	//return (alarmTime > previousTime && alarmTime <= time);
+	return false;
 }
 
 bool Tower::checkTime(double alarmTime)

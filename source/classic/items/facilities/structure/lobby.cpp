@@ -45,7 +45,7 @@ std::string LobbyItem::getLobbyTextureBaseName()
 {
 	std::stringstream s;
 	s << "simtower/lobby/single/";
-	s << tower->getLobbyStyle();
+	s << tower->environment->getLobbyStyle();
 	s << "/";
 	s << (getRect().minY() == 0 ? "ground" : "sky");
 	return s.str();

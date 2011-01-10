@@ -262,8 +262,8 @@ bool GameScene::eventKeyDown(SDL_Event * event)
 		case '6':	tower->rating = 6; return true; break;
 			
 			//DEBUG: Change time
-		case 'h':	tower->time += 1; return true; break;
-		case ' ':	tower->time += 0.2; return true; break;
+		case 'h':	tower->time->getTime() += 1; return true; break;
+		case ' ':	tower->time->getTime() += 0.2; return true; break;
 		case 'a':	tower->debugSpeed--; return true; break;
 		case 's':	tower->debugSpeed++; return true; break;
 			

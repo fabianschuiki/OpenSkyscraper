@@ -20,6 +20,9 @@
 		1F0E75DB12D7E07F00C311CC /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E75DA12D7E07F00C311CC /* application.cpp */; };
 		1F0E763612D7EC0A00C311CC /* eventpump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E763512D7EC0A00C311CC /* eventpump.cpp */; };
 		1F0E76CC12D7F91200C311CC /* cruisecontrol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E76CB12D7F91200C311CC /* cruisecontrol.cpp */; };
+		1F21340F12DB62DE00C8CF1D /* time.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21340E12DB62DE00C8CF1D /* time.cpp */; };
+		1F21341512DB647A00C8CF1D /* environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21341412DB647A00C8CF1D /* environment.cpp */; };
+		1F21341912DB677D00C8CF1D /* funds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F21341812DB677D00C8CF1D /* funds.cpp */; };
 		1F21FF3C12008057000A8AC3 /* macosx.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1F21FF3B12008057000A8AC3 /* macosx.mm */; };
 		1F30481612DAA69C0079C29D /* simtower-names.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F30481312DAA69C0079C29D /* simtower-names.cpp */; };
 		1F30481712DAA69C0079C29D /* simtower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F30481412DAA69C0079C29D /* simtower.cpp */; };
@@ -136,6 +139,12 @@
 		1F0E76CA12D7F91200C311CC /* cruisecontrol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cruisecontrol.h; sourceTree = "<group>"; };
 		1F0E76CB12D7F91200C311CC /* cruisecontrol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cruisecontrol.cpp; sourceTree = "<group>"; };
 		1F10A92012D6C0C000A2FF19 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = view.h; sourceTree = "<group>"; };
+		1F21340D12DB62DE00C8CF1D /* time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = time.h; sourceTree = "<group>"; };
+		1F21340E12DB62DE00C8CF1D /* time.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = time.cpp; sourceTree = "<group>"; };
+		1F21341312DB647A00C8CF1D /* environment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = environment.h; sourceTree = "<group>"; };
+		1F21341412DB647A00C8CF1D /* environment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = environment.cpp; sourceTree = "<group>"; };
+		1F21341712DB677D00C8CF1D /* funds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = funds.h; sourceTree = "<group>"; };
+		1F21341812DB677D00C8CF1D /* funds.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = funds.cpp; sourceTree = "<group>"; };
 		1F21FF3B12008057000A8AC3 /* macosx.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = macosx.mm; sourceTree = "<group>"; };
 		1F30481312DAA69C0079C29D /* simtower-names.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "simtower-names.cpp"; sourceTree = "<group>"; };
 		1F30481412DAA69C0079C29D /* simtower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = simtower.cpp; sourceTree = "<group>"; };
@@ -706,12 +715,18 @@
 		1FFFFACE12D8938700FC72B7 /* tower */ = {
 			isa = PBXGroup;
 			children = (
-				1FFFFAFE12D8956000FC72B7 /* route.h */,
-				1FFFFAFD12D8956000FC72B7 /* route.cpp */,
-				1FFFFAD012D8938700FC72B7 /* tower.h */,
-				1FFFFACF12D8938700FC72B7 /* tower.cpp */,
 				1FFFFB8C12D8B65900FC72B7 /* background.h */,
 				1FFFFB8D12D8B65900FC72B7 /* background.cpp */,
+				1F21341312DB647A00C8CF1D /* environment.h */,
+				1F21341412DB647A00C8CF1D /* environment.cpp */,
+				1F21341712DB677D00C8CF1D /* funds.h */,
+				1F21341812DB677D00C8CF1D /* funds.cpp */,
+				1FFFFAFE12D8956000FC72B7 /* route.h */,
+				1FFFFAFD12D8956000FC72B7 /* route.cpp */,
+				1F21340D12DB62DE00C8CF1D /* time.h */,
+				1F21340E12DB62DE00C8CF1D /* time.cpp */,
+				1FFFFAD012D8938700FC72B7 /* tower.h */,
+				1FFFFACF12D8938700FC72B7 /* tower.cpp */,
 			);
 			path = tower;
 			sourceTree = "<group>";
@@ -870,6 +885,9 @@
 				1F30481612DAA69C0079C29D /* simtower-names.cpp in Sources */,
 				1F30481712DAA69C0079C29D /* simtower.cpp in Sources */,
 				1F3048C212DAAC520079C29D /* clamp.cpp in Sources */,
+				1F21340F12DB62DE00C8CF1D /* time.cpp in Sources */,
+				1F21341512DB647A00C8CF1D /* environment.cpp in Sources */,
+				1F21341912DB677D00C8CF1D /* funds.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

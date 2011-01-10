@@ -4,8 +4,11 @@
 #include "../external.h"
 #include "../responder.h"
 
-#include "../items/itemdescriptor.h"
 #include "background.h"
+#include "environment.h"
+#include "funds.h"
+#include "../items/itemdescriptor.h"
+#include "time.h"
 
 
 namespace OSS {
@@ -54,31 +57,13 @@ namespace OSS {
 			
 			
 			/**
-			 * Background
+			 * Subsystems
 			 */
-		private:
-			Pointer<TowerBackground> background;
-			
-			
-			/**
-			 * Time
-			 */
-		private:
-		public: //TODO: Remove this public thing and make the time private!
-			double time;
-			
 		public:
-			double getTime();				//0..inf
-			void setTime(double t);
-			
-			double getTimeOfDay();
-			
-			unsigned int getDate();
-			unsigned int getDayOfWeek();	//0,1 = WD; 2 = WE
-			unsigned int getQuarter();		//0..3
-			unsigned int getYear();			//0..inf
-			bool isWeekday();
-			bool isWeekend();
+			Pointer<TowerTime> time;
+			Pointer<TowerEnvironment> environment;
+			Pointer<TowerFunds> funds;
+			Pointer<TowerBackground> background;
 			
 			
 			/**
@@ -104,34 +89,6 @@ namespace OSS {
 			
 			void advanceFacilities(double dt);
 			void advanceTransport(double dt);
-			void advanceBackground(double dt);
-			
-			
-			/**
-			 * Background
-			 */
-			Pointer<Engine::Sprite> groundSprite;
-			Pointer<Engine::Sprite> skySprites[10][2];
-			Pointer<Engine::Sprite> citySprite;
-			Pointer<Engine::Sprite> craneSprite;
-			void renderBackground(rectd visibleRect);
-			
-			//Sky State
-			typedef enum {
-				kDayState = 1,
-				kTwilightState,
-				kNightState,
-				kOvercastState,
-				kRainState
-			} SkyState;
-			SkyState skyState[2];
-			bool isRainyDay;
-			double rainAnimationTime;
-			unsigned int rainIndex;
-			double nextThunderCountdown;
-			void setSkyState(SkyState state);
-			void setSkyState(SkyState current, SkyState target, double interpolation);
-			void updateSkySpriteTextures(unsigned int stateIndex);
 			
 			
 			/**
@@ -236,19 +193,6 @@ namespace OSS {
 			
 			bool paused;
 			int debugSpeed;
-			
-			
-			//Rating
-			unsigned short rating;
-			unsigned int getLobbyStyle();
-			
-			//Funds
-			long funds;
-			void transferFunds(long amount);
-			
-			//Population
-			int population;
-			void recalculatePopulation();
 			
 			
 			/**

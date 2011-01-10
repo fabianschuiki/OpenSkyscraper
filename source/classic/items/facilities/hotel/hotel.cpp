@@ -278,7 +278,7 @@ bool HotelItem::hasAssignedJanitor()
 void HotelItem::initAutooccupyTime()
 {
 	OSSObjectLog << std::endl;
-	setAutooccupyTime(randd(std::max<double>(tower->time, 17), 21));
+	setAutooccupyTime(randd(std::max<double>(tower->time->getTime(), 17), 21));
 }
 
 void HotelItem::onChangeOccupied()
