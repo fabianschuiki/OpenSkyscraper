@@ -6,6 +6,7 @@
 
 //IO stream library
 #include <iostream>
+#include <sstream>
 #include <string>
 
 //STL Containers
@@ -16,5 +17,8 @@
 #include <set>
 #include <stack>
 #include <vector>
+
+//C-stuff
+#include <math.h>
 
 #endif

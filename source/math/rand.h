@@ -1,7 +1,7 @@
 #ifndef OSS_RAND_H
 #define OSS_RAND_H
 
-#include "../general.h"
+#include "external.h"
 
 
 namespace OSS {

@@ -3,7 +3,7 @@
 
 #include "../external.h"
 
-#include "../gui/gui.h"
+#include "../ui/game.h"
 #include "../tower/tower.h"
 #include "../items/item.h"
 
@@ -22,10 +22,10 @@ namespace OSS {
 			
 			
 			/**
-			 * GUI
+			 * UI
 			 */
 		private:
-			Pointer<GUI> gui;
+			Pointer<GameUI> ui;
 			
 			
 			/**

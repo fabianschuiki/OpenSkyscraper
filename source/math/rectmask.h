@@ -1,9 +1,7 @@
 #ifndef OSS_RECTMASK_H
 #define OSS_RECTMASK_H
 
-#include "../general.h"
-#include "../base/object.h"
-#include "../base/pointer.h"
+#include "external.h"
 #include "rect.h"
 
 
@@ -11,7 +9,7 @@ namespace OSS {
 	namespace Math {
 		template <typename T>
 		
-		class RectMask : public Object {
+		class RectMask {
 			typedef std::vector< Rect<T> > RectList;
 			typedef typename RectList::iterator ListIterator;
 			typedef typename RectList::const_iterator ListConstIterator;
@@ -30,8 +28,8 @@ namespace OSS {
 			}
 			
 			//Constructors
-			RectMask() : Object() {}
-			RectMask(const Rect<T> * firstRect, ...) : Object() {
+			RectMask() {}
+			RectMask(const Rect<T> * firstRect, ...) {
 				va_list vl;
 				va_start(vl, firstRect);
 				const Rect<T> * r = firstRect;

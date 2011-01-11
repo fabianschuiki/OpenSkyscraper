@@ -17,7 +17,7 @@ Engine::Scene(engine), tower(tower),
 updateVisibleRectIfNeeded(this, &GameScene::updateVisibleRect, &updateIfNeeded)
 {	
 	//Initialize the GUI
-	gui = new GUI(this);
+	ui = new GameUI(this);
 	
 	//Setup some default POI location
 	setPOI(int2(0, 200));
@@ -83,7 +83,7 @@ double2 GameScene::worldToWindow(double2 v)
 void GameScene::advance(double dt)
 {
 	//Advance the GUI
-	gui->advance(dt);
+	ui->advance(dt);
 	
 	//Advance the tower
 	tower->advance(dt);
@@ -104,7 +104,7 @@ void GameScene::update()
 	updateVisibleRectIfNeeded();
 	
 	//Update the GUI
-	gui->updateIfNeeded();
+	ui->updateIfNeeded();
 	
 	//Update the tower
 	tower->updateIfNeeded();
@@ -162,9 +162,13 @@ void GameScene::draw()
 	glVertex2f(worldMouse.x + 0.5, worldMouse.y + 10.5);
 	glEnd();
 	
-	//Draw the GUI
+	//Calculate the visible rect of the UI
+	rectd visibleRectUI;
+	visibleRectUI.size = Engine::Video::getCurrent()->currentMode.resolution;
+	
+	//Draw the UI
 	glLoadIdentity();
-	gui->draw(visibleRect);
+	ui->draw(visibleRectUI);
 }
 
 /*void GameScene::renderFacilities()

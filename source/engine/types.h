@@ -1,14 +1,7 @@
 #ifndef OSS_TYPES_H
 #define OSS_TYPES_H
 
-#include "general.h"
-
-//Unfortunately there's still some DOSism around
-#ifdef __WIN32__
-#define PATH_SEGMENTER "\\"
-#else
-#define PATH_SEGMENTER "/"
-#endif
+#include "external.h"
 
 //Colors
 namespace OSS {

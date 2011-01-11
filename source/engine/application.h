@@ -8,12 +8,6 @@
 #include "eventpump.h"
 #include "video/video.h"
 
-//Include the external libraries
-#ifdef __APPLE__
-#include <SDL/SDL.h>
-#include <IL/il.h>
-#endif
-
 
 namespace OSS {
 	namespace Engine {
