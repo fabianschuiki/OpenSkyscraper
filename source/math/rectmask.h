@@ -4,6 +4,7 @@
 #include "external.h"
 #include "rect.h"
 
+#include <cstdarg>
 
 namespace OSS {	
 	namespace Math {

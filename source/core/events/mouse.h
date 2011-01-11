@@ -3,8 +3,6 @@
 
 #include "../event.h"
 
-#include "external.h"
-
 
 namespace OSS {
 	namespace Core {

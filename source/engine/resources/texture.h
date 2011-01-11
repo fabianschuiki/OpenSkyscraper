@@ -6,7 +6,6 @@
 
 #include "store.h"
 
-
 namespace OSS {
 	namespace Engine {
 		class Texture : public StoreItem {

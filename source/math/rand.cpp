@@ -1,5 +1,7 @@
 #include "rand.h"
 
+#include <cstdlib>
+
 namespace OSS {
 	int randi(int min, int max) {
 		return (rand() % (max - min + 1)) + min;

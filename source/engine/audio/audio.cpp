@@ -126,6 +126,7 @@ void Audio::update()
 			if ((*listEntry)->isStopped()) {
 				OSSObjectLog << "removing SoundEffect with " << (*listEntry)->sound->name << std::endl;
 				mapEntry->second.erase(listEntry);
+				--listEntry;
 			}
 		}
 	}

@@ -2,6 +2,8 @@
 
 #include "autoreleasequeue.h"
 
+#include <cstdlib>
+
 using namespace OSS;
 using namespace Base;
 

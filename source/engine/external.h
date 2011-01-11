@@ -4,26 +4,27 @@
 #include "../core/headers.h"
 #include "types.h"
 
-//OpenAL
-#ifdef __APPLE__
-#include <OpenAL/al.h>
-//#include <OpenAL/alc.h>
-#include "alc.h" //required since alc.h in OS X uses typedef'd void for empty param list -> C++ sucks!
+// Mac OS X
+#if defined(__APPLE__) || defined(__MACH__)
+	#include <OpenAL/al.h>
+	#include "alc.h" //required since alc.h in OS X uses typedef'd void for empty param list -> C++ sucks!
+	#include <OpenGL/gl.h>
 #endif
 
-//OpenGL
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
+// GNU/Linux
+#if defined(linux) || defined(__linux)
+	#include <AL/al.h>
+	#include <AL/alc.h>
+	#include <GL/gl.h>
+	#define GL_TEXTURE_RECTANGLE_EXT GL_TEXTURE_RECTANGLE_ARB
 #endif
 
-//SDL
-#ifdef __APPLE__
+#if defined(_WIN32)
+	// Oh god you poor porters.
+	#error Not ported to Windows yet.
+#endif
+
 #include <SDL/SDL.h>
-#endif
-
-//DevIL
-#ifdef __APPLE__
 #include <IL/il.h>
-#endif
 
 #endif

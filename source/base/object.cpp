@@ -1,5 +1,7 @@
 #include "object.h"
 
+#include <cstdio>
+
 using namespace OSS;
 using namespace Base;
 
@@ -60,7 +62,7 @@ std::string Object::className() const
 std::string Object::instanceName() const
 {
 	char str[128];
-	sprintf(str, "%s %p", this->className().c_str(), this);
+	snprintf(str, 128, "%s %p", this->className().c_str(), this);
 	return str;
 }
 
