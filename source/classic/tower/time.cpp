@@ -36,8 +36,38 @@ double TowerTime::getTime()
 void TowerTime::setTime(double t)
 {
 	if (time != t) {
+		unsigned int previousDay = getDayOfWeek();
+		unsigned int previousQuarter = getQuarter();
+		unsigned int previousYear = getYear();
+		
 		time = t;
-		tower->background->updateIfNeeded.setNeeded();
+		OSSObjectLog << t << std::endl;
+		
+		//Distribute the time changed event
+		Event * e = new Event(Event::TimeChanged);
+		tower->sendEvent(e);
+		e->release();
+		
+		//Distribute the day changed event
+		if (getDayOfWeek() != previousDay) {
+			e = new Event(Event::DayChanged);
+			tower->sendEvent(e);
+			e->release();
+		}
+		
+		//Distribute the quarter changed event
+		if (getQuarter() != previousQuarter) {
+			e = new Event(Event::QuarterChanged);
+			tower->sendEvent(e);
+			e->release();
+		}
+		
+		//Distribute the year changed event
+		if (getYear() != previousYear) {
+			e = new Event(Event::YearChanged);
+			tower->sendEvent(e);
+			e->release();
+		}
 	}
 }
 

@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Engine {
 		class Event : public Core::Event {
 		public:
-			synthesizeClassInheritance(Core::Event);
+			synthesizeClassInheritance(Event, Core::Event);
 			
 			
 			/**

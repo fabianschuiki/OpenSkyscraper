@@ -207,3 +207,18 @@ void EngineCore::performLoadingAndFinalizing()
 		}
 	}
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Event Sending
+//----------------------------------------------------------------------------------------------------
+
+bool EngineCore::sendEventToNextResponders(Base::Event * event)
+{
+	if (scene && scene->sendEvent(event)) return true;
+	return Core::Responder::sendEventToNextResponders(event);
+}

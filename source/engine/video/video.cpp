@@ -60,9 +60,8 @@ bool Video::activateMode()
 		currentMode.fullscreen = (surface->flags & SDL_FULLSCREEN);
 		
 		//Issue an event to inform the game about the mode change
-		VideoEvent * e = new VideoEvent(Event::VideoChanged, this);
+		Pointer<VideoEvent> e = new VideoEvent(Event::VideoChanged, this);
 		application->sendEvent(e);
-		e->release();
 	}
 	return success;
 }

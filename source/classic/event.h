@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Classic {
 		class Event : public Engine::Event {
 		public:
-			synthesizeClassInheritance(Engine::Event);
+			synthesizeClassInheritance(Event, Engine::Event);
 			
 			
 			/**
@@ -17,6 +17,11 @@ namespace OSS {
 		public:
 			typedef enum {
 				None = 0,
+				
+				TimeChanged,
+				DayChanged,
+				QuarterChanged,
+				YearChanged,
 				
 				TransportIncreased,
 				TransportDecreased,

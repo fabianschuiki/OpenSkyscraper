@@ -83,6 +83,13 @@ namespace OSS {
 			
 		public:
 			void performLoadingAndFinalizing();
+			
+			
+			/**
+			 * Event Sending
+			 */
+		public:
+			virtual bool sendEventToNextResponders(Base::Event * event);
 		};
 	}
 }

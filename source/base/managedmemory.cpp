@@ -21,11 +21,7 @@ ManagedMemory::ManagedMemory()
 
 ManagedMemory::~ManagedMemory()
 {
-	//Since we also want to be able to use ManagedMemory classes allocated statically, we have to
-	//reduce the retain count by one here so that constructing and then destructing the instance re-
-	//sults in a retain count of 0.
-	retainCount--;
-	assert(retainCount == 0);
+	//assert(retainCount == 0);
 }
 
 
@@ -47,15 +43,11 @@ ManagedMemory * ManagedMemory::release()
 {
 	assert(retainCount > 0 && "trying to release instance already released");
 	
-	//If the retain count is one, this release yields a deconstruction. Note that we don't have to
-	//reduce the retain count to 0 since this is done in the destructor for static instantiation
-	//compatibility.
-	if (retainCount == 1) {
+	if (--retainCount == 0) {
 		delete this;
 		return NULL;
 	}
 	
-	retainCount--;
 	return this;
 }
 

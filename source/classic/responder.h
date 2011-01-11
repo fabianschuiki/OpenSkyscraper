@@ -20,6 +20,12 @@ namespace OSS {
 			virtual bool handleEvent(Base::Event * event);
 			bool handleClassicEvent(Event * event);
 			
+			//Time
+			virtual void eventTimeChanged(Event * event) {}
+			virtual void eventDayChanged(Event * event) {}
+			virtual void eventQuarterChanged(Event * event) {}
+			virtual void eventYearChanged(Event * event) {}
+			
 			//Transport
 			virtual void eventTransportIncreased(ItemEvent<TransportItem> * event) {}
 			virtual void eventTransportDecreased(ItemEvent<TransportItem> * event) {}

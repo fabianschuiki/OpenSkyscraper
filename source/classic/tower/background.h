@@ -3,12 +3,14 @@
 
 #include "../external.h"
 
+#include "../responder.h"
+
 
 namespace OSS {
 	namespace Classic {
 		class Tower;
 		
-		class TowerBackground : public Engine::Object {
+		class TowerBackground : public Responder {
 			
 			/**
 			 * Construction
@@ -45,8 +47,9 @@ namespace OSS {
 			virtual void updateSkyTextures();
 			virtual void updateGroundTextures();
 			
-			Conditional<TowerBackground> updateSkyTexturesIfNeeded;
-			Conditional<TowerBackground> updateGroundTexturesIfNeeded;
+			Core::Updatable::Conditional<TowerBackground> updateSkyIfNeeded;
+			Core::Updatable::Conditional<TowerBackground> updateSkyTexturesIfNeeded;
+			Core::Updatable::Conditional<TowerBackground> updateGroundTexturesIfNeeded;
 			
 			
 			/**
@@ -56,6 +59,14 @@ namespace OSS {
 			virtual void draw(rectd dirtyRect);
 			virtual void drawSky(rectd dirtyRect);
 			virtual void drawGround(rectd dirtyRect);
+			
+			
+			/**
+			 * Event Handling
+			 */
+		public:
+			virtual void eventTimeChanged(Event * event);
+			virtual void eventDayChanged(Event * event);
 			
 			
 			/**

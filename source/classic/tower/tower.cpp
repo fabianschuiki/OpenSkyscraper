@@ -101,7 +101,7 @@ void Tower::update()
 	//Update the subsystems
 	time->updateIfNeeded();
 	environment->updateIfNeeded();
-	funds->updateIfNeeded();
+	//funds->updateIfNeeded();
 	background->updateIfNeeded();
 }
 
@@ -136,7 +136,7 @@ void Tower::advance(double dt)
 	//Advance the subsystems
 	time->advance(dt);
 	environment->advance(dt);
-	funds->advance(dt);
+	//funds->advance(dt);
 	background->advance(dt);
 }
 
@@ -162,6 +162,21 @@ void Tower::advanceTransport(double dt)
 		if (item)
 			item->advance(dt);
 	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Event Sending
+//----------------------------------------------------------------------------------------------------
+
+bool Tower::sendEventToNextResponders(Base::Event * event)
+{
+	if (background && background->sendEvent(event)) return true;
+	return Responder::sendEventToNextResponders(event);
 }
 
 /*void Tower::advanceBackground(double dt)
@@ -850,21 +865,4 @@ bool Tower::checkTime(double previousTime, double alarmTime)
 bool Tower::checkTime(double alarmTime)
 {
 	return checkTime(previousTime, alarmTime);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Event Sending
-//----------------------------------------------------------------------------------------------------
-
-bool Tower::sendEventToNextResponders(Event * event)
-{
-	for (ItemIDMap::iterator i = items.begin(); i != items.end(); i++)
-		if (i->second->sendEvent(event))
-			return true;
-	return Classic::Responder::sendEventToNextResponders(event);
 }

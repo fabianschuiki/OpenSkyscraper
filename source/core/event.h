@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Core {
 		class Event : public Base::Event {
 		public:
-			synthesizeClassInheritance(Base::Event);
+			synthesizeClassInheritance(Event, Base::Event);
 			
 			/**
 			 * Types

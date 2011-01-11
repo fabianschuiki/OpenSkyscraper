@@ -14,10 +14,12 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-TowerBackground::TowerBackground(Tower * tower) : Engine::Object(), tower(tower),
-updateSkyTexturesIfNeeded(this, &TowerBackground::updateSkyTextures),
-updateGroundTexturesIfNeeded(this, &TowerBackground::updateGroundTextures)
+TowerBackground::TowerBackground(Tower * tower) : Responder(), tower(tower),
+updateSkyIfNeeded(this, &TowerBackground::updateSky, &updateIfNeeded),
+updateSkyTexturesIfNeeded(this, &TowerBackground::updateSkyTextures, &updateIfNeeded),
+updateGroundTexturesIfNeeded(this, &TowerBackground::updateGroundTextures, &updateIfNeeded)
 {
+	rainyDay = true;
 }
 
 
@@ -56,7 +58,7 @@ void TowerBackground::setRainyDay(bool rainy)
 
 void TowerBackground::advance(double dt)
 {
-	Engine::Object::advance(dt);
+	Responder::advance(dt);
 	
 	//Advance the rain animation
 	if (getSkyState() == Rain)
@@ -74,7 +76,7 @@ void TowerBackground::advance(double dt)
 
 void TowerBackground::update()
 {
-	updateSky();
+	updateSkyIfNeeded();
 	updateGroundTexturesIfNeeded();
 }
 
@@ -236,6 +238,7 @@ void TowerBackground::drawSky(rectd dirtyRect)
 		quad.rect.origin.y = y * quad.rect.size.y;
 		quad.state0.texture = currentSkyTextures[y];
 		quad.state1.texture = targetSkyTextures[y];
+		quad.interpolation = getSkyInterpolation();
 		quad.autogenerateTextureRect(true, false);
 		quad.draw();
 	}
@@ -263,6 +266,7 @@ void TowerBackground::drawSky(rectd dirtyRect)
 			quad.rect.origin -= quad.rect.size / 2;
 			quad.state0.texture = texture0;
 			quad.state1.texture = texture1;
+			quad.interpolation = getSkyInterpolation();
 			quad.draw();
 		}
 	}
@@ -299,6 +303,26 @@ void TowerBackground::drawGround(rectd dirtyRect)
 		quad.autogenerateTextureRect(true, false);
 		quad.draw();
 	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Sky
+//----------------------------------------------------------------------------------------------------
+
+void TowerBackground::eventTimeChanged(Classic::Event * event)
+{
+	updateSkyIfNeeded.setNeeded();
+}
+
+void TowerBackground::eventDayChanged(Classic::Event * event)
+{
+	//Decide whether it will be a rainy day
+	setRainyDay(randui(0, 5) == 0);
 }
 
 

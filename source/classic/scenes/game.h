@@ -65,10 +65,7 @@ namespace OSS {
 			 */
 		public:
 			virtual void draw();
-			/*void drawBackground();
-			void drawFacilities();
-			void drawTransports();
-			void drawGUI();*/
+			
 			
 			/**
 			 * Presentation
@@ -79,39 +76,17 @@ namespace OSS {
 			
 			
 			/**
-			 * Construction
-			 */		
-		/*public:
-			ItemDescriptor * constructionItemDescriptor;
-			recti constructionTemplate;
-			
-			bool isDraggingConstruction;
-			recti previousConstructionTemplate;
-			
-			void updateConstruction();
-			void startConstruction();
-			void endConstruction();*/
+			 * Event Sending
+			 */
+		public:
+			virtual bool sendEventToNextResponders(Base::Event * event);
 			
 			
 			/**
-			 * Uncategorized
-			 */		
-		/*private:
-			ToolboxWindow::Tool tool;
-			
+			 * Event Handling
+			 */
 		public:
-			ToolboxWindow::Tool getTool();
-			void setTool(ToolboxWindow::Tool tool);
-			void setConstructionTool(Item::Type itemType);
-			
-			ToolboxWindow toolboxWindow;
-			ControlWindow controlWindow;
-			Engine::Sprite debugConstructionToolSprite;
-			unsigned char debugItemType;
-			
-			virtual void eventPrepare();*/
-			
-			//void buildDebugTower();
+			virtual bool eventScrollWheel(Core::ScrollWheelEvent * event);
 		};
 	}
 }

@@ -23,27 +23,35 @@ namespace OSS {
 			 * being necessary.
 			 */
 		public:
-			template <class T> class Conditional {
-			private:
-				Conditional<T> * parent;
-				
-				T * const object;
-				typedef void (T::*functionType)();
-				functionType const function;
-				
+			class AbstractConditional {
+			protected:
+				AbstractConditional * parent;
 				bool needed;
 				
 			public:
-				Conditional(T * object, functionType function) :
-				object(object), function(function), parent(NULL), needed(true) {}
-				Conditional(T * object, functionType function, Conditional<T> * parent) :
-				object(object), function(function), parent(parent), needed(true) {}
+				AbstractConditional() : parent(NULL), needed(true) {}
+				AbstractConditional(AbstractConditional * parent) : parent(parent), needed(true) {}
 				
 				bool isNeeded() { return needed; }
 				void setNeeded() { needed = true; if (parent) parent->setNeeded(); }
 				
-				void execute() { needed = false; (object->*function)(); }
+				virtual void execute() = 0;				
 				void operator ()() { if (needed) execute(); }
+			};
+			
+			template <class T> class Conditional : public AbstractConditional {
+			private:
+				T * const object;
+				typedef void (T::*functionType)();
+				functionType const function;
+				
+			public:
+				Conditional(T * object, functionType function) :
+				AbstractConditional(), object(object), function(function) {}
+				Conditional(T * object, functionType function, AbstractConditional * parent) :
+				AbstractConditional(parent), object(object), function(function) {}
+				
+				void execute() { needed = false; (object->*function)(); }
 			};
 			
 			

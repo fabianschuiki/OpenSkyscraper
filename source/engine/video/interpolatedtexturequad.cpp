@@ -22,7 +22,7 @@ void InterpolatedTextureQuad::draw()
 	state0.rect = rect;
 	state1.rect = rect;
 	if (interpolation < 1) {
-		state0.alpha = (1 - interpolation);
+		state0.alpha = 1.0;
 		state0.draw();
 	}
 	if (interpolation > 0) {

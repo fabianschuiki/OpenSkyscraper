@@ -92,6 +92,13 @@ namespace OSS {
 			
 			
 			/**
+			 * Event Sending
+			 */
+		public:
+			virtual bool sendEventToNextResponders(Base::Event * event);
+			
+			
+			/**
 			 * Items
 			 */
 			/*Item * getFacility(unsigned int itemID, bool createIfInexistent = false);
@@ -212,13 +219,6 @@ namespace OSS {
 		public:
 			bool checkTime(double previousTime, double alarmTime);
 			bool checkTime(double alarmTime);
-			
-			
-			/**
-			 * Event Sending
-			 */
-		public:
-			virtual bool sendEventToNextResponders(Event * event);
 			
 			
 			/**

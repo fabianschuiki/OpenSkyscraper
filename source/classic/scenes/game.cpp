@@ -196,7 +196,7 @@ void GameScene::renderGUI()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark OpenGL State
+#pragma mark Presentation
 //----------------------------------------------------------------------------------------------------
 
 void GameScene::didMoveOnScreen()
@@ -230,8 +230,31 @@ void GameScene::willMoveOffScreen()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Events
+#pragma mark Event Sending
 //----------------------------------------------------------------------------------------------------
+
+bool GameScene::sendEventToNextResponders(Base::Event * event)
+{
+	if (tower && tower->sendEvent(event)) return true;
+	return Engine::Scene::sendEventToNextResponders(event);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Event Handling
+//----------------------------------------------------------------------------------------------------
+
+bool GameScene::eventScrollWheel(Core::ScrollWheelEvent * event)
+{
+	//Move the POI accordingly
+	//TODO: Use better concept than current POI
+	POI += event->displacement * 10;
+	return true;
+}
 
 /*bool GameScene::handleEvent(CoreEvent * event)
 {
