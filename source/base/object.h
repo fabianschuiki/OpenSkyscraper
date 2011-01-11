@@ -11,8 +11,8 @@
 #define Class(cls) typeid(cls)
 
 //Synthesizes the isKindOfClass override required to support class inheritance checking.
-#define synthesizeClassInheritance(superclass) \
-virtual bool isKindOfClass(Class c) { if (c == typeid(this)) return true; \
+#define synthesizeClassInheritance(baseclass, superclass) \
+virtual bool isKindOfClass(Class c) { if (c == typeid(baseclass)) return true; \
 return superclass::isKindOfClass(c); }
 
 //Logging
