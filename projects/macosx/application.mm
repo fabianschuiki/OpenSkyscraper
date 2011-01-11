@@ -1,4 +1,4 @@
-#include "../../core/application.h"
+#include "../../source/core/application.h"
 #import <Cocoa/Cocoa.h>
 
 using namespace OSS;
