@@ -5,6 +5,7 @@
 #include "../responder.h"
 
 #include "control/window.h"
+#include "../tower/tower.h"
 
 
 namespace OSS {
@@ -20,6 +21,8 @@ namespace OSS {
 			const Pointer<GameScene> scene;
 			
 			GameUI(GameScene * scene);
+			
+			Tower * getTower();
 			
 			
 			/**

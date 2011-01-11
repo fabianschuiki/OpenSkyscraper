@@ -3,16 +3,29 @@
 
 #include "../../external.h"
 
+#include "../../tower/tower.h"
+
 
 namespace OSS {
 	namespace Classic {
+		class GameUI;
+		
 		class ControlWindow : public GUI::View {
 			
 			/**
 			 * Construction
 			 */
 		public:
-			ControlWindow();
+			const Pointer<GameUI> ui;
+			
+			ControlWindow(GameUI * ui);
+			
+			Tower * getTower();
+			
+			
+			/**
+			 * Subviews
+			 */
 			
 			
 			/**

@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include "../game.h"
+
 using namespace OSS;
 using namespace Classic;
 
@@ -12,13 +14,18 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-ControlWindow::ControlWindow() : GUI::View()
+ControlWindow::ControlWindow(GameUI * ui) : GUI::View(), ui(ui)
 {
 	//Since the control window is fixed in size, we may set the frame size right from the beginning.
 	setFrameSize(double2(431, 41));
 	
 	//Fetch the background texture of the control window
 	backgroundTexture = Engine::Texture::named("simtower/ui/control/background");
+}
+
+Tower * ControlWindow::getTower()
+{
+	return ui->getTower();
 }
 
 

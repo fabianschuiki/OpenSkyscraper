@@ -21,10 +21,15 @@ updateRootViewIfNeeded(this, &GameUI::updateRootView, &updateIfNeeded)
 	rootView = new GUI::View;
 	
 	//Initialize the control window
-	controlWindow = new ControlWindow;
+	controlWindow = new ControlWindow(this);
 	controlWindow->setFrameOrigin(rootView->getFrame().maxXmaxY() - controlWindow->getFrameSize());
 	controlWindow->setAutoresizingMask(GUI::View::MaxXFixed | GUI::View::MaxYFixed);
 	rootView->addSubview(controlWindow);
+}
+
+Tower * GameUI::getTower()
+{
+	return scene->tower;
 }
 
 
