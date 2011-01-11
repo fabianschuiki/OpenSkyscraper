@@ -105,8 +105,6 @@
 		1F0D40DF11FEF7C900C6D787 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		1F0D411511FEF95A00C6D787 /* pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pointer.h; sourceTree = "<group>"; };
 		1F0D411611FEF95A00C6D787 /* singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleton.h; sourceTree = "<group>"; };
-		1F0D412511FEFA1D00C6D787 /* classes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = classes.h; sourceTree = "<group>"; };
-		1F0D412611FEFA1D00C6D787 /* general.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = general.h; sourceTree = "<group>"; };
 		1F0D412711FEFA1D00C6D787 /* macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macros.h; sourceTree = "<group>"; };
 		1F0D41A311FF0DF000C6D787 /* rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
 		1F0D41A411FF0DF000C6D787 /* vector2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector2D.h; sourceTree = "<group>"; };
@@ -499,8 +497,6 @@
 		1FD010C511FA3E500062C093 /* source */ = {
 			isa = PBXGroup;
 			children = (
-				1F0D412611FEFA1D00C6D787 /* general.h */,
-				1F0D412511FEFA1D00C6D787 /* classes.h */,
 				1F0D412711FEFA1D00C6D787 /* macros.h */,
 				1F0D411111FEF95A00C6D787 /* base */,
 				1F0E743E12D76E8A00C311CC /* core */,
