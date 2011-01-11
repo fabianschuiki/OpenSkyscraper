@@ -108,10 +108,10 @@ void EngineCore::update()
 	
 	//Show some basic information in the window title
 	char title[512];
-	sprintf(title, "OpenSkyscraper | %3.0f Hz, %3.0f ms, %3.0f%%",
-			timing->damped_freq,
-			timing->damped_dt * 1000,
-			timing->damped_idle_ratio * 100);
+	snprintf(title, 512, "OpenSkyscraper | %3.0f Hz, %3.0f ms, %3.0f%%",
+			 timing->damped_freq,
+			 timing->damped_dt * 1000,
+			 timing->damped_idle_ratio * 100);
 	SDL_WM_SetCaption(title, NULL);
 }
 

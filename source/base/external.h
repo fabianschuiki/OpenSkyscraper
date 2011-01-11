@@ -2,10 +2,14 @@
 #define OSS_BASE_EXTERNAL_H
 
 //Basics
+#include <math.h>
 #include <assert.h>
+#include <stdlib.h>
 
 //IO stream library
+#include <ios>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 
@@ -17,8 +21,5 @@
 #include <set>
 #include <stack>
 #include <vector>
-
-//C-stuff
-#include <math.h>
 
 #endif

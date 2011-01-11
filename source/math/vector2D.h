@@ -14,9 +14,9 @@ namespace OSS {
 			
 			//Description
 			std::string description() const {
-				std::stringstream description;
-				description << "(" << x << ", " << y << ")";
-				return description.str();
+				std::stringstream s;
+				s << "(" << x << ", " << y << ")";
+				return s.str();
 			}
 			
 			//Conversion to frequently used types

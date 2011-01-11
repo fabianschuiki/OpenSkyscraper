@@ -21,6 +21,7 @@ set(source
 ../../source/classic/tower/background.cpp
 ../../source/classic/tower/time.cpp
 ../../source/classic/ui/game.cpp
+../../source/classic/ui/control/watch.cpp
 ../../source/classic/ui/control/window.cpp
 ../../source/classic/items/transports/elevators/standardelevator.cpp
 ../../source/classic/items/transports/elevators/elevatorbackground.cpp

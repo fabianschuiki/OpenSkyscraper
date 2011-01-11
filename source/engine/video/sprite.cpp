@@ -122,7 +122,7 @@ void Sprite::draw(rectd visibleRect)
 						tileRect.size *= rect.size / transformedTextureRect.size;
 						tileRect.origin += rect.origin;
 						
-						//Calculate the pixel coordinates of the textureSubrect, since GL_TEXTURE_RECTANGLE_EXT works that way
+						//Calculate the pixel coordinates of the textureSubrect, since GL_TEXTURE_RECTANGLE_ARB works that way
 						rectd pixelSubrect = textureSubrect;
 						pixelSubrect.origin.x = fmod(pixelSubrect.origin.x, 1);
 						pixelSubrect.origin.y = fmod(pixelSubrect.origin.y, 1);
@@ -141,7 +141,7 @@ void Sprite::draw(rectd visibleRect)
 			} break;
 				
 			case kRectTextureMode: {
-				//Calculate the pixel coordinates of the textureSubrect, since GL_TEXTURE_RECTANGLE_EXT works that way
+				//Calculate the pixel coordinates of the textureSubrect, since GL_TEXTURE_RECTANGLE_ARB works that way
 				rectd pixelRect = textureRect;
 				pixelRect.origin *= texture->size;
 				pixelRect.size *= texture->size;

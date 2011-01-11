@@ -72,7 +72,7 @@ std::string SimTower::getNameForResource(Resource * resource)
 	
 	//None was found, so we simply return the resource ID in hex
 	char name[16];
-	sprintf(name, "#%X", resource->id);
+	snprintf(name, 16, "#%X", resource->id);
 	return name;
 }
 
@@ -683,8 +683,9 @@ void SimTower::spawnElevatorTextures(std::string textureName, ILuint image)
 			free(pixels);
 			
 			//Create a texture from the slice
-			char frameName[256]; sprintf(frameName, "/motorbuffer/%i", frame);
-			Texture * t = Texture::named(textureName + frameName);
+			std::stringstream frameName;
+			frameName << "/motorbuffer/" << frame;
+			Texture * t = Texture::named(textureName + frameName.str());
 			t->assignLoadedImage(slice);
 			dumpTexture(t);
 		}

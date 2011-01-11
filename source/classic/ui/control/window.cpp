@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include "../game.h"
+
 using namespace OSS;
 using namespace Classic;
 
@@ -12,13 +14,28 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-ControlWindow::ControlWindow() : GUI::View()
+ControlWindow::ControlWindow(GameUI * ui) : GUI::View(), ui(ui)
 {
 	//Since the control window is fixed in size, we may set the frame size right from the beginning.
 	setFrameSize(double2(431, 41));
 	
 	//Fetch the background texture of the control window
 	backgroundTexture = Engine::Texture::named("simtower/ui/control/background");
+	
+	//Calculate the watch's rect
+	rectd watchRect(double2(), getFrameSize());
+	watchRect.inset(double2(6, 6));
+	watchRect.size.x = watchRect.size.y;
+	
+	//Initialize the watch view
+	watchView = new Watch(this);
+	watchView->setFrame(watchRect);
+	addSubview(watchView);
+}
+
+Tower * ControlWindow::getTower()
+{
+	return ui->getTower();
 }
 
 

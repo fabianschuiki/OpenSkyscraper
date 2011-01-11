@@ -16,7 +16,6 @@
 	#include <AL/al.h>
 	#include <AL/alc.h>
 	#include <GL/gl.h>
-	#define GL_TEXTURE_RECTANGLE_EXT GL_TEXTURE_RECTANGLE_ARB
 #endif
 
 #if defined(_WIN32)

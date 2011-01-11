@@ -159,9 +159,9 @@ void Texture::finalize()
 		glGenTextures(1, &textureID);
 	
 	//Actually create the OpenGL texture from the temporary bitmap
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureID);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textureID);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT,
+	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,
 				 0,
 				 GL_RGBA,
 				 size.x,
@@ -172,8 +172,8 @@ void Texture::finalize()
 				 ilGetData());
 	
 	//Some texture parameters
-	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
 	//Get rid of the temporary image
 	ilBindImage(0);
@@ -209,10 +209,10 @@ void Texture::unload()
 
 void Texture::bind()
 {
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureID);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, textureID);
 }
 
 void Texture::unbind()
 {
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
 }
