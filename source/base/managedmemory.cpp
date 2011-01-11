@@ -75,9 +75,8 @@ ManagedMemory * ManagedMemory::autorelease()
 
 void * ManagedMemory::operator new(std::size_t size)
 {
-	void * memory = malloc(size);
+	void * memory = calloc(1, size);
 	assert(memory);
-	bzero(memory, size);
 	return memory;
 }
 
