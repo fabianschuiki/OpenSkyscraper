@@ -20,6 +20,39 @@ updateSkyTexturesIfNeeded(this, &TowerBackground::updateSkyTextures, &updateIfNe
 updateGroundTexturesIfNeeded(this, &TowerBackground::updateGroundTextures, &updateIfNeeded)
 {
 	rainyDay = true;
+	
+	//Initialize the sound effects
+	cockSound = new Engine::SoundEffect();
+	cockSound->sound = Engine::Sound::named("simtower/background/cock");
+	cockSound->layer = Engine::SoundEffect::kTopLayer;
+	
+	//Initialize the birds in the morning
+	birdsMorningSound = new Engine::SoundEffect();
+	birdsMorningSound->sound = Engine::Sound::named("simtower/background/birds/morning");
+	birdsMorningSound->layer = Engine::SoundEffect::kTopLayer;
+	birdsMorningSound->loopCount = 3;
+	
+	//Initialize the bells that ring at 10:00
+	bellsAt10Sound = new Engine::SoundEffect();
+	bellsAt10Sound->sound = Engine::Sound::named("simtower/background/bells");
+	bellsAt10Sound->layer = Engine::SoundEffect::kTopLayer;
+	
+	//Initialize the birds in the evening
+	birdsEveningSound = new Engine::SoundEffect();
+	birdsEveningSound->sound = Engine::Sound::named("simtower/background/birds/evening");
+	birdsEveningSound->layer = Engine::SoundEffect::kTopLayer;
+	
+	//Initialize the rain sound to be playing in an infinite loop so we're able to stop it manually.
+	rainSound = new Engine::SoundEffect();
+	rainSound->sound = Engine::Sound::named("simtower/background/rain");
+	rainSound->layer = Engine::SoundEffect::kTopLayer;
+	rainSound->loopInfinitely = true;
+	
+	//Initialize the thunder
+	thunderSound = new Engine::SoundEffect();
+	thunderSound->sound = Engine::Sound::named("simtower/background/thunder");
+	thunderSound->layer = Engine::SoundEffect::kTopLayer;
+	thunderSound->copyBeforeUse = true;
 }
 
 
@@ -63,6 +96,25 @@ void TowerBackground::advance(double dt)
 	//Advance the rain animation
 	if (getSkyState() == Rain)
 		setRainAnimation(fmod(getRainAnimation() + dt, 1));
+	
+	//Play the sound effects
+	if (tower->time->checkDaily(5.5)) Engine::Audio::getCurrent()->play(cockSound);
+	if (tower->time->checkDaily(6)) Engine::Audio::getCurrent()->play(birdsMorningSound);
+	if (tower->time->checkDaily(10)) Engine::Audio::getCurrent()->play(bellsAt10Sound);
+	if (tower->time->checkDaily(18)) Engine::Audio::getCurrent()->play(birdsEveningSound);
+	
+	//Play additional thunder sounds for rainy days
+	if (isRainyDay() && tower->time->isBetween(8, 16)) {
+		
+		//Decrease the thunder countdown
+		nextThunderCountdown -= dt;
+		
+		//If it reached 0 play the thunder and reset the countdown
+		if (nextThunderCountdown <= 0) {
+			Engine::Audio::getCurrent()->play(thunderSound);
+			nextThunderCountdown = randd(3, 15);
+		}
+	}
 }
 
 
@@ -319,7 +371,7 @@ void TowerBackground::drawGround(rectd dirtyRect)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Sky
+#pragma mark Event Handling
 //----------------------------------------------------------------------------------------------------
 
 void TowerBackground::eventTimeChanged(Classic::Event * event)
@@ -378,8 +430,19 @@ TowerBackground::SkyState TowerBackground::getSkyState()
 void TowerBackground::setSkyState(SkyState state)
 {
 	if (skyState != state) {
+		
+		//If we're switching away from rain, also stop the rain sound
+		if (skyState == Rain) rainSound->stop();
+		
+		//Set the new state
 		skyState = state;
 		updateSkyTexturesIfNeeded.setNeeded();
+		
+		//If we've switched to rain, start playing the sound
+		if (skyState == Rain) {
+			rainSound->play();
+			nextThunderCountdown = 0;
+		}
 	}
 }
 

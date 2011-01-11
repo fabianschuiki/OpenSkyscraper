@@ -28,6 +28,11 @@ Application::Application()
 	ilEnable(IL_ORIGIN_SET);
 	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 	
+	//Hook the update function for the audio task into the run loop
+	Core::Invocation<Audio> * audioUpdate = new Core::Invocation<Audio>(audio, &Engine::Audio::update);
+	addInvocation(audioUpdate);
+	//audioUpdate->release();
+	
 	//Initialize the engine
 	engine = new EngineCore(this);
 	

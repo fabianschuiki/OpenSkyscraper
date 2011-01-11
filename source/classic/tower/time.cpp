@@ -17,6 +17,8 @@ using namespace Classic;
 TowerTime::TowerTime(Tower * tower) : Engine::Object(), tower(tower)
 {
 	time = 5;
+	previousTime = time;
+	bufferedPreviousTime = previousTime;
 }
 
 
@@ -40,6 +42,11 @@ void TowerTime::setTime(double t)
 		unsigned int previousQuarter = getQuarter();
 		unsigned int previousYear = getYear();
 		
+		//Adjust the previous times
+		previousTime = bufferedPreviousTime;
+		bufferedPreviousTime = t;
+		
+		//Store the time
 		time = t;
 		OSSObjectLog << t << std::endl;
 		
@@ -110,6 +117,25 @@ bool TowerTime::isWeekday()
 bool TowerTime::isWeekend()
 {
 	return (getDayOfWeek() == 2);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Triggering
+//----------------------------------------------------------------------------------------------------
+
+bool TowerTime::check(double alarmTime)
+{
+	return (getTime() >= alarmTime && previousTime < alarmTime);
+}
+
+bool TowerTime::checkDaily(double alarmTime)
+{
+	return (getTimeOfDay() >= alarmTime && previousTime < alarmTime);
 }
 
 

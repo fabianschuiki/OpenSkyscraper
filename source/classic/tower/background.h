@@ -125,6 +125,20 @@ namespace OSS {
 		public:
 			std::string getCityTextureName();
 			std::string getGroundTextureName();
+			
+			
+			/**
+			 * Sound Effects
+			 */
+		private:
+			Pointer<Engine::SoundEffect> cockSound;
+			Pointer<Engine::SoundEffect> birdsMorningSound;
+			Pointer<Engine::SoundEffect> bellsAt10Sound;
+			Pointer<Engine::SoundEffect> birdsEveningSound;
+			Pointer<Engine::SoundEffect> rainSound;
+			Pointer<Engine::SoundEffect> thunderSound;
+			
+			double nextThunderCountdown;
 		};
 	}
 }
