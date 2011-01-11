@@ -79,7 +79,7 @@ void TexturedQuad::draw()
 				tileRect.size *= rect.size / transformedTextureRect.size;
 				tileRect.origin += rect.origin;
 				
-				//Calculate the pixel coordinates of the textureSubrect, since GL_TEXTURE_RECTANGLE_EXT
+				//Calculate the pixel coordinates of the textureSubrect, since GL_TEXTURE_RECTANGLE_ARB
 				//works that way
 				rectd pixelSubrect = textureSubrect;
 				pixelSubrect.origin.x = fmod(pixelSubrect.origin.x, 1);
