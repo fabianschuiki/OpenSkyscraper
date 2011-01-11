@@ -8,6 +8,7 @@
 #include "environment.h"
 #include "funds.h"
 #include "../items/itemdescriptor.h"
+#include "structure.h"
 #include "time.h"
 
 
@@ -16,18 +17,12 @@ namespace OSS {
 		class Item;
 		
 		class Tower : public Responder {
-		public:
+			
 			/**
-			 * Initialization
+			 * Construction
 			 */
-			
-			//Constructor
+		public:
 			Tower();
-			
-			//Subinitializations
-			void initBackground();
-			void initEnvironment();
-			void initConstruction();
 			
 			
 			/**
@@ -64,6 +59,14 @@ namespace OSS {
 			Pointer<TowerEnvironment> environment;
 			Pointer<TowerFunds> funds;
 			Pointer<TowerBackground> background;
+			Pointer<TowerStructure> structure;
+			
+			
+			/**
+			 * Simulation
+			 */
+		public:
+			void advance(double dt);
 			
 			
 			/**
@@ -78,17 +81,6 @@ namespace OSS {
 			 */
 		public:
 			virtual void draw(rectd dirtyRect);
-			
-			
-			/**
-			 * Simulation
-			 */
-		public:
-			void advance(double dt);
-			void advanceTime(double dt);
-			
-			void advanceFacilities(double dt);
-			void advanceTransport(double dt);
 			
 			
 			/**

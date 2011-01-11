@@ -15,8 +15,43 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-TowerStructure::TowerStructure(Tower * tower) : Engine::Object(), tower(tower)
+TowerStructure::TowerStructure(Tower * tower) : Engine::Object(), tower(tower),
+ceilingHeight(12), cellSize(8, 24 + ceilingHeight)
 {
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Dimensions
+//----------------------------------------------------------------------------------------------------
+
+double2 TowerStructure::cellToWorld(int2 v)
+{
+	return (v * cellSize);
+}
+
+rectd TowerStructure::cellToWorld(recti v)
+{
+	return rectd(v.origin * cellSize, v.size * cellSize);
+}
+
+
+
+int2 TowerStructure::worldToCell(double2 v)
+{
+	return int2(round(v.x / cellSize.x), round(v.y / cellSize.y));
+}
+
+recti TowerStructure::worldToCell(rectd v)
+{
+	recti rect;
+	rect.origin = worldToCell(v.origin);
+	rect.size = worldToCell(v.origin + v.size) - rect.origin;
+	return rect;
 }
 
 

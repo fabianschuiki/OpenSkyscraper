@@ -23,6 +23,20 @@ namespace OSS {
 			
 			
 			/**
+			 * Dimensions
+			 */
+		public:
+			const int2 cellSize;
+			const int ceilingHeight;
+			
+			double2 cellToWorld(int2 v);
+			rectd cellToWorld(recti v);
+			
+			int2 worldToCell(double2 v);
+			recti worldToCell(rectd v);
+			
+			
+			/**
 			 * Cells
 			 *
 			 * The tower's structure is being kept track of in a cell map. Each cell represents a

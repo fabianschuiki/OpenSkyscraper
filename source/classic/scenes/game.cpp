@@ -1,7 +1,5 @@
 #include "game.h"
 
-//#include "../gui/gui.h"
-
 using namespace OSS;
 using namespace Classic;
 
@@ -15,23 +13,62 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 GameScene::GameScene(Tower * tower, Engine::EngineCore * engine) :
-Engine::Scene(engine), tower(tower)
+Engine::Scene(engine), tower(tower),
+updateVisibleRectIfNeeded(this, &GameScene::updateVisibleRect, &updateIfNeeded)
 {	
-	/*isDraggingConstruction = false;
-	
-	tool = ToolboxWindow::kInspectTool;
-	
-	//DEBUG: Setup the debugging construction tool visualization sprite
-	debugConstructionToolSprite.texture = Texture::named("simtower/ui/toolbox/construction/normal");
-	debugConstructionToolSprite.rect = recti(0, 0, 32, 32);
-	debugConstructionToolSprite.textureRect.size.x = 1.0 / 8;
-	debugConstructionToolSprite.textureRect.size.y = 1.0 / 4;
-	debugItemType = Item::kLobbyType;*/
-	
 	//Initialize the GUI
-	//gui = new GUI(this);
+	gui = new GUI(this);
 	
-	POI.y = 200;
+	//Setup some default POI location
+	setPOI(int2(0, 200));
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Camera
+//----------------------------------------------------------------------------------------------------
+
+const double2 & GameScene::getPOI()
+{
+	return POI;
+}
+
+void GameScene::setPOI(double2 p)
+{
+	if (POI != p) {
+		POI = p;
+		updateVisibleRectIfNeeded.setNeeded();
+	}
+}
+
+
+
+const rectd & GameScene::getVisibleRect()
+{
+	return visibleRect;
+}
+
+void GameScene::setVisibleRect(rectd rect)
+{
+	if (visibleRect != rect) {
+		visibleRect = rect;
+	}
+}
+
+
+
+double2 GameScene::windowToWorld(double2 v)
+{
+	return (v * double2(1, -1) + getVisibleRect().minXmaxY());
+}
+
+double2 GameScene::worldToWindow(double2 v)
+{
+	return (v * double2(1, -1) - getVisibleRect().minXmaxY());
 }
 
 
@@ -45,42 +82,11 @@ Engine::Scene(engine), tower(tower)
 
 void GameScene::advance(double dt)
 {
-	//Update the visible rect
-	int2 canvasSize = Engine::Video::getCurrent()->currentMode.resolution;
-	visibleRect.origin = POI - canvasSize / 2;
-	visibleRect.size = canvasSize;
-	
-	//Calculate the mouse location
-	previousWorldMouse = worldMouse;
-	int2 mouse;
-	SDL_GetMouseState(&mouse.x, &mouse.y);
-	worldMouse.x = visibleRect.minX() + mouse.x;
-	worldMouse.y = visibleRect.maxY() - 1 - mouse.y;
-	mouseMoved = (worldMouse != previousWorldMouse);
-	
-	//Update the construction if the mouse was moved
-	/*if (mouseMoved) {
-		updateConstruction();
-	}*/
-	
-	//Calculate the visible cells rect
-	visibleCells = tower->convertWorldToCellRect(visibleRect);
+	//Advance the GUI
+	gui->advance(dt);
 	
 	//Advance the tower
 	tower->advance(dt);
-	
-	//Find the items to draw
-	visibleFacilities.clear();
-	visibleTransports.clear();
-	for (int x = visibleCells.minX(); x < visibleCells.maxX(); x++) {
-		for (int y = visibleCells.minY(); y < visibleCells.maxY(); y++) {
-			Tower::Cell * cell = tower->getCell(int2(x, y));
-			if (!cell) continue;
-			
-			if (cell->facility) visibleFacilities.insert(cell->facility);
-			if (cell->transport) visibleTransports.insert(cell->transport);
-		}
-	}
 }
 
 
@@ -94,8 +100,21 @@ void GameScene::advance(double dt)
 
 void GameScene::update()
 {
+	//Update our state where required
+	updateVisibleRectIfNeeded();
+	
+	//Update the GUI
+	gui->updateIfNeeded();
+	
 	//Update the tower
-	tower->update();
+	tower->updateIfNeeded();
+}
+
+void GameScene::updateVisibleRect()
+{
+	rectd rect(getPOI(), Engine::Video::getCurrent()->currentMode.resolution);
+	rect.origin -= rect.size / 2;
+	setVisibleRect(rect);
 }
 
 
@@ -109,28 +128,17 @@ void GameScene::update()
 
 void GameScene::draw()
 {
+	//Black screen to start off
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glLoadIdentity();
 	
 	//Translate modelview matrix so that the POI is centered on screen
-	glTranslated(-visibleRect.origin.x, -visibleRect.origin.y, 0);
+	double2 origin = getVisibleRect().origin;
+	glTranslated(-origin.x, -origin.y, 0);
 	
 	//Draw the tower
 	tower->draw(visibleRect);
-	
-	/*//Draw the construction template
-	rectd worldConstructionRect = tower->convertCellToWorldRect(constructionTemplate);
-	worldConstructionRect.inset(0.5, 0.5);
-	glColor3f(1, 1, 1);
-	Engine::Texture::unbind();
-	glBegin(GL_LINE_STRIP);
-	glVertex2d(worldConstructionRect.minX(), worldConstructionRect.minY());
-	glVertex2d(worldConstructionRect.maxX(), worldConstructionRect.minY());
-	glVertex2d(worldConstructionRect.maxX(), worldConstructionRect.maxY());
-	glVertex2d(worldConstructionRect.minX(), worldConstructionRect.maxY());
-	glVertex2d(worldConstructionRect.minX(), worldConstructionRect.minY());
-	glEnd();*/
 	
 	//Draw a red cross at the origin of the world
 	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
@@ -143,6 +151,9 @@ void GameScene::draw()
 	glEnd();
 	
 	//Draw a green cross where the mouse is
+	int2 mouse;
+	SDL_GetMouseState(&mouse.x, &mouse.y);
+	double2 worldMouse = windowToWorld(mouse);
 	glColor3f(0, 1, 0);
 	glBegin(GL_LINES);
 	glVertex2f(worldMouse.x - 9.5, worldMouse.y + 0.5);
@@ -153,7 +164,7 @@ void GameScene::draw()
 	
 	//Draw the GUI
 	glLoadIdentity();
-	//drawGUI();
+	gui->draw(visibleRect);
 }
 
 /*void GameScene::renderFacilities()
@@ -201,19 +212,12 @@ void GameScene::renderGUI()
 
 void GameScene::didMoveOnScreen()
 {
-	//Engine::shared()->audioTask.playSound(Sound::named("simtower/#4E20"), SoundEffect::kTopLayer);
-	
 	Scene::didMoveOnScreen();
 	
 	glEnable(GL_TEXTURE_RECTANGLE_EXT);
 	glEnable(GL_BLEND);
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	//setConstructionTool(kLobbyType);
-	
-	/*TwBar * myBar = TwNewBar("NameOfMyTweakBar");
-	TwAddButton(myBar, "Hello, World!", NULL, NULL, NULL);*/
 }
 
 void GameScene::willMoveOffScreen()
@@ -251,8 +255,7 @@ bool GameScene::sendEventToNextResponders(Base::Event * event)
 bool GameScene::eventScrollWheel(Core::ScrollWheelEvent * event)
 {
 	//Move the POI accordingly
-	//TODO: Use better concept than current POI
-	POI += event->displacement * 10;
+	setPOI(getPOI() + event->displacement * 10);
 	return true;
 }
 

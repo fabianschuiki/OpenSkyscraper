@@ -3,13 +3,13 @@
 
 #include "../external.h"
 
+#include "../gui/gui.h"
 #include "../tower/tower.h"
 #include "../items/item.h"
 
 
 namespace OSS {
 	namespace Classic {
-		//class GUI;
 		
 		class GameScene : public Engine::Scene {
 			/**
@@ -25,25 +25,27 @@ namespace OSS {
 			 * GUI
 			 */
 		private:
-			//Pointer<GUI> gui;
+			Pointer<GUI> gui;
 			
 			
-			
-			//Point of interest, i.e. the point in the world that's centered on-screen
+			/**
+			 * Camera
+			 *
+			 * Point of interest, i.e. the point in the world that's centered on-screen.
+			 */
+		private:
 			double2 POI;
-			
-			//Mouse location inside the world
-			double2 previousWorldMouse;
-			double2 worldMouse;
-			bool mouseMoved;
-			
-			//Calculated culling values
 			rectd visibleRect;
-			recti visibleCells;
 			
-			//Visible items
-			std::set<unsigned int> visibleFacilities;
-			std::set<unsigned int> visibleTransports;
+		public:
+			const double2 & getPOI();
+			void setPOI(double2 p);
+			
+			const rectd & getVisibleRect();
+			void setVisibleRect(rectd rect);
+			
+			double2 windowToWorld(double2 v);
+			double2 worldToWindow(double2 v);
 			
 			
 			/**
@@ -58,6 +60,9 @@ namespace OSS {
 			 */
 		public:
 			virtual void update();
+			virtual void updateVisibleRect();
+			
+			Core::Updatable::Conditional<GameScene> updateVisibleRectIfNeeded;
 			
 			
 			/**

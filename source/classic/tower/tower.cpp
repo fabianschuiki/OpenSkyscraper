@@ -11,20 +11,17 @@ using namespace Classic;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Initialization
+#pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
 Tower::Tower() : Responder()
-{
-	//Setup some basic tower layout attributes
-	ceilingHeight = 12;
-	cellSize = int2(8, 24 + ceilingHeight);
-	
+{	
 	//Initialize the subsystems
 	time = new TowerTime(this);
 	environment = new TowerEnvironment(this);
 	funds = new TowerFunds(this);
 	background = new TowerBackground(this);
+	structure = new TowerStructure(this);
 	
 	//DEBUG: setup the debug speed
 	debugSpeed = 0;
@@ -93,6 +90,35 @@ void Tower::onChangeTransportItems()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void Tower::advance(double dt)
+{
+	if (paused) return;
+	
+	//Advance the subsystems
+	time->advance(dt);
+	environment->advance(dt);
+	funds->advance(dt);
+	background->advance(dt);
+	structure->advance(dt);
+	
+	//If any of the subsystems needs updating, we also do
+	if (time->updateIfNeeded.isNeeded() ||
+		environment->updateIfNeeded.isNeeded() ||
+		funds->updateIfNeeded.isNeeded() ||
+		background->updateIfNeeded.isNeeded() ||
+		structure->updateIfNeeded.isNeeded())
+		updateIfNeeded.setNeeded();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark State
 //----------------------------------------------------------------------------------------------------
 
@@ -101,8 +127,9 @@ void Tower::update()
 	//Update the subsystems
 	time->updateIfNeeded();
 	environment->updateIfNeeded();
-	//funds->updateIfNeeded();
+	funds->updateIfNeeded();
 	background->updateIfNeeded();
+	structure->updateIfNeeded();
 }
 
 
@@ -118,50 +145,9 @@ void Tower::draw(rectd dirtyRect)
 {
 	//Draw the background
 	background->draw(dirtyRect);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Simulation
-//----------------------------------------------------------------------------------------------------
-
-void Tower::advance(double dt)
-{
-	if (paused) return;
-		
-	//Advance the subsystems
-	time->advance(dt);
-	environment->advance(dt);
-	//funds->advance(dt);
-	background->advance(dt);
-}
-
-void Tower::advanceTime(double dt)
-{
-}
-
-void Tower::advanceFacilities(double dt)
-{
-	//Advance the facilities
-	for (ItemIDMap::iterator it = facilityItems.begin(); it != facilityItems.end(); it++) {
-		Item * item = it->second;
-		if (item)
-			item->advance(dt);
-	}
-}
-
-void Tower::advanceTransport(double dt)
-{
-	//Advance the Transports
-	for (ItemIDMap::iterator it = transportItems.begin(); it != transportItems.end(); it++) {
-		Item * item = it->second;
-		if (item)
-			item->advance(dt);
-	}
+	
+	//Draw the tower structure
+	structure->draw(dirtyRect);
 }
 
 

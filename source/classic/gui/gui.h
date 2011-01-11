@@ -2,13 +2,14 @@
 #define OSS_CLASSIC_GUI_GUI_H
 
 #include "../external.h"
+#include "../responder.h"
 
 
 namespace OSS {
 	namespace Classic {
 		class GameScene;
 		
-		class GUI : public Responder, public Engine::Drawable, public Engine::Simulatable {
+		class GUI : public Responder {
 			
 			/**
 			 * Construction

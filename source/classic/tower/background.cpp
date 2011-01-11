@@ -18,9 +18,7 @@ TowerBackground::TowerBackground(Tower * tower) : Responder(), tower(tower),
 updateSkyIfNeeded(this, &TowerBackground::updateSky, &updateIfNeeded),
 updateSkyTexturesIfNeeded(this, &TowerBackground::updateSkyTextures, &updateIfNeeded),
 updateGroundTexturesIfNeeded(this, &TowerBackground::updateGroundTextures, &updateIfNeeded)
-{
-	rainyDay = true;
-	
+{	
 	//Initialize the sound effects
 	cockSound = new Engine::SoundEffect();
 	cockSound->sound = Engine::Sound::named("simtower/background/cock");
