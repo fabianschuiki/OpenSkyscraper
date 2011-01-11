@@ -26,7 +26,7 @@ void InterpolatedTextureQuad::draw()
 		state0.draw();
 	}
 	if (interpolation > 0) {
-		state1.alpha = (interpolation);
+		state1.alpha = interpolation;
 		state1.draw();
 	}
 }

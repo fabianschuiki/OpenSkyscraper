@@ -408,69 +408,47 @@ void SimTower::postprocessTexture(std::string resourceName,
 	std::string texturePrefix("simtower/");
 	std::string textureName = texturePrefix + resourceName;
 	
+	//Load the image
+	ILuint image = ilGenImage();
+	ilBindImage(image);
+	ilLoadL(IL_BMP, buffer, bufferLength);
+	bool processed = false;
+	
 	//Sky textures
-	if (resourceName.find("background/sky") == 0 || resourceName.find("background/cloud") == 0) {
-		//Load the image
-		ILuint sky = ilGenImage();
-		ilBindImage(sky);
-		ilLoadL(IL_BMP, buffer, bufferLength);
-		
-		//Do the actual postprocessing
-		spawnSkyTextures(textureName, sky);
-		
-		//Get rid of the image
-		ilBindImage(0);
-		ilDeleteImage(sky);
-		return;
+	if (resourceName.find("background/sky") == 0) {
+		spawnSkyTextures(textureName, image);
+		processed = true;
+	}
+	
+	//Cloud textures
+	if (resourceName.find("background/cloud") == 0) {
+		spawnCloudTextures(textureName, image);
+		processed = true;
 	}
 	
 	//Single lobby textures
 	if (resourceName.find("lobby/single") == 0) {
-		//Load the image
-		ILuint lobby = ilGenImage();
-		ilBindImage(lobby);
-		ilLoadL(IL_BMP, buffer, bufferLength);
-		
-		//Split up the image
-		spawnLobbyTextures(textureName, lobby);
-		
-		//Get rid of the image
-		ilBindImage(0);
-		ilDeleteImage(lobby);
-		return;
+		spawnLobbyTextures(textureName, image);
+		processed = true;
 	}
 	
 	//Elevator textures
 	if (resourceName.find("transport/elevator") == 0) {
-		//Load the image
-		ILuint elevator = ilGenImage();
-		ilBindImage(elevator);
-		ilLoadL(IL_BMP, buffer, bufferLength);
-		
-		//Split up the image
-		spawnElevatorTextures(textureName, elevator);
-		
-		//Get rid of the image
-		ilBindImage(0);
-		ilDeleteImage(elevator);
-		return;
+		spawnElevatorTextures(textureName, image);
+		processed = true;
 	}
 	
 	//Floordigit textures
 	if (resourceName.find("transport/floordigits") == 0) {
-		//Load the image
-		ILuint digit = ilGenImage();
-		ilBindImage(digit);
-		ilLoadL(IL_BMP, buffer, bufferLength);
-		
-		//Split up the image
-		spawnFloordigitTextures(textureName, digit);
-		
-		//Get rid of the image
-		ilBindImage(0);
-		ilDeleteImage(digit);
-		return;
+		spawnFloordigitTextures(textureName, image);
+		processed = true;
 	}
+	
+	//Get rid of the image
+	ilBindImage(0);
+	ilDeleteImage(image);
+	if (processed)
+		return;
 	
 	//Standard textures
 	Texture * texture = Texture::named(textureName);
@@ -550,22 +528,18 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 	overcast->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the rain textures if this is is a sky slice and not a cloud
-	Texture * rain0 = NULL;
-	Texture * rain1 = NULL;
-	if (textureName.find("background/sky") != std::string::npos) {
-		for (int i = 0; i < 6; i++) {
-			sky[i] = brightDrops[i] = darkColors[i];
-			darkDrops[i] = brightColors[i];
-		}
-		rain0 = Texture::named(textureName + "/rain/0");
-		rain0->assignLoadedImage(ilCloneCurImage());
-		for (int i = 0; i < 6; i++) {
-			sky[i] = darkDrops[i] = darkColors[i];
-			brightDrops[i] = brightColors[i];
-		}
-		rain1 = Texture::named(textureName + "/rain/1");
-		rain1->assignLoadedImage(ilCloneCurImage());
+	for (int i = 0; i < 6; i++) {
+		sky[i] = brightDrops[i] = darkColors[i];
+		darkDrops[i] = brightColors[i];
 	}
+	Texture * rain0 = Texture::named(textureName + "/rain/0");
+	rain0->assignLoadedImage(ilCloneCurImage());
+	for (int i = 0; i < 6; i++) {
+		sky[i] = darkDrops[i] = darkColors[i];
+		brightDrops[i] = brightColors[i];
+	}
+	Texture * rain1 = Texture::named(textureName + "/rain/1");
+	rain1->assignLoadedImage(ilCloneCurImage());
 	
 	//Create the twilight texture
 	applyReplacementPalette(0x3E9);
@@ -581,15 +555,6 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 	Texture * night = Texture::named(textureName + "/night");
 	night->assignLoadedImage(ilCloneCurImage());
 	
-	//Cloud textures require transparency
-	Texture * textures[4] = {day, overcast, twilight, night};
-	if (textureName.find("background/cloud") != std::string::npos) {
-		for (unsigned int i = 0; i < 4; i++) {
-			textures[i]->useTransparentColor = true;
-			//textures[i]->transparentColors.push_back((color3d){});
-		}
-	}
-	
 	//Dump the textures
 	dumpTexture(day);
 	dumpTexture(overcast);
@@ -597,6 +562,33 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 	dumpTexture(rain1);
 	dumpTexture(twilight);
 	dumpTexture(night);
+}
+
+void SimTower::spawnCloudTextures(std::string textureName, ILuint image)
+{
+	struct {
+		std::string name;
+		unsigned int palette;
+		Texture * texture;
+	} variants[4] = {
+		{"day", 0x3E8},
+		{"overcast", 0x3EB},
+		{"twilight", 0x3E9},
+		{"night", 0x3EA}
+	};
+	
+	//Load the variants
+	for (unsigned int i = 0; i < 4; i++) {
+		applyReplacementPalette(variants[i].palette);
+		Texture * texture = Texture::named(textureName + "/" + variants[i].name);
+		texture->assignLoadedImage(ilCloneCurImage());
+		texture->useTransparentColor = true;
+		variants[i].texture = texture;
+	}
+	
+	//Dump the textures
+	for (unsigned int i = 0; i < 4; i++)
+		dumpTexture(variants[i].texture);
 }
 
 void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)

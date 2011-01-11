@@ -112,7 +112,7 @@ namespace OSS {
 			void setRainAnimationFrame(unsigned int frame);
 			
 			bool hasCloudAt(double2 location);
-			double cloudNoise(double x, double y);
+			double cloudNoise(double2 p);
 			
 			
 			/**

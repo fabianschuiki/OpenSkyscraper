@@ -124,9 +124,10 @@ bool TowerTime::isWeekend()
 double TowerTime::getTimeSpeed()
 {
 	double s = 0.25;
-	if (time > 1.5 && time < 6.0)
+	double tod = getTimeOfDay();
+	if (tod > 1.5 && tod < 6.0)
 		s = 1;
-	if (time > 12 && time < 13)
+	if (tod > 12 && tod < 13)
 		s = 1.0 / 45;
 	s *= pow(2, tower->debugSpeed);
 	return s;

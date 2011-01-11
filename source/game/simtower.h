@@ -64,6 +64,7 @@ namespace OSS {
 			void postprocessTexture(std::string textureName, const void * buffer, unsigned int bufferLength);
 			void applyReplacementPalette(unsigned short id);
 			void spawnSkyTextures(std::string textureName, ILuint image);
+			void spawnCloudTextures(std::string textureName, ILuint image);
 			void spawnLobbyTextures(std::string textureName, ILuint image);
 			void spawnElevatorTextures(std::string textureName, ILuint image);
 			void spawnFloordigitTextures(std::string textureName, ILuint image);

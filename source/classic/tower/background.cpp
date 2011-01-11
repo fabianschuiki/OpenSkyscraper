@@ -245,24 +245,32 @@ void TowerBackground::drawSky(rectd dirtyRect)
 	
 	//Draw the clouds
 	const int2 cloudGrid(250, 100);
-	for (int x = dirtyRect.minX() / cloudGrid.x; x <= dirtyRect.maxX() / cloudGrid.x; x++) {
-		for (int y = dirtyRect.minY() / cloudGrid.y; y <= dirtyRect.maxY() / cloudGrid.y; y++) {
+	for (int x = dirtyRect.minX() / cloudGrid.x - 1; x <= dirtyRect.maxX() / cloudGrid.x + 1; x++) {
+		for (int y = dirtyRect.minY() / cloudGrid.y - 1; y <= dirtyRect.maxY() / cloudGrid.y + 1; y++) {
+			
+			//Reproduce the world location
+			double2 worldLocation = int2(x, y) * cloudGrid;
 			
 			//Decide whether to draw a cloud here at all
-			if (!hasCloudAt(int2(x, y)))
+			if (!hasCloudAt(worldLocation))
 				continue;
 			
 			//Decide what cloud texture to use
-			unsigned int textureIndex = (cloudNoise(x, y) + 1.0) * 2;
+			double textureNoise = cloudNoise(worldLocation * 467.248);
+			unsigned int textureIndex = (textureNoise + 1.0) * 2;
 			
 			Engine::Texture * texture0 = currentCloudTextures[textureIndex];
 			Engine::Texture * texture1 = targetCloudTextures[textureIndex];
-			if (!texture0 || !texture1)
+			if (!texture0)
 				continue;
+			
+			//Calculate an offset for the cloud
+			double2 offset(cloudNoise(worldLocation * 0.941), cloudNoise(worldLocation * 12.786));
+			offset *= 50;
 			
 			//Draw the quad
 			Engine::InterpolatedTextureQuad quad;
-			quad.rect = rectd(double2(x, y) * cloudGrid, texture0->size);
+			quad.rect = rectd(worldLocation + offset, texture0->size);
 			quad.rect.origin -= quad.rect.size / 2;
 			quad.state0.texture = texture0;
 			quad.state1.texture = texture1;
@@ -396,12 +404,12 @@ void TowerBackground::setRainAnimationFrame(unsigned int frame)
 
 bool TowerBackground::hasCloudAt(double2 location)
 {
-	return (cloudNoise(location.x, location.y) > 0.75);
+	return (cloudNoise(location) > 0.6);
 }
 
-double TowerBackground::cloudNoise(double x, double y)
+double TowerBackground::cloudNoise(double2 p)
 {
-	int n=(int)x+(int)y*57;
+	int n=(int)p.x+(int)p.y*57;
 	n=(n<<13)^n;
 	int nn=(n*(n*n*60493+19990303)+1376312589)&0x7fffffff;
 	return 1.0-((double)nn/1073741824.0);
