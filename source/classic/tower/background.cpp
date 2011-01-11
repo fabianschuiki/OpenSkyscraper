@@ -31,6 +31,7 @@ updateGroundTexturesIfNeeded(this, &TowerBackground::updateGroundTextures, &upda
 	birdsMorningSound->sound = Engine::Sound::named("simtower/background/birds/morning");
 	birdsMorningSound->layer = Engine::SoundEffect::kTopLayer;
 	birdsMorningSound->loopCount = 3;
+	birdsMorningSound->copyBeforeUse = true;
 	
 	//Initialize the bells that ring at 10:00
 	bellsAt10Sound = new Engine::SoundEffect();
@@ -104,7 +105,7 @@ void TowerBackground::advance(double dt)
 	if (tower->time->checkDaily(18)) Engine::Audio::getCurrent()->play(birdsEveningSound);
 	
 	//Play additional thunder sounds for rainy days
-	if (isRainyDay() && tower->time->isBetween(8, 16)) {
+	if (isRainyDay() && getSkyState() == Rain) {
 		
 		//Decrease the thunder countdown
 		nextThunderCountdown -= dt;
@@ -134,7 +135,7 @@ void TowerBackground::update()
 
 void TowerBackground::updateSky()
 {
-	double time = tower->time->getTime();
+	double time = tower->time->getTimeOfDay();
 	
 	//Night
 	if (time < 5 || time >= 19)

@@ -83,10 +83,20 @@ double TowerTime::getTimeOfDay()
 	return fmod(getTime(), 24);
 }
 
+bool TowerTime::isAfter(double a)
+{
+	return (getTimeOfDay() >= a);
+}
+
 bool TowerTime::isBetween(double a, double b)
 {
 	double tod = getTimeOfDay();
 	return (tod >= a && tod < b);
+}
+
+bool TowerTime::isBefore(double b)
+{
+	return (getTimeOfDay() < b);
 }
 
 unsigned int TowerTime::getDate()
@@ -135,7 +145,7 @@ bool TowerTime::check(double alarmTime)
 
 bool TowerTime::checkDaily(double alarmTime)
 {
-	return (getTimeOfDay() >= alarmTime && previousTime < alarmTime);
+	return (getTimeOfDay() >= alarmTime && fmod(previousTime, 24) < alarmTime);
 }
 
 

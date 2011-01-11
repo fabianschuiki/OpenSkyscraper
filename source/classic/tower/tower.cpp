@@ -864,5 +864,6 @@ bool Tower::checkTime(double previousTime, double alarmTime)
 
 bool Tower::checkTime(double alarmTime)
 {
-	return checkTime(previousTime, alarmTime);
+	OSSObjectError << "using the deprecated checkTime()!" << std::endl;
+	return time->checkDaily(alarmTime);
 }
