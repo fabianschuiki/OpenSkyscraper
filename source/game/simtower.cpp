@@ -143,7 +143,12 @@ void SimTower::loadResources()
 		uint16_t resourceType, numberOfResources;
 		fread(&resourceType, 1, sizeof(resourceType), fsimtower);
 		fread(&numberOfResources, 1, sizeof(numberOfResources), fsimtower);
-		resourceType = SDL_SwapLE16(resourceType) & 0x7FFF;
+		resourceType = SDL_SwapLE16(resourceType) & 0x7FFF;	//The & 0x7FFF bitwise mask is used to
+															//cut off the most significant bit in
+															//the resource type and reset it to 0.
+															//Not sure anymore why that was ne-
+															//cessary since I wrote the code a few
+															//months ago.
 		numberOfResources = SDL_SwapLE16(numberOfResources);
 		
 		//A resource type of 0 marks the end of the list
