@@ -113,11 +113,11 @@ void StairslikeItem::updateBackground()
 	//Update the background textures
 	for (int i = 0; i < 2; i++) {
 		//Assemble the texture name
-		char textureName[128];
-		sprintf(textureName, "/floor%i", i);
+		std::stringstream textureName;
+		textureName << "/floor" << i;
 		if (numAnimationFrames > numAnimationFramesPerTexture)
-			sprintf(textureName, "%s/%i", textureName, getAnimationFrame() / numAnimationFramesPerTexture);
-		backgrounds[i].texture = Engine::Texture::named(baseTextureName + textureName);
+			textureName << (getAnimationFrame() / numAnimationFramesPerTexture);
+		backgrounds[i].texture = Engine::Texture::named(baseTextureName + textureName.str());
 		
 		//Calculate the texture x coordinate
 		double x = (getAnimationFrame() % numAnimationFramesPerTexture);

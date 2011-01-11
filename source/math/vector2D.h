@@ -14,9 +14,9 @@ namespace OSS {
 			
 			//Description
 			std::string description() const {
-				char str[32];
-				sprintf(str, "(%f, %f)", (double)x, (double)y);
-				return str;
+				std::stringstream s;
+				s << "(" << x << ", " << y << ")";
+				return s.str();
 			}
 			
 			//Conversion to frequently used types

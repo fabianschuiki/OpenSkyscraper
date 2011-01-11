@@ -109,7 +109,7 @@ namespace OSS {
 			}
 			void intersect(const Rect<T> &r) { *this = intersectionRect(r); }
 			
-			Rect<T> insetRect(const Vector2D<T> & i) const  {
+			Rect<T> insetRect(const Vector2D<T> & i) const {
 				Rect<T> res(*this);
 				res.origin += i;
 				res.size -= i * 2;

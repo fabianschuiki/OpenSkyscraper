@@ -22,6 +22,7 @@ namespace OSS {
 			
 			GameUI(GameScene * scene);
 			
+			//TODO: move this somewhere else
 			Tower * getTower();
 			
 			

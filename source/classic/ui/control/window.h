@@ -4,6 +4,7 @@
 #include "../../external.h"
 
 #include "../../tower/tower.h"
+#include "watch.h"
 
 
 namespace OSS {
@@ -20,12 +21,15 @@ namespace OSS {
 			
 			ControlWindow(GameUI * ui);
 			
+			//TODO: move this somewhere else
 			Tower * getTower();
 			
 			
 			/**
 			 * Subviews
 			 */
+		private:
+			Pointer<Watch> watchView;
 			
 			
 			/**

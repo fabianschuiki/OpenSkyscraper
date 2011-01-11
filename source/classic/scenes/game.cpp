@@ -141,7 +141,7 @@ void GameScene::draw()
 	tower->draw(visibleRect);
 	
 	//Draw a red cross at the origin of the world
-	glBindTexture(GL_TEXTURE_RECTANGLE_EXT, 0);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
 	glColor3f(1, 0, 0);
 	glBegin(GL_LINES);
 	glVertex2f(-9.5, 0.5);
@@ -218,7 +218,7 @@ void GameScene::didMoveOnScreen()
 {
 	Scene::didMoveOnScreen();
 	
-	glEnable(GL_TEXTURE_RECTANGLE_EXT);
+	glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	glEnable(GL_BLEND);
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -227,7 +227,7 @@ void GameScene::didMoveOnScreen()
 void GameScene::willMoveOffScreen()
 {	
 	glDisable(GL_BLEND);
-	glDisable(GL_TEXTURE_RECTANGLE_EXT);
+	glDisable(GL_TEXTURE_RECTANGLE_ARB);
 	
 	Scene::willMoveOffScreen();
 }

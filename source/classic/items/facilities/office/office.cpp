@@ -104,9 +104,9 @@ void OfficeItem::updateBackground()
 		backgrounds[0].textureRect.size.x = 0.5;
 		backgrounds[0].textureRect.origin.x = 0;
 	} else {
-		char str[256];
-		sprintf(str, "simtower/facilities/office/inhabited/%i", type / 2);
-		backgrounds[0].texture = Engine::Texture::named(str);
+		std::stringstream str;
+		str << "simtower/facilities/office/inhabited/" << (type / 2);
+		backgrounds[0].texture = Engine::Texture::named(str.str());
 		backgrounds[0].textureRect.size.x = 0.25;
 		backgrounds[0].textureRect.origin.x = (type % 2) * 0.5;
 	}
