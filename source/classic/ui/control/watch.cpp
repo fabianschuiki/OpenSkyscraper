@@ -34,9 +34,9 @@ void Watch::draw(rectd dirtyRect)
 	if (!tower)
 		return;
 	
-	//Calculate the center of the watch
-	double2 center = getFrame().center();
-	double radius = getFrameSize().x / 2;
+	//Calculate the center and radius of the watch
+	double2 center = getFrameSize() / 2;
+	double radius = mind(center.x, center.y);
 	
 	//Get the time of day from the tower
 	double tod = tower->time->getTimeOfDay();
