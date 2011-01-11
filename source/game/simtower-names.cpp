@@ -1,6 +1,7 @@
 #include "simtower.h"
 
 using namespace OSS;
+using namespace Game;
 
 
 

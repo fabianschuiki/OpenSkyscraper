@@ -1,7 +1,0 @@
-#include "math/math.h"
-#include "base/base.h"
-#include "core/core.h"
-#include "core/tasks/tasks.h"
-#include "game/game.h"
-#include "game/items/items.h"
-#include "game/scenes/scenes.h"

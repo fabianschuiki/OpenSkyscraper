@@ -1,8 +1,9 @@
 #ifndef OSS_RECT_H
 #define OSS_RECT_H
 
-#include "../general.h"
-#include "../base/object.h"
+#include "external.h"
+
+#include "vector2D.h"
 
 
 namespace OSS {
@@ -14,7 +15,7 @@ namespace OSS {
 			Vector2D<T> origin;
 			Vector2D<T> size;
 			
-			std::string description() {
+			std::string description() const {
 				std::string res = "(";
 				res += origin.description();
 				res += ", ";
@@ -86,7 +87,7 @@ namespace OSS {
 			}
 			
 			//Rect modification
-			Rect<T> unionRect(const Rect<T> &r) {
+			Rect<T> unionRect(const Rect<T> &r) const  {
 				Rect<T> res(std::min<T>(minX(), r.minX()),
 							std::min<T>(minY(), r.minY()),
 							std::max<T>(maxX(), r.maxX()),
@@ -97,7 +98,7 @@ namespace OSS {
 			}
 			void unify(const Rect<T> &r) { *this = unionRect(r); }
 			
-			Rect<T> intersectionRect(const Rect<T> &r) {
+			Rect<T> intersectionRect(const Rect<T> &r) const  {
 				Rect<T> res(std::max<T>(minX(), r.minX()),
 							std::max<T>(minY(), r.minY()),
 							std::min<T>(maxX(), r.maxX()),
@@ -108,12 +109,20 @@ namespace OSS {
 			}
 			void intersect(const Rect<T> &r) { *this = intersectionRect(r); }
 			
-			void inset(const T x, const T y) {
-				origin.x += x;
-				origin.y += y;
-				size.x -= 2*x;
-				size.y -= 2*y;
+			Rect<T> insetRect(const Vector2D<T> & i) const  {
+				Rect<T> res(*this);
+				res.origin += i;
+				res.size -= i * 2;
+				return res;
 			}
+			void inset(const Vector2D<T> & i) { *this = insetRect(i); }
+			
+			Rect<T> offsetRect(const Vector2D<T> & o) const {
+				Rect<T> res(*this);
+				res.origin += o;
+				return res;
+			}
+			void offset(const Vector2D<T> & o) { *this = offsetRect(o); }
 		};
 		
 	}

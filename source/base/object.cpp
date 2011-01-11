@@ -1,29 +1,7 @@
 #include "object.h"
 
 using namespace OSS;
-
-
-Object::ObjectQueue Object::autoreleaseQueue;
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Initialization
-//----------------------------------------------------------------------------------------------------
-
-Object::Object()
-{
-	retainCount = 1;
-}
-
-Object::~Object()
-{
-	//the assert breaks the capability of having static class instances
-	//assert(retainCount == 0);
-}
+using namespace Base;
 
 
 
@@ -31,12 +9,22 @@ Object::~Object()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Runtime Type Information
+#pragma mark Class Inheritance
 //----------------------------------------------------------------------------------------------------
 
-bool Object::isKindOfClass(const std::type_info & typeidClass)
+Object::Class Object::getClass()
 {
-	return (typeid(*this) == typeidClass);
+	return (Class)typeid(*this);
+}
+
+bool Object::isMemberOfClass(Class c)
+{
+	return (typeid(*this) == c);
+}
+
+bool Object::isKindOfClass(Class c)
+{
+	return isMemberOfClass(c);
 }
 
 
@@ -45,49 +33,14 @@ bool Object::isKindOfClass(const std::type_info & typeidClass)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Memory Management
-//----------------------------------------------------------------------------------------------------
-
-void Object::retain()
-{
-	retainCount++;
-}
-
-void Object::release()
-{
-	assert(retainCount > 0);
-	retainCount--;
-	if (retainCount <= 0)
-		delete this;
-}
-
-void Object::autorelease()
-{
-	autoreleaseQueue.push(this);
-}
-
-void Object::drainAutoreleaseQueue()
-{
-	while (!autoreleaseQueue.empty()) {
-		autoreleaseQueue.front()->release();
-		autoreleaseQueue.pop();
-	}
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Runtime Type Information
+#pragma mark Description
 //----------------------------------------------------------------------------------------------------
 
 /**
  * Returns the object's class name. This function may be realized in various ways,
  * yet using typeid makes the whole thing portable among many platforms.
  */
-std::string Object::className()
+std::string Object::className() const
 {
 	return typeid(*this).name();
 }
@@ -104,21 +57,12 @@ std::string Object::className()
  *
  * The default implementation returns "className this".
  */
-std::string Object::instanceName()
+std::string Object::instanceName() const
 {
-	char str[64];
+	char str[128];
 	sprintf(str, "%s %p", this->className().c_str(), this);
 	return str;
 }
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Description
-//----------------------------------------------------------------------------------------------------
 
 /**
  * Returns the object's description in human-readable form. This is a convenient
@@ -131,54 +75,10 @@ std::string Object::instanceName()
  * descriptions it may be hard to tell the description from the rest of the log
  * message without the brackets.
  */
-std::string Object::description()
+std::string Object::description() const
 {
 	std::string res = "<";
 	res += this->instanceName();
 	res += ">";
 	return res;
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Events
-//----------------------------------------------------------------------------------------------------
-
-bool Object::handleEvent(Event * event)
-{
-	switch (event->type) {
-		case kEventSDL: return eventSDL(event->sdl.event); break;
-	}
-	return false;
-}
-
-bool Object::eventSDL(SDL_Event * event)
-{
-	if ((SDL_EVENTMASK(event->type) & SDL_KEYEVENTMASK) && eventKey(event)) return true;
-	if ((SDL_EVENTMASK(event->type) & SDL_MOUSEEVENTMASK) && eventMouse(event)) return true;
-	return false;
-}
-
-bool Object::eventKey(SDL_Event * event)
-{
-	if (event->type == SDL_KEYDOWN && eventKeyDown(event)) return true;
-	if (event->type == SDL_KEYUP && eventKeyUp(event)) return true;
-	return false;
-}
-
-bool Object::eventMouse(SDL_Event * event)
-{
-	if (event->type == SDL_MOUSEMOTION && eventMouseMoved(event)) return true;
-	if (event->type == SDL_MOUSEBUTTONDOWN && eventMouseDown(event)) return true;
-	if (event->type == SDL_MOUSEBUTTONUP && eventMouseUp(event)) return true;
-	
-	//Fortunately SDL 1.3 supports mouse wheel events with different wheel speeds...
-#if SDL_VERSION_ATLEAST(1, 3, 0)
-	if (event->type == SDL_MOUSEWHEEL && eventMouseWheel(event)) return true;
-#endif
-	return false;
 }

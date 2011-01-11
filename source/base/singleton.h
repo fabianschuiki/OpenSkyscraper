@@ -1,8 +1,7 @@
 #ifndef OSS_SINGLETON_H
 #define OSS_SINGLETON_H
 
-#include "../general.h"
-#include "object.h"
+#include "external.h"
 
 
 namespace OSS {
@@ -13,6 +12,8 @@ namespace OSS {
 	public:
 		Singleton() {
 			assert(!singleton);
+			std::cerr << "** WARNING **  Using singleton of " << typeid(T).name()
+			<< " which is BAD coding. You can do better than that!" << std::endl;
 			
 			//The next part is taken from "Enginuity, Part II", posted on gamedev.net
 			//by Richard Fine. It is commented as follows:

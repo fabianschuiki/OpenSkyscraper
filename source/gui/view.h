@@ -1,10 +1,13 @@
 #ifndef OSS_GUI_VIEW_H
 #define OSS_GUI_VIEW_H
 
+#include "external.h"
+
 
 namespace OSS {
 	namespace GUI {
-		class View {
+		class View : public Engine::Responder {
+			
 			/**
 			 * Types
 			 */
@@ -20,13 +23,11 @@ namespace OSS {
 			
 			//Autoresizing Mask
 			typedef enum {
-				NotSizable		= 0,
-				MinXFlexible	= (1 << 0),
-				MaxXFlexible	= (1 << 1),
-				MinYFlexible	= (1 << 2),
-				MaxYFlexible	= (1 << 3),
-				WidthFlexible	= (1 << 4),
-				HeightFlexible	= (1 << 5)
+				NotSizable	= 0,
+				MinXFixed	= (1 << 0),
+				MaxXFixed	= (1 << 1),
+				MinYFixed	= (1 << 2),
+				MaxYFixed	= (1 << 3)
 			} AutoresizingMask;
 			
 			
@@ -67,8 +68,6 @@ namespace OSS {
 			virtual void willRemoveSubview(View * subview) {}
 			virtual void didRemoveSubview(View * subview) {}
 			
-			void replaceSubview(View * subview, View * with);
-			
 			
 			/**
 			 * Frame
@@ -88,14 +87,14 @@ namespace OSS {
 			
 			//Origin
 			const double2 & getFrameOrigin();
-			void setFrameOrigin(const double2 & frame);
+			void setFrameOrigin(const double2 & origin);
 			
 			virtual void willChangeFrameOrigin(const double2 & newOrigin) {}
 			virtual void didChangeFrameOrigin(const double2 & oldOrigin) {}
 			
 			//Size
 			const double2 & getFrameSize();
-			void setFrameSize(const double2 & frame);
+			void setFrameSize(const double2 & size);
 			
 			virtual void willChangeFrameSize(const double2 & newSize) {}
 			virtual void didChangeFrameSize(const double2 & oldSize);
@@ -127,26 +126,24 @@ namespace OSS {
 			
 			
 			/**
-			 * Rendering
+			 * Drawing
 			 *
-			 * The rendering mechanism is used to tell a view hierarchy to draw itself. It does this
-			 * by asking the view followed by its subviews to draw itself.
+			 * A view is supposed to draw itself and all its subviews in the draw() function. It is
+			 * at the subclasser's discretion whether to draw the view or the subviews first, al-
+			 * though the former is recommended.
+			 *
+			 * Before calling draw() on its subviews, the view should translate the current OpenGL
+			 * modelview matrix to the origin of the subview.
 			 */
 		public:
-			void render(rectd rect);
-			
-			virtual void willRender(rectd dirtyRect) {}
-			virtual void didRender(rectd dirtyRect) {}
+			virtual void draw(rectd dirtyRect);
 			
 			
 			/**
-			 * Drawing
+			 * Event Sending
 			 */
 		public:
-			virtual void draw(rectd rect);
-			
-			virtual void willDraw(rectd rect) {}
-			virtual void didDraw(rectd rect) {}
+			virtual bool sendEventToNextResponders(Base::Event * event);
 		};
 	}
 }
