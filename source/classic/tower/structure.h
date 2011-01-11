@@ -39,6 +39,17 @@ namespace OSS {
 		public:
 			Cell * getCell(int2 location, bool createIfInexistent = false);
 			
+			//Analysis
+			typedef struct {
+				unsigned int empty;
+				unsigned int floor;
+				unsigned int facility;
+				unsigned int transport;
+			} CellAnalysis;
+			
+			CellAnalysis analyseCells(recti rect);
+			CellAnalysis analyseCells(rectmaski rectmask);
+			
 			
 			/**
 			 * Items
@@ -83,14 +94,18 @@ namespace OSS {
 			 */
 		public:
 			typedef struct {
-				unsigned int requiredFloorCells;
+				unsigned int floorCellsRequired;
+				unsigned int itemCellsRequired;
+				
 				ItemSet collidesWith;
-				unsigned int totalCosts;
-				unsigned int floorCosts;
-				bool constructionPossible;
+				unsigned int unfulfilledAttributes;
+				bool cellsBelowValid;
+				bool cellsAboveValid;
+				
+				bool valid;
 			} Report;
 			
-			ConstructionReport getReport(recti rect, ItemType type);
+			Report getReport(recti rect, ItemType type);
 		};
 	}
 }
