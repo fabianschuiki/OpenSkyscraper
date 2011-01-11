@@ -13,7 +13,7 @@ namespace OSS {
 			T y;
 			
 			//Description
-			std::string description() {
+			std::string description() const {
 				char str[32];
 				sprintf(str, "(%f, %f)", (double)x, (double)y);
 				return str;

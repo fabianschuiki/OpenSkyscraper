@@ -212,6 +212,11 @@ void Item::setWorldRect(const rectd & worldRect)
 	}
 }
 
+rectmaski Item::getOccupiedRectMask()
+{
+	return rectmaski(&getRect());
+}
+
 unsigned int Item::getNumFloors() const
 {
 	return getRect().size.y;

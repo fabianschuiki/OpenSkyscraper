@@ -3,6 +3,8 @@
 
 #include "../external.h"
 
+#include "../items/itemdescriptor.h"
+
 
 namespace OSS {
 	namespace Classic {
@@ -28,10 +30,13 @@ namespace OSS {
 			 * occupy that cell.
 			 */
 		public:
+			typedef std::map<ItemCategory, Item *> ItemByCategory;
 			typedef struct {
-				FacilityItem * facility;
-				TransportItem * transport;
+				ItemByCategory items;
+				int2 location;
 			} Cell;
+			
+			typedef std::set<Cell *> CellSet;
 			
 		private:
 			std::map<int, std::map<int, Cell> > cells;
@@ -39,49 +44,57 @@ namespace OSS {
 		public:
 			Cell * getCell(int2 location, bool createIfInexistent = false);
 			
+			CellSet getCells(recti rect, bool createIfInexistent = false);
+			CellSet getCells(rectmaski rectmask, bool createIfInexistent = false);
+			
 			//Analysis
 			typedef struct {
-				unsigned int empty;
 				unsigned int floor;
 				unsigned int facility;
 				unsigned int transport;
 			} CellAnalysis;
 			
+			CellAnalysis analyseCells(CellSet cells);
 			CellAnalysis analyseCells(recti rect);
 			CellAnalysis analyseCells(rectmaski rectmask);
+			
+			void assignCellsCoveredByItem(Item * item);
+			void unassignCellsCoveredByItem(Item * item);
 			
 			
 			/**
 			 * Items
 			 */
 		public:
-			typedef std::set< Pointer<Item> > ItemSet;
-			typedef std::map<ItemType, ItemSet> ItemTypeSet;
-			typedef std::map<ItemGroup, ItemSet> ItemGroupSet;
-			typedef std::map<ItemCategory, ItemSet> ItemCategorySet;
+			typedef std::set< Pointer<Item> > ItemPointerSet;
+			typedef std::set<Item *> ItemSet;
+			typedef std::map<ItemType, ItemSet> ItemTypeMap;
+			typedef std::map<ItemGroup, ItemSet> ItemGroupMap;
+			typedef std::map<ItemCategory, ItemSet> ItemCategoryMap;
 			
 		private:
-			ItemSet items;
-			ItemTypeSet itemsByType;
-			ItemGroupSet itemsByGroup;
-			ItemCategorySet itemsByCategory;
+			ItemPointerSet items;
+			ItemTypeMap itemsByType;
+			ItemGroupMap itemsByGroup;
+			ItemCategoryMap itemsByCategory;
 			
 			std::map<int, ItemSet> itemsByFloor;
-			std::map<int, ItemTypeSet> itemsByFloorAndType;
-			std::map<int, ItemGroupSet> itemsByFloorAndGroup;
-			std::map<int, ItemCategorySet> itemsByFloorAndCategory;
+			std::map<int, ItemTypeMap> itemsByFloorAndType;
+			std::map<int, ItemGroupMap> itemsByFloorAndGroup;
+			std::map<int, ItemCategoryMap> itemsByFloorAndCategory;
 			
 		public:
-			const ItemSet & getItems();
-			const ItemTypeSet & getItems(ItemType type);
-			const ItemGroupSet & getItems(ItemGroup group);
-			const ItemCategorySet & getItems(ItemCategory category);
+			const ItemPointerSet & getItems();
+			const ItemSet & getItems(ItemType type);
+			const ItemSet & getItems(ItemGroup group);
+			const ItemSet & getItems(ItemCategory category);
 			
 			const ItemSet & getItems(int floor);
-			const ItemTypeSet & getItems(int floor, ItemType type);
-			const ItemGroupSet & getItems(int floor, ItemGroup group);
-			const ItemCategorySet & getItems(int floor, ItemCategory category);
+			const ItemSet & getItems(int floor, ItemType type);
+			const ItemSet & getItems(int floor, ItemGroup group);
+			const ItemSet & getItems(int floor, ItemCategory category);
 			
+			ItemSet getItems(CellSet cells);
 			ItemSet getItems(recti rect);
 			ItemSet getItems(rectmaski rectmask);
 			
@@ -94,18 +107,22 @@ namespace OSS {
 			 */
 		public:
 			typedef struct {
-				unsigned int floorCellsRequired;
-				unsigned int itemCellsRequired;
+				unsigned int additionalFloorCellsRequired;
+				unsigned int additionalFacilityCellsRequired;
 				
 				ItemSet collidesWith;
 				unsigned int unfulfilledAttributes;
-				bool cellsBelowValid;
-				bool cellsAboveValid;
 				
+				bool cellsAboveValid;
+				bool cellsBelowValid;
+				bool adjacentCellsValid;
+				
+				bool validForFacility;
+				bool validForTransport;
 				bool valid;
 			} Report;
 			
-			Report getReport(recti rect, ItemType type);
+			Report getReport(recti rect, ItemDescriptor * descriptor);
 		};
 	}
 }

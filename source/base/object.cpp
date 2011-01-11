@@ -40,7 +40,7 @@ bool Object::isKindOfClass(Class c)
  * Returns the object's class name. This function may be realized in various ways,
  * yet using typeid makes the whole thing portable among many platforms.
  */
-std::string Object::className()
+std::string Object::className() const
 {
 	return typeid(*this).name();
 }
@@ -57,7 +57,7 @@ std::string Object::className()
  *
  * The default implementation returns "className this".
  */
-std::string Object::instanceName()
+std::string Object::instanceName() const
 {
 	char str[128];
 	sprintf(str, "%s %p", this->className().c_str(), this);
@@ -75,7 +75,7 @@ std::string Object::instanceName()
  * descriptions it may be hard to tell the description from the rest of the log
  * message without the brackets.
  */
-std::string Object::description()
+std::string Object::description() const
 {
 	std::string res = "<";
 	res += this->instanceName();

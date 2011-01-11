@@ -68,6 +68,7 @@ namespace OSS {
 			void setRect(const recti & rect);
 			const rectd & getWorldRect() const;
 			void setWorldRect(const rectd & worldRect);
+			rectmaski getOccupiedRectMask();
 			
 			//Convenience
 			unsigned int getNumFloors() const;
