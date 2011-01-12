@@ -379,3 +379,49 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	
 	return report;
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Item Construction
+//----------------------------------------------------------------------------------------------------
+
+TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
+																 recti rect)
+{
+	if (!descriptor)
+		return (ConstructionResult){false, ""};
+	
+	//First of all we need a report on the rect that we're trying to build in.
+	Report report = getReport(rect, descriptor);
+	
+	return (ConstructionResult){true, ""};
+}
+
+TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
+																 recti rectA, recti rectB)
+{
+	if (!descriptor)
+		return (ConstructionResult){false, ""};
+	
+	//First of all we need to find the union rect between A and B
+	recti rect = rectA.unionRect(rectB);
+	
+	//In case we're building the lobby on the ground floor, we want that if there's already a lobby,
+	//the one we're building collapses entirely with the other one, so that you could build a 4x1
+	//lobby on the left and one on the right of the screen and the two would connect to one huge
+	//lobby.
+	if (descriptor->type == kLobbyType) {
+		
+		//Find all the lobbies on the ground floor and unify the construction rect with their rect.
+		ItemSet lobbies = getItems(0, kLobbyType);
+		for (ItemSet::iterator it = lobbies.begin(); it != lobbies.end(); it++)
+			rect.unify((*it)->getRect());
+	}
+	
+	OSSObjectLog << "constructing in " << rect.description() << std::endl;
+	return (ConstructionResult){true, ""};
+}

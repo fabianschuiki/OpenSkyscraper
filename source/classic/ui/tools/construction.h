@@ -37,7 +37,7 @@ namespace OSS {
 			 * Template
 			 */
 		private:
-			recti previousTemplateRect;
+			recti initialTemplateRect;
 			recti templateRect;
 			
 			double2 templateCenter;
@@ -68,6 +68,9 @@ namespace OSS {
 			/**
 			 * Event Handling
 			 */
+		private:
+			bool isDraggingConstruction;
+			
 		public:
 			virtual bool eventMouseDown(Core::MouseButtonEvent * event);
 			virtual bool eventMouseUp(Core::MouseButtonEvent * event);

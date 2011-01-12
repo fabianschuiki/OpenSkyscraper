@@ -138,6 +138,24 @@ namespace OSS {
 			} Report;
 			
 			Report getReport(recti rect, ItemDescriptor * descriptor);
+			
+			
+			/**
+			 * Item Construction
+			 *
+			 * The constructItem() function tries to build the item specified by the given item
+			 * descriptor in the given rect. The overloaded version featuring two rects is used to
+			 * build flexible width items like lobbies, floors, etc..
+			 */
+		public:
+			typedef struct {
+				bool success;
+				string failureReason;
+			} ConstructionResult;
+			
+			ConstructionResult constructItem(ItemDescriptor * descriptor, recti rect);
+			ConstructionResult constructItem(ItemDescriptor * descriptor,
+											 recti rectA, recti rectB);
 		};
 	}
 }

@@ -139,7 +139,7 @@ void ConstructionTool::draw(rectd dirtyRect)
 	window.inset(double2(0.5, 0.5));
 	
 	//Now we may draw the frame around the rect
-	glColor4f(1, 1, 1, 0.75);
+	glColor4f(1, 1, 1, 0.85);
 	Engine::Texture::unbind();
 	glBegin(GL_LINE_STRIP);
 	glVertex2d(window.minX(), window.minY());
@@ -162,18 +162,83 @@ void ConstructionTool::draw(rectd dirtyRect)
 
 bool ConstructionTool::eventMouseDown(Core::MouseButtonEvent * event)
 {
-	return false;
+	if (!getItemDescriptor())
+		return false;
+	
+	TowerStructure::ConstructionResult result;
+	
+	//We need to make sure that the template rect has been updated
+	updateTemplateRect();
+	
+	//If we've selected a flexible width item, we have to start buildling
+	if (getItemDescriptor()->attributes & kFlexibleWidthAttribute) {
+		
+		//Keep track of where we started construction
+		initialTemplateRect = templateRect;
+		
+		//Do the initial build
+		result = ui->getTower()->structure->constructItem(getItemDescriptor(), templateRect,
+														  initialTemplateRect);
+		
+		//If the inital build was successful, we start dragging
+		if (result.success)
+			isDraggingConstruction = true;
+	}
+	
+	//Otherwise we have a fixed width item selected, which is trivial to construct
+	else {
+		result = ui->getTower()->structure->constructItem(getItemDescriptor(), templateRect);
+	}
+	
+	//If we weren't able to build the item, play the annoying "click"
+	if (!result.success) {
+		OSSObjectLog << "CLICK!!!" << std::endl;
+	}
+	
+	return true;
 }
 
 bool ConstructionTool::eventMouseUp(Core::MouseButtonEvent * event)
 {
-	return false;
+	if (!getItemDescriptor())
+		return false;
+	
+	//End any dragging construction going on
+	isDraggingConstruction = false;
+	
+	//TODO: resume constructions of the tower
+	return true;
 }
 
 bool ConstructionTool::eventMouseMoved(Core::MouseMovedEvent * event)
 {
-	//Set the template's center to be where the mouse is
-	setTemplateCenter(ui->getScene()->windowToWorld(event->position, true));
+	if (!getItemDescriptor())
+		return false;
+	
+	//Set the template's center to be where the mouse is. First we have to convert the mouse po-
+	//sition which is in window coordinates to world coordinates.
+	double2 center = ui->getScene()->windowToWorld(event->position, true);
+	
+	//Then we have to make sure that the center doesn't change its Y coordinate during dragging con-
+	//struction.
+	if (isDraggingConstruction)
+		center.y = getTemplateCenter().y;
+	
+	//Finally we set the new center
+	setTemplateCenter(center);
+	
+	
+	//If we're dragging a construction, we have to construct the item under the new conditions
+	if (isDraggingConstruction) {
+		
+		//Make sure the template rect is up to date, since we just changed the template center whose
+		//changes may not yet have applied to the template.
+		updateTemplateRect();
+		
+		//Build, it's that simple
+		ui->getTower()->structure->constructItem(getItemDescriptor(), templateRect,
+												 initialTemplateRect);
+	}
 	
 	return true;
 }
