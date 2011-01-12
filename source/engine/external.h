@@ -6,6 +6,7 @@
 
 // Mac OS X
 #if defined(__APPLE__) || defined(__MACH__)
+	#define PLATFORM_APPLE
 	#include <OpenAL/al.h>
 	#include "alc.h" //required since alc.h in OS X uses typedef'd void for empty param list -> C++ sucks!
 	#include <OpenGL/gl.h>
@@ -13,14 +14,16 @@
 
 // GNU/Linux
 #if defined(linux) || defined(__linux)
+	#define PLATFORM_LINUX
 	#include <AL/al.h>
 	#include <AL/alc.h>
 	#include <GL/gl.h>
 #endif
 
 #if defined(_WIN32)
+	#define PLATFORM_WINDOW
+	#error Not ported to Windows yet. 
 	// Oh god you poor porters.
-	#error Not ported to Windows yet.
 #endif
 
 #include <SDL/SDL.h>

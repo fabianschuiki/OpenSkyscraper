@@ -153,17 +153,6 @@ void Application::pumpEvents()
 #pragma mark Resources
 //----------------------------------------------------------------------------------------------------
 
-// Go check the projects/macosx folder for Mac OS X code.
-#if !defined(__APPLE__) && !defined(__MACH__)
-std::vector<std::string> Application::resourcesPaths()
-{
-	std::vector<std::string> paths;
-	paths.push_back(".");
-	paths.push_back("./resources");
-	return paths;
-}
-#endif
-
 std::string Application::pathToResource(std::string resourceName)
 {
 	//Get a list of paths where resources may be located

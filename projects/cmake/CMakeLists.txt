@@ -62,6 +62,7 @@ set(source
 ../../source/engine/video/texturedquad.cpp
 ../../source/engine/video/video.cpp
 ../../source/engine/scene.cpp
+../../source/engine/platformspecific.cpp
 ../../source/engine/responder.cpp
 ../../source/game/application.cpp
 ../../source/game/simtower-names.cpp
