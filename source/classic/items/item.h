@@ -28,11 +28,7 @@ namespace OSS {
 			virtual void update();	//calls the update tree
 			
 			//Factory
-			static Item * make(Tower * tower, ItemDescriptor * descriptor);
-			static Item * make(Tower * tower, ItemDescriptor * descriptor,
-							   unsigned int itemID);
-			static Item * make(Tower * tower, ItemDescriptor * descriptor,
-							   unsigned int itemID, recti rect);
+			static Item * make(Tower * tower, ItemDescriptor * descriptor, recti rect);
 			
 			
 			/**

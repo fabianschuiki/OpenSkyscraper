@@ -160,7 +160,7 @@ void TowerStructure::unassignCellsCoveredByItem(Item * item)
 	//Unset the item in each cell's item slot
 	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++) {
 		Item ** slot = &(*it)->items[item->getCategory()];
-		assert(*slot != item && "not all cells covered by the item are assigned to it!");
+		assert(*slot == item && "not all cells covered by the item are assigned to it!");
 		*slot = NULL;
 	}
 }
@@ -223,7 +223,8 @@ TowerStructure::ItemSet TowerStructure::getItems(CellSet cells)
 	ItemSet items;
 	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++)
 		for (ItemByCategory::iterator ic = (*it)->items.begin(); ic != (*it)->items.end(); ic++)
-			items.insert(ic->second);
+			if (ic->second)
+				items.insert(ic->second);
 	return items;
 }
 
@@ -300,7 +301,6 @@ void TowerStructure::removeItem(Item * item)
 TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * descriptor)
 {
 	Report report;
-	bzero(&report, sizeof(report));
 	if (!descriptor)
 		return report;
 	
@@ -340,7 +340,7 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	//Calculate the local rectmask
 	rectmaski localMask = descriptor->mask;
 	if (localMask.empty())
-		localMask = rectmaski(&rect);
+		localMask = rectmaski(&rect, NULL);
 	else
 		localMask.offset(rect.origin);
 	
@@ -352,7 +352,7 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
 		if ((*it)->getCategory() == descriptor->category)
 			if (descriptor->mask.intersectsRect((*it)->getRect()))
-				report.collidesWith.insert(*it);
+				report.collidesWith.insert((Item *)(*it));
 	
 	
 	//Analyze the cells to find how many additional cells will be required
@@ -402,13 +402,13 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 }
 
 TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
-																 recti rectA, recti rectB)
+																 recti rect, recti initialRect)
 {
 	if (!descriptor)
 		return (ConstructionResult){false, ""};
 	
-	//First of all we need to find the union rect between A and B
-	recti rect = rectA.unionRect(rectB);
+	//First of all we need to find the union rect between rect and initialRect
+	recti buildRect = rect.unionRect(initialRect);
 	
 	//In case we're building the lobby on the ground floor, we want that if there's already a lobby,
 	//the one we're building collapses entirely with the other one, so that you could build a 4x1
@@ -419,9 +419,166 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 		//Find all the lobbies on the ground floor and unify the construction rect with their rect.
 		ItemSet lobbies = getItems(0, kLobbyType);
 		for (ItemSet::iterator it = lobbies.begin(); it != lobbies.end(); it++)
-			rect.unify((*it)->getRect());
+			buildRect.unify((*it)->getRect());
 	}
 	
-	OSSObjectLog << "constructing in " << rect.description() << std::endl;
+	
+	//To star constructing stuff we need a report on the rect that we're trying to build in so we
+	//can decide whether it is suitable for construction and how much it will cost.
+	Report report = getReport(buildRect, descriptor);
+	
+	
+	//We have to find the acutal rect the final item will have. This means iterating through all
+	//items that we collided with and finding the one closest to the initial rect. That's where the
+	//actual item rect will end.
+	recti actualRect = buildRect;
+	for (ItemSet::iterator it = report.collidesWith.begin(); it != report.collidesWith.end(); it++) {
+		
+		//Skip items that are of the same type as we are, since we will collapse with them in the
+		//end anyway. Also skip items that are NOT of the same category as we are.
+		if ((*it)->getType() == descriptor->type || (*it)->getCategory() != descriptor->category)
+			continue;
+		
+		//Skip the collision item if its rect doesn't collide anymore since we were already forced
+		//to reduce the actual rect.
+		if (!actualRect.intersectsRect((*it)->getRect()))
+			continue;
+		
+		
+		//Calculate the rect containing the initial rect and touching the item's rect. If it's
+		//smaller than the current actual rect it has to take its place since we hit a facility
+		//somewhere.
+		recti itemRect = (*it)->getRect();
+		recti reducedRect = actualRect;
+		
+		//If the item is further to the left than the initial rect we have to do a cutoff on the
+		//left.
+		if (itemRect.maxX() <= initialRect.minX()) {
+			int leftCutOff = itemRect.maxX() - reducedRect.minX();
+			reducedRect.origin.x += leftCutOff;
+			reducedRect.size.x -= leftCutOff;
+		}
+		
+		//And likewise on the right.
+		if (itemRect.minX() > initialRect.maxX()) {
+			int rightCutOff = reducedRect.maxX() - itemRect.minX();
+			reducedRect.size.x -= rightCutOff;
+		}
+		
+		//If the reduced rect is smaller than the actual rect, it needs to take its place.
+		if (reducedRect.area() < actualRect.area())
+			actualRect = reducedRect;
+	}
+	
+	
+	//Now that we have the actual rect for the item we have to recalculate the report and find all
+	//items that are of the same type as we are and collapse with them.
+	report = getReport(actualRect, descriptor);
+	
+	//Get the list of items to collapse with
+	ItemSet collapseItems = report.collidesWith;
+	
+	//Since we might just be barely touching another object of the same type on the left or right we
+	//also have to collapse with them.
+	Cell * cellLeft = getCell(actualRect.minXminY() - int2(1, 0));
+	Cell * cellRight = getCell(actualRect.maxXminY());
+	Item * itemLeft = (cellLeft ? cellLeft->items[descriptor->category] : NULL);
+	Item * itemRight = (cellRight ? cellRight->items[descriptor->category] : NULL);
+	if (itemLeft) collapseItems.insert(itemLeft);
+	if (itemRight) collapseItems.insert(itemRight);
+	
+	//Iterate through the collision items and add collapse with them
+	for (ItemSet::iterator it = collapseItems.begin(); it != collapseItems.end(); it++) {
+		
+		//Assert that the item has the same type than us, since that must be the result of finding
+		//the actual rect.
+		assert((*it)->getType() == descriptor->type);
+		
+		//Find the union rect between the collison item and the actual rect.
+		actualRect.unify((*it)->getRect());
+		
+		//Remove the old item which will be replaced by us.
+		removeItem(*it);
+	}
+	
+	//TODO: calculate how expensive the whole thing is
+	OSSObjectLog << report.additionalFloorCellsRequired << " floor cells, "
+	<< report.additionalFacilityCellsRequired << " facility cells" << std::endl;
+	
+	//Create the new item
+	Item * item = Item::make(tower, descriptor, actualRect);
+	
+	//Add it to the tower
+	addItem(item);
+	
+	OSSObjectLog << "constructing in " << actualRect.description() << std::endl;
 	return (ConstructionResult){true, ""};
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void TowerStructure::advance(double dt)
+{
+	//TODO: Mark us as needing an update. Later we should use the item's updateIfNeeded conditional
+	//in conjunction with our updateIfNeeded conditional to propagate update needs properly.
+	updateIfNeeded.setNeeded();
+	
+	//Advance the items
+	ItemPointerSet items = getItems();
+	for (ItemPointerSet::iterator it = items.begin(); it != items.end(); it++)
+			(*it)->advance(dt);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
+//----------------------------------------------------------------------------------------------------
+
+void TowerStructure::update()
+{
+	//Update the items
+	ItemPointerSet items = getItems();
+	for (ItemPointerSet::iterator it = items.begin(); it != items.end(); it++)
+		(*it)->update();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
+//----------------------------------------------------------------------------------------------------
+
+void TowerStructure::draw(rectd dirtyRect)
+{
+	//Find the items inside the dirty rect since they are the ones we need to draw. To do this we
+	//first have to convert the dirty rect which is in world coordinates to cell coordinates.
+	recti dirtyCells = worldToCell(dirtyRect);
+	
+	//Now we can ask for the items in that rect.
+	ItemSet items = getItems(dirtyCells);
+	
+	//In the first pass we only draw the facility items. We have to do the facilities and transports
+	//in two passes since we don't want any items to be drawn ontop of transportation.
+	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
+		if ((*it)->getCategory() == kFacilityCategory)
+			(*it)->draw(dirtyRect);
+	
+	//In the second pass we only draw the transport items.
+	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
+		if ((*it)->getCategory() == kTransportCategory)
+			(*it)->draw(dirtyRect);
 }

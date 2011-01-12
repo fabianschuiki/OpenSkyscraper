@@ -70,7 +70,7 @@ void Item::update()
 #pragma mark Factory
 //----------------------------------------------------------------------------------------------------
 
-Item * Item::make(Tower * tower, ItemDescriptor * descriptor)
+Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 {
 	if (!tower || !descriptor)
 		return NULL;
@@ -99,25 +99,11 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor)
 	}
 	
 	//Initialize the item
-	if (instance)
+	if (instance) {
 		instance->init();
-	
-	return instance;
-}
-
-Item * Item::make(Tower * tower, ItemDescriptor * descriptor, unsigned int itemID)
-{
-	Item * instance = make(tower, descriptor);
-	if (instance)
-		instance->setItemID(itemID);
-	return instance;
-}
-
-Item * Item::make(Tower * tower, ItemDescriptor * descriptor, unsigned int itemID, recti rect)
-{
-	Item * instance = make(tower, descriptor, itemID);
-	if (instance)
 		instance->setRect(rect);
+	}
+	
 	return instance;
 }
 
@@ -195,7 +181,7 @@ void Item::setRect(const recti & rect)
 {
 	if (this->rect != rect) {
 		this->rect = rect;
-		setWorldRect(tower->convertCellToWorldRect(rect));
+		setWorldRect(tower->structure->cellToWorld(rect));
 	}
 }
 
@@ -214,7 +200,7 @@ void Item::setWorldRect(const rectd & worldRect)
 
 rectmaski Item::getOccupiedRectMask()
 {
-	return rectmaski(&getRect());
+	return rectmaski(&getRect(), NULL);
 }
 
 unsigned int Item::getNumFloors() const
@@ -271,7 +257,7 @@ void Item::updateBackground()
 			rect.origin.y += floor;
 			
 			//Convert the rect to world coordinates
-			rectd worldRect = tower->convertCellToWorldRect(rect);
+			rectd worldRect = tower->structure->cellToWorld(rect);
 			
 			//Set the background rect
 			backgrounds[floor].setRect(worldRect);

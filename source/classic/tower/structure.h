@@ -155,7 +155,28 @@ namespace OSS {
 			
 			ConstructionResult constructItem(ItemDescriptor * descriptor, recti rect);
 			ConstructionResult constructItem(ItemDescriptor * descriptor,
-											 recti rectA, recti rectB);
+											 recti rect, recti initialRect);
+			
+			
+			/**
+			 * Simulation
+			 */
+		public:
+			virtual void advance(double dt);
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void update();
+			
+			
+			/**
+			 * Drawing
+			 */
+		public:
+			virtual void draw(rectd dirtyRect);
 		};
 	}
 }

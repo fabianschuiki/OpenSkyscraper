@@ -405,7 +405,7 @@ Tower::Cell * Tower::getCell(int2 coordinates, bool createIfInexistent)
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-bool Tower::constructFlexibleWidthItem(ItemDescriptor * descriptor, recti currentRect, recti previousRect)
+/*bool Tower::constructFlexibleWidthItem(ItemDescriptor * descriptor, recti currentRect, recti previousRect)
 {
 	OSSObjectLog << "attempting construction of " << descriptor->type << " from " << previousRect.description() << " to " << currentRect.description() << std::endl;
 	
@@ -521,28 +521,6 @@ bool Tower::constructFlexibleWidthItem(ItemDescriptor * descriptor, recti curren
 	}
 	OSSObjectLog << "the item rect is " << itemRect.description() << std::endl;
 	
-	//Make the cells the item covers point at it
-	/*for (int x = itemRect.minX(); x < itemRect.maxX(); x++) {
-		Cell * cell = getCell(int2(x, itemRect.origin.y), true);
-		cell->facility = itemID;
-	}
-	
-	//Create the new item and add it to the tower's facilities
-	Item * item = Item::make(this, descriptor, itemID, itemRect);
-	item->setUnderConstruction(true);
-	facilityItems[itemID] = item;
-	
-	//If the item expands the tower's bounds vertically, reposition the crane
-	if (itemRect.minY() >= bounds.maxY()) {
-		int2 origin = itemRect.origin;
-		origin.y += 1;
-		if (craneSprite)
-			craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);
-	}
-	
-	//Make the bounds cover the newly built item too
-	bounds.unify(itemRect);*/
-	
 	//Insert the new item
 	insertNewItem(descriptor, itemRect);
 	
@@ -615,7 +593,7 @@ bool Tower::constructItem(ItemDescriptor * descriptor, recti rect)
 									  Engine::SoundEffect::kTopLayer);
 	
 	return true;
-}
+}*/
 
 bool Tower::checkIfRectMeetsDescriptorRequirements(ItemDescriptor * descriptor, recti rect)
 {
@@ -718,7 +696,7 @@ Tower::CellAnalysis Tower::analyzeCellsInRect(recti rect, rectmaski mask)
  * construction-related stuff like validation, funds transfer, etc. is accomplished. Use the
  * construct* functions instead.
  */
-void Tower::insertNewItem(ItemDescriptor * descriptor, recti rect)
+/*void Tower::insertNewItem(ItemDescriptor * descriptor, recti rect)
 {
 	//Fetch a new item ID
 	unsigned int itemID = nextItemID();
@@ -768,8 +746,8 @@ void Tower::insertNewItem(ItemDescriptor * descriptor, recti rect)
 	if (rect.minY() >= bounds.maxY()) {
 		int2 origin = rect.origin;
 		origin.y += 1;
-		/*if (craneSprite)
-			craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);*/
+		if (craneSprite)
+			craneSprite->rect.origin = convertCellToWorldCoordinates(origin) - double2(6, 0);
 	}
 	
 	//Make the bounds cover the newly built item too
@@ -778,7 +756,7 @@ void Tower::insertNewItem(ItemDescriptor * descriptor, recti rect)
 	//Post a notification
 	if (descriptor->category == kTransportCategory)
 		onChangeTransportItems();
-}
+}*/
 
 void Tower::eraseItem(Item * item)
 {
@@ -855,6 +833,7 @@ bool Tower::checkTime(double previousTime, double alarmTime)
 
 bool Tower::checkTime(double alarmTime)
 {
-	OSSObjectError << "using the deprecated checkTime()!" << std::endl;
+	//DEBUG: re-enable this!
+	//OSSObjectError << "using the deprecated checkTime()!" << std::endl;
 	return time->checkDaily(alarmTime);
 }

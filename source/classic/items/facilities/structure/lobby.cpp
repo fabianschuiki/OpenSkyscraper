@@ -48,6 +48,7 @@ string LobbyItem::getLobbyTextureBaseName()
 	s << tower->environment->getLobbyStyle();
 	s << "/";
 	s << (getRect().minY() == 0 ? "ground" : "sky");
+	OSSObjectLog << "base name = " << s.str() << std::endl;
 	return s.str();
 }
 
