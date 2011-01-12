@@ -192,7 +192,7 @@ bool ConstructionTool::eventMouseDown(Core::MouseButtonEvent * event)
 	
 	//If we weren't able to build the item, play the annoying "click"
 	if (!result.success) {
-		OSSObjectLog << "CLICK!!!" << std::endl;
+		OSSObjectError << result.failureReason << std::endl;
 	}
 	
 	return true;

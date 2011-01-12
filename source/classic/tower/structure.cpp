@@ -305,21 +305,21 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 		return report;
 	
 	//Check the attributes if they are fulfilled
-	report.unfulfilledAttributes = descriptor->attributes;
+	report.unfulfilledAttributes = 0;
 	
-	//Only on ground
-	if ((descriptor->attributes & kAllowedOnGroundAttribute) || rect.maxY() <= 0 || rect.minY() > 0)
-		report.unfulfilledAttributes &= ~(kAllowedOnGroundAttribute);
+	//Allowed on ground
+	if (!(descriptor->attributes & kAllowedOnGroundAttribute) && rect.maxY() > 0 && rect.minY() <= 0)
+		report.unfulfilledAttributes |= kAllowedOnGroundAttribute;
 	
 	//Above/below ground
-	if (!(descriptor->attributes & kNotAboveGroundAttribute) || rect.maxY() <= 0)
-		report.unfulfilledAttributes &= ~(kNotAboveGroundAttribute);
-	if (!(descriptor->attributes & kNotBelowGroundAttribute) || rect.minY() > 0)
-		report.unfulfilledAttributes &= ~(kNotBelowGroundAttribute);
+	if ((descriptor->attributes & kNotAboveGroundAttribute) && rect.maxY() > 0)
+		report.unfulfilledAttributes |= kNotAboveGroundAttribute;
+	if ((descriptor->attributes & kNotBelowGroundAttribute) && rect.minY() < 0)
+		report.unfulfilledAttributes |= kNotBelowGroundAttribute;
 	
 	//Every 15th floor
-	if (!(descriptor->attributes & kEvery15thFloorAttribute) || (rect.minY() % 15) == 0)
-		report.unfulfilledAttributes &= ~(kNotAboveGroundAttribute);
+	if ((descriptor->attributes & kEvery15thFloorAttribute) && (rect.minY() % 15) != 0)
+		report.unfulfilledAttributes |= kEvery15thFloorAttribute;
 	
 	
 	//Check if the items above/below are valid
@@ -471,11 +471,35 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	}
 	
 	
-	//Now that we have the actual rect for the item we have to recalculate the report and find all
-	//items that are of the same type as we are and collapse with them.
+	//Now that we have the actual rect for the item we have to recalculate the report.
 	report = getReport(actualRect, descriptor);
 	
-	//Get the list of items to collapse with
+	
+	//Calculate the costs of the construction by adding the total costs for the facility cells and
+	//the total floor cell costs together.
+	long costs = 0;
+	costs += descriptor->price * report.additionalFacilityCellsRequired;
+	costs += Item::descriptorForItemType(kFloorType)->price * report.additionalFloorCellsRequired;
+	
+	//Fail if we don't have enough money
+	if (!tower->funds->hasSufficient(costs))
+		return (ConstructionResult){false, "insufficient funds"};
+	
+	//Withdraw the required funds
+	tower->funds->transfer(-costs);
+	
+	
+	//Fail if the report states that construction is not possible. Note that we cannot use the
+	//report's valid field here since it will most likely be false since we're collapsing with some
+	//other item which is listed as a collision item.
+	if (report.unfulfilledAttributes || !report.adjacentCellsValid)
+		return (ConstructionResult){false, "impossible"};
+	//TODO: In the deluxe version, these things should return some highly detailed information on
+	//what actually caused the construction to be rejected.
+	
+	
+	//Now we have to collapse with all items that are of the same type than us. To do this we first
+	//have to get the list of items to collapse with.
 	ItemSet collapseItems = report.collidesWith;
 	
 	//Since we might just be barely touching another object of the same type on the left or right we
@@ -501,14 +525,9 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 		removeItem(*it);
 	}
 	
-	//TODO: calculate how expensive the whole thing is
-	OSSObjectLog << report.additionalFloorCellsRequired << " floor cells, "
-	<< report.additionalFacilityCellsRequired << " facility cells" << std::endl;
 	
-	//Create the new item
+	//Now we have to actually build the item. Pretty straightforward: Create the item and add it.
 	Item * item = Item::make(tower, descriptor, actualRect);
-	
-	//Add it to the tower
 	addItem(item);
 	
 	OSSObjectLog << "constructing in " << actualRect.description() << std::endl;

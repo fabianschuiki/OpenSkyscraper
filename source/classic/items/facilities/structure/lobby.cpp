@@ -9,7 +9,7 @@ ItemDescriptor LobbyItem::descriptor = {
 	kStructureGroup,
 	kFacilityCategory,
 	1,
-	(ItemAttributes)(kFlexibleWidthAttribute | kEvery15thFloorAttribute | kNotBelowGroundAttribute),
+	(kFlexibleWidthAttribute | kEvery15thFloorAttribute | kNotBelowGroundAttribute | kAllowedOnGroundAttribute),
 	5000, 
 	int2(1, 1),
 	int2(4, 1)
@@ -48,7 +48,6 @@ string LobbyItem::getLobbyTextureBaseName()
 	s << tower->environment->getLobbyStyle();
 	s << "/";
 	s << (getRect().minY() == 0 ? "ground" : "sky");
-	OSSObjectLog << "base name = " << s.str() << std::endl;
 	return s.str();
 }
 
