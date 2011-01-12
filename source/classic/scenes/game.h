@@ -92,6 +92,8 @@ namespace OSS {
 			 */
 		public:
 			virtual bool eventScrollWheel(Core::ScrollWheelEvent * event);
+			
+			virtual bool eventKeyDown(Core::KeyEvent * event);
 		};
 	}
 }

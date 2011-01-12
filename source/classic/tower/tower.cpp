@@ -161,6 +161,11 @@ void Tower::draw(rectd dirtyRect)
 
 bool Tower::sendEventToNextResponders(Base::Event * event)
 {
+	if (time && time->sendEvent(event)) return true;
+	if (environment && environment->sendEvent(event)) return true;
+	if (funds && funds->sendEvent(event)) return true;
+	if (time && time->sendEvent(event)) return true;
+	if (structure && structure->sendEvent(event)) return true;
 	if (background && background->sendEvent(event)) return true;
 	return Responder::sendEventToNextResponders(event);
 }

@@ -263,50 +263,35 @@ bool GameScene::eventScrollWheel(Core::ScrollWheelEvent * event)
 	return true;
 }
 
-/*bool GameScene::handleEvent(CoreEvent * event)
+bool GameScene::eventKeyDown(Core::KeyEvent * event)
 {
-	if (toolboxWindow.handleEvent((GameEvent *)event)) return true;
-	if (controlWindow.handleEvent((GameEvent *)event)) return true;
-	if (tower && tower->handleEvent((GameEvent *)event)) return true;
-	return Scene::handleEvent(event);
-}
-
-bool GameScene::eventKeyDown(SDL_Event * event)
-{
-	double factor = (event->key.keysym.mod & KMOD_SHIFT ? 10 : 1);
-	switch (event->key.keysym.sym) {
-		case SDLK_UP:		POI.y += 10 * factor; return true; break;
-		case SDLK_DOWN:		POI.y -= 10 * factor; return true; break;
-			
-			//DEBUG: Enable construction tool change using page up/down keys
-		case SDLK_PAGEUP:	setConstructionTool((Item::Type)(++debugItemType)); return true; break;
-		case SDLK_PAGEDOWN:	setConstructionTool((Item::Type)(--debugItemType)); return true; break;
+	//double factor = (event->key.keysym.mod & KMOD_SHIFT ? 10 : 1);
+	switch (event->code) {
+		case SDLK_UP:		setPOI(getPOI() + double2(0, 100)); return true; break;
+		case SDLK_DOWN:		setPOI(getPOI() - double2(0, 100)); return true; break;
 	}
-	switch (event->key.keysym.unicode) {
+	switch (event->unicode) {
 			//DEBUG: Change tower rating
-		case '1':	tower->rating = 1; return true; break;
-		case '2':	tower->rating = 2; return true; break;
-		case '3':	tower->rating = 3; return true; break;
-		case '4':	tower->rating = 4; return true; break;
-		case '5':	tower->rating = 5; return true; break;
-		case '6':	tower->rating = 6; return true; break;
+		case '1':	tower->environment->setRating(1); return true; break;
+		case '2':	tower->environment->setRating(2); return true; break;
+		case '3':	tower->environment->setRating(3); return true; break;
+		case '4':	tower->environment->setRating(4); return true; break;
+		case '5':	tower->environment->setRating(5); return true; break;
+		case '6':	tower->environment->setRating(6); return true; break;
 			
 			//DEBUG: Change time
-		case 'h':	tower->time->getTime() += 1; return true; break;
-		case ' ':	tower->time->getTime() += 0.2; return true; break;
+		case 'h':	tower->time->setTime(tower->time->getTime() + 1); return true; break;
+		case ' ':	tower->time->setTime(tower->time->getTime() + 0.2); return true; break;
 		case 'a':	tower->debugSpeed--; return true; break;
 		case 's':	tower->debugSpeed++; return true; break;
 			
-			//DEBUG: Build debug tower
-		case 'd':	buildDebugTower(); return true; break;
-			
 			//DEBUG: Pause
-		case 'p':	tower->paused = !tower->paused; return true; break;
+		//case 'p':	tower->paused = !tower->paused; return true; break;
 	}
 	return false;
 }
 
-bool GameScene::eventMouseDown(SDL_Event * event)
+/*bool GameScene::eventMouseDown(SDL_Event * event)
 {
 	switch (event->button.button) {
 		case SDL_BUTTON_WHEELUP:	POI.y += 10; return true; break;

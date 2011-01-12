@@ -14,7 +14,7 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-TowerTime::TowerTime(Tower * tower) : Engine::Object(), tower(tower)
+TowerTime::TowerTime(Tower * tower) : Responder(), tower(tower)
 {
 	time = 5;
 	previousTime = time;
@@ -42,13 +42,8 @@ void TowerTime::setTime(double t)
 		unsigned int previousQuarter = getQuarter();
 		unsigned int previousYear = getYear();
 		
-		//Adjust the previous times
-		previousTime = bufferedPreviousTime;
-		bufferedPreviousTime = t;
-		
 		//Store the time
 		time = t;
-		OSSObjectLog << t << std::endl;
 		
 		//Distribute the time changed event
 		Event * e = new Event(Event::TimeChanged);
@@ -101,7 +96,7 @@ bool TowerTime::isBefore(double b)
 
 unsigned int TowerTime::getDate()
 {
-	return (getTimeOfDay() / 24);
+	return (getTime() / 24);
 }
 
 unsigned int TowerTime::getDayOfWeek()
@@ -170,7 +165,11 @@ double TowerTime::getTimeSpeed()
 }
 
 void TowerTime::advance(double dt)
-{
+{	
 	//Advance the game time
 	setTime(getTime() + dt * getTimeSpeed());
+	
+	//Adjust the previous times
+	previousTime = bufferedPreviousTime;
+	bufferedPreviousTime = getTime();
 }

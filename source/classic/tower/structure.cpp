@@ -15,7 +15,7 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-TowerStructure::TowerStructure(Tower * tower) : Engine::Object(), tower(tower),
+TowerStructure::TowerStructure(Tower * tower) : Responder(), tower(tower),
 ceilingHeight(12), cellSize(8, 24 + ceilingHeight)
 {
 }

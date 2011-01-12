@@ -2,13 +2,14 @@
 #define OSS_CLASSIC_TOWER_ENVIRONMENT_H
 
 #include "../external.h"
+#include "../responder.h"
 
 
 namespace OSS {
 	namespace Classic {
 		class Tower;
 		
-		class TowerEnvironment : public Engine::Object {
+		class TowerEnvironment : public Responder {
 			
 			/**
 			 * Construction
@@ -50,7 +51,7 @@ namespace OSS {
 			virtual void update();
 			virtual void updatePopulation();
 			
-			Conditional<TowerEnvironment> updatePopulationIfNeeded;
+			Core::Updatable::Conditional<TowerEnvironment> updatePopulationIfNeeded;
 		};
 	}
 }
