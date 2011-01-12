@@ -28,7 +28,7 @@ SingleRoomItem::SingleRoomItem(Tower * tower) : HotelItem(tower, &descriptor)
 	setVariant(randui(0, 1));
 }
 
-std::string SingleRoomItem::getTypeName()
+string SingleRoomItem::getTypeName()
 {
 	return "single";
 }

@@ -96,8 +96,8 @@ namespace OSS {
 			unsigned int rainAnimationFrame;
 			
 		public:
-			std::string getSkyTextureName(unsigned int index, std::string variant);
-			std::string getCloudTextureName(unsigned int index, std::string variant);
+			string getSkyTextureName(unsigned int index, string variant);
+			string getCloudTextureName(unsigned int index, string variant);
 			
 			double getSkyInterpolation();
 			void setSkyInterpolation(double f);
@@ -122,8 +122,8 @@ namespace OSS {
 			Pointer<Engine::Texture> groundTexture;
 			
 		public:
-			std::string getCityTextureName();
-			std::string getGroundTextureName();
+			string getCityTextureName();
+			string getGroundTextureName();
 			
 			
 			/**

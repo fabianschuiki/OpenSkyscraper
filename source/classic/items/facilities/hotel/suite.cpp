@@ -28,7 +28,7 @@ SuiteItem::SuiteItem(Tower * tower) : HotelItem(tower, &descriptor)
 	setVariant(randui(0, 1));
 }
 
-std::string SuiteItem::getTypeName()
+string SuiteItem::getTypeName()
 {
 	return "suite";
 }

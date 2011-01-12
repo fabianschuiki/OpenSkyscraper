@@ -5,7 +5,7 @@
 
 #define OSSStoreItemStoreAccess(_itemclass_) \
 static Store<_itemclass_> * store;\
-static _itemclass_ * named(std::string name) { return store->itemNamed(name); }\
+static _itemclass_ * named(string name) { return store->itemNamed(name); }\
 AbstractStore * getStore() { return _itemclass_::store; }
 
 
@@ -25,10 +25,10 @@ namespace OSS {
 			virtual AbstractStore * getStore() = 0;
 			
 			//Name of the item
-			std::string name;
+			string name;
 			
 			//Initialization
-			StoreItem(std::string name) : name(name) {}
+			StoreItem(string name) : name(name) {}
 			
 			//State
 			bool isLoaded;

@@ -43,7 +43,7 @@ SoundEffect::~SoundEffect()
 	stop();
 }
 
-std::string SoundEffect::instanceName()
+string SoundEffect::instanceName()
 {
 	return this->className() + " " + (sound ? sound->name : "<no sound>");
 }

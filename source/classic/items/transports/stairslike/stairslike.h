@@ -22,7 +22,7 @@ namespace OSS {
 		protected:
 			unsigned int numAnimationFrames;
 			unsigned int numAnimationFramesPerTexture;
-			std::string baseTextureName;
+			string baseTextureName;
 		public:
 			unsigned int getAnimationFrame();
 			void setAnimationFrame(unsigned int animationFrame);
@@ -40,7 +40,7 @@ namespace OSS {
 			
 			//People
 		private:
-			typedef std::map< Person *, double > TransitProgressMap;
+			typedef map< Person *, double > TransitProgressMap;
 			TransitProgressMap transitProgress;
 		public:
 			void addPerson(Person * person);

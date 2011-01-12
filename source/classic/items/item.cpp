@@ -420,7 +420,7 @@ void Item::setUnderConstruction(bool uc)
 			
 			//Depending on whether the item is draggable the construction sprite differs
 			drawFlexibleConstruction = (this->descriptor->attributes & kFlexibleWidthAttribute);
-			std::string textureName = "simtower/construction/";
+			string textureName = "simtower/construction/";
 			textureName += (drawFlexibleConstruction ? "floor" : "facility");
 			constructionSprite->texture = Engine::Texture::named(textureName);
 		}

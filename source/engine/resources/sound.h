@@ -11,9 +11,9 @@ namespace OSS {
 		class Sound : public StoreItem {
 		public:		
 			//Initialization
-			Sound(std::string name);
+			Sound(string name);
 			~Sound();
-			virtual std::string instanceName();
+			virtual string instanceName();
 			void assignLoadedData(const void * data, ALuint length);
 			
 			//Store

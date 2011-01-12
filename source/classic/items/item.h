@@ -84,7 +84,7 @@ namespace OSS {
 			
 			//Backgrounds
 		protected:
-			std::map<unsigned int, Engine::Sprite> backgrounds;
+			map<unsigned int, Engine::Sprite> backgrounds;
 			bool hasUnionBackground;
 		public:
 			virtual void initBackground();

@@ -12,7 +12,7 @@ namespace OSS {
 			
 			//Initialization
 			SuiteItem(Tower * tower);
-			std::string getTypeName();
+			string getTypeName();
 		};
 	}
 }

@@ -12,7 +12,7 @@ namespace OSS {
 			
 			//Initialization
 			SingleRoomItem(Tower * tower);
-			std::string getTypeName();
+			string getTypeName();
 			
 			//Guests
 			unsigned int getMaxNumberOfGuests();

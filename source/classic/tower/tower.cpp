@@ -310,7 +310,7 @@ void Tower::updateSkySpriteTextures(unsigned int stateIndex)
 {
 	for (int i = 0; i < 10; i++) {
 		//Load the base texture name
-		std::string textureName("simtower/background/sky/");
+		string textureName("simtower/background/sky/");
 		
 		//Add the vertical index
 		char str[16];

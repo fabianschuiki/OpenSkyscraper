@@ -17,7 +17,7 @@ namespace OSS {
 			void init();
 			void update();
 			
-			std::string getLobbyTextureBaseName();
+			string getLobbyTextureBaseName();
 			
 			//Entrances
 		private:

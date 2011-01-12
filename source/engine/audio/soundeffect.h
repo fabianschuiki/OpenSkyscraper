@@ -68,7 +68,7 @@ namespace OSS {
 			SoundEffect(Sound * sound, Layer layer);
 			void init();
 			~SoundEffect();
-			std::string instanceName();
+			string instanceName();
 			
 			//Playback
 			void play();

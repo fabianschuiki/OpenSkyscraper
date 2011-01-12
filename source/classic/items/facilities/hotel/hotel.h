@@ -13,7 +13,7 @@ namespace OSS {
 		public:
 			//Initialization
 			HotelItem(Tower * tower, ItemDescriptor * descriptor);
-			virtual std::string getTypeName() = 0;
+			virtual string getTypeName() = 0;
 			
 			
 			/**
@@ -38,7 +38,7 @@ namespace OSS {
 			/**
 			 * Basic Sprites
 			 */		
-			std::string getTextureBaseName();
+			string getTextureBaseName();
 			unsigned int getTextureSliceIndex();
 			virtual void updateBackground();
 			

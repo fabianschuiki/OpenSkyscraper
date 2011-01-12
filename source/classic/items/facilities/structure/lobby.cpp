@@ -41,9 +41,9 @@ void LobbyItem::update()
 	updateEntrances();
 }
 
-std::string LobbyItem::getLobbyTextureBaseName()
+string LobbyItem::getLobbyTextureBaseName()
 {
-	std::stringstream s;
+	stringstream s;
 	s << "simtower/lobby/single/";
 	s << tower->environment->getLobbyStyle();
 	s << "/";

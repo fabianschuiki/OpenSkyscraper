@@ -13,8 +13,8 @@ namespace OSS {
 			T y;
 			
 			//Description
-			std::string description() const {
-				std::stringstream s;
+			string description() const {
+				stringstream s;
 				s << "(" << x << ", " << y << ")";
 				return s.str();
 			}

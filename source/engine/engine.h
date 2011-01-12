@@ -78,7 +78,7 @@ namespace OSS {
 			 * something that actually works :D.
 			 */
 		private:
-			typedef std::vector< Pointer<AbstractStore> > StoreList;
+			typedef vector< Pointer<AbstractStore> > StoreList;
 			StoreList stores;
 			
 		public:

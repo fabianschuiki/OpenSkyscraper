@@ -43,9 +43,9 @@ Route::Route(const Route & route) : tower(route.tower), Core::Object()
 	nodes = route.nodes;
 }
 
-std::string Route::description()
+string Route::description()
 {
-	std::string r = "route (\n";
+	string r = "route (\n";
 	r += "\t"; r += origin.description() + "\n";
 	for (Nodes::iterator node = nodes.begin(); node != nodes.end(); node++) {
 		r += "\t";

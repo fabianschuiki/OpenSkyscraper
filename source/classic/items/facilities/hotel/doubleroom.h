@@ -12,7 +12,7 @@ namespace OSS {
 			
 			//Initialization
 			DoubleRoomItem(Tower * tower);
-			std::string getTypeName();
+			string getTypeName();
 		};
 	}
 }

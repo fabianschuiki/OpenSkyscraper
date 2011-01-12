@@ -21,6 +21,7 @@ set(source
 ../../source/classic/tower/background.cpp
 ../../source/classic/tower/time.cpp
 ../../source/classic/ui/game.cpp
+../../source/classic/ui/control/rating.cpp
 ../../source/classic/ui/control/watch.cpp
 ../../source/classic/ui/control/window.cpp
 ../../source/classic/items/transports/elevators/standardelevator.cpp
@@ -62,6 +63,7 @@ set(source
 ../../source/engine/video/texturedquad.cpp
 ../../source/engine/video/video.cpp
 ../../source/engine/scene.cpp
+../../source/engine/platformspecific.cpp
 ../../source/engine/responder.cpp
 ../../source/game/application.cpp
 ../../source/game/simtower-names.cpp
@@ -71,5 +73,10 @@ set(source
 ../../source/math/clamp.cpp
 ../../source/math/rand.cpp)
 
+find_package(SDL)
+find_package(OpenGL)
+find_package(OpenAL)
+find_package(DevIL)
+
 add_executable(OpenSkyscraper ${source})
-target_link_libraries(OpenSkyscraper SDL GL openal IL)
+target_link_libraries(OpenSkyscraper ${SDL_LIBRARY} ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${IL_LIBRARIES})
