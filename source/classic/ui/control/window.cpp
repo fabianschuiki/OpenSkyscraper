@@ -28,9 +28,14 @@ ControlWindow::ControlWindow(GameUI * ui) : GUI::View(), ui(ui)
 	watchRect.size.x = watchRect.size.y;
 	
 	//Initialize the watch view
-	watchView = new Watch(this);
+	watchView = new WatchView(this);
 	watchView->setFrame(watchRect);
 	addSubview(watchView);
+	
+	//Initialize the rating view
+	ratingView = new RatingView(this);
+	ratingView->setFrameOrigin(double2(45, 17));
+	addSubview(ratingView);
 }
 
 Tower * ControlWindow::getTower()
