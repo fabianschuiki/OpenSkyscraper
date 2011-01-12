@@ -14,7 +14,7 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-TowerFunds::TowerFunds(Tower * tower) : Engine::Object(), tower(tower)
+TowerFunds::TowerFunds(Tower * tower) : Responder(), tower(tower)
 {
 	funds = 2e6;
 }

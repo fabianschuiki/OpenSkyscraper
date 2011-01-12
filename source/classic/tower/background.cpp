@@ -85,6 +85,8 @@ void TowerBackground::setRainyDay(bool rainy)
 {
 	if (rainyDay != rainy) {
 		rainyDay = rainy;
+		if (rainyDay)
+			OSSObjectLog << "I've heard we're in for some bad weather..." << std::endl;
 	}
 }
 
@@ -381,7 +383,7 @@ void TowerBackground::eventTimeChanged(Classic::Event * event)
 void TowerBackground::eventDayChanged(Classic::Event * event)
 {
 	//Decide whether it will be a rainy day
-	setRainyDay(randui(0, 5) == 0);
+	setRainyDay(randui(0, 4) == 0);
 }
 
 

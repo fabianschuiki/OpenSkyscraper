@@ -14,7 +14,7 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-TowerEnvironment::TowerEnvironment(Tower * tower) : Engine::Object(), tower(tower),
+TowerEnvironment::TowerEnvironment(Tower * tower) : Responder(), tower(tower),
 updatePopulationIfNeeded(this, &TowerEnvironment::updatePopulation)
 {
 	rating = 1;

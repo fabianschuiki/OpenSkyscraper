@@ -2,7 +2,6 @@
 #define OSS_CLASSIC_TOWER_BACKGROUND_H
 
 #include "../external.h"
-
 #include "../responder.h"
 
 

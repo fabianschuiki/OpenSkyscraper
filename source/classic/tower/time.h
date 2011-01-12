@@ -2,13 +2,14 @@
 #define OSS_CLASSIC_TOWER_TIME_H
 
 #include "../external.h"
+#include "../responder.h"
 
 
 namespace OSS {
 	namespace Classic {
 		class Tower;
 		
-		class TowerTime : public Engine::Object {
+		class TowerTime : public Responder {
 			
 			/**
 			 * Construction

@@ -2,6 +2,7 @@
 #define OSS_CLASSIC_TOWER_STRUCTURE_H
 
 #include "../external.h"
+#include "../responder.h"
 
 #include "../items/itemdescriptor.h"
 
@@ -11,7 +12,7 @@ namespace OSS {
 		class Item;
 		class Tower;
 		
-		class TowerStructure : public Engine::Object {
+		class TowerStructure : public Responder {
 			
 			/**
 			 * Construction

@@ -14,7 +14,7 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-TowerTime::TowerTime(Tower * tower) : Engine::Object(), tower(tower)
+TowerTime::TowerTime(Tower * tower) : Responder(), tower(tower)
 {
 	time = 5;
 	previousTime = time;
@@ -96,7 +96,7 @@ bool TowerTime::isBefore(double b)
 
 unsigned int TowerTime::getDate()
 {
-	return (getTimeOfDay() / 24);
+	return (getTime() / 24);
 }
 
 unsigned int TowerTime::getDayOfWeek()

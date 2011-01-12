@@ -269,10 +269,6 @@ bool GameScene::eventKeyDown(Core::KeyEvent * event)
 	switch (event->code) {
 		case SDLK_UP:		setPOI(getPOI() + double2(0, 100)); return true; break;
 		case SDLK_DOWN:		setPOI(getPOI() - double2(0, 100)); return true; break;
-			
-			//DEBUG: Enable construction tool change using page up/down keys
-		//case SDLK_PAGEUP:	setConstructionTool((Item::Type)(++debugItemType)); return true; break;
-		//case SDLK_PAGEDOWN:	setConstructionTool((Item::Type)(--debugItemType)); return true; break;
 	}
 	switch (event->unicode) {
 			//DEBUG: Change tower rating

@@ -2,13 +2,14 @@
 #define OSS_CLASSIC_TOWER_FUNDS_H
 
 #include "../external.h"
+#include "../responder.h"
 
 
 namespace OSS {
 	namespace Classic {
 		class Tower;
 		
-		class TowerFunds : public Engine::Object {
+		class TowerFunds : public Responder {
 			
 			/**
 			 * Cosntruction
