@@ -16,7 +16,7 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 TowerStructure::TowerStructure(Tower * tower) : Responder(), tower(tower),
-ceilingHeight(12), cellSize(8, 24 + ceilingHeight)
+ceilingHeight(12), cellSize(8, 24 + 12)
 {
 }
 

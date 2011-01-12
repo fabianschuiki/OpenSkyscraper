@@ -61,14 +61,58 @@ void GameScene::setVisibleRect(rectd rect)
 
 
 
+double2 GameScene::windowToWorld(double2 v, bool flipped)
+{
+	if (flipped)
+		return (v * double2(1, -1) + getVisibleRect().minXmaxY());
+	else
+		return (v + getVisibleRect().minXminY());
+}
+
 double2 GameScene::windowToWorld(double2 v)
 {
-	return (v * double2(1, -1) + getVisibleRect().minXmaxY());
+	return windowToWorld(v, false);
+}
+
+rectd GameScene::windowToWorld(rectd v, bool flipped)
+{
+	rectd r(windowToWorld(v.origin, flipped), v.size);
+	if (flipped)
+		r.origin -= r.size;
+	return r;
+}
+
+rectd GameScene::windowToWorld(rectd v)
+{
+	return windowToWorld(v, false);
+}
+
+
+
+double2 GameScene::worldToWindow(double2 v, bool flipped)
+{
+	if (flipped)
+		return (v * double2(1, -1) - getVisibleRect().minXmaxY());
+	else
+		return (v - getVisibleRect().minXminY());
 }
 
 double2 GameScene::worldToWindow(double2 v)
 {
-	return (v * double2(1, -1) - getVisibleRect().minXmaxY());
+	return worldToWindow(v, false);
+}
+
+rectd GameScene::worldToWindow(rectd v, bool flipped)
+{
+	rectd r(worldToWindow(v.origin, flipped), v.size);
+	if (flipped)
+		r.origin += r.size;
+	return r;
+}
+
+rectd GameScene::worldToWindow(rectd v)
+{
+	return worldToWindow(v, false);
 }
 
 
@@ -153,7 +197,7 @@ void GameScene::draw()
 	//Draw a green cross where the mouse is
 	int2 mouse;
 	SDL_GetMouseState(&mouse.x, &mouse.y);
-	double2 worldMouse = windowToWorld(mouse);
+	double2 worldMouse = windowToWorld(mouse, true);
 	glColor3f(0, 1, 0);
 	glBegin(GL_LINES);
 	glVertex2f(worldMouse.x - 9.5, worldMouse.y + 0.5);
@@ -243,6 +287,7 @@ void GameScene::willMoveOffScreen()
 
 bool GameScene::sendEventToNextResponders(Base::Event * event)
 {
+	if (ui && ui->sendEvent(event)) return true;
 	if (tower && tower->sendEvent(event)) return true;
 	return Engine::Scene::sendEventToNextResponders(event);
 }

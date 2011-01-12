@@ -6,6 +6,7 @@
 
 #include "control/window.h"
 #include "../tower/tower.h"
+#include "tools/tools.h"
 
 
 namespace OSS {
@@ -27,10 +28,11 @@ namespace OSS {
 			
 			
 			/**
-			 * View
+			 * Subsystems
 			 */
 		private:
 			Pointer<GUI::View> rootView;
+			Pointer<ToolsUI> tools;
 			
 			
 			/**
@@ -64,6 +66,13 @@ namespace OSS {
 			 */
 		public:
 			virtual void draw(rectd dirtyRect);
+			
+			
+			/**
+			 * Event Sending
+			 */
+		public:
+			virtual bool sendEventToNextResponders(Base::Event * event);
 			
 			
 			/**

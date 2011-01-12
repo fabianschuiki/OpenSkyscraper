@@ -20,6 +20,11 @@ updateRootViewIfNeeded(this, &GameUI::updateRootView, &updateIfNeeded)
 	//Initialize the root view which will contain all the subviews.
 	rootView = new GUI::View;
 	
+	//Initialize the tools subsystem and adjust its updateIfNeeded conditional to propagate a need
+	//for updates to the game UI.
+	tools = new ToolsUI(this);
+	tools->updateIfNeeded.parent = &updateIfNeeded;
+	
 	//Initialize the control window
 	controlWindow = new ControlWindow(this);
 	controlWindow->setFrameOrigin(rootView->getFrame().maxXmaxY() - controlWindow->getFrameSize());
@@ -55,10 +60,13 @@ void GameUI::advance(double dt)
 //----------------------------------------------------------------------------------------------------
 
 void GameUI::update()
-{
+{	
 	//Update the root view if required. This usually is the case if the Video mode changed and the
 	//root view needs to be resized.
 	updateRootViewIfNeeded();
+	
+	//Update the tools subsystem
+	tools->updateIfNeeded();
 }
 
 void GameUI::updateRootView()
@@ -80,8 +88,27 @@ void GameUI::updateRootView()
 
 void GameUI::draw(rectd dirtyRect)
 {
+	//Draw the tools
+	tools->draw(dirtyRect);
+	
 	//Ask the root view to draw itself
 	rootView->draw(dirtyRect);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Event Sending
+//----------------------------------------------------------------------------------------------------
+
+bool GameUI::sendEventToNextResponders(Base::Event * event)
+{
+	if (rootView && rootView->sendEvent(event)) return true;
+	if (tools && tools->sendEvent(event)) return true;
+	return Responder::sendEventToNextResponders(event);
 }
 
 

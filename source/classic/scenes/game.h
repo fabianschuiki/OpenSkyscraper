@@ -44,8 +44,15 @@ namespace OSS {
 			const rectd & getVisibleRect();
 			void setVisibleRect(rectd rect);
 			
+			double2 windowToWorld(double2 v, bool flipped);
 			double2 windowToWorld(double2 v);
+			rectd windowToWorld(rectd v, bool flipped);
+			rectd windowToWorld(rectd v);
+			
+			double2 worldToWindow(double2 v, bool flipped);
 			double2 worldToWindow(double2 v);
+			rectd worldToWindow(rectd v, bool flipped);
+			rectd worldToWindow(rectd v);
 			
 			
 			/**

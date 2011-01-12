@@ -24,8 +24,10 @@ namespace OSS {
 			 */
 		public:
 			class AbstractConditional {
-			protected:
+			public:
 				AbstractConditional * parent;
+				
+			protected:
 				bool needed;
 				
 			public:
