@@ -37,7 +37,7 @@ SoundStore * Sound::store;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Sound::Sound(std::string name) : StoreItem(name)
+Sound::Sound(string name) : StoreItem(name)
 {
 	bufferID = 0;
 }
@@ -51,7 +51,7 @@ Sound::~Sound()
 	}
 }
 
-std::string Sound::instanceName()
+string Sound::instanceName()
 {
 	return this->className() + " " + name;
 }

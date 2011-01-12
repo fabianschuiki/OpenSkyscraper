@@ -104,7 +104,7 @@ void OfficeItem::updateBackground()
 		backgrounds[0].textureRect.size.x = 0.5;
 		backgrounds[0].textureRect.origin.x = 0;
 	} else {
-		std::stringstream str;
+		stringstream str;
 		str << "simtower/facilities/office/inhabited/" << (type / 2);
 		backgrounds[0].texture = Engine::Texture::named(str.str());
 		backgrounds[0].textureRect.size.x = 0.25;
@@ -186,7 +186,7 @@ void OfficeItem::advanceWorkers(double dt)
 	}
 }
 
-void OfficeItem::advanceWorker(std::string key, TimedPerson * worker)
+void OfficeItem::advanceWorker(string key, TimedPerson * worker)
 {
 	OSSObjectLog << "advancing worker " << key << ": ";
 	

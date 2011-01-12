@@ -54,7 +54,7 @@ SimTower::Resource * SimTower::getResource(unsigned short type, unsigned short i
 #pragma mark Resource Names
 //----------------------------------------------------------------------------------------------------
 
-std::string SimTower::getNameForResource(Resource * resource)
+string SimTower::getNameForResource(Resource * resource)
 {
 	if (!resource) return "";
 	
@@ -76,16 +76,16 @@ std::string SimTower::getNameForResource(Resource * resource)
 	return name;
 }
 
-std::string SimTower::Resource::getName()
+string SimTower::Resource::getName()
 {
 	return SimTower::getNameForResource(this);
 }
 
-std::string SimTower::Resource::getDumpName()
+string SimTower::Resource::getDumpName()
 {
-	std::string name = getName();
-	std::string::size_type pos = 0;
-	while ((pos = name.find("/", pos)) != std::string::npos) {
+	string name = getName();
+	string::size_type pos = 0;
+	while ((pos = name.find("/", pos)) != string::npos) {
 		name.erase(pos, 1);
 		name.insert(pos, ":");
 	}
@@ -107,7 +107,7 @@ void SimTower::loadResources()
 	resources.clear();
 	
 	//Get the path to the SimTower instance
-	std::string path = application->pathToResource("SIMTOWER.EXE");
+	string path = application->pathToResource("SIMTOWER.EXE");
 	
 	//Open the file
 	FILE * fsimtower = fopen(path.c_str(), "rb");
@@ -383,7 +383,7 @@ void SimTower::extractSounds()
 				fclose(fdump);*/
 				
 				//Assemble the sound name
-				std::string soundName = "simtower/";
+				string soundName = "simtower/";
 				soundName += resource->getName();
 				
 				//Dump the sound
@@ -406,12 +406,12 @@ void SimTower::extractSounds()
 #pragma mark Postprocessing
 //----------------------------------------------------------------------------------------------------
 
-void SimTower::postprocessTexture(std::string resourceName,
+void SimTower::postprocessTexture(string resourceName,
 								  const void * buffer, unsigned int bufferLength)
 {
 	//Assemble the texture name
-	std::string texturePrefix("simtower/");
-	std::string textureName = texturePrefix + resourceName;
+	string texturePrefix("simtower/");
+	string textureName = texturePrefix + resourceName;
 	
 	//Load the image
 	ILuint image = ilGenImage();
@@ -505,7 +505,7 @@ void SimTower::applyReplacementPalette(unsigned short id)
 	}
 }
 
-void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
+void SimTower::spawnSkyTextures(string textureName, ILuint image)
 {	
 	//Fetch the palette
 	colorPalette * palette = (colorPalette *)ilGetPalette();
@@ -569,10 +569,10 @@ void SimTower::spawnSkyTextures(std::string textureName, ILuint image)
 	dumpTexture(night);
 }
 
-void SimTower::spawnCloudTextures(std::string textureName, ILuint image)
+void SimTower::spawnCloudTextures(string textureName, ILuint image)
 {
 	struct {
-		std::string name;
+		string name;
 		unsigned int palette;
 		Texture * texture;
 	} variants[4] = {
@@ -596,7 +596,7 @@ void SimTower::spawnCloudTextures(std::string textureName, ILuint image)
 		dumpTexture(variants[i].texture);
 }
 
-void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)
+void SimTower::spawnLobbyTextures(string textureName, ILuint image)
 {	
 	//Convert the lobby image to 24 bit RGB
 	if (!ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE)) {
@@ -606,10 +606,10 @@ void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)
 	
 	//Load the two variants of the lobby (ground and sky)
 	Texture * t;
-	std::string variants[2] = {"ground", "sky"};
+	string variants[2] = {"ground", "sky"};
 	for (int i = 0; i < 2; i++) {
 		//Assemble the texture name without prefix
-		std::string variantName = textureName + "/" + variants[i];
+		string variantName = textureName + "/" + variants[i];
 		
 		//Extract the lobby pattern
 		ILuint pattern = ilGenImage();
@@ -637,10 +637,10 @@ void SimTower::spawnLobbyTextures(std::string textureName, ILuint image)
 	}
 }
 
-void SimTower::spawnElevatorTextures(std::string textureName, ILuint image)
+void SimTower::spawnElevatorTextures(string textureName, ILuint image)
 {
-	std::string prefix("transport/elevator/");
-	std::string subname = textureName.substr(textureName.find(prefix) + prefix.length());
+	string prefix("transport/elevator/");
+	string subname = textureName.substr(textureName.find(prefix) + prefix.length());
 	
 	//Calculate the cell width of this elevator
 	unsigned int cellWidth = (subname.find("express") == 0 ? 6 : 4);
@@ -683,7 +683,7 @@ void SimTower::spawnElevatorTextures(std::string textureName, ILuint image)
 			free(pixels);
 			
 			//Create a texture from the slice
-			std::stringstream frameName;
+			stringstream frameName;
 			frameName << "/motorbuffer/" << frame;
 			Texture * t = Texture::named(textureName + frameName.str());
 			t->assignLoadedImage(slice);
@@ -752,13 +752,13 @@ void SimTower::spawnElevatorTextures(std::string textureName, ILuint image)
 	dumpTexture(t);
 }
 
-void SimTower::spawnFloordigitTextures(std::string textureName, ILuint image)
+void SimTower::spawnFloordigitTextures(string textureName, ILuint image)
 {
 	//Make all pixels white except for a few which make up the digits
 	ilBindImage(image);
 	unsigned int dataSize = ilGetInteger(IL_IMAGE_SIZE_OF_DATA);
 	unsigned int width = ilGetInteger(IL_IMAGE_WIDTH);
-	bool leaveLeftmostIntact = (textureName.find("/one/") != std::string::npos);
+	bool leaveLeftmostIntact = (textureName.find("/one/") != string::npos);
 	ILubyte * data = ilGetData();
 	for (int i = 0; i < dataSize; i++) {
 		if (leaveLeftmostIntact && (i % width) < 32)
@@ -783,15 +783,15 @@ void SimTower::spawnFloordigitTextures(std::string textureName, ILuint image)
 #pragma mark Debugging
 //----------------------------------------------------------------------------------------------------
 
-std::string SimTower::getDumpPath(std::string type, std::string name)
+string SimTower::getDumpPath(string type, string name)
 {
-	std::string path("/tmp/SimTower Extraction/");
+	string path("/tmp/SimTower Extraction/");
 	mkdir(path.c_str(), 0777);
 	path += type + "/";
 	mkdir(path.c_str(), 0777);
 	
-	std::string::size_type pos = 0;
-	while ((pos = name.find("/", pos)) != std::string::npos) {
+	string::size_type pos = 0;
+	while ((pos = name.find("/", pos)) != string::npos) {
 		name.erase(pos, 1);
 		name.insert(pos, ":");
 	}
@@ -807,7 +807,7 @@ void SimTower::dumpTexture(Texture * texture)
 	ilSaveImage(getDumpPath("textures", texture->name.substr(9) + ".bmp").c_str());
 }
 
-void SimTower::dumpSound(std::string name, const void * buffer, unsigned int bufferLength)
+void SimTower::dumpSound(string name, const void * buffer, unsigned int bufferLength)
 {
 	FILE * fdump = fopen(getDumpPath("sounds", name.substr(9) + ".wav").c_str(), "w");
 	fwrite(buffer, bufferLength, 1, fdump);

@@ -100,7 +100,7 @@ void ElevatorItem::updateMotorBuffer()
 	bufferSprite.setRect(tower->convertCellToWorldRect(bufferRect));
 	
 	//Load the appropriate textures
-	std::stringstream textureName;
+	stringstream textureName;
 	textureName << "simtower/transport/elevator/standard/motorbuffer/";
 	textureName << getMotorbufferAnimationIndex();
 	motorSprite.texture = Engine::Texture::named(textureName.str());

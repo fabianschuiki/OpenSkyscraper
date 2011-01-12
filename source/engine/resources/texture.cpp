@@ -19,7 +19,7 @@ TextureStore * Texture::store;
  * Invoked by the TextureStore automatically, do not call on your own. Use Texture::named to obtain
  * a named texture instance for modification. Lazy loading breaks upon violation of this pattern!
  */
-Texture::Texture(std::string name) : StoreItem(name)
+Texture::Texture(string name) : StoreItem(name)
 {
 	textureID = 0;
 	tempImage = 0;
@@ -43,7 +43,7 @@ Texture::~Texture()
 	}
 }
 
-std::string Texture::instanceName()
+string Texture::instanceName()
 {
 	return this->className() + " " + name;
 }
@@ -82,7 +82,7 @@ void Texture::load()
 	ILboolean success = false;
 	if (!tempImage) {
 		//Assemble the path to the texture PNG
-		std::string path = Engine::Application::getCurrent()->pathToResource("textures", name);
+		string path = Engine::Application::getCurrent()->pathToResource("textures", name);
 		//OSSObjectLog << "Loading '" << path << "'..." << std::endl;
 		
 		//Create a new IL image

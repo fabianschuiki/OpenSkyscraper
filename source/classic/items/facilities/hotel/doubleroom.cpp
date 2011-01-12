@@ -28,7 +28,7 @@ DoubleRoomItem::DoubleRoomItem(Tower * tower) : HotelItem(tower, &descriptor)
 	setVariant(randui(0, 3));
 }
 
-std::string DoubleRoomItem::getTypeName()
+string DoubleRoomItem::getTypeName()
 {
 	return "double";
 }

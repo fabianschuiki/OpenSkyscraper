@@ -21,9 +21,10 @@
 #endif
 
 #if defined(_WIN32)
-	#define PLATFORM_WINDOW
+	#define PLATFORM_WINDOWS
 	#error Not ported to Windows yet. 
 	// Oh god you poor porters.
+	// If you are going to do the unspeakable, please check out platformspecific.cpp.
 #endif
 
 #include <SDL/SDL.h>

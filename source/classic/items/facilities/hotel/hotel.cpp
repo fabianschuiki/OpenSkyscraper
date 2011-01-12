@@ -53,9 +53,9 @@ void HotelItem::onChangeState()
 #pragma mark Basic Sprites
 //----------------------------------------------------------------------------------------------------
 
-std::string HotelItem::getTextureBaseName()
+string HotelItem::getTextureBaseName()
 {
-	std::stringstream s;
+	stringstream s;
 	s << "simtower/facilities/hotel/";
 	s << getTypeName();
 	s << "/";

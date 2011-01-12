@@ -34,9 +34,9 @@ void Schedule::addNode(double time, Item * destination)
 	addNode(n);
 }
 
-std::string Schedule::description()
+string Schedule::description()
 {
-	std::stringstream s;
+	stringstream s;
 	s << "schedule (\n";
 	for (Nodes::iterator n = nodes.begin(); n != nodes.end(); n++) {
 		s << "\t" << (*n).time << "\t -> ";

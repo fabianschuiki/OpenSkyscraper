@@ -170,8 +170,8 @@ void TowerBackground::updateSky()
 void TowerBackground::updateSkyTextures()
 {
 	//Decide what variants of the sky should be interpolated
-	std::string currentVariant = "";
-	std::string targetVariant = "";
+	string currentVariant = "";
+	string targetVariant = "";
 	
 	switch (skyState) {
 		case Night: {
@@ -196,7 +196,7 @@ void TowerBackground::updateSkyTextures()
 			targetVariant = "overcast";
 		} break;
 		case Rain: {
-			std::stringstream s;
+			stringstream s;
 			s << "rain/" << getRainAnimationFrame();
 			currentVariant = s.str();
 		} break;
@@ -393,18 +393,18 @@ void TowerBackground::eventDayChanged(Classic::Event * event)
 #pragma mark Sky
 //----------------------------------------------------------------------------------------------------
 
-std::string TowerBackground::getSkyTextureName(unsigned int index, std::string variant)
+string TowerBackground::getSkyTextureName(unsigned int index, string variant)
 {
-	std::stringstream name;
+	stringstream name;
 	name << "simtower/background/sky/";
 	name << index << "/";
 	name << variant;
 	return name.str();
 }
 
-std::string TowerBackground::getCloudTextureName(unsigned int index, std::string variant)
+string TowerBackground::getCloudTextureName(unsigned int index, string variant)
 {
-	std::stringstream name;
+	stringstream name;
 	name << "simtower/background/cloud/";
 	name << index << "/";
 	name << variant;
@@ -486,12 +486,12 @@ double TowerBackground::cloudNoise(double2 p)
 #pragma mark Ground
 //----------------------------------------------------------------------------------------------------
 
-std::string TowerBackground::getCityTextureName()
+string TowerBackground::getCityTextureName()
 {
 	return "simtower/background/city";
 }
 
-std::string TowerBackground::getGroundTextureName()
+string TowerBackground::getGroundTextureName()
 {
 	return "simtower/background/ground";
 }
