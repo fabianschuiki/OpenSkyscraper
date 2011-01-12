@@ -71,5 +71,10 @@ set(source
 ../../source/math/clamp.cpp
 ../../source/math/rand.cpp)
 
+find_package(SDL)
+find_package(OpenGL)
+find_package(OpenAL)
+find_package(DevIL)
+
 add_executable(OpenSkyscraper ${source})
-target_link_libraries(OpenSkyscraper SDL GL openal IL)
+target_link_libraries(OpenSkyscraper ${SDL_LIBRARY} ${OPENGL_LIBRARY} ${OPENAL_LIBRARY} ${IL_LIBRARIES})
