@@ -14,7 +14,7 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-Watch::Watch(ControlWindow * window) : GUI::View(), controlWindow(window)
+WatchView::WatchView(ControlWindow * window) : GUI::View(), controlWindow(window)
 {
 }
 
@@ -27,7 +27,7 @@ Watch::Watch(ControlWindow * window) : GUI::View(), controlWindow(window)
 #pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
-void Watch::draw(rectd dirtyRect)
+void WatchView::draw(rectd dirtyRect)
 {
 	//Get the tower from our control window parent
 	Tower * tower = controlWindow->getTower();

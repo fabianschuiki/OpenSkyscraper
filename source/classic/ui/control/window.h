@@ -5,6 +5,7 @@
 
 #include "../../tower/tower.h"
 #include "watch.h"
+#include "rating.h"
 
 
 namespace OSS {
@@ -29,7 +30,8 @@ namespace OSS {
 			 * Subviews
 			 */
 		private:
-			Pointer<Watch> watchView;
+			Pointer<WatchView> watchView;
+			Pointer<RatingView> ratingView;
 			
 			
 			/**

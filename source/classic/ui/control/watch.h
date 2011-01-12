@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Classic {
 		class ControlWindow;
 		
-		class Watch : public GUI::View {
+		class WatchView : public GUI::View {
 			
 			/**
 			 * Construction
@@ -16,7 +16,7 @@ namespace OSS {
 		public:
 			const Pointer<ControlWindow> controlWindow;
 			
-			Watch(ControlWindow * window);
+			WatchView(ControlWindow * window);
 			
 			
 			/**
