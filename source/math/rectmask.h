@@ -11,14 +11,14 @@ namespace OSS {
 		template <typename T>
 		
 		class RectMask {
-			typedef std::vector< Rect<T> > RectList;
+			typedef vector< Rect<T> > RectList;
 			typedef typename RectList::iterator ListIterator;
 			typedef typename RectList::const_iterator ListConstIterator;
 			RectList rects;
 			
 		public:
-			std::string description() {
-				std::string res = "(\n";
+			string description() {
+				string res = "(\n";
 				for (ListIterator r = rects.begin(); r != rects.end(); r++) {
 					res += "\t";
 					res += (*r).description();

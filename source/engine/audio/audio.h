@@ -24,8 +24,8 @@ namespace OSS {
 			 * Sound Effects
 			 */
 		private:
-			typedef std::list< Pointer<SoundEffect> > SoundEffectList;
-			typedef std::map< SoundEffect::Layer, SoundEffectList > SoundEffectListMap;
+			typedef list< Pointer<SoundEffect> > SoundEffectList;
+			typedef map< SoundEffect::Layer, SoundEffectList > SoundEffectListMap;
 			SoundEffectListMap soundEffects;
 			
 		public:

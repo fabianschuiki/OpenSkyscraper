@@ -36,7 +36,7 @@ namespace OSS {
 			//Simulation
 			void advance(double dt);
 			void advanceWorkers(double dt);
-			void advanceWorker(std::string key, TimedPerson * worker);
+			void advanceWorker(string key, TimedPerson * worker);
 			
 			//Reachability
 		private:
@@ -57,7 +57,7 @@ namespace OSS {
 			
 			//Workers
 		private:
-			typedef std::map< std::string, Pointer<TimedPerson> > WorkerMap;
+			typedef map< string, Pointer<TimedPerson> > WorkerMap;
 			WorkerMap workers;
 		public:
 			void initWorkers();

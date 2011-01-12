@@ -121,7 +121,7 @@ void Texture::load()
 						imageData[i + 2] == transparentColor.c.b * 255) {
 						imageData[i + 3] = 0.0;
 					}
-					for (std::vector<color3d>::iterator c = transparentColors.begin(); c != transparentColors.end(); c++) {
+					for (vector<color3d>::iterator c = transparentColors.begin(); c != transparentColors.end(); c++) {
 						if (imageData[i + 0] == (*c).c.r * 255 &&
 							imageData[i + 1] == (*c).c.g * 255 &&
 							imageData[i + 2] == (*c).c.b * 255) {

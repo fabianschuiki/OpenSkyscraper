@@ -45,7 +45,7 @@ namespace OSS {
 			 */
 			
 		public:
-			T * itemNamed(std::string itemName) {
+			T * itemNamed(string itemName) {
 				//Return the existing item if possible
 				T * item = items[itemName];
 				if (item)
@@ -61,7 +61,7 @@ namespace OSS {
 			}
 			
 		private:
-			std::map< std::string, Pointer<T> > items;
+			map< string, Pointer<T> > items;
 			
 			
 			/**

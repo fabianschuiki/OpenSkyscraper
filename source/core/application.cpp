@@ -156,10 +156,10 @@ void Application::pumpEvents()
 std::string Application::pathToResource(std::string resourceName)
 {
 	//Get a list of paths where resources may be located
-	std::vector<std::string> directories = resourcesPaths();
+	vector<std::string> directories = resourcesPaths();
 	
 	//Iterate through the list
-	for (std::vector<std::string>::iterator directory = directories.begin();
+	for (vector<std::string>::iterator directory = directories.begin();
 		 directory != directories.end();
 		 directory++) {
 		//If the file exists return the path

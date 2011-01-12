@@ -13,6 +13,9 @@
 #include <sstream>
 #include <string>
 
+using std::string;
+using std::stringstream;
+
 //STL Containers
 #include <bitset>
 #include <list>
@@ -21,5 +24,9 @@
 #include <set>
 #include <stack>
 #include <vector>
+
+using std::list;
+using std::map;
+using std::vector;
 
 #endif

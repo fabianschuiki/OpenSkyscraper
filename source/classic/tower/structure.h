@@ -44,7 +44,7 @@ namespace OSS {
 			 * occupy that cell.
 			 */
 		public:
-			typedef std::map<ItemCategory, Item *> ItemByCategory;
+			typedef map<ItemCategory, Item *> ItemByCategory;
 			typedef struct {
 				ItemByCategory items;
 				int2 location;
@@ -53,7 +53,7 @@ namespace OSS {
 			typedef std::set<Cell *> CellSet;
 			
 		private:
-			std::map<int, std::map<int, Cell> > cells;
+			map<int, map<int, Cell> > cells;
 			
 		public:
 			Cell * getCell(int2 location, bool createIfInexistent = false);
@@ -82,9 +82,9 @@ namespace OSS {
 		public:
 			typedef std::set< Pointer<Item> > ItemPointerSet;
 			typedef std::set<Item *> ItemSet;
-			typedef std::map<ItemType, ItemSet> ItemTypeMap;
-			typedef std::map<ItemGroup, ItemSet> ItemGroupMap;
-			typedef std::map<ItemCategory, ItemSet> ItemCategoryMap;
+			typedef map<ItemType, ItemSet> ItemTypeMap;
+			typedef map<ItemGroup, ItemSet> ItemGroupMap;
+			typedef map<ItemCategory, ItemSet> ItemCategoryMap;
 			
 		private:
 			ItemPointerSet items;
@@ -92,10 +92,10 @@ namespace OSS {
 			ItemGroupMap itemsByGroup;
 			ItemCategoryMap itemsByCategory;
 			
-			std::map<int, ItemSet> itemsByFloor;
-			std::map<int, ItemTypeMap> itemsByFloorAndType;
-			std::map<int, ItemGroupMap> itemsByFloorAndGroup;
-			std::map<int, ItemCategoryMap> itemsByFloorAndCategory;
+			map<int, ItemSet> itemsByFloor;
+			map<int, ItemTypeMap> itemsByFloorAndType;
+			map<int, ItemGroupMap> itemsByFloorAndGroup;
+			map<int, ItemCategoryMap> itemsByFloorAndCategory;
 			
 		public:
 			const ItemPointerSet & getItems();

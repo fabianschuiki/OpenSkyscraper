@@ -17,11 +17,11 @@ namespace OSS {
 				unsigned short type;
 				unsigned int length;
 				void * data;
-				std::string getName();
-				std::string getDumpName();
+				string getName();
+				string getDumpName();
 			};
 			
-			typedef std::vector< Pointer<Resource> > ResourceVector;
+			typedef vector< Pointer<Resource> > ResourceVector;
 			ResourceVector resources;
 			Resource * getResource(unsigned short type, unsigned short id);
 			
@@ -38,11 +38,11 @@ namespace OSS {
 			//Resource Names
 			typedef struct {
 				unsigned short resourceID;
-				std::string name;
+				string name;
 			} ResourceName;
 			static ResourceName bitmapResourceNames[];
 			static ResourceName soundResourceNames[];
-			static std::string getNameForResource(Resource * resource);
+			static string getNameForResource(Resource * resource);
 			
 			//Some default colors for later use
 		private:
@@ -61,18 +61,18 @@ namespace OSS {
 			void extractSounds();
 			
 			//Creates one or more textures from the given information
-			void postprocessTexture(std::string textureName, const void * buffer, unsigned int bufferLength);
+			void postprocessTexture(string textureName, const void * buffer, unsigned int bufferLength);
 			void applyReplacementPalette(unsigned short id);
-			void spawnSkyTextures(std::string textureName, ILuint image);
-			void spawnCloudTextures(std::string textureName, ILuint image);
-			void spawnLobbyTextures(std::string textureName, ILuint image);
-			void spawnElevatorTextures(std::string textureName, ILuint image);
-			void spawnFloordigitTextures(std::string textureName, ILuint image);
+			void spawnSkyTextures(string textureName, ILuint image);
+			void spawnCloudTextures(string textureName, ILuint image);
+			void spawnLobbyTextures(string textureName, ILuint image);
+			void spawnElevatorTextures(string textureName, ILuint image);
+			void spawnFloordigitTextures(string textureName, ILuint image);
 			
 			//Dumping textures to disk for debugging purposes
-			std::string getDumpPath(std::string type, std::string name);
+			string getDumpPath(string type, string name);
 			void dumpTexture(Engine::Texture * texture);
-			void dumpSound(std::string name, const void * buffer, unsigned int bufferLength);
+			void dumpSound(string name, const void * buffer, unsigned int bufferLength);
 		};
 	}
 }

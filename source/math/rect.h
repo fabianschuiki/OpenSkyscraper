@@ -15,8 +15,8 @@ namespace OSS {
 			Vector2D<T> origin;
 			Vector2D<T> size;
 			
-			std::string description() const {
-				std::string res = "(";
+			string description() const {
+				string res = "(";
 				res += origin.description();
 				res += ", ";
 				res += size.description();

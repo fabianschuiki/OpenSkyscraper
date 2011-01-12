@@ -62,7 +62,7 @@ namespace OSS {
 			 * run loop to provide timing and animation.
 			 */
 		private:
-			typedef std::vector< Base::Pointer<AbstractInvocation> > InvocationVector;
+			typedef vector< Base::Pointer<AbstractInvocation> > InvocationVector;
 			InvocationVector invocations;
 		public:
 			void addInvocation(AbstractInvocation * invocation);
@@ -94,10 +94,10 @@ namespace OSS {
 			 */
 			
 			//TODO: Move these functions to an appropriate location
-			std::vector<std::string> resourcesPaths();
-			std::string pathToResource(std::string resourceName);
-			std::string pathToResource(std::string resourceGroup, std::string resourceName);
-			std::string pathToResource(std::string resourceGroup, std::string resourceName, std::string resourceType);
+			vector<string> resourcesPaths();
+			string pathToResource(string resourceName);
+			string pathToResource(string resourceGroup, string resourceName);
+			string pathToResource(string resourceGroup, string resourceName, string resourceType);
 		};
 	}
 }

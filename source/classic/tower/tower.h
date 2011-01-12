@@ -97,14 +97,14 @@ namespace OSS {
 			 Item * getTransport(unsigned int itemID, bool createIfInexistent = false);
 			 
 			 protected:*/
-			typedef std::map< unsigned int, Pointer<Item> > ItemIDMap;
+			typedef map< unsigned int, Pointer<Item> > ItemIDMap;
 			ItemIDMap items;
 			ItemIDMap facilityItems;
 			ItemIDMap transportItems;
 			
 			//by floor
 			typedef std::set< Pointer<Item> > ItemSet;
-			typedef std::map< int, ItemSet > ItemFloorMap;
+			typedef map< int, ItemSet > ItemFloorMap;
 			ItemFloorMap itemsByFloor;
 			ItemFloorMap facilityItemsByFloor;
 			ItemFloorMap transportItemsByFloor;
@@ -137,7 +137,7 @@ namespace OSS {
 			 */
 			
 		public:
-			std::map<int, std::map<int, Cell> > cells;
+			map<int, map<int, Cell> > cells;
 		public:
 			Cell * getCell(int2 coordinates, bool createIfInexistent = false);
 			

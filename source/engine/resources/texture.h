@@ -11,9 +11,9 @@ namespace OSS {
 		class Texture : public StoreItem {
 		public:		
 			//Initialization
-			Texture(std::string name);
+			Texture(string name);
 			~Texture();
-			virtual std::string instanceName();
+			virtual string instanceName();
 			void assignLoadedData(ILenum type, const void * data, ILuint length);
 			void assignLoadedImage(ILuint image);
 			
@@ -39,7 +39,7 @@ namespace OSS {
 			
 			//Post-processing
 			color3d transparentColor;
-			std::vector<color3d> transparentColors;
+			vector<color3d> transparentColors;
 			bool useTransparentColor;
 		};
 		

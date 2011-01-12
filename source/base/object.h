@@ -42,10 +42,10 @@ namespace OSS {
 			 * Methods related to describing objects in human-readable form.
 			 */
 		public:
-			std::string className() const;
-			std::string instanceName() const;
+			string className() const;
+			string instanceName() const;
 			
-			std::string description() const;
+			string description() const;
 		};
 	}
 }

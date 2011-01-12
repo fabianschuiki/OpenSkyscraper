@@ -13,7 +13,7 @@ namespace OSS {
 			 */
 		public:
 			//List
-			typedef std::list< Pointer<View> > List;
+			typedef list< Pointer<View> > List;
 			
 			//Positioning
 			typedef enum {

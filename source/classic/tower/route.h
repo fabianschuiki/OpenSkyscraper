@@ -25,7 +25,7 @@ namespace OSS {
 				
 				Node(Route * route, recti start, TransportItem * transport, recti end);
 			};
-			typedef std::vector<Node> Nodes;
+			typedef vector<Node> Nodes;
 			
 			/**
 			 * Route
@@ -37,7 +37,7 @@ namespace OSS {
 			//Initialization
 			Route(Tower * tower);
 			Route(const Route & route);
-			std::string description();
+			string description();
 			
 			//Nodes
 		private:

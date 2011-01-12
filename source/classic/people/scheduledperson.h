@@ -23,13 +23,13 @@ namespace OSS {
 			
 			//Ordered list of nodes
 		private:
-			typedef std::list<Node> Nodes;
+			typedef list<Node> Nodes;
 			Nodes nodes;
 		public:
 			const Nodes & getNodes() const;
 			void addNode(Node & node);
 			void addNode(double time, Item * destination);
-			std::string description();
+			string description();
 			
 			//Obtaining nodes
 			Node * getNodeForTime(double time);

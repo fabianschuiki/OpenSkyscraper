@@ -80,10 +80,10 @@ namespace OSS {
 			typedef std::set< Pointer<Engine::Sprite> > SpriteSet;
 			SpriteSet managedSprites;
 			
-			typedef std::map<Engine::Sprite *, SpriteType> SpriteTypeMap;
+			typedef map<Engine::Sprite *, SpriteType> SpriteTypeMap;
 			SpriteTypeMap managedSpriteTypes;
 			
-			typedef std::map<Engine::Sprite *, SpriteHeading> SpriteHeadingMap;
+			typedef map<Engine::Sprite *, SpriteHeading> SpriteHeadingMap;
 			SpriteHeadingMap managedSpriteHeadings;
 			
 		public:
@@ -203,8 +203,8 @@ namespace OSS {
 			
 			//DEBUG: Properties. These are only used for debuggin purposes and ought to be replaced in
 			//later versions of the game by a more sophisticated system.
-			std::map<std::string, bool> boolProps;
-			std::map<std::string, int> intProps;
+			map<string, bool> boolProps;
+			map<string, int> intProps;
 		};
 	}
 }
