@@ -48,7 +48,6 @@ void TowerTime::setTime(double t)
 		
 		//Store the time
 		time = t;
-		OSSObjectLog << t << std::endl;
 		
 		//Distribute the time changed event
 		Event * e = new Event(Event::TimeChanged);
