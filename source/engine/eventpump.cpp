@@ -67,7 +67,7 @@ Core::Event * EventPump::getNextEvent()
 	
 	//Interpret key events
 	if (SDL_EVENTMASK(event.type) & (SDL_KEYDOWNMASK | SDL_KEYUPMASK)) {
-		e = new Core::KeyEvent(event.key.keysym.unicode,
+		e = new Core::KeyEvent(event.key.keysym.unicode, event.key.keysym.sym,
 							   (event.key.state == SDL_PRESSED),
 							   false);
 	}

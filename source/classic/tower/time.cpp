@@ -42,10 +42,6 @@ void TowerTime::setTime(double t)
 		unsigned int previousQuarter = getQuarter();
 		unsigned int previousYear = getYear();
 		
-		//Adjust the previous times
-		previousTime = bufferedPreviousTime;
-		bufferedPreviousTime = t;
-		
 		//Store the time
 		time = t;
 		
@@ -169,7 +165,11 @@ double TowerTime::getTimeSpeed()
 }
 
 void TowerTime::advance(double dt)
-{
+{	
 	//Advance the game time
 	setTime(getTime() + dt * getTimeSpeed());
+	
+	//Adjust the previous times
+	previousTime = bufferedPreviousTime;
+	bufferedPreviousTime = getTime();
 }
