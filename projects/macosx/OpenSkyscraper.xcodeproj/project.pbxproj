@@ -523,6 +523,7 @@
 				1FF3D94012DCFBBC00BC33C8 /* control */,
 				1FF3D8B212DCEC6B00BC33C8 /* game.h */,
 				1FF3D8B112DCEC6B00BC33C8 /* game.cpp */,
+				1FF3DB9612DD333C00BC33C8 /* tools */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -538,6 +539,13 @@
 				1FF3D94212DCFBC100BC33C8 /* window.cpp */,
 			);
 			path = control;
+			sourceTree = "<group>";
+		};
+		1FF3DB9612DD333C00BC33C8 /* tools */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = tools;
 			sourceTree = "<group>";
 		};
 		1FFFFA5F12D88F0800FC72B7 /* game */ = {
