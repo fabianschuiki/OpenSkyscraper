@@ -1,7 +1,7 @@
 OpenSkyscraper
 ==============
 
-OpenSkyscraper is a versatile, Open Source tower simulation game inspired by the "SimTower" and "YootTower" games of the late 90s.
+OpenSkyscraper is a versatile, open source tower simulation game inspired by the "SimTower" and "YootTower" games of the late 90s.
 
 
 Variants
@@ -32,4 +32,4 @@ SimTower is a neat game but its game mechanics and possibilities are very limite
 Contributing
 ------------
 
-The OpenSkyscraper project is very young and doesn't have an extensive community yet. If you like the idea have some C/C++ or graphics skills or just want to contribute, please visit the [GitHub project site](http://github.com/fabianschuiki/OpenSkyscraper).
+**OpenSkyscraper needs you!** If you like the idea and have some C/C++ or graphics skills or just want to contribute, please visit the [GitHub project site](http://github.com/fabianschuiki/OpenSkyscraper). The easiest way to help writing source code is *forking* the project on GitHub and hacking in your stuff, then sending a pull request to the original repository. *Any help is highly appreciated! Ideas, thoughts, studies, graphics, code, everything!*
