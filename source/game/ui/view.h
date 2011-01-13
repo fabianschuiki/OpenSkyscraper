@@ -139,10 +139,10 @@ namespace OSS {
 		
 		
 		/**
-		 * Event Sending
+		 * Events
 		 */
 	public:
-		virtual bool sendEventToNextResponders(Event * event);
+		virtual bool sendEventToNextResponders(OSS::Event * event);
 	};
 }
 

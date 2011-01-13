@@ -1,7 +1,6 @@
 #ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_TRANSPORT_H
 #define OSS_CLASSIC_ITEMS_TRANSPORTS_TRANSPORT_H
 
-#include "../../external.h"
 #include "../item.h"
 
 #include "../../people/person.h"

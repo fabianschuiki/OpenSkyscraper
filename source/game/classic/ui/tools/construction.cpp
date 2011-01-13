@@ -122,6 +122,8 @@ void ConstructionTool::updateTemplateRect()
 
 void ConstructionTool::draw(rectd dirtyRect)
 {
+	if (!getItemDescriptor()) return;
+	
 	//Draw the template rect. To do this we first need to convert the template rect to world co-
 	//ordinates.
 	rectd world = ui->getTower()->structure->cellToWorld(templateRect);

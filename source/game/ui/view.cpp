@@ -298,7 +298,7 @@ void View::draw(rectd dirtyRect)
 #pragma mark Event Sending
 //----------------------------------------------------------------------------------------------------
 
-bool View::sendEventToNextResponders(Event * event)
+bool View::sendEventToNextResponders(OSS::Event * event)
 {
 	//Iterate through the events and send the event to each until one is able to handle it.
 	for (List::iterator it = subviews.begin(); it != subviews.end(); it++)

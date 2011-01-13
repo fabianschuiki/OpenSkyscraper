@@ -53,6 +53,8 @@
 		1F32360E12DF91160042FFBA /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F3233A312DF7FE40042FFBA /* window.cpp */; };
 		1F32361712DF912C0042FFBA /* rating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32339F12DF7FE40042FFBA /* rating.cpp */; };
 		1F32361812DF912D0042FFBA /* watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F3233A112DF7FE40042FFBA /* watch.cpp */; };
+		1F32386412DFA7A20042FFBA /* route.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32339512DF7FE40042FFBA /* route.cpp */; };
+		1F32387312DFA7F50042FFBA /* transport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337A12DF7FE40042FFBA /* transport.cpp */; };
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1F8BBC9F12CAA4D700892C16 /* libIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBC9E12CAA4D700892C16 /* libIL.a */; };
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
@@ -880,6 +882,8 @@
 				1F32360E12DF91160042FFBA /* window.cpp in Sources */,
 				1F32361712DF912C0042FFBA /* rating.cpp in Sources */,
 				1F32361812DF912D0042FFBA /* watch.cpp in Sources */,
+				1F32386412DFA7A20042FFBA /* route.cpp in Sources */,
+				1F32387312DFA7F50042FFBA /* transport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

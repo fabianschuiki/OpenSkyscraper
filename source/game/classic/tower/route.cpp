@@ -1,8 +1,5 @@
 #include "route.h"
 
-#include "tower.h"
-#include "../items/transports/transport.h"
-
 using namespace OSS;
 using namespace Classic;
 
@@ -32,11 +29,11 @@ Route::Node::Node(Route * route, recti start, TransportItem * transport, recti e
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Route::Route(Tower * tower) : tower(tower), Core::Object()
+Route::Route(Tower * tower) : tower(tower)
 {
 }
 
-Route::Route(const Route & route) : tower(route.tower), Core::Object()
+Route::Route(const Route & route) : tower(route.tower)
 {
 	origin = route.origin;
 	destination = route.destination;
