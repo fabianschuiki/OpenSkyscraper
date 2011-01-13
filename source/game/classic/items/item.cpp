@@ -1,6 +1,6 @@
 #include "item.h"
 
-//#include "items.h"
+#include "items.h"
 
 using namespace OSS;
 using namespace Classic;
@@ -79,7 +79,7 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 	Item * instance = NULL;
 	switch (descriptor->type) {
 			//Structure
-		/*case kLobbyType:			instance = new LobbyItem(tower); break;
+		case kLobbyType:			instance = new LobbyItem(tower); break;
 		case kStairsType:			instance = new StairsItem(tower); break;
 		case kEscalatorType:		instance = new EscalatorItem(tower); break;
 			
@@ -95,7 +95,7 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 		case kSuiteType:			instance = new SuiteItem(tower); break;
 			
 			//Services
-		case kHousekeepingType:		instance = new HousekeepingItem(tower); break;*/
+		case kHousekeepingType:		instance = new HousekeepingItem(tower); break;
 	}
 	
 	//Initialize the item
@@ -278,7 +278,7 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 {
 	switch (itemType) {
 			//Structure
-		/*case kLobbyType:			return &LobbyItem::descriptor; break;
+		case kLobbyType:			return &LobbyItem::descriptor; break;
 		case kFloorType:			return &floorItemDescriptor; break;
 		case kStairsType:			return &StairsItem::descriptor; break;
 		case kEscalatorType:		return &EscalatorItem::descriptor; break;
@@ -295,7 +295,7 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 		case kSuiteType:			return &SuiteItem::descriptor; break;
 			
 			//Services
-		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;*/
+		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;
 	}
 	return NULL;
 }
@@ -342,7 +342,7 @@ void Item::advance(double dt)
 #pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
-void Item::draw(rectd visibleRect)
+void Item::draw(rectd dirtyRect)
 {
 	//Draw the construction
 	if (constructionSprite) {

@@ -96,8 +96,8 @@ void ElevatorItem::updateMotorBuffer()
 	bufferRect.origin.y = getRect().minY() - bufferRect.size.y;
 	
 	//Position the motor and buffer
-	motorSprite.setRect(tower->convertCellToWorldRect(motorRect));
-	bufferSprite.setRect(tower->convertCellToWorldRect(bufferRect));
+	motorSprite.rect = (tower->convertCellToWorldRect(motorRect));
+	bufferSprite.rect = (tower->convertCellToWorldRect(bufferRect));
 	
 	//Load the appropriate textures
 	stringstream textureName;
@@ -188,8 +188,8 @@ void ElevatorItem::draw(rectd visibleRect)
 	TransportItem::draw(visibleRect);
 	
 	//Draw the motor and buffer
-	motorSprite.draw(visibleRect);
-	bufferSprite.draw(visibleRect);
+	motorSprite.draw();
+	bufferSprite.draw();
 }
 
 

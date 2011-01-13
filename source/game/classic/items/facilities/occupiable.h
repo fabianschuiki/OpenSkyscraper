@@ -1,8 +1,6 @@
 #ifndef OSS_CLASSIC_ITEMS_FACILITIES_OCCUPIABLE_H
 #define OSS_CLASSIC_ITEMS_FACILITIES_OCCUPIABLE_H
 
-#include "../../external.h"
-
 #include "facility.h"
 
 

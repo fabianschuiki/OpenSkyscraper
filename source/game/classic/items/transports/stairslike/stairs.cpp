@@ -47,7 +47,7 @@ void StairsItem::updateBackground()
 	
 	//Reduce the upper background's height, since the texture accounts for a ceiling that isn't
 	//actually there.
-	rectd rect = backgrounds[1].getRect();
+	rectd rect = backgrounds[1].rect;
 	rect.size.y -= 12;
-	backgrounds[1].setRect(rect);
+	backgrounds[1].rect = rect;
 }

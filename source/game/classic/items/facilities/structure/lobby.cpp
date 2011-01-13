@@ -93,13 +93,13 @@ void LobbyItem::updateEntrances()
 	//Set the entrance rects and decide whether they should be shown or not
 	bool onGroundFloor = (getRect().origin.y == 0);
 	for (int i = 0; i < 2; i++) {
-		outsideEntrances[i].setRect(outsideRects[i]);
-		outsideEntrances[i].setHidden(!onGroundFloor);
+		outsideEntrances[i].rect = outsideRects[i];
+		outsideEntrances[i].hidden = !onGroundFloor;
 	}
 	
 	//Set the inside entrance
 	insideEntrance.texture = Texture::named(getLobbyTextureBaseName() + "/entrance");
-	insideEntrance.setRect(insideRect);
+	insideEntrance.rect = insideRect;
 }
 
 
@@ -116,8 +116,7 @@ void LobbyItem::initBackground()
 	FacilityItem::initBackground();
 		
 	//Load the background sprite
-	backgrounds[0].autoTexRectX = true;
-	backgrounds[0].textureMode = Sprite::kRepeatTextureMode;
+	backgrounds[0].autoTexRectAttributes = Sprite::kAutoX;
 }
 
 void LobbyItem::updateBackground()
@@ -144,9 +143,9 @@ void LobbyItem::draw(rectd visibleRect)
 	
 	//Draw the entrances
 	for (int i = 0; i < 2; i++)
-		outsideEntrances[i].draw(visibleRect);
+		outsideEntrances[i].draw();
 	if (!underConstruction)
-		insideEntrance.draw(visibleRect);
+		insideEntrance.draw();
 }
 
 

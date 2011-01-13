@@ -1,7 +1,6 @@
 #ifndef OSS_TIMEDPERSON_H
 #define OSS_TIMEDPERSON_H
 
-#include "../external.h"
 #include "person.h"
 
 

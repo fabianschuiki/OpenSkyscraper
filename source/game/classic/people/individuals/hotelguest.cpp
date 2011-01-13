@@ -156,7 +156,7 @@ void HotelGuest::initAnimationSprite()
 {	
 	//Load the texture and set the slice size
 	animationSprite.texture = Texture::named("simtower/facilities/hotel/guests");
-	animationSprite.setRect(rectd(0, 0, 16, 24));
+	animationSprite.rect = rectd(0, 0, 16, 24);
 	animationSprite.textureRect.size.x = (1.0 / 16);
 	
 	//Do the rest of the initialization

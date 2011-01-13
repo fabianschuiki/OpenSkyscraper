@@ -1,7 +1,6 @@
 #ifndef OSS_CLASSIC_ITEMS_FACILITIES_FACILITY_H
 #define OSS_CLASSIC_ITEMS_FACILITIES_FACILITY_H
 
-#include "../../external.h"
 #include "../item.h"
 #include "../../people/person.h"
 

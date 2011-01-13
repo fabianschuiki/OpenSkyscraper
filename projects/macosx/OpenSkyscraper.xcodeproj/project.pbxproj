@@ -55,6 +55,26 @@
 		1F32361812DF912D0042FFBA /* watch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F3233A112DF7FE40042FFBA /* watch.cpp */; };
 		1F32386412DFA7A20042FFBA /* route.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32339512DF7FE40042FFBA /* route.cpp */; };
 		1F32387312DFA7F50042FFBA /* transport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337A12DF7FE40042FFBA /* transport.cpp */; };
+		1F32387A12DFA82C0042FFBA /* facility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335212DF7FE40042FFBA /* facility.cpp */; };
+		1F32389912DFA92D0042FFBA /* occupiable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335F12DF7FE40042FFBA /* occupiable.cpp */; };
+		1F32389F12DFA93A0042FFBA /* office.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336212DF7FE40042FFBA /* office.cpp */; };
+		1F3238A612DFA9580042FFBA /* person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338312DF7FE40042FFBA /* person.cpp */; };
+		1F3238B712DFA99A0042FFBA /* timedperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338712DF7FE40042FFBA /* timedperson.cpp */; };
+		1F3238BB12DFA9A40042FFBA /* scheduledperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338512DF7FE40042FFBA /* scheduledperson.cpp */; };
+		1F3238C112DFA9B80042FFBA /* lobby.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336512DF7FE40042FFBA /* lobby.cpp */; };
+		1F3238CA12DFA9EC0042FFBA /* hotel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335712DF7FE40042FFBA /* hotel.cpp */; };
+		1F3238D012DFA9F90042FFBA /* hotelguest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337F12DF7FE40042FFBA /* hotelguest.cpp */; };
+		1F3238D612DFAA230042FFBA /* janitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338112DF7FE40042FFBA /* janitor.cpp */; };
+		1F3238DC12DFAA340042FFBA /* housekeeping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335912DF7FE40042FFBA /* housekeeping.cpp */; };
+		1F3238E412DFAA410042FFBA /* singleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335B12DF7FE40042FFBA /* singleroom.cpp */; };
+		1F3238E712DFAA450042FFBA /* doubleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335512DF7FE40042FFBA /* doubleroom.cpp */; };
+		1F3238EA12DFAA480042FFBA /* suite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335D12DF7FE40042FFBA /* suite.cpp */; };
+		1F3238F212DFAA5A0042FFBA /* stairslike.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337812DF7FE40042FFBA /* stairslike.cpp */; };
+		1F3238F512DFAA5F0042FFBA /* stairs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337612DF7FE40042FFBA /* stairs.cpp */; };
+		1F3238FB12DFAA710042FFBA /* escalator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337412DF7FE40042FFBA /* escalator.cpp */; };
+		1F3238FE12DFAA790042FFBA /* elevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336D12DF7FE40042FFBA /* elevator.cpp */; };
+		1F32390B12DFAAA20042FFBA /* elevatorbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336F12DF7FE40042FFBA /* elevatorbackground.cpp */; };
+		1F32391312DFAAC20042FFBA /* standardelevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337112DF7FE40042FFBA /* standardelevator.cpp */; };
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1F8BBC9F12CAA4D700892C16 /* libIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBC9E12CAA4D700892C16 /* libIL.a */; };
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
@@ -884,6 +904,26 @@
 				1F32361812DF912D0042FFBA /* watch.cpp in Sources */,
 				1F32386412DFA7A20042FFBA /* route.cpp in Sources */,
 				1F32387312DFA7F50042FFBA /* transport.cpp in Sources */,
+				1F32387A12DFA82C0042FFBA /* facility.cpp in Sources */,
+				1F32389912DFA92D0042FFBA /* occupiable.cpp in Sources */,
+				1F32389F12DFA93A0042FFBA /* office.cpp in Sources */,
+				1F3238A612DFA9580042FFBA /* person.cpp in Sources */,
+				1F3238B712DFA99A0042FFBA /* timedperson.cpp in Sources */,
+				1F3238BB12DFA9A40042FFBA /* scheduledperson.cpp in Sources */,
+				1F3238C112DFA9B80042FFBA /* lobby.cpp in Sources */,
+				1F3238CA12DFA9EC0042FFBA /* hotel.cpp in Sources */,
+				1F3238D012DFA9F90042FFBA /* hotelguest.cpp in Sources */,
+				1F3238D612DFAA230042FFBA /* janitor.cpp in Sources */,
+				1F3238DC12DFAA340042FFBA /* housekeeping.cpp in Sources */,
+				1F3238E412DFAA410042FFBA /* singleroom.cpp in Sources */,
+				1F3238E712DFAA450042FFBA /* doubleroom.cpp in Sources */,
+				1F3238EA12DFAA480042FFBA /* suite.cpp in Sources */,
+				1F3238F212DFAA5A0042FFBA /* stairslike.cpp in Sources */,
+				1F3238F512DFAA5F0042FFBA /* stairs.cpp in Sources */,
+				1F3238FB12DFAA710042FFBA /* escalator.cpp in Sources */,
+				1F3238FE12DFAA790042FFBA /* elevator.cpp in Sources */,
+				1F32390B12DFAAA20042FFBA /* elevatorbackground.cpp in Sources */,
+				1F32391312DFAAC20042FFBA /* standardelevator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

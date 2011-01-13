@@ -45,8 +45,7 @@ void FacilityItem::updateBasicSprites()
 
 void FacilityItem::initCeiling()
 {
-	ceiling.autoTexRectX = true;
-	ceiling.textureMode = Sprite::kRepeatTextureMode;
+	ceiling.autoTexRectAttributes = Sprite::kAutoX;
 	ceiling.texture = Texture::named("ceiling.png");
 }
 
@@ -60,7 +59,7 @@ void FacilityItem::updateCeiling()
 	rect.origin.y = rect.maxY();
 	rect.size.y = 12;
 	rect.origin.y -= rect.size.y;
-	ceiling.setRect(rect);
+	ceiling.rect = rect;
 }
 
 bool FacilityItem::getHasCeiling() const
@@ -80,9 +79,7 @@ void FacilityItem::updateBackground()
 	//Adjust the topmost background's height if we have a ceiling
 	if (hasCeiling) {
 		Sprite * background = &backgrounds[getNumFloors() - 1];
-		rectd rect = background->getRect();
-		rect.size.y -= ceiling.getRect().size.y;
-		background->setRect(rect);
+		background->rect.size.y -= ceiling.rect.size.y;
 	}
 }
 
@@ -177,11 +174,11 @@ void FacilityItem::advance(double dt)
 #pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
-void FacilityItem::draw(rectd visibleRect)
+void FacilityItem::draw(rectd dirtyRect)
 {
-	Item::draw(visibleRect);
+	Item::draw(dirtyRect);
 	
 	//Draw the ceiling sprite
 	if (hasCeiling && (!underConstruction || !drawFlexibleConstruction))
-		ceiling.draw(visibleRect);
+		ceiling.draw();
 }

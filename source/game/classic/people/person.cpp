@@ -12,7 +12,7 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Person::Person(Tower * tower) : Core::Object(), tower(tower)
+Person::Person(Tower * tower) : tower(tower)
 {
 	assert(tower);
 	
@@ -224,10 +224,10 @@ void Person::updateAnimationSprite()
 		return;
 	
 	//Position the animation sprite
-	rectd worldRect = animationSprite.getRect();
+	rectd worldRect = animationSprite.rect;
 	worldRect.origin = getItem()->getWorldRect().origin;
 	worldRect.origin += tower->convertCellToWorldCoordinates(getAnimationLocation());
-	animationSprite.setRect(worldRect);
+	animationSprite.rect = worldRect;
 }
 
 
@@ -272,7 +272,7 @@ void Person::shuffleAnimation()
 void Person::drawAnimation(rectd visibleRect)
 {
 	if (shouldAnimate())
-		animationSprite.draw(visibleRect);
+		animationSprite.draw();
 }
 
 

@@ -1,7 +1,6 @@
 #ifndef OSS_CLASSIC_ITEMS_FACILITIES_HOTEL_HOTEL_H
 #define OSS_CLASSIC_ITEMS_FACILITIES_HOTEL_HOTEL_H
 
-#include "../../../external.h"
 #include "../occupiable.h"
 #include "../../../people/individuals/hotelguest.h"
 #include "../../../people/individuals/janitor.h"

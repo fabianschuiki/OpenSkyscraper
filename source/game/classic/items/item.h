@@ -41,6 +41,7 @@ namespace OSS {
 			/**
 			 * Identification
 			 */
+			//TODO: get rid of the item ID
 		private:
 			unsigned int itemID;
 		public:
@@ -103,7 +104,7 @@ namespace OSS {
 			virtual void advance(double dt);
 			
 			//Drawing
-			virtual void draw(rectd visibleRect);
+			virtual void draw(rectd dirtyRect);
 			
 			/**
 			 * Notifications

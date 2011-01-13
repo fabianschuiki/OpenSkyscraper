@@ -1,7 +1,6 @@
 #ifndef OSS_SCHEDULEDPERSON_H
 #define OSS_SCHEDULEDPERSON_H
 
-#include "../external.h"
 #include "person.h"
 
 
@@ -12,7 +11,7 @@ namespace OSS {
 		 *
 		 * Class used in ScheduledPerson to organize the person's day.
 		 */
-		class Schedule : public Core::Object {
+		class Schedule : public Object {
 		public:
 			//Schedule Node
 			class Node {

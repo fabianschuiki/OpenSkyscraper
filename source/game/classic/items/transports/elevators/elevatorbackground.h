@@ -1,7 +1,7 @@
 #ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_ELEVATORBACKGROUND_H
 #define OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_ELEVATORBACKGROUND_H
 
-#include "../../../external.h"
+#include "../transport.h"
 
 
 namespace OSS {

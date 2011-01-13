@@ -97,7 +97,7 @@ void Janitor::initAnimationSprite()
 {	
 	//Load the texture and set the slice size
 	animationSprite.texture = Texture::named("simtower/facilities/hotel/janitor");
-	animationSprite.setRect(rectd(0, 0, 16, 24));
+	animationSprite.rect = rectd(0, 0, 16, 24);
 	animationSprite.textureRect.size.x = (1.0 / 3);
 	
 	//Do the rest of the initialization
