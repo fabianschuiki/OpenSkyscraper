@@ -171,11 +171,11 @@ namespace OSS {
 			/**
 			 * Sound Effects
 			 */
-			SoundEffect constructionSoundFlexible;
+			/*SoundEffect constructionSoundFlexible;
 			SoundEffect fundsTransferSound;
 			
 			SoundEffect birdsMorningSound;
-			SoundEffect rainSound;
+			SoundEffect rainSound;*/
 			
 			
 			/**

@@ -111,7 +111,6 @@ void Engine::setScene(Scene * scene)
 		
 		Event * e = new Event(Event::kMovedOffScreen);
 		this->scene->sendEvent(e);
-		e->release();
 		
 		this->scene->didMoveOffScreen();
 	}
@@ -125,7 +124,6 @@ void Engine::setScene(Scene * scene)
 		
 		Event * e = new Event(Event::kMovedOnScreen);
 		this->scene->sendEvent(e);
-		e->release();
 		
 		this->scene->didMoveOnScreen();
 	}
