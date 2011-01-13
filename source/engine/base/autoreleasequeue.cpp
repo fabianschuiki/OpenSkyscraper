@@ -51,7 +51,6 @@ void AutoreleaseQueue::drain()
 {
 	while (!garbageQueue.empty()) {
 		garbageQueue.front()->release();
-		std::cout << "autoreleasing " << typeid(*garbageQueue.front()).name() << std::endl;
 		garbageQueue.pop();
 	}
 }
