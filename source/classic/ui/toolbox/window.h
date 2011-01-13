@@ -3,6 +3,7 @@
 
 #include "../../external.h"
 
+#include "groupbutton.h"
 #include "../../tower/tower.h"
 
 
@@ -28,6 +29,17 @@ namespace OSS {
 			 * Subviews
 			 */
 		private:
+			std::map< ItemGroup, Pointer<ToolboxGroupButton> > groupButtons;
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void update();
+			virtual void layoutSubviews();
+			
+			Core::Updatable::Conditional<ToolsWindow> layoutSubviewsIfNeeded;
 			
 			
 			/**
