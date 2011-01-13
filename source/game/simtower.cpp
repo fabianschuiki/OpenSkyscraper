@@ -3,8 +3,6 @@
 #include <sys/stat.h>
 
 using namespace OSS;
-using namespace Game;
-using namespace Engine;
 
 
 /**

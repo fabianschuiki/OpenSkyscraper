@@ -3,7 +3,4 @@
 
 #include "../engine/headers.h"
 
-using namespace OSS::Base;
-//using namespace OSS::Engine;
-
 #endif

@@ -1,7 +1,6 @@
 #include "application.h"
 
 using namespace OSS;
-using namespace Engine;
 
 
 
@@ -9,50 +8,25 @@ using namespace Engine;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Construction
+#pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
 Application::Application()
 {	
-	//Initialize the renderers
-	video = new Video(this);
-	audio = new Audio(this);
-	
-	//Initialize the event pump (requires the video mode to already have the SDL video subsystem
-	//initialized)
-	eventPump = new EventPump(this);
-	
 	//Initialize DevIL
 	ilInit();
 	ilEnable(IL_FILE_OVERWRITE);
 	ilEnable(IL_ORIGIN_SET);
 	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 	
-	//Hook the update function for the audio task into the run loop
-	Core::Invocation<Audio> * audioUpdate = new Core::Invocation<Audio>(audio, &Engine::Audio::update);
-	addInvocation(audioUpdate);
-	//audioUpdate->release();
+	//Fire up the engine!
+	engine = new Engine(this);
 	
-	//Initialize the engine
-	engine = new EngineCore(this);
+	//Make sure we received keyboard repeat events
+	SDL_EnableKeyRepeat(250, 50);
 	
-	//Hook the OpenGL buffer swap into the run loop
-	Core::Invocation<Video> * inv = new Core::Invocation<Video>(video, &Engine::Video::swapBuffers);
-	addInvocation(inv);
-	inv->release();
-}
-
-Application::~Application()
-{
-	//Release the engine
-	engine = NULL;
-	
-	//Release DevIL
-	ilShutDown();
-	
-	//Release the renderers
-	video = NULL;
-	audio = NULL;
+	//Supporting Unicode wouldn't hurt either in the 21st centurey
+	SDL_EnableUNICODE(SDL_TRUE);
 }
 
 
@@ -61,34 +35,157 @@ Application::~Application()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Event Sending
+#pragma mark Run Loop
 //----------------------------------------------------------------------------------------------------
 
-bool Application::sendEventToNextResponders(Base::Event * event)
+void Application::run()
 {
-	if (video && video->sendEvent(event)) return true;
-	if (audio && audio->sendEvent(event)) return true;
+	terminateReply = kTerminateCancel;
+	willRun();
 	
+	//The run loop gets its own autorelease queue
+	AutoreleaseQueue * runLoopGarbage = new AutoreleaseQueue;
+	
+	while (terminateReply != kTerminateNow) {
+		//Notify
+		willIterateRunLoop();
+		
+		//Send the events from the pump down the responder chain
+		pumpEvents();
+		
+		//If we're supposed to terminate, do so
+		if (terminateReply == kTerminateLater)
+			terminate();
+		
+		//TODO: advance the engine
+		engine->heartbeat();
+		
+		//Notify
+		didIterateRunLoop();
+		
+		//Get rid of the garbage
+		runLoopGarbage->drain();
+	}
+	
+	//Get rid of the garbage queue
+	delete runLoopGarbage;
+	
+	didRun();
+}
+
+bool Application::isRunning()
+{
+	return (terminateReply != kTerminateNow);
+}
+
+
+
+void Application::terminate()
+{
+	terminateReply = shouldTerminate();
+}
+
+bool Application::isTerminating()
+{
+	return (terminateReply != kTerminateCancel);
+}
+
+Application::TerminateReply Application::shouldTerminate()
+{
+	return kTerminateNow;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+Event * Application::getNextEvent()
+{
+	//Fetch the next SDL event
+	SDL_Event event;
+	if (!SDL_PollEvent(&event))
+		return NULL;
+	
+	//A variable for the interpreted event
+	Event * e = NULL;
+	
+	//Interpret mouse button events
+	if (SDL_EVENTMASK(event.type) & (SDL_MOUSEBUTTONDOWNMASK | SDL_MOUSEBUTTONUPMASK)) {
+		e = new MouseButtonEvent(int2(event.button.x, event.button.y),
+								 event.button.button,
+								 (event.button.state == SDL_PRESSED));
+	}
+	
+	//Interpret mouse moved events
+	if (SDL_EVENTMASK(event.type) & (SDL_MOUSEMOTIONMASK)) {
+		e = new MouseMoveEvent(int2(event.motion.x, event.motion.y),
+								int2(event.motion.xrel, event.motion.yrel));
+	}
+	
+	//TODO: Create some sort of mouse dragged events
+	
+	//Interpret scroll wheel events
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		if (event.button.button == SDL_BUTTON_WHEELUP)
+			e = new ScrollWheelEvent(int2(event.button.x, event.button.y), double2(0, 1));
+		if (event.button.button == SDL_BUTTON_WHEELDOWN)
+			e = new ScrollWheelEvent(int2(event.button.x, event.button.y), double2(0, -1));
+	}
+	
+	//Interpret key events
+	if (SDL_EVENTMASK(event.type) & (SDL_KEYDOWNMASK | SDL_KEYUPMASK)) {
+		e = new KeyEvent(event.key.keysym.unicode, event.key.keysym.sym,
+						 (event.key.state == SDL_PRESSED),
+						 false);
+	}
+	
+	//Wrap up unhandled SDL events
+	if (!e)
+		e = new SDLEvent(event);
+	
+	//Special treatment for quit events
+	if (event.type == SDL_QUIT)
+		terminate();
+	
+	//Special shortcut for quitting
+	if (event.type == SDL_KEYDOWN && event.key.keysym.mod & KMOD_META &&
+		event.key.keysym.unicode == 'q')
+		terminate();
+	
+	return e;
+}
+
+void Application::pumpEvents()
+{
+	willPumpEvents();
+	
+	Event * event;
+	while ((event = getNextEvent()))
+		sendEvent(event);
+	
+	didPumpEvents();
+}
+
+bool Application::sendEventToNextResponders(Event * event)
+{
 	if (engine && engine->sendEvent(event)) return true;
-	
-	return Core::Application::sendEventToNextResponders(event);
+	return BasicResponder::sendEventToNextResponders(event);
 }
-
 
 
 
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Timing
+#pragma mark Resources
 //----------------------------------------------------------------------------------------------------
 
-double Application::getTimeElapsed()
+string Application::pathToResource(string resourceGroup, string resourceName, string resourceType)
 {
-	return ((double)SDL_GetTicks()) / 1000;
-}
-
-void Application::sleep(double seconds)
-{
-	SDL_Delay(seconds * 1000);
+	return pathToResource(resourceGroup, resourceName + "." + resourceType);
 }

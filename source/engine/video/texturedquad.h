@@ -3,28 +3,29 @@
 
 #include "../external.h"
 
+#include "../types.h"
+#include "../base/pointer.h"
+#include "../math/headers.h"
 #include "../resources/texture.h"
 
 
 namespace OSS {
-	namespace Engine {
-		class TexturedQuad {
-		public:
-			TexturedQuad();
-			
-			rectd rect;
-			
-			color4d color;
-			double alpha;
-			
-			Pointer<Texture> texture;
-			rectd textureRect;
-			void autogenerateTextureRect(bool x, bool y, double2 offset = double2(),
-										 double2 scale = double2(1, 1));
-			
-			void draw();
-		};
-	}
+	class TexturedQuad {
+	public:
+		TexturedQuad();
+		
+		rectd rect;
+		
+		color4d color;
+		double alpha;
+		
+		Pointer<Texture> texture;
+		rectd textureRect;
+		void autogenerateTextureRect(bool x, bool y, double2 offset = double2(),
+									 double2 scale = double2(1, 1));
+		
+		virtual void draw();
+	};
 }
 
 

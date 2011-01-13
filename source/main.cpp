@@ -1,18 +1,15 @@
-//#include "general.h"
+#include "engine/base/autoreleasequeue.h"
 #include "game/application.h"
-//#include "engine/application.h"
+
+using namespace OSS;
+
 
 int main(int argc, char *argv[])
-{	
-	/*OSS::OpenSkyscraper app;
+{
+	AutoreleaseQueue queue;
 	
-	app.prepare();
-	app.run();
-	app.cleanUp();*/
-	
-	OSS::Game::Application * app = new OSS::Game::Application;
+	OpenSkyscraper * app = new OpenSkyscraper;
 	app->run();
-	app->release();
 	
 	return 0;
 }

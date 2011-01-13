@@ -1,7 +1,6 @@
 #include "soundeffect.h"
 
 using namespace OSS;
-using namespace Engine;
 
 
 

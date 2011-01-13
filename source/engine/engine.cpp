@@ -1,12 +1,9 @@
 #include "engine.h"
 
-#include "application.h"
 #include "resources/sound.h"
 #include "resources/texture.h"
-#include "scene.h"
 
 using namespace OSS;
-using namespace Engine;
 
 
 
@@ -14,10 +11,10 @@ using namespace Engine;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Construction
+#pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-EngineCore::EngineCore(Application * application)
+Engine::Engine(Application * application) : application(application)
 {
 	//Initialize the stores
 	stores.push_back(new TextureStore);
@@ -26,14 +23,9 @@ EngineCore::EngineCore(Application * application)
 	//Initialize the cruise control which times the animation and slows the loop if required
 	timing = new CruiseControl(this);
 	
-	//Attach the engine to the application's run loop
-	attachToApplication(application);
-}
-
-EngineCore::~EngineCore()
-{
-	//Detach us from the application
-	detachFromApplication();
+	//Initialize the other subsystems
+	audio = new Audio(this);
+	video = new Video(this);
 }
 
 
@@ -42,59 +34,10 @@ EngineCore::~EngineCore()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Run Loop Attachment
+#pragma mark Subsystems
 //----------------------------------------------------------------------------------------------------
 
-void EngineCore::attachToApplication(Application * app)
-{
-	//Detach from the current application
-	detachFromApplication();
-	if (!app) return;
-	
-	//Set the new application
-	application = app;
-	
-	//Create the new invocation and add it to the application
-	invocation = new Core::Invocation<EngineCore>(this, &EngineCore::EngineCore::update);
-	invocation->release();
-	application->addInvocation(invocation);
-	
-	//Setup the current instances
-	if (application) {
-		application->pushCurrent();
-		application->audio->pushCurrent();
-		application->video->pushCurrent();
-	}
-}
-
-void EngineCore::detachFromApplication()
-{
-	//Release the current instances
-	if (application) {
-		application->popCurrent();
-		application->audio->popCurrent();
-		application->video->popCurrent();
-	}
-	
-	//Remove the invocation from the application
-	if (application)
-		application->removeInvocation(invocation);
-	
-	//Delete the invocation and release the application
-	invocation = NULL;
-	application = NULL;
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark State
-//----------------------------------------------------------------------------------------------------
-
-void EngineCore::update()
+void Engine::heartbeat()
 {
 	//Perform cruise control
 	timing->frameStart();
@@ -106,6 +49,9 @@ void EngineCore::update()
 	simulateScene();
 	updateScene();
 	drawScene();
+	
+	//Update the audio subsystem
+	audio->update();
 		
 	//We're done rendering
 	timing->renderingDone();
@@ -117,6 +63,28 @@ void EngineCore::update()
 			 timing->damped_dt * 1000,
 			 timing->damped_idle_ratio * 100);
 	SDL_WM_SetCaption(title, NULL);
+	
+	//Swap the OpenGL buffers
+	video->swapBuffers();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Timing
+//----------------------------------------------------------------------------------------------------
+
+double Engine::getTimeElapsed()
+{
+	return ((double)SDL_GetTicks()) / 1000;
+}
+
+void Engine::sleep(double seconds)
+{
+	SDL_Delay(seconds * 1000);
 }
 
 
@@ -128,12 +96,12 @@ void EngineCore::update()
 #pragma mark Scene
 //----------------------------------------------------------------------------------------------------
 
-Scene * EngineCore::getScene()
+Scene * Engine::getScene()
 {
 	return scene;
 }
 
-void EngineCore::setScene(Scene * scene)
+void Engine::setScene(Scene * scene)
 {
 	willSwitchToScene(scene);
 	
@@ -141,7 +109,7 @@ void EngineCore::setScene(Scene * scene)
 	if (this->scene) {		
 		this->scene->willMoveOffScreen();
 		
-		Event * e = new Event(Event::MovedOffScreen);
+		Event * e = new Event(Event::kMovedOffScreen);
 		this->scene->sendEvent(e);
 		e->release();
 		
@@ -155,7 +123,7 @@ void EngineCore::setScene(Scene * scene)
 	if (this->scene) {		
 		this->scene->willMoveOnScreen();
 		
-		Event * e = new Event(Event::MovedOnScreen);
+		Event * e = new Event(Event::kMovedOnScreen);
 		this->scene->sendEvent(e);
 		e->release();
 		
@@ -165,20 +133,22 @@ void EngineCore::setScene(Scene * scene)
 	didSwitchToScene(scene);
 }
 
-void EngineCore::simulateScene()
+void Engine::simulateScene()
 {
-	if (scene) scene->advance(timing->dt);
+	if (scene)
+		scene->advance(timing->dt);
 }
 
-void EngineCore::updateScene()
+void Engine::updateScene()
 {
-	if (scene) scene->update();
+	if (scene)
+		scene->update();
 }
 
-void EngineCore::drawScene()
+void Engine::drawScene()
 {
 	if (scene) {
-		scene->draw();
+		scene->draw(rectd(double2(), video->currentMode.resolution));
 	} else {
 		glClearColor(0, 0, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -194,15 +164,15 @@ void EngineCore::drawScene()
 #pragma mark Stores
 //----------------------------------------------------------------------------------------------------
 
-void EngineCore::performLoadingAndFinalizing()
+void Engine::performLoadingAndFinalizing()
 {
-	double start = application->getTimeElapsed();
+	double start = getTimeElapsed();
 	double now = start;
 	for (StoreList::iterator store = stores.begin(); store != stores.end() && (now - start < 0.01);
 		 store++) {
 		bool workDone = false;
 		while (!workDone && (now - start < 0.01)) {
-			now = application->getTimeElapsed();
+			now = getTimeElapsed();
 			if ((*store)->unfinalizeNext()) continue;
 			if ((*store)->unloadNext()) continue;
 			if ((*store)->loadNext()) continue;
@@ -218,11 +188,11 @@ void EngineCore::performLoadingAndFinalizing()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Event Sending
+#pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
-bool EngineCore::sendEventToNextResponders(Base::Event * event)
+bool Engine::sendEventToNextResponders(Event * event)
 {
 	if (scene && scene->sendEvent(event)) return true;
-	return Core::Responder::sendEventToNextResponders(event);
+	return BasicResponder::sendEventToNextResponders(event);
 }

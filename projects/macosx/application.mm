@@ -1,10 +1,10 @@
-#include "../../source/core/application.h"
+#include "../../source/engine/application.h"
 #import <Cocoa/Cocoa.h>
 
 using namespace OSS;
 
 
-std::vector<std::string> Core::Application::resourcesPaths()
+std::vector<std::string> Application::resourcesPaths()
 {
 	std::vector<std::string> paths;
 	paths.push_back([[[NSBundle mainBundle] resourcePath] UTF8String]);

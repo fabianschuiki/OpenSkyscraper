@@ -1,7 +1,6 @@
 #include "interpolatedtexturequad.h"
 
 using namespace OSS;
-using namespace Engine;
 
 
 InterpolatedTextureQuad::InterpolatedTextureQuad()

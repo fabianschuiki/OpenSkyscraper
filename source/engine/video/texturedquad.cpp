@@ -1,7 +1,6 @@
 #include "texturedquad.h"
 
 using namespace OSS;
-using namespace Engine;
 
 
 TexturedQuad::TexturedQuad()

@@ -5,22 +5,31 @@
 
 
 namespace OSS {
+	class SimTower;
+	
+	//Forward declare the classic game scene
 	namespace Classic { class GameScene; }
 	
-	namespace Game {		
-		class Application : public Engine::Application {
-		public:
-			//Scenes
-			Pointer<Classic::GameScene> gameScene;
-			
-			//Initialization
-			Application();
-			~Application();
-			
-			void willRun();
-		};
-	}
+	class OpenSkyscraper : public Application {
+	public:
+		//Scenes
+		Pointer<Classic::GameScene> gameScene;
+		
+		//The OpenSkyscraper application maintains the SimTower singleton
+		Pointer<SimTower> simtower;
+		
+		//Initialization
+		OpenSkyscraper();
+		
+		void willRun();
+	};
 }
+
+
+//Include the forward-declared stuff
+#include "simtower.h"
+
+#include "classic/game.h"
 
 
 #endif

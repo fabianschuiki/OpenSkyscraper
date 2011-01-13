@@ -1,7 +1,6 @@
 #include "sound.h"
 
 using namespace OSS;
-using namespace Engine;
 
 
 //Chunk Header

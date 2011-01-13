@@ -1,9 +1,6 @@
 #include "scene.h"
 
-#include "application.h"
-
 using namespace OSS;
-using namespace Engine;
 
 
 
@@ -14,7 +11,7 @@ using namespace Engine;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-Scene::Scene(EngineCore * engine) : Responder(), engine(engine)
+Scene::Scene(Engine * engine) : engine(engine)
 {
 }
 
@@ -49,13 +46,13 @@ void Scene::didMoveOnScreen()
 
 void Scene::updateViewport()
 {
-	int2 size = engine->application->video->currentMode.resolution;
+	int2 size = engine->video->currentMode.resolution;
 	glViewport(0, 0, size.x, size.y);
 }
 
 void Scene::updateProjection()
 {
-	int2 size = engine->application->video->currentMode.resolution;
+	int2 size = engine->video->currentMode.resolution;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, size.x, 0, size.y, -1, 1);
