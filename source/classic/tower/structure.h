@@ -144,16 +144,18 @@ namespace OSS {
 			 * Item Construction
 			 *
 			 * The constructItem() function tries to build the item specified by the given item
-			 * descriptor in the given rect. The overloaded version featuring two rects is used to
-			 * build flexible width items like lobbies, floors, etc..
+			 * descriptor in the given rect.
 			 */
+		private:
+			Pointer<Engine::SoundEffect> flexibleConstructionSound;
+			Pointer<Engine::SoundEffect> constructionSound;
+			
 		public:
 			typedef struct {
 				bool success;
 				string failureReason;
 			} ConstructionResult;
 			
-			ConstructionResult constructItem(ItemDescriptor * descriptor, recti rect);
 			ConstructionResult constructItem(ItemDescriptor * descriptor,
 											 recti rect, recti initialRect);
 			

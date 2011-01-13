@@ -16,7 +16,16 @@ using namespace Classic;
 
 TowerFunds::TowerFunds(Tower * tower) : Responder(), tower(tower)
 {
+	//Set the initial money to 2'000'000
 	funds = 2e6;
+	
+	//Initialize the funds transfer sound effect.
+	transferSound = new Engine::SoundEffect();
+	transferSound->sound = Engine::Sound::named("simtower/cash");
+	transferSound->layer = Engine::SoundEffect::kTopLayer;
+	transferSound->minIntervalBetweenPlaybacks = 0.1;
+	transferSound->loopCount = 2;
+	transferSound->copyBeforeUse = true;
 }
 
 
@@ -37,7 +46,9 @@ void TowerFunds::setFunds(long f)
 {
 	if (funds != f) {
 		funds = f;
-		//TODO: play the funds sound
+		
+		//Play the funds transfer sound effect. Sounds like an old cashier.
+		Engine::Audio::getCurrent()->play(transferSound);
 	}
 }
 

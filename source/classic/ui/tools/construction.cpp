@@ -187,12 +187,15 @@ bool ConstructionTool::eventMouseDown(Core::MouseButtonEvent * event)
 	
 	//Otherwise we have a fixed width item selected, which is trivial to construct
 	else {
-		result = ui->getTower()->structure->constructItem(getItemDescriptor(), templateRect);
+		result = ui->getTower()->structure->constructItem(getItemDescriptor(), templateRect,
+														  templateRect);
 	}
 	
 	//If we weren't able to build the item, play the annoying "click"
 	if (!result.success) {
 		OSSObjectError << result.failureReason << std::endl;
+		Engine::Audio::getCurrent()->play(Engine::Sound::named("simtower/construction/impossible"),
+										  Engine::SoundEffect::kTopLayer);
 	}
 	
 	return true;

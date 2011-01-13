@@ -18,6 +18,19 @@ using namespace Classic;
 TowerStructure::TowerStructure(Tower * tower) : Responder(), tower(tower),
 ceilingHeight(12), cellSize(8, 24 + 12)
 {
+	//Initialize the construction sound effect
+	constructionSound = new Engine::SoundEffect();
+	constructionSound->sound = Engine::Sound::named("simtower/construction/normal");
+	constructionSound->layer = Engine::SoundEffect::kTopLayer;
+	constructionSound->copyBeforeUse = true;
+	
+	//Initialize the construction sound effect for flexible width items like lobbies. It sounds
+	//different to build thos.
+	flexibleConstructionSound = new Engine::SoundEffect();
+	flexibleConstructionSound->sound = Engine::Sound::named("simtower/construction/flexible");
+	flexibleConstructionSound->layer = Engine::SoundEffect::kTopLayer;
+	flexibleConstructionSound->minIntervalBetweenPlaybacks = 0.4;
+	flexibleConstructionSound->copyBeforeUse = true;
 }
 
 
@@ -364,7 +377,7 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	//Facilities and transports have different requirements
 	report.validForFacility = (!report.unfulfilledAttributes &&
 							   report.adjacentCellsValid &&
-							   analysis.facility == 0);
+							   (analysis.facility == 0 || descriptor->attributes & kFlexibleWidthAttribute));
 	report.validForTransport = (!report.unfulfilledAttributes &&
 								report.adjacentCellsValid &&
 								analysis.transport == 0 &&
@@ -390,18 +403,6 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 //----------------------------------------------------------------------------------------------------
 
 TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
-																 recti rect)
-{
-	if (!descriptor)
-		return (ConstructionResult){false, ""};
-	
-	//First of all we need a report on the rect that we're trying to build in.
-	Report report = getReport(rect, descriptor);
-	
-	return (ConstructionResult){true, ""};
-}
-
-TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
 																 recti rect, recti initialRect)
 {
 	if (!descriptor)
@@ -410,11 +411,14 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	//First of all we need to find the union rect between rect and initialRect
 	recti buildRect = rect.unionRect(initialRect);
 	
+	//Decide whether this is a flexible width item
+	bool isFlexible = descriptor->attributes & kFlexibleWidthAttribute;
+	
 	//In case we're building the lobby on the ground floor, we want that if there's already a lobby,
 	//the one we're building collapses entirely with the other one, so that you could build a 4x1
 	//lobby on the left and one on the right of the screen and the two would connect to one huge
 	//lobby.
-	if (descriptor->type == kLobbyType) {
+	if (descriptor->type == kLobbyType && rect.minY() == 0) {
 		
 		//Find all the lobbies on the ground floor and unify the construction rect with their rect.
 		ItemSet lobbies = getItems(0, kLobbyType);
@@ -428,46 +432,50 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	Report report = getReport(buildRect, descriptor);
 	
 	
-	//We have to find the acutal rect the final item will have. This means iterating through all
-	//items that we collided with and finding the one closest to the initial rect. That's where the
-	//actual item rect will end.
+	//Find the actualy rect we will build in. Flexible items need some special treatment.
 	recti actualRect = buildRect;
-	for (ItemSet::iterator it = report.collidesWith.begin(); it != report.collidesWith.end(); it++) {
+	if (isFlexible) {
 		
-		//Skip items that are of the same type as we are, since we will collapse with them in the
-		//end anyway. Also skip items that are NOT of the same category as we are.
-		if ((*it)->getType() == descriptor->type || (*it)->getCategory() != descriptor->category)
-			continue;
-		
-		//Skip the collision item if its rect doesn't collide anymore since we were already forced
-		//to reduce the actual rect.
-		if (!actualRect.intersectsRect((*it)->getRect()))
-			continue;
-		
-		
-		//Calculate the rect containing the initial rect and touching the item's rect. If it's
-		//smaller than the current actual rect it has to take its place since we hit a facility
-		//somewhere.
-		recti itemRect = (*it)->getRect();
-		recti reducedRect = actualRect;
-		
-		//If the item is further to the left than the initial rect we have to do a cutoff on the
-		//left.
-		if (itemRect.maxX() <= initialRect.minX()) {
-			int leftCutOff = itemRect.maxX() - reducedRect.minX();
-			reducedRect.origin.x += leftCutOff;
-			reducedRect.size.x -= leftCutOff;
+		//We have to find the acutal rect the final item will have. This means iterating through all
+		//items that we collided with and finding the one closest to the initial rect. That's where the
+		//actual item rect will end.
+		for (ItemSet::iterator it = report.collidesWith.begin(); it != report.collidesWith.end(); it++) {
+			
+			//Skip items that are of the same type as we are, since we will collapse with them in the
+			//end anyway. Also skip items that are NOT of the same category as we are.
+			if ((*it)->getType() == descriptor->type || (*it)->getCategory() != descriptor->category)
+				continue;
+			
+			//Skip the collision item if its rect doesn't collide anymore since we were already forced
+			//to reduce the actual rect.
+			if (!actualRect.intersectsRect((*it)->getRect()))
+				continue;
+			
+			
+			//Calculate the rect containing the initial rect and touching the item's rect. If it's
+			//smaller than the current actual rect it has to take its place since we hit a facility
+			//somewhere.
+			recti itemRect = (*it)->getRect();
+			recti reducedRect = actualRect;
+			
+			//If the item is further to the left than the initial rect we have to do a cutoff on the
+			//left.
+			if (itemRect.maxX() <= initialRect.minX()) {
+				int leftCutOff = itemRect.maxX() - reducedRect.minX();
+				reducedRect.origin.x += leftCutOff;
+				reducedRect.size.x -= leftCutOff;
+			}
+			
+			//And likewise on the right.
+			if (itemRect.minX() > initialRect.maxX()) {
+				int rightCutOff = reducedRect.maxX() - itemRect.minX();
+				reducedRect.size.x -= rightCutOff;
+			}
+			
+			//If the reduced rect is smaller than the actual rect, it needs to take its place.
+			if (reducedRect.area() < actualRect.area())
+				actualRect = reducedRect;
 		}
-		
-		//And likewise on the right.
-		if (itemRect.minX() > initialRect.maxX()) {
-			int rightCutOff = reducedRect.maxX() - itemRect.minX();
-			reducedRect.size.x -= rightCutOff;
-		}
-		
-		//If the reduced rect is smaller than the actual rect, it needs to take its place.
-		if (reducedRect.area() < actualRect.area())
-			actualRect = reducedRect;
 	}
 	
 	
@@ -475,10 +483,17 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	report = getReport(actualRect, descriptor);
 	
 	
+	//Fail if the report states that construction is not possible.
+	if (!report.valid)
+		return (ConstructionResult){false, "impossible"};
+	//TODO: In the deluxe version, these things should return some highly detailed information on
+	//what actually caused the construction to be rejected.
+	
+	
 	//Calculate the costs of the construction by adding the total costs for the facility cells and
 	//the total floor cell costs together.
 	long costs = 0;
-	costs += descriptor->price * report.additionalFacilityCellsRequired;
+	costs += descriptor->price * report.additionalFacilityCellsRequired / descriptor->cells.x / descriptor->cells.y;
 	costs += Item::descriptorForItemType(kFloorType)->price * report.additionalFloorCellsRequired;
 	
 	//Fail if we don't have enough money
@@ -489,40 +504,34 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	tower->funds->transfer(-costs);
 	
 	
-	//Fail if the report states that construction is not possible. Note that we cannot use the
-	//report's valid field here since it will most likely be false since we're collapsing with some
-	//other item which is listed as a collision item.
-	if (report.unfulfilledAttributes || !report.adjacentCellsValid)
-		return (ConstructionResult){false, "impossible"};
-	//TODO: In the deluxe version, these things should return some highly detailed information on
-	//what actually caused the construction to be rejected.
-	
-	
-	//Now we have to collapse with all items that are of the same type than us. To do this we first
-	//have to get the list of items to collapse with.
-	ItemSet collapseItems = report.collidesWith;
-	
-	//Since we might just be barely touching another object of the same type on the left or right we
-	//also have to collapse with them.
-	Cell * cellLeft = getCell(actualRect.minXminY() - int2(1, 0));
-	Cell * cellRight = getCell(actualRect.maxXminY());
-	Item * itemLeft = (cellLeft ? cellLeft->items[descriptor->category] : NULL);
-	Item * itemRight = (cellRight ? cellRight->items[descriptor->category] : NULL);
-	if (itemLeft) collapseItems.insert(itemLeft);
-	if (itemRight) collapseItems.insert(itemRight);
-	
-	//Iterate through the collision items and add collapse with them
-	for (ItemSet::iterator it = collapseItems.begin(); it != collapseItems.end(); it++) {
+	//In case this is a flexible width item, we now have to collapse with all items that are of the
+	//same type.
+	if (isFlexible) {
+		//To do this we first have to get the list of items to collapse with.
+		ItemSet collapseItems = report.collidesWith;
 		
-		//Assert that the item has the same type than us, since that must be the result of finding
-		//the actual rect.
-		assert((*it)->getType() == descriptor->type);
+		//Since we might just be barely touching another object of the same type on the left or right we
+		//also have to collapse with them.
+		Cell * cellLeft = getCell(actualRect.minXminY() - int2(1, 0));
+		Cell * cellRight = getCell(actualRect.maxXminY());
+		Item * itemLeft = (cellLeft ? cellLeft->items[descriptor->category] : NULL);
+		Item * itemRight = (cellRight ? cellRight->items[descriptor->category] : NULL);
+		if (itemLeft) collapseItems.insert(itemLeft);
+		if (itemRight) collapseItems.insert(itemRight);
 		
-		//Find the union rect between the collison item and the actual rect.
-		actualRect.unify((*it)->getRect());
-		
-		//Remove the old item which will be replaced by us.
-		removeItem(*it);
+		//Iterate through the collision items and add collapse with them
+		for (ItemSet::iterator it = collapseItems.begin(); it != collapseItems.end(); it++) {
+			
+			//Assert that the item has the same type than us, since that must be the result of finding
+			//the actual rect.
+			assert((*it)->getType() == descriptor->type);
+			
+			//Find the union rect between the collison item and the actual rect.
+			actualRect.unify((*it)->getRect());
+			
+			//Remove the old item which will be replaced by us.
+			removeItem(*it);
+		}
 	}
 	
 	
@@ -530,7 +539,9 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	Item * item = Item::make(tower, descriptor, actualRect);
 	addItem(item);
 	
-	OSSObjectLog << "constructing in " << actualRect.description() << std::endl;
+	//Play the construction sound. Cadung-cadoush ^^.
+	Engine::Audio::getCurrent()->play(isFlexible ? flexibleConstructionSound : constructionSound);
+	
 	return (ConstructionResult){true, ""};
 }
 

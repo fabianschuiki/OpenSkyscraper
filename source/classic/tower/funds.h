@@ -25,6 +25,7 @@ namespace OSS {
 			 */
 		private:
 			long funds;
+			Pointer<Engine::SoundEffect> transferSound;
 			
 		public:
 			long getFunds();

@@ -58,10 +58,24 @@ void EngineCore::attachToApplication(Application * app)
 	invocation = new Core::Invocation<EngineCore>(this, &EngineCore::EngineCore::update);
 	invocation->release();
 	application->addInvocation(invocation);
+	
+	//Setup the current instances
+	if (application) {
+		application->pushCurrent();
+		application->audio->pushCurrent();
+		application->video->pushCurrent();
+	}
 }
 
 void EngineCore::detachFromApplication()
 {
+	//Release the current instances
+	if (application) {
+		application->popCurrent();
+		application->audio->popCurrent();
+		application->video->popCurrent();
+	}
+	
 	//Remove the invocation from the application
 	if (application)
 		application->removeInvocation(invocation);
@@ -85,11 +99,6 @@ void EngineCore::update()
 	//Perform cruise control
 	timing->frameStart();
 	
-	//Setup the current instances
-	application->pushCurrent();
-	application->audio->pushCurrent();
-	application->video->pushCurrent();
-	
 	//Load stuff
 	performLoadingAndFinalizing();
 	
@@ -97,11 +106,6 @@ void EngineCore::update()
 	simulateScene();
 	updateScene();
 	drawScene();
-	
-	//Release the current instances
-	application->popCurrent();
-	application->audio->popCurrent();
-	application->video->popCurrent();
 		
 	//We're done rendering
 	timing->renderingDone();
