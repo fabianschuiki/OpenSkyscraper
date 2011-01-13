@@ -11,11 +11,11 @@ using namespace OSS;
 #pragma mark Engine Event Responder
 //----------------------------------------------------------------------------------------------------
 
-Responder::Responder()
+Responder::Responder(BasicResponder * base) : ExtendingResponder(base)
 {
 	//Register our handler for engine events, so that we're able to call dedicated handler functions
 	//for ease of use.
-	registerEventHandler("engine", new EventHandler<Responder>(this, &Responder::handleEngineEvent));
+	base->registerEventHandler("engine", new EventHandler<Responder>(this, &Responder::handleEngineEvent));
 }
 
 bool Responder::handleEngineEvent(Event * event)

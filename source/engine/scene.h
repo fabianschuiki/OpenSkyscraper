@@ -9,10 +9,11 @@
 #include "attributes/drawable.h"
 
 #include "engine.h"
+#include "sceneobject.h"
 
 
 namespace OSS {
-	class Scene : public Object, public Responder, public Simulatable, public Updatable, public Drawable {
+	class Scene : public SceneObject {
 		
 		/**
 		 * Construction

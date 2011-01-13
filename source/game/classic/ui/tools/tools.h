@@ -9,7 +9,7 @@ namespace OSS {
 		class ConstructionTool;
 		class Tool;
 		
-		class ToolsUI : public SceneObject, public Responder {
+		class ToolsUI : public GameObject {
 			
 			/**
 			 * Construction

@@ -18,7 +18,11 @@ TowerBackground::TowerBackground(Tower * tower) : tower(tower),
 updateSkyIfNeeded(this, &TowerBackground::updateSky, &updateIfNeeded),
 updateSkyTexturesIfNeeded(this, &TowerBackground::updateSkyTextures, &updateIfNeeded),
 updateGroundTexturesIfNeeded(this, &TowerBackground::updateGroundTextures, &updateIfNeeded)
-{	
+{
+	OSSObjectLog << "loaded event handlers:" << std::endl;
+	for (map<string, Pointer<AbstractEventHandler> >::iterator it = eventHandlers.begin(); it != eventHandlers.end(); it++)
+		std::cout << it->first << std::endl;
+	
 	//Initialize the sound effects
 	cockSound = new SoundEffect();
 	cockSound->sound = Sound::named("simtower/background/cock");

@@ -4,13 +4,6 @@ using namespace OSS;
 
 
 
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Basic Responder
-//----------------------------------------------------------------------------------------------------
-
 void BasicResponder::registerEventHandler(string category, AbstractEventHandler * handler)
 {
 	eventHandlers[category] = handler;

@@ -24,15 +24,15 @@ namespace OSS {
 	 *
 	 * Provides dedicated handler functions for the engine events. Note that unlike any other
 	 * dedicated responder class the engine's responder inherits from BasicResponder instead of
-	 * AbstractResponder. This is required since it is the lowest level responder around and
+	 * ExtendingResponder. This is required since it is the lowest level responder around and
 	 * there needs to be exactly one instance of BasicResponder in each responding classe's
 	 * inheritance tree, for things like the eventHandlers map, etc..
 	 *
-	 * Important: If you design your own responder, make it inherit from AbstractResponder!
+	 * Important: If you design your own responder, make it inherit from ExtendingResponder!
 	 */
-	class Responder : public BasicResponder {
+	class Responder : public ExtendingResponder {
 	public:
-		Responder();
+		Responder(BasicResponder * base);
 		bool handleEngineEvent(Event * event);
 		
 		//SDL

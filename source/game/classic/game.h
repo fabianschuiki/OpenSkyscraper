@@ -5,6 +5,7 @@
 #include "events/responder.h"
 
 #include "items/itemdescriptor.h"
+#include "gameobject.h"
 
 
 namespace OSS {
@@ -89,18 +90,12 @@ namespace OSS {
 			
 			
 			/**
-			 * Event Sending
+			 * Events
 			 */
 		public:
 			virtual bool sendEventToNextResponders(OSS::Event * event);
 			
-			
-			/**
-			 * Event Handling
-			 */
-		public:
 			virtual bool eventScrollWheel(ScrollWheelEvent * event);
-			
 			virtual bool eventKeyDown(KeyEvent * event);
 		};
 	}

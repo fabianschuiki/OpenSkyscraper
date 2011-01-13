@@ -12,9 +12,8 @@ using namespace Classic;
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-GameScene::GameScene(Tower * tower, Engine * engine) :
-Scene(engine), tower(tower),
-updateVisibleRectIfNeeded(this, &GameScene::updateVisibleRect, &updateIfNeeded)
+GameScene::GameScene(Tower * tower, Engine * engine) : Scene(engine), Classic::Responder(this),
+tower(tower), updateVisibleRectIfNeeded(this, &GameScene::updateVisibleRect, &updateIfNeeded)
 {	
 	//Initialize the GUI
 	ui = new GameUI(this);
@@ -282,7 +281,7 @@ void GameScene::willMoveOffScreen()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Event Sending
+#pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
 bool GameScene::sendEventToNextResponders(OSS::Event * event)
@@ -291,15 +290,6 @@ bool GameScene::sendEventToNextResponders(OSS::Event * event)
 	if (tower && tower->sendEvent(event)) return true;
 	return Scene::sendEventToNextResponders(event);
 }
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Event Handling
-//----------------------------------------------------------------------------------------------------
 
 bool GameScene::eventScrollWheel(ScrollWheelEvent * event)
 {

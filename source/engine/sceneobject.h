@@ -5,7 +5,10 @@
 
 
 namespace OSS {
-	class SceneObject : public Object, public Responder, public Simulatable, public Updatable, public Drawable {
+	class SceneObject : public Object, public BasicResponder, public Responder, public Simulatable,
+	public Updatable, public Drawable {
+	public:
+		SceneObject() : Responder(this) {}
 	};
 }
 

@@ -252,6 +252,7 @@
 		1F32348112DF86860042FFBA /* responder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = responder.h; sourceTree = "<group>"; };
 		1F32349012DF86DD0042FFBA /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
 		1F32349112DF86DD0042FFBA /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
+		1F3237F412DFA3A10042FFBA /* gameobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameobject.h; sourceTree = "<group>"; };
 		1F8B57BD1201F7470080E30C /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../resources/textures; sourceTree = "<group>"; };
 		1F8BBC9E12CAA4D700892C16 /* libIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIL.a; path = /usr/local/lib/libIL.a; sourceTree = "<absolute>"; };
 		1F8BBCA012CAA4D700892C16 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = /usr/local/lib/libpng.a; sourceTree = "<absolute>"; };
@@ -498,6 +499,7 @@
 				1F32334D12DF7FE40042FFBA /* events */,
 				1F32349012DF86DD0042FFBA /* game.cpp */,
 				1F32349112DF86DD0042FFBA /* game.h */,
+				1F3237F412DFA3A10042FFBA /* gameobject.h */,
 				1F32334F12DF7FE40042FFBA /* items */,
 				1F32337D12DF7FE40042FFBA /* people */,
 				1F32338E12DF7FE40042FFBA /* tower */,

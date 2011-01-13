@@ -11,9 +11,9 @@ namespace OSS {
 		class TransportItem;
 		class HotelItem;
 		
-		class Responder {
+		class Responder : public ExtendingResponder {
 		public:
-			Responder();
+			Responder(BasicResponder * base);
 			bool handleClassicEvent(OSS::Event * event);
 			
 			//Time

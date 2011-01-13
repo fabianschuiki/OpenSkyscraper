@@ -6,7 +6,7 @@
 
 namespace OSS {
 	namespace Classic {		
-		class TowerTime : public SceneObject, public Responder {
+		class TowerTime : public GameObject {
 			
 			/**
 			 * Construction

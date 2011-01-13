@@ -9,7 +9,7 @@ namespace OSS {
 	namespace Classic {		
 		class Person;
 		
-		class Item : public SceneObject, public Responder {			
+		class Item : public GameObject {			
 			
 			/**
 			 * Initialization

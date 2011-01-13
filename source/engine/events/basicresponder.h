@@ -36,19 +36,12 @@ namespace OSS {
 	 * whose handle function to call is made by the BasicResponder class, not by each responder
 	 * subclass individually.
 	 */
-	class AbstractResponder {
-	protected:
-		virtual void registerEventHandler(string category, AbstractEventHandler * handler) = 0;
-		
-	public:
-		virtual bool handleEvent(Event * event) = 0;
-	};
 	
 	
 	/**
 	 * Basic Responder
 	 *
-	 * Implements the AbstractResponder interface and adds the eventHandlers map member variable
+	 * Implements the ExtendingResponder interface and adds the eventHandlers map member variable
 	 * that will hold a map of event handlers with their respective event category. The event
 	 * handling function handleEvent() is implemented to check the event's category and call the
 	 * appropriate event handler if possible.
@@ -59,17 +52,25 @@ namespace OSS {
 	 * If none was able to cope with the event, the responder's own handleEvent() function is
 	 * called.
 	 */
-	class BasicResponder : public AbstractResponder {
-	private:
+	class BasicResponder {
+	protected:
 		map<string, Pointer<AbstractEventHandler> > eventHandlers;
 		
-	public:
+	public:		
 		void registerEventHandler(string category, AbstractEventHandler * handler);
-		
 		bool handleEvent(Event * event);
 		
 		bool sendEvent(Event * event);
 		virtual bool sendEventToNextResponders(Event * event) { return false; }
+	};
+	
+	
+	/**
+	 * Extending Responder
+	 */
+	class ExtendingResponder {
+	public:
+		ExtendingResponder(BasicResponder * base) {}
 	};
 }
 

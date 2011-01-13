@@ -13,7 +13,7 @@ namespace OSS {
 		class ControlWindow;
 		class ToolsWindow;
 		
-		class GameUI : public SceneObject, public Responder {
+		class GameUI : public GameObject {
 			
 			/**
 			 * Construction

@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Classic {
 		class Item;
 		
-		class TowerStructure : public SceneObject, public Responder {
+		class TowerStructure : public GameObject {
 			
 			/**
 			 * Construction

@@ -6,7 +6,7 @@
 
 namespace OSS {
 	namespace Classic {		
-		class TowerEnvironment : public SceneObject, public Responder {
+		class TowerEnvironment : public GameObject {
 			
 			/**
 			 * Construction

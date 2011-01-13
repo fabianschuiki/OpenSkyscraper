@@ -6,7 +6,7 @@
 
 namespace OSS {
 	namespace Classic {
-		class Tool : public SceneObject, public Responder {
+		class Tool : public GameObject {
 			
 			/**
 			 * Construction

@@ -12,10 +12,10 @@ using namespace Classic;
 #pragma mark Classic Event Responder
 //----------------------------------------------------------------------------------------------------
 
-Classic::Responder::Responder()
+Classic::Responder::Responder(BasicResponder * base) : ExtendingResponder(base)
 {
 	//Register our handler for classic events.
-	((BasicResponder *)this)->registerEventHandler("classic", new EventHandler<Responder>(this, &Responder::handleClassicEvent));
+	base->registerEventHandler("classic", new EventHandler<Responder>(this, &Responder::handleClassicEvent));
 }
 
 bool Classic::Responder::handleClassicEvent(OSS::Event * engineEvent)

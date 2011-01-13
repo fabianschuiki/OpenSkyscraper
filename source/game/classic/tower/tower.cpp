@@ -14,7 +14,7 @@ using namespace Classic;
 #pragma mark Construction
 //----------------------------------------------------------------------------------------------------
 
-Tower::Tower()
+Tower::Tower() : Classic::Responder(this)
 {	
 	//Initialize the subsystems
 	time = new TowerTime(this);
@@ -25,6 +25,7 @@ Tower::Tower()
 	
 	//DEBUG: setup the debug speed
 	debugSpeed = 0;
+	paused = false;
 }
 
 
@@ -164,10 +165,9 @@ bool Tower::sendEventToNextResponders(OSS::Event * event)
 	if (time && time->sendEvent(event)) return true;
 	if (environment && environment->sendEvent(event)) return true;
 	if (funds && funds->sendEvent(event)) return true;
-	if (time && time->sendEvent(event)) return true;
 	if (structure && structure->sendEvent(event)) return true;
 	if (background && background->sendEvent(event)) return true;
-	return OSS::Responder::sendEventToNextResponders(event);
+	return BasicResponder::sendEventToNextResponders(event);
 }
 
 /*void Tower::advanceBackground(double dt)
