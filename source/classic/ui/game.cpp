@@ -30,6 +30,11 @@ updateRootViewIfNeeded(this, &GameUI::updateRootView, &updateIfNeeded)
 	controlWindow->setFrameOrigin(rootView->getFrame().maxXmaxY() - controlWindow->getFrameSize());
 	controlWindow->setAutoresizingMask(GUI::View::MaxXFixed | GUI::View::MaxYFixed);
 	rootView->addSubview(controlWindow);
+	
+	//Initialize the tools window
+	toolsWindow = new ToolsWindow(this);
+	toolsWindow->setAutoresizingMask(GUI::View::MinXFixed | GUI::View::MinYFixed);
+	rootView->addSubview(toolsWindow);
 }
 
 Tower * GameUI::getTower()

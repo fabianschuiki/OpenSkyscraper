@@ -6,6 +6,7 @@
 
 #include "control/window.h"
 #include "../tower/tower.h"
+#include "toolbox/window.h"
 #include "tools/tools.h"
 
 
@@ -41,7 +42,7 @@ namespace OSS {
 		private:
 			Pointer<ControlWindow> controlWindow;
 			//Pointer<MapWindow> mapWindow;
-			//Pointer<ToolboxWindow> toolboxWindow;
+			Pointer<ToolsWindow> toolsWindow;
 			
 			
 			/**

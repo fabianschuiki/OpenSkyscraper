@@ -38,6 +38,7 @@
 		1F96D34912D821A700F6398A /* video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D34712D821A700F6398A /* video.cpp */; };
 		1F96D35912D8222500F6398A /* soundeffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F96D35712D8222500F6398A /* soundeffect.cpp */; };
 		1FAD1B8412C8E362004E5286 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAD1B8312C8E362004E5286 /* OpenAL.framework */; };
+		1FB6B06712DE888C00EA8720 /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FB6B06612DE888C00EA8720 /* window.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
 		1FDB5E0312DA73F90096E94F /* texturedquad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FDB5E0212DA73F90096E94F /* texturedquad.cpp */; };
 		1FDB5E0712DA786B0096E94F /* interpolatedtexturequad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FDB5E0612DA786B0096E94F /* interpolatedtexturequad.cpp */; };
@@ -183,6 +184,8 @@
 		1F96D35712D8222500F6398A /* soundeffect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundeffect.cpp; sourceTree = "<group>"; };
 		1F96D35812D8222500F6398A /* soundeffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundeffect.h; sourceTree = "<group>"; };
 		1FAD1B8312C8E362004E5286 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		1FB6B06512DE888C00EA8720 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
+		1FB6B06612DE888C00EA8720 /* window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = window.cpp; sourceTree = "<group>"; };
 		1FD010C111FA3E330062C093 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1FDB5D7612D9DEB10096E94F /* object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = object.h; sourceTree = "<group>"; };
 		1FDB5DC512DA3AD90096E94F /* clamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clamp.h; sourceTree = "<group>"; };
@@ -497,6 +500,15 @@
 			path = video;
 			sourceTree = "<group>";
 		};
+		1FB6B06412DE888600EA8720 /* toolbox */ = {
+			isa = PBXGroup;
+			children = (
+				1FB6B06512DE888C00EA8720 /* window.h */,
+				1FB6B06612DE888C00EA8720 /* window.cpp */,
+			);
+			path = toolbox;
+			sourceTree = "<group>";
+		};
 		1FD010C511FA3E500062C093 /* source */ = {
 			isa = PBXGroup;
 			children = (
@@ -533,6 +545,7 @@
 				1FF3D94012DCFBBC00BC33C8 /* control */,
 				1FF3D8B212DCEC6B00BC33C8 /* game.h */,
 				1FF3D8B112DCEC6B00BC33C8 /* game.cpp */,
+				1FB6B06412DE888600EA8720 /* toolbox */,
 				1FF3DB9612DD333C00BC33C8 /* tools */,
 			);
 			path = ui;
@@ -926,6 +939,7 @@
 				1FF3DB9F12DD362400BC33C8 /* application.mm in Sources */,
 				1FF3DBA812DD372600BC33C8 /* tools.cpp in Sources */,
 				1FF3DBD712DD3DEE00BC33C8 /* construction.cpp in Sources */,
+				1FB6B06712DE888C00EA8720 /* window.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
