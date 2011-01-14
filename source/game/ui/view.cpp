@@ -3,6 +3,13 @@
 using namespace OSS;
 
 
+View::View()
+{
+	hidden = false;
+	debug = false;
+}
+
+
 
 
 
@@ -23,6 +30,11 @@ void View::setSuperview(View * superview)
 		this->superview = superview;
 		didMoveToSuperview();
 	}
+}
+
+void View::willMoveToSuperview(View * superview)
+{
+	updateIfNeeded.parent = (superview ? &superview->updateIfNeeded : NULL);
 }
 
 void View::removeFromSuperview()
@@ -72,6 +84,9 @@ void View::addSubview(View * subview)
 	
 	//Notify subclasses that we did add the view.
 	didAddSubview(subview);
+	
+	//We need to update
+	updateIfNeeded.setNeeded();
 }
 
 void View::addSubview(View * subview, OrderingMode positioned, View * relativeTo)
@@ -100,6 +115,9 @@ void View::addSubview(View * subview, OrderingMode positioned, View * relativeTo
 	
 	//Notify subclasses that a new view was added.
 	didAddSubview(subview);
+	
+	//We need to update
+	updateIfNeeded.setNeeded();
 }
 
 
@@ -264,13 +282,49 @@ void View::layoutWithOldSuperviewSize(double2 oldSize)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Update
+//----------------------------------------------------------------------------------------------------
+
+void View::update()
+{
+	//Update all our subviews
+	for (List::iterator it = subviews.begin(); it != subviews.end(); it++)
+		(*it)->updateIfNeeded();
+	
+	SceneObject::update();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
+bool View::isHidden()
+{
+	return hidden;
+}
+
+void View::setHidden(bool hidden)
+{
+	this->hidden = hidden;
+}
+
 void View::draw(rectd dirtyRect)
 {
+	if (debug) {
+		std::cout << "debug!" << std::endl;
+	}
+	
 	//Iterate through the subviews
 	for (List::iterator it = subviews.begin(); it != subviews.end(); it++) {
+		
+		//Ignore hidden subviews
+		if ((*it)->isHidden())
+			continue;
 		
 		//Check if the subview's frame intersects the dirty rect and thus should be drawn.
 		if ((*it)->getFrame().intersectsRect(dirtyRect)) {
@@ -295,14 +349,14 @@ void View::draw(rectd dirtyRect)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Event Sending
+#pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
 bool View::sendEventToNextResponders(OSS::Event * event)
 {
 	//Iterate through the events and send the event to each until one is able to handle it.
 	for (List::iterator it = subviews.begin(); it != subviews.end(); it++)
-		if ((*it)->sendEvent(event))
+		if (!(*it)->isHidden() && (*it)->sendEvent(event))
 			return true;
 	
 	//We weren't lucky

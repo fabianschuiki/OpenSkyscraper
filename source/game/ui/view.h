@@ -6,6 +6,9 @@
 
 namespace OSS {
 	class View : public SceneObject {
+	public:
+		View();
+		bool debug;
 		
 		/**
 		 * Types
@@ -44,7 +47,7 @@ namespace OSS {
 		View * getSuperview();
 		void setSuperview(View * superview);
 		
-		virtual void willMoveToSuperview(View * superview) {}
+		virtual void willMoveToSuperview(View * superview);
 		virtual void didMoveToSuperview() {}
 		
 		void removeFromSuperview();
@@ -125,6 +128,13 @@ namespace OSS {
 		
 		
 		/**
+		 * State
+		 */
+	public:
+		virtual void update();
+		
+		
+		/**
 		 * Drawing
 		 *
 		 * A view is supposed to draw itself and all its subviews in the draw() function. It is
@@ -134,7 +144,13 @@ namespace OSS {
 		 * Before calling draw() on its subviews, the view should translate the current OpenGL
 		 * modelview matrix to the origin of the subview.
 		 */
+	private:
+		bool hidden;
+		
 	public:
+		bool isHidden();
+		void setHidden(bool hidden);
+		
 		virtual void draw(rectd dirtyRect);
 		
 		

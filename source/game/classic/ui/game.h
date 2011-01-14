@@ -56,9 +56,9 @@ namespace OSS {
 			 */
 		public:
 			virtual void update();
-			virtual void updateRootView();
+			virtual void updateRootViewFrame();
 			
-			Updatable::Conditional<GameUI> updateRootViewIfNeeded;
+			Updatable::Conditional<GameUI> updateRootViewFrameIfNeeded;
 			
 			
 			/**

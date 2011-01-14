@@ -75,6 +75,7 @@
 		1F3238FE12DFAA790042FFBA /* elevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336D12DF7FE40042FFBA /* elevator.cpp */; };
 		1F32390B12DFAAA20042FFBA /* elevatorbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336F12DF7FE40042FFBA /* elevatorbackground.cpp */; };
 		1F32391312DFAAC20042FFBA /* standardelevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337112DF7FE40042FFBA /* standardelevator.cpp */; };
+		1F3239D412DFB18C0042FFBA /* button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F3239D312DFB18C0042FFBA /* button.cpp */; };
 		1F8B57BF1201F7470080E30C /* textures in Resources */ = {isa = PBXBuildFile; fileRef = 1F8B57BD1201F7470080E30C /* textures */; };
 		1F8BBC9F12CAA4D700892C16 /* libIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBC9E12CAA4D700892C16 /* libIL.a */; };
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
@@ -275,6 +276,8 @@
 		1F32349012DF86DD0042FFBA /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
 		1F32349112DF86DD0042FFBA /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
 		1F3237F412DFA3A10042FFBA /* gameobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameobject.h; sourceTree = "<group>"; };
+		1F3239D212DFB18C0042FFBA /* button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = button.h; sourceTree = "<group>"; };
+		1F3239D312DFB18C0042FFBA /* button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button.cpp; sourceTree = "<group>"; };
 		1F8B57BD1201F7470080E30C /* textures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = textures; path = ../../resources/textures; sourceTree = "<group>"; };
 		1F8BBC9E12CAA4D700892C16 /* libIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIL.a; path = /usr/local/lib/libIL.a; sourceTree = "<absolute>"; };
 		1F8BBCA012CAA4D700892C16 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = /usr/local/lib/libpng.a; sourceTree = "<absolute>"; };
@@ -691,6 +694,8 @@
 		1F32339D12DF7FE40042FFBA /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				1F3239D312DFB18C0042FFBA /* button.cpp */,
+				1F3239D212DFB18C0042FFBA /* button.h */,
 				1F32339E12DF7FE40042FFBA /* control */,
 				1F3233A512DF7FE40042FFBA /* game.cpp */,
 				1F3233A612DF7FE40042FFBA /* game.h */,
@@ -924,6 +929,7 @@
 				1F3238FE12DFAA790042FFBA /* elevator.cpp in Sources */,
 				1F32390B12DFAAA20042FFBA /* elevatorbackground.cpp in Sources */,
 				1F32391312DFAAC20042FFBA /* standardelevator.cpp in Sources */,
+				1F3239D412DFB18C0042FFBA /* button.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

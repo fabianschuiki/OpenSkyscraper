@@ -1,7 +1,7 @@
 #ifndef OSS_CLASSIC_TOWER_ROUTE_H
 #define OSS_CLASSIC_TOWER_ROUTE_H
 
-#include "../game.h"
+#include "../../external.h"
 
 
 namespace OSS {

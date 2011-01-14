@@ -1,15 +1,16 @@
 #ifndef OSS_CLASSIC_UI_TOOLBOX_GROUPBUTTON_H
 #define OSS_CLASSIC_UI_TOOLBOX_GROUPBUTTON_H
 
-#include "window.h"
+#include "../button.h"
 
+#include "window.h"
 #include "../../items/itemdescriptor.h"
 
 
 namespace OSS {
 	namespace Classic {		
 		//TODO: change to subclass of GUI::Button as soon as it's written.
-		class ToolsGroupButton : public View {
+		class ToolsGroupButton : public Button {
 			
 			/**
 			 * Construction
@@ -22,10 +23,36 @@ namespace OSS {
 			
 			
 			/**
-			 * Drawing
-			 */			
+			 * PopUp
+			 */
+		private:
+			typedef map<ItemType, Pointer<Button> > ItemButtonMap;
+			
+			Pointer<View> popup;
+			ItemButtonMap itemButtons;
+			ItemType selectedItem;
+			
 		public:
-			virtual void draw(rectd dirtyRect);
+			ItemType getSelectedItem();
+			void setSelectedItem(ItemType type);
+			
+			Button * getSelectedButton();
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void update();
+			virtual void updatePopUp();
+			
+			
+			/**
+			 * Events
+			 */
+		public:
+			virtual bool eventMouseDown(MouseButtonEvent * event);
+			virtual bool eventMouseUp(MouseButtonEvent * event);
 			
 			
 			//Add some popup view.

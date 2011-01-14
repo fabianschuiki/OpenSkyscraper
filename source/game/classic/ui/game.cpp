@@ -13,7 +13,7 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 GameUI::GameUI(GameScene * scene) : scene(scene),
-updateRootViewIfNeeded(this, &GameUI::updateRootView, &updateIfNeeded)
+updateRootViewFrameIfNeeded(this, &GameUI::updateRootViewFrame, &updateIfNeeded)
 {
 	//Initialize the root view which will contain all the subviews.
 	rootView = new View;
@@ -64,15 +64,18 @@ void GameUI::advance(double dt)
 
 void GameUI::update()
 {	
-	//Update the root view if required. This usually is the case if the Video mode changed and the
-	//root view needs to be resized.
-	updateRootViewIfNeeded();
+	//Update the root view frame if required. This usually is the case if the Video mode changed and
+	//the root view needs to be resized.
+	updateRootViewFrameIfNeeded();
+	
+	//Update the root view (which will also update all subviews)
+	rootView->updateIfNeeded();
 	
 	//Update the tools subsystem
 	tools->updateIfNeeded();
 }
 
-void GameUI::updateRootView()
+void GameUI::updateRootViewFrame()
 {
 	//Set the root view's frame to cover the entire screen
 	rectd rect;
@@ -129,5 +132,5 @@ void GameUI::eventVideoChanged(VideoEvent * event)
 	SceneObject::eventVideoChanged(event);
 	
 	//Mark the root view so its frame gets adjustet to the new conditions
-	updateRootViewIfNeeded.setNeeded();
+	updateRootViewFrameIfNeeded.setNeeded();
 }

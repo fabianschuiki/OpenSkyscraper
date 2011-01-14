@@ -114,17 +114,20 @@ Event * Application::getNextEvent()
 	//A variable for the interpreted event
 	Event * e = NULL;
 	
+	//Fetch the window size so we can flip the mouse event
+	int h = Video::shared()->currentMode.resolution.y - 1;
+	
 	//Interpret mouse button events
 	if (SDL_EVENTMASK(event.type) & (SDL_MOUSEBUTTONDOWNMASK | SDL_MOUSEBUTTONUPMASK)) {
-		e = new MouseButtonEvent(int2(event.button.x, event.button.y),
+		e = new MouseButtonEvent(int2(event.button.x, h - event.button.y),
 								 event.button.button,
 								 (event.button.state == SDL_PRESSED));
 	}
 	
 	//Interpret mouse moved events
 	if (SDL_EVENTMASK(event.type) & (SDL_MOUSEMOTIONMASK)) {
-		e = new MouseMoveEvent(int2(event.motion.x, event.motion.y),
-								int2(event.motion.xrel, event.motion.yrel));
+		e = new MouseMoveEvent(int2(event.motion.x, h - event.motion.y),
+								int2(event.motion.xrel, -event.motion.yrel));
 	}
 	
 	//TODO: Create some sort of mouse dragged events
@@ -132,9 +135,9 @@ Event * Application::getNextEvent()
 	//Interpret scroll wheel events
 	if (event.type == SDL_MOUSEBUTTONDOWN) {
 		if (event.button.button == SDL_BUTTON_WHEELUP)
-			e = new ScrollWheelEvent(int2(event.button.x, event.button.y), double2(0, 1));
+			e = new ScrollWheelEvent(int2(event.button.x, h - event.button.y), double2(0, 1));
 		if (event.button.button == SDL_BUTTON_WHEELDOWN)
-			e = new ScrollWheelEvent(int2(event.button.x, event.button.y), double2(0, -1));
+			e = new ScrollWheelEvent(int2(event.button.x, h - event.button.y), double2(0, -1));
 	}
 	
 	//Interpret key events

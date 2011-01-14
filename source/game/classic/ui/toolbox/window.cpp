@@ -25,6 +25,7 @@ layoutSubviewsIfNeeded(this, &ToolsWindow::layoutSubviews, &updateIfNeeded)
 	for (int i = kNoGroup + 1; i < kMaxGroup; i++) {
 		ToolsGroupButton * button = new ToolsGroupButton(this, (ItemGroup)i);
 		addSubview(button);
+		groupButtons[(ItemGroup)i] = button;
 	}
 }
 
@@ -46,14 +47,34 @@ void ToolsWindow::update()
 {
 	//Layout the subviews if required
 	layoutSubviewsIfNeeded();
+	
+	View::update();
 }
 
 void ToolsWindow::layoutSubviews()
 {
-	//Find number of group buttons that have accessible content.
+	//Calculate the offset
+	double2 offset(0, (groupButtons.size() / 2) * 32);
 	
 	//If the count is an odd, start positioning the last button at (0, 0). If it is even, start at
 	//(32, 0) and fill backwards (right to left, bottom to top).
+	int buttonIndex = 0;
+	for (unsigned int i = kNoGroup + 1; i < kMaxGroup; i++) {
+		
+		//Get the group button
+		ToolsGroupButton * button = groupButtons[(ItemGroup)i];
+		if (!button)
+			continue;
+		
+		//Calculate the button position
+		double2 position((buttonIndex % 2) * 32, (buttonIndex / 2) * -32);
+		
+		//Position the group button
+		button->setFrameOrigin(offset + position);
+		
+		//Increase the button index
+		buttonIndex++;
+	}
 	
 	//Position bulldozer etc. right above the last button. Maybe use some union rect to do that.
 	
