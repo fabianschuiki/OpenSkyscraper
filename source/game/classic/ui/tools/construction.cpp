@@ -97,8 +97,13 @@ void ConstructionTool::update()
 void ConstructionTool::updateTemplateRect()
 {
 	//Set the template's size
-	if (getItemDescriptor())
-		templateRect.size = getItemDescriptor()->minUnit;
+	ItemDescriptor * desc = getItemDescriptor();
+	if (desc) {
+		if (desc->attributes & kFlexibleWidthAttribute)
+			templateRect.size = desc->minUnit;
+		else
+			templateRect.size = desc->cells;
+	}
 	
 	//In order to position the template, we have to convert the template center which is in world
 	//coordinates to cell coordinates. The first step is to convert the template rect's size to

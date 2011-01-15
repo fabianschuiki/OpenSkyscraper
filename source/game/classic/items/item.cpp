@@ -200,6 +200,8 @@ void Item::setWorldRect(const rectd & worldRect)
 
 rectmaski Item::getOccupiedRectMask()
 {
+	if (descriptor && !descriptor->mask.empty())
+		return descriptor->mask.offsetRectMask(getRect().origin);
 	return rectmaski(&getRect(), NULL);
 }
 

@@ -105,10 +105,11 @@ TowerStructure::CellSet TowerStructure::getCells(recti rect, bool createIfInexis
 TowerStructure::CellSet TowerStructure::getCells(rectmaski rectmask, bool createIfInexistent)
 {
 	CellSet cells = getCells(rectmask.bounds(), createIfInexistent);
+	CellSet res;
 	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++)
-		if (!rectmask.containsPoint((*it)->location))
-			cells.erase(it);
-	return cells;
+		if (rectmask.containsPoint((*it)->location))
+			res.insert(*it);
+	return res;
 }
 
 
@@ -157,7 +158,8 @@ void TowerStructure::assignCellsCoveredByItem(Item * item)
 	
 	//Set the item in each cell's item slot
 	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++) {
-		Item ** slot = &(*it)->items[item->getCategory()];
+		Cell * cell = *it;
+		Item ** slot = &cell->items[item->getCategory()];
 		assert(*slot == NULL && "occupied by another item. check before adding.");
 		*slot = item;
 	}
@@ -320,19 +322,22 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	//Check the attributes if they are fulfilled
 	report.unfulfilledAttributes = 0;
 	
-	//Allowed on ground
-	if (!(descriptor->attributes & kAllowedOnGroundAttribute) && rect.maxY() > 0 && rect.minY() <= 0)
-		report.unfulfilledAttributes |= kAllowedOnGroundAttribute;
-	
-	//Above/below ground
-	if ((descriptor->attributes & kNotAboveGroundAttribute) && rect.maxY() > 0)
-		report.unfulfilledAttributes |= kNotAboveGroundAttribute;
-	if ((descriptor->attributes & kNotBelowGroundAttribute) && rect.minY() < 0)
-		report.unfulfilledAttributes |= kNotBelowGroundAttribute;
-	
-	//Every 15th floor
-	if ((descriptor->attributes & kEvery15thFloorAttribute) && (rect.minY() % 15) != 0)
-		report.unfulfilledAttributes |= kEvery15thFloorAttribute;
+	//Facility limitations
+	if (descriptor->category == kFacilityCategory) {
+		//Allowed on ground
+		if (!(descriptor->attributes & kAllowedOnGroundAttribute) && rect.maxY() > 0 && rect.minY() <= 0)
+			report.unfulfilledAttributes |= kAllowedOnGroundAttribute;
+		
+		//Above/below ground
+		if ((descriptor->attributes & kNotAboveGroundAttribute) && rect.maxY() > 0)
+			report.unfulfilledAttributes |= kNotAboveGroundAttribute;
+		if ((descriptor->attributes & kNotBelowGroundAttribute) && rect.minY() < 0)
+			report.unfulfilledAttributes |= kNotBelowGroundAttribute;
+		
+		//Every 15th floor
+		if ((descriptor->attributes & kEvery15thFloorAttribute) && (rect.minY() % 15) != 0)
+			report.unfulfilledAttributes |= kEvery15thFloorAttribute;
+	}
 	
 	
 	//Check if the items above/below are valid
@@ -358,8 +363,8 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 		localMask.offset(rect.origin);
 	
 	
-	//Get all the items that are affected by the rectangle
-	ItemSet items = getItems(rect);
+	//Get all the items that are affected by the mask
+	ItemSet items = getItems(localMask);
 	
 	//Iterate through the items and check whether they collide in any form with the item
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
@@ -379,7 +384,7 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 							   report.adjacentCellsValid &&
 							   (analysis.facility == 0 || descriptor->attributes & kFlexibleWidthAttribute));
 	report.validForTransport = (!report.unfulfilledAttributes &&
-								report.adjacentCellsValid &&
+								/*report.adjacentCellsValid &&*/
 								analysis.transport == 0 &&
 								report.additionalFacilityCellsRequired == 0);
 	
