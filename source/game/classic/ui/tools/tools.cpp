@@ -55,6 +55,12 @@ void ToolsUI::setTool(Tool * tool)
 	}
 }
 
+void ToolsUI::selectItemConstructionTool(ItemType type)
+{
+	setTool(constructionTool);
+	constructionTool->setItemType(type);
+}
+
 
 
 

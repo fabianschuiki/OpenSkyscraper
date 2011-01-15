@@ -218,6 +218,49 @@ void View::didChangeFrameSize(const double2 & oldSize)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Coordinate Conversion
+//----------------------------------------------------------------------------------------------------
+
+double2 View::convertFrom(double2 remote, View * from)
+{
+	double2 res = remote;
+	View * view = this;
+	while (view) {
+		res -= view->getFrameOrigin();
+		view = view->getSuperview();
+	}
+	view = from;
+	while (view) {
+		res += view->getFrameOrigin();
+		view = view->getSuperview();
+	}
+	return res;
+}
+
+double2 View::convertTo(double2 local, View * to)
+{
+	if (!to) to = getRootView();
+	return to->convertFrom(local, this);
+}
+
+
+
+rectd View::convertFrom(rectd remote, View * from)
+{
+	return rectd(convertFrom(remote.origin, from), remote.size);
+}
+
+rectd View::convertTo(rectd local, View * to)
+{
+	return rectd(convertTo(local.origin, to), local.size);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Layout
 //----------------------------------------------------------------------------------------------------
 
@@ -315,10 +358,6 @@ void View::setHidden(bool hidden)
 
 void View::draw(rectd dirtyRect)
 {
-	if (debug) {
-		std::cout << "debug!" << std::endl;
-	}
-	
 	//Iterate through the subviews
 	for (List::iterator it = subviews.begin(); it != subviews.end(); it++) {
 		
@@ -355,7 +394,8 @@ void View::draw(rectd dirtyRect)
 bool View::sendEventToNextResponders(OSS::Event * event)
 {
 	//Iterate through the events and send the event to each until one is able to handle it.
-	for (List::iterator it = subviews.begin(); it != subviews.end(); it++)
+	List temp = subviews;
+	for (List::reverse_iterator it = temp.rbegin(); it != temp.rend(); it++)
 		if (!(*it)->isHidden() && (*it)->sendEvent(event))
 			return true;
 	

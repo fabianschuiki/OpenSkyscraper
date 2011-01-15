@@ -19,6 +19,7 @@ window(window), group(group)
 {
 	//Reset the variables to 0
 	selectedItem = kNoType;
+	trackingMouse = false;
 	
 	//The group buttons have a fixed width, so set it.
 	setFrameSize(double2(32, 32));
@@ -140,6 +141,10 @@ void ToolsGroupButton::updatePopUp()
 		//Calculate the button position
 		double2 position(0, offset - (buttonIndex + 1) * 32);
 		
+		//If this is the currently selected button remond its position
+		if (it->first == getSelectedItem())
+			popupOffset = position;
+		
 		//Position the button
 		it->second->setFrameOrigin(position);
 		
@@ -162,14 +167,63 @@ void ToolsGroupButton::updatePopUp()
 
 bool ToolsGroupButton::eventMouseDown(MouseButtonEvent * event)
 {
-	if (!popup->getSuperview()) {
-		window->getRootView()->addSubview(popup);
-	}
+	//Ignore the mouse down if it occured outside of our frame.
+	if (!getFrame().containsPoint(getSuperview()->convertFrom(event->position, NULL)))
+		return false;
+	
+	//Remember that we are tracking the mouse for later mouse up events
+	trackingMouse = true;
+	
+	//Add the window to the root view and position it
+	window->getRootView()->addSubview(popup);
+	popup->setFrameOrigin(convertTo(-popupOffset, NULL));
+	
+	//Highlight the correct item
+	highlightPopUpButtonUsingEvent(event);
+	
+	return true;
+}
+
+bool ToolsGroupButton::eventMouseMove(MouseMoveEvent * event)
+{
+	//Ignore the event if we're not tracking the mouse
+	if (!trackingMouse)
+		return false;
+	
+	//Highlight the item the mouse is currently hovering over.
+	highlightPopUpButtonUsingEvent(event);
 	return true;
 }
 
 bool ToolsGroupButton::eventMouseUp(MouseButtonEvent * event)
 {
+	//Ignore the event if we're not tracking the mouse
+	if (!trackingMouse)
+		return false;
+	
+	//Do a last update of the highlighted item.
+	highlightPopUpButtonUsingEvent(event);
+	
+	//Now set the highlighted item as currently selected one.
+	for (ItemButtonMap::iterator it = itemButtons.begin(); it != itemButtons.end(); it++)
+		if (it->second->pressed)
+			window->ui->tools->selectItemConstructionTool(it->first);
+			//setSelectedItem(it->first);
+	
+	//Remove the popup from the screen.
 	popup->removeFromSuperview();
+	
+	trackingMouse = false;
 	return true;
+}
+
+void ToolsGroupButton::highlightPopUpButtonUsingEvent(MouseEvent * event)
+{
+	//Convert the mouse location ot local coordinates
+	double2 localMouse = popup->convertFrom(event->position, NULL);
+	
+	//Go through our buttons and make the one pressed the mouse is currently over.
+	for (ItemButtonMap::iterator it = itemButtons.begin(); it != itemButtons.end(); it++) {
+		it->second->pressed = it->second->getFrame().containsPoint(localMouse);
+	}
 }

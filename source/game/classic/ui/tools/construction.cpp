@@ -219,7 +219,7 @@ bool ConstructionTool::eventMouseMove(MouseMoveEvent * event)
 	
 	//Set the template's center to be where the mouse is. First we have to convert the mouse po-
 	//sition which is in window coordinates to world coordinates.
-	double2 center = ui->getScene()->windowToWorld(event->position, true);
+	double2 center = ui->getScene()->windowToWorld(event->position);
 	
 	//Then we have to make sure that the center doesn't change its Y coordinate during dragging con-
 	//struction.

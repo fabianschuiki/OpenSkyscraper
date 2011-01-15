@@ -38,6 +38,8 @@ namespace OSS {
 			//Pointer<FingerTool> fingerTool;
 			//Pointer<InspectionTool> inspectionTool;
 			
+			void selectItemConstructionTool(ItemType type);
+			
 			
 			/**
 			 * Engine Object

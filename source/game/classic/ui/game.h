@@ -30,7 +30,7 @@ namespace OSS {
 			/**
 			 * Subsystems
 			 */
-		private:
+		public:
 			Pointer<View> rootView;
 			Pointer<ToolsUI> tools;
 			

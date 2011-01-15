@@ -115,7 +115,7 @@ Event * Application::getNextEvent()
 	Event * e = NULL;
 	
 	//Fetch the window size so we can flip the mouse event
-	int h = Video::shared()->currentMode.resolution.y - 1;
+	int h = Video::shared()->currentMode.resolution.y;
 	
 	//Interpret mouse button events
 	if (SDL_EVENTMASK(event.type) & (SDL_MOUSEBUTTONDOWNMASK | SDL_MOUSEBUTTONUPMASK)) {

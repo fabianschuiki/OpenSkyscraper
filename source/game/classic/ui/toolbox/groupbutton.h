@@ -32,6 +32,8 @@ namespace OSS {
 			ItemButtonMap itemButtons;
 			ItemType selectedItem;
 			
+			double2 popupOffset;
+			
 		public:
 			ItemType getSelectedItem();
 			void setSelectedItem(ItemType type);
@@ -50,9 +52,15 @@ namespace OSS {
 			/**
 			 * Events
 			 */
+		private:
+			bool trackingMouse;
+			
 		public:
 			virtual bool eventMouseDown(MouseButtonEvent * event);
+			virtual bool eventMouseMove(MouseMoveEvent * event);
 			virtual bool eventMouseUp(MouseButtonEvent * event);
+			
+			void highlightPopUpButtonUsingEvent(MouseEvent * event);
 			
 			
 			//Add some popup view.

@@ -17,6 +17,7 @@ updateRootViewFrameIfNeeded(this, &GameUI::updateRootViewFrame, &updateIfNeeded)
 {
 	//Initialize the root view which will contain all the subviews.
 	rootView = new View;
+	rootView->updateIfNeeded.parent = &updateIfNeeded;
 	
 	//Initialize the tools subsystem and adjust its updateIfNeeded conditional to propagate a need
 	//for updates to the game UI.
@@ -31,6 +32,7 @@ updateRootViewFrameIfNeeded(this, &GameUI::updateRootViewFrame, &updateIfNeeded)
 	
 	//Initialize the tools window
 	toolsWindow = new ToolsWindow(this);
+	toolsWindow->setFrameOrigin(double2(0, 200));
 	toolsWindow->setAutoresizingMask(View::MinXFixed | View::MinYFixed);
 	rootView->addSubview(toolsWindow);
 }
