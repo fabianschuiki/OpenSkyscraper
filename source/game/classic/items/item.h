@@ -15,39 +15,28 @@ namespace OSS {
 			 * Initialization
 			 */
 		public:
-			Item(Tower * tower, ItemDescriptor * descriptor);
-			virtual ~Item();
+			const Pointer<Tower> tower;
 			
-			//Note that the init() function is separate from the constructor since we want to be able
-			//to initialize the entire class hierarchy of the item at once. Calling virtual methods in
-			//the constructor fails.
-			virtual void init();	//calls the initialization tree
-			virtual void update();	//calls the update tree
+			Item(Tower * tower, ItemDescriptor * descriptor);
+			
+			bool isInTower();
 			
 			//Factory
 			static Item * make(Tower * tower, ItemDescriptor * descriptor, recti rect);
 			
 			
 			/**
-			 * Basic Attributes
+			 * Descriptor
 			 */
-			const Pointer<Tower> tower;
+		public:
 			const ItemDescriptor * descriptor;
+			
 			ItemType getType();
 			ItemGroup getGroup();
 			ItemCategory getCategory();
+			bool isWidthFlexible();
 			
-			
-			/**
-			 * Identification
-			 */
-			//TODO: get rid of the item ID
-		private:
-			unsigned int itemID;
-		public:
-			unsigned int getItemID() const;
-			void setItemID(unsigned int itemID);
-			bool isValid() const;
+			static ItemDescriptor * descriptorForItemType(ItemType itemType);
 			
 			
 			/**
@@ -60,8 +49,17 @@ namespace OSS {
 			const recti & getRect() const;
 			recti getFloorRect(int floor) const;
 			void setRect(const recti & rect);
+			
+			virtual void willChangeRect(recti newRect) {}
+			virtual void didChangeRect() {}
+			
 			const rectd & getWorldRect() const;
+			rectd getFloorWorldRect(int floor);
 			void setWorldRect(const rectd & worldRect);
+			
+			virtual void willChangeWorldRect(rectd newRect) {}
+			virtual void didChangeWorldRect();
+			
 			rectmaski getOccupiedRectMask();
 			
 			//Convenience
@@ -71,64 +69,81 @@ namespace OSS {
 			
 			
 			/**
-			 * Basic Sprites
+			 * Simulation
 			 */
-			virtual void initBasicSprites();
-			virtual void updateBasicSprites();
+		private:
+			map<string, double> advanceTimestamps;
+			double advanceTime;
 			
-			//Backgrounds
-		protected:
-			map<unsigned int, Sprite> backgrounds;
-			bool hasUnionBackground;
-		public:
-			virtual void initBackground();
-			virtual void updateBackground();
-			
-			
-			//Construction Process
-		protected:
-			Pointer<Sprite> constructionSprite;
-			Pointer<Sprite> constructionWorkerSprite[3];
-			double constructionWorkerUpdateTimer;
+			//Construction
+			bool constructed;
 			double constructionProgress;
-			bool underConstruction;
-			bool drawFlexibleConstruction;
+			
 		public:
-			void setUnderConstruction(bool uc);
-			void updateConstructionWorkerSprites();
+			bool shouldAdvance(string identifier, double period);
 			
-			//Descriptors
-			static ItemDescriptor * descriptorForItemType(ItemType itemType);
+			bool isConstructed();
+			void setConstructed(bool c);
 			
-			//Simulation
 			virtual void advance(double dt);
+			virtual void advanceConstruction(double dt);
+			virtual void advanceItem(double dt) {}
 			
-			//Drawing
-			virtual void draw(rectd dirtyRect);
 			
 			/**
-			 * Notifications
+			 * State
 			 */
+		public:
+			virtual void update();
+			virtual void updateConstruction();
+			virtual void updateItem();
+			virtual void updateBackground();
 			
-			//Location
-			virtual void onChangeLocation();
+			Updatable::Conditional<Item> updateConstructionIfNeeded;
+			Updatable::Conditional<Item> updateItemIfNeeded;
+			Updatable::Conditional<Item> updateBackgroundIfNeeded;
 			
-			//Surroundings
-			virtual void onChangeTransportItems() {}
 			
-			//Timing
-			virtual void onDateAdvance() {}
+			/**
+			 * Drawing
+			 */
+		protected:
+			typedef map<unsigned int, Pointer<Sprite> > FloorSpriteMap;
+			FloorSpriteMap backgrounds;
+			
+		private:
+			bool unifiedBackground;
+			
+			Pointer<Texture> constructionTexture;
+			FloorSpriteMap constructionWorkers;
+			
+		public:
+			bool hasUnifiedBackground();
+			void setUnifiedBackground(bool ub);
+			
+			virtual void draw(rectd dirtyRect);
+			virtual void drawConstruction(rectd dirtyRect);
+			virtual void drawItem(rectd dirtyRect);
+			virtual void drawBackground(rectd dirtyRect);
+			virtual void drawPeople(rectd dirtyRect);
 			
 			
 			/**
 			 * People
 			 */
-		protected:
-			typedef std::set< Pointer<Person> > People;
+		private:
+			typedef std::set<Person *> People;
 			People people;
+			
 		public:
-			virtual void addPerson(Person * person);
-			virtual void removePerson(Person * person);
+			void addPerson(Person * person);
+			void removePerson(Person * person);
+			
+			virtual void willAddPerson(Person * person) {}
+			virtual void didAddPerson(Person * person) {}
+			
+			virtual void willRemovePerson(Person * person) {}
+			virtual void didRemovePerson(Person * person) {}
 		};
 	}
 }

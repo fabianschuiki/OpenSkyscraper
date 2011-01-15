@@ -17,8 +17,12 @@ using namespace Classic;
 TowerTime::TowerTime(Tower * tower) : tower(tower)
 {
 	time = 5;
+	
 	previousTime = time;
 	bufferedPreviousTime = previousTime;
+	
+	paused = false;
+	debugSpeed = 0;
 }
 
 
@@ -141,6 +145,19 @@ bool TowerTime::checkDaily(double alarmTime)
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
+bool TowerTime::isPaused()
+{
+	return paused;
+}
+
+void TowerTime::setPaused(bool p)
+{
+	if (paused != p) {
+		paused = p;
+		//TODO: Maybe send some event here?
+	}
+}
+
 double TowerTime::getTimeSpeed()
 {
 	double s = 0.25;
@@ -149,7 +166,7 @@ double TowerTime::getTimeSpeed()
 		s = 1;
 	if (tod > 12 && tod < 13)
 		s = 1.0 / 45;
-	s *= pow(2, tower->debugSpeed);
+	s *= pow(2, debugSpeed);
 	return s;
 }
 

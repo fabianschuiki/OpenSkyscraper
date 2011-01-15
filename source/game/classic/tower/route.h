@@ -25,7 +25,7 @@ namespace OSS {
 				
 				Node(Route * route, recti start, TransportItem * transport, recti end);
 			};
-			typedef vector<Node> Nodes;
+			typedef list<Node> Nodes;
 			
 			/**
 			 * Route
@@ -46,6 +46,8 @@ namespace OSS {
 			const Nodes & getNodes() const;
 			void addNode(const Node & node);
 			void addNode(recti start, TransportItem * transport, recti end);
+			Node * nextNode();
+			void popNode();
 			
 			//Distance
 			const unsigned int getDistance();

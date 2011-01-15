@@ -12,159 +12,12 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-HotelItem::HotelItem(Tower * tower, ItemDescriptor * descriptor) : OccupiableItem(tower, descriptor)
+HotelItem::HotelItem(Tower * tower, ItemDescriptor * descriptor) :
+OccupiableItem(tower, descriptor)
 {
-	state = kEmptyState;
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark State
-//----------------------------------------------------------------------------------------------------
-
-HotelItem::State HotelItem::getState() const
-{
-	return state;
-}
-
-void HotelItem::setState(State state)
-{
-	if (this->state != state) {
-		this->state = state;
-		onChangeState();
-	}
-}
-
-void HotelItem::onChangeState()
-{
-	updateBackground();
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Basic Sprites
-//----------------------------------------------------------------------------------------------------
-
-string HotelItem::getTextureBaseName()
-{
-	stringstream s;
-	s << "simtower/facilities/hotel/";
-	s << getTypeName();
-	s << "/";
-	s << getVariant();
-	return s.str();
-}
-
-unsigned int HotelItem::getTextureSliceIndex()
-{
-	//Choose the base index
-	unsigned int index;
-	switch (getState()) {
-		case kOccupiedState:	index = 0; break;
-		case kAsleepState:		index = 2; break;
-		case kEmptyState:		index = 3; break;
-		case kDirtyState:		index = 5; break;
-		case kInfestedState:	index = 7; break;
-	}
-	
-	//If the index doesn't point at the asleep slice and the room is not lit, select the next slice
-	//which is the unlit version.
-	if (index != 2 && !isLit())
-		index++;
-	
-	return index;
-}
-
-void HotelItem::updateBackground()
-{
-	FacilityItem::updateBackground();
-	
-	//Determine what slice of the textures we're supposed to show
-	unsigned int slice = getTextureSliceIndex();
-	
-	//The first slice is in its own texture for some reason
-	if (slice == 0) {
-		backgrounds[0].texture = Texture::named(getTextureBaseName() + "/0");
-		backgrounds[0].textureRect = rectd(0, 0, 1, 1);
-	} else {
-		backgrounds[0].texture = Texture::named(getTextureBaseName() + "/1");
-		backgrounds[0].textureRect = rectd((slice - 1) * 0.125, 0, 0.125, 1);
-	}
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Simulation
-//----------------------------------------------------------------------------------------------------
-
-void HotelItem::advance(double dt)
-{
-	OccupiableItem::advance(dt);
-		
-	//Update the guests
-	updateGuests();
-	
-	//Everyone should be asleep at 1:30
-	if (tower->checkTime(1.5))
-		assert(areAllGuestsAsleep());
-	
-	//There shouldn't be any more guests after 12:00
-	if (tower->checkTime(12))
-		assert(guests.empty());
-	
-	//Animate the guests
-	if (isOccupied() && getState() != kAsleepState)
-		advanceGuests(dt);
-	
-	//Animate the janitor
-	if (hasAssignedJanitor())
-		getAssignedJanitor()->advanceAnimation(dt);
-}
-
-void HotelItem::advanceGuests(double dt)
-{
-	for (Guests::iterator i = guests.begin(); i != guests.end(); i++)
-		(*i)->advanceAnimation(dt);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Drawing
-//----------------------------------------------------------------------------------------------------
-
-void HotelItem::draw(rectd visibleRect)
-{
-	OccupiableItem::draw(visibleRect);
-	
-	//Draw our guests if required
-	if (isOccupied() && getState() != kAsleepState)
-		drawGuests(visibleRect);
-	
-	//Draw the janitor if required
-	if (hasAssignedJanitor())
-		getAssignedJanitor()->drawAnimation(visibleRect);
-}
-
-void HotelItem::drawGuests(rectd visibleRect)
-{
-	for (Guests::iterator g = guests.begin(); g != guests.end(); g++)
-		(*g)->drawAnimation(visibleRect);
+	asleep = false;
+	dirty = false;
+	infested = false;
 }
 
 
@@ -181,62 +34,48 @@ unsigned int HotelItem::getMaxNumberOfGuests()
 	return 2;
 }
 
-void HotelItem::initGuests()
-{
-	unsigned int numGuests = getMaxNumberOfGuests();
-	for (int i = 0; i < numGuests; i++) {
-		HotelGuest * guest = new HotelGuest(tower, this);
-		guest->setType(i == 0 ? Person::kManType : Person::kWomanBType);
-		guests.insert(guest);
-	}
-}
 
-void HotelItem::updateGuests()
-{
-	Guests temp = guests;
-	for (Guests::iterator g = temp.begin(); g != temp.end(); g++)
-		(*g)->update();
-}
-
-void HotelItem::clearGuests()
-{
-	guests.clear();
-}
-
-void HotelItem::addPerson(Person * person)
-{
-	OccupiableItem::addPerson(person);
-	
-	//Special treatment for janitors
-	if (person->isKindOfClass(typeid(Janitor))) {
-		//Mark the hotel as clean and empty
-		setState(kEmptyState);
-	}
-}
-
-void HotelItem::removePerson(Person * person)
-{
-	OccupiableItem::removePerson(person);
-	
-	//Special treatment for hotel guests
-	if (person->isKindOfClass(typeid(HotelGuest))) {
-		//Check whether the guest is leaving
-		if (((HotelGuest *)person)->isLeaving()) {
-			guests.erase((HotelGuest *)person);
-			
-			//If there are no more guests, mark the hotel item as vacant
-			if (guests.empty())
-				setOccupied(false);
-		}
-	}
-}
 
 bool HotelItem::areAllGuestsAsleep()
 {
-	for (Guests::iterator g = guests.begin(); g != guests.end(); g++)
-		if (!(*g)->isAsleep())
+	for (Guests::iterator it = guests.begin(); it != guests.end(); it++)
+		if (!(*it)->isAsleep())
 			return false;
 	return true;
+}
+
+bool HotelItem::haveAllGuestsCheckedOut()
+{
+	for (Guests::iterator it = guests.begin(); it != guests.end(); it++)
+		if (!(*it)->isCheckingOut())
+			return false;
+	return true;
+}
+
+
+
+void HotelItem::didChangeOccupancy()
+{
+	//If the hotel room has just been occupied, initialize the missing guests
+	if (isOccupied()) {
+		unsigned int numberOfGuests = getMaxNumberOfGuests();
+		unsigned int index = 0;
+		
+		while (guests.size() < numberOfGuests) {
+			HotelGuest * guest = new HotelGuest(tower, this);
+			guest->setType(index++ == 0 ? Person::kManType : Person::kWomanBType);
+			guests.insert(guest);
+		}
+	}
+	
+	//If the hotel room has just been vacated, remove all guests.
+	else {
+		guests.clear();
+		setDirty(true);
+		
+		//Send an event informing all the other items that the hotel has just been vacated.
+		tower->sendEvent(new ItemEvent<HotelItem>(Event::kHotelVacated, this));
+	}
 }
 
 
@@ -245,7 +84,7 @@ bool HotelItem::areAllGuestsAsleep()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Housekeeping
+#pragma mark Janitor
 //----------------------------------------------------------------------------------------------------
 
 Janitor * HotelItem::getAssignedJanitor()
@@ -257,7 +96,6 @@ void HotelItem::setAssignedJanitor(Janitor * janitor)
 {
 	if (assignedJanitor != janitor) {
 		assignedJanitor = janitor;
-		//backgrounds[0].color = (assignedJanitor ? (color4d){0.25, 1, 0.25, 1} : (color4d){1, 1, 1, 1});
 	}
 }
 
@@ -272,34 +110,178 @@ bool HotelItem::hasAssignedJanitor()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Notifications
+#pragma mark People
 //----------------------------------------------------------------------------------------------------
 
-void HotelItem::initAutooccupyTime()
-{
-	OSSObjectLog << std::endl;
-	setAutooccupyTime(randd(std::max<double>(tower->time->getTime(), 17), 21));
+void HotelItem::didAddPerson(Person * person)
+{	
+	//If the janitor just arrived, mark the room as cleaned up.
+	if (person->getTypeName() == "hotel/janitor")
+		setDirty(false);
 }
 
-void HotelItem::onChangeOccupied()
+void HotelItem::willRemovePerson(Person * person)
 {
-	OSSObjectLog << std::endl;
-	if (isOccupied()) {
-		setState(kOccupiedState);
-		initGuests();
-	} else {
-		setState(kDirtyState);
-		clearGuests();
+	//If the person that is leaving the hotel room is a guest and the guest has decided to check
+	//out, we have to remove him from the list of guests.
+	if (person->getTypeName() == "hotel/guest" && ((HotelGuest *)person)->isCheckingOut()) {
 		
-		//Dispatch the event
-		/*GameEvent event = {kGameEventHotelVacated};
-		event.hotel.hotel = this;
-		tower->handleEvent(&event);*/
+		//Remove the person from the guest set.
+		guests.erase((HotelGuest *)person);
+		
+		//If all guests have checked out, mark the hotel room as vacant. This should call the next
+		//available janitor to the room for cleaning.
+		if (haveAllGuestsCheckedOut())
+			setOccupancy(false);
 	}
 }
 
-void HotelItem::onChangeGuestAsleep()
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void HotelItem::advanceItem(double dt)
 {
-	OSSObjectLog << std::endl;
-	setState(areAllGuestsAsleep() ? kAsleepState : kOccupiedState);
+	OccupiableItem::advanceItem(dt);
+	
+	//Everyone should be asleep at 1:30
+	if (tower->time->checkDaily(1.5))
+		assert(areAllGuestsAsleep());
+	
+	//There shouldn't be any more guests after 12:00
+	if (tower->time->checkDaily(12))
+		assert(guests.empty());
+	
+	//Simulate the guests
+	if (isOccupied() && !isAsleep())
+		for (Guests::iterator it = guests.begin(); it != guests.end(); it++)
+			(*it)->advance(dt);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
+
+bool HotelItem::isAsleep()
+{
+	return asleep;
+}
+
+void HotelItem::setAsleep(bool a)
+{
+	if (asleep != a) {
+		asleep = a;
+		updateBackgroundIfNeeded.setNeeded();
+	}
+}
+
+bool HotelItem::isDirty()
+{
+	return dirty;
+}
+
+void HotelItem::setDirty(bool d)
+{
+	if (dirty != d) {
+		dirty = d;
+		updateBackgroundIfNeeded.setNeeded();
+	}
+}
+
+bool HotelItem::isInfested()
+{
+	return infested;
+}
+
+void HotelItem::setInfested(bool i)
+{
+	if (infested != i) {
+		infested = i;
+		updateBackgroundIfNeeded.setNeeded();
+	}
+}
+
+void HotelItem::updateItem()
+{
+	FacilityItem::updateItem();
+	
+	//Update the guests if required.
+	for (Guests::iterator it = guests.begin(); it != guests.end(); it++)
+		(*it)->updateIfNeeded();
+	
+	//Set the asleep state according to whether all guests have gone to sleep
+	setAsleep(areAllGuestsAsleep());
+}
+
+void HotelItem::updateBackground()
+{
+	FacilityItem::updateBackground();
+	
+	//Determine what slice of the textures we're supposed to show
+	unsigned int slice = getTextureSliceIndex();
+	
+	//Load the appropriate background textures. The first slice is in its own texture for some
+	//reason.
+	if (slice == 0) {
+		backgrounds[0]->texture = Texture::named(getTextureBaseName() + "/0");
+		backgrounds[0]->textureRect = rectd(0, 0, 1, 1);
+	} else {
+		backgrounds[0]->texture = Texture::named(getTextureBaseName() + "/1");
+		backgrounds[0]->textureRect = rectd((slice - 1) * 0.125, 0, 0.125, 1);
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
+//----------------------------------------------------------------------------------------------------
+
+string HotelItem::getTextureBaseName()
+{
+	stringstream s;
+	s << "simtower/facilities/hotel/";
+	s << getTypeName();
+	s << "/";
+	s << getVariant();
+	return s.str();
+}
+
+unsigned int HotelItem::getTextureSliceIndex()
+{
+	//Choose which slice index should be drawn based on the current hotel room state.
+	unsigned int index;
+	if (isOccupied()) {
+		if (isAsleep())
+			index = 2;
+		else
+			index = 0;
+	} else {
+		if (isInfested())
+			index = 7;
+		else if (isDirty())
+			index = 5;
+		else
+			index = 3;
+	}
+	
+	//If the index doesn't point at the asleep slice and the room is not lit, select the next slice
+	//which is the unlit version.
+	if (index != 2 && !isLit())
+		index++;
+	
+	return index;
 }

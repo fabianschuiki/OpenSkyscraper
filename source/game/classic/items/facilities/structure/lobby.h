@@ -10,32 +10,38 @@ namespace OSS {
 		public:
 			static ItemDescriptor descriptor;
 			
-			//Initialization
+			/**
+			 * Initialization
+			 */
 		public:
 			LobbyItem(Tower * tower);
 			
-			void init();
-			void update();
 			
+			/**
+			 * State
+			 */
+		public:
+			virtual void update();
+			virtual void updateBackground();
+			virtual void updateEntrances();
+			
+			Updatable::Conditional<LobbyItem> updateEntrancesIfNeeded;
+			
+			virtual void didChangeWorldRect();
+			
+			
+			/**
+			 * Drawing
+			 */
+		private:
+			Pointer<Sprite> outsideEntrances[2];
+			Pointer<Sprite> insideEntrance;
+			
+		public:
 			string getLobbyTextureBaseName();
 			
-			//Entrances
-		private:
-			Sprite outsideEntrances[2];
-			Sprite insideEntrance;
-		public:
-			void initEntrances();
-			void updateEntrances();
-			
-			//Basic Sprites
-			void initBackground();
-			void updateBackground();
-			
-			//Drawing
-			void draw(rectd visibleRect);
-			
-			//Notifications
-			void onChangeLocation();
+			virtual void draw(rectd dirtyRect);
+			virtual void drawBackground(rectd dirtyRect);
 		};
 	}
 }

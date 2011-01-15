@@ -2,58 +2,20 @@
 #define OSS_CLASSIC_ITEMS_FACILITIES_HOTEL_HOTEL_H
 
 #include "../occupiable.h"
-#include "../../../people/individuals/hotelguest.h"
-#include "../../../people/individuals/janitor.h"
 
 
 namespace OSS {	
 	namespace Classic {
+		class HotelGuest;
+		class Janitor;
+		
 		class HotelItem : public OccupiableItem {
+			
+			/**
+			 * Initialization
+			 */
 		public:
-			//Initialization
 			HotelItem(Tower * tower, ItemDescriptor * descriptor);
-			virtual string getTypeName() = 0;
-			
-			
-			/**
-			 * State
-			 */
-		public:
-			typedef enum {
-				kEmptyState,
-				kOccupiedState,
-				kAsleepState,
-				kDirtyState,
-				kInfestedState
-			} State;
-		private:
-			State state;
-		public:
-			State getState() const;
-			void setState(State state);
-			virtual void onChangeState();
-			
-			
-			/**
-			 * Basic Sprites
-			 */		
-			string getTextureBaseName();
-			unsigned int getTextureSliceIndex();
-			virtual void updateBackground();
-			
-			
-			/**
-			 * Simulation
-			 */
-			void advance(double dt);
-			void advanceGuests(double dt);
-			
-			
-			/**
-			 * Drawing
-			 */
-			void draw(rectd visibleRect);
-			void drawGuests(rectd visibleRect);
 			
 			
 			/**
@@ -62,24 +24,22 @@ namespace OSS {
 		private:
 			typedef std::set< Pointer<HotelGuest> > Guests;
 			Guests guests;
+			
 		public:
 			virtual unsigned int getMaxNumberOfGuests();
-			void initGuests();
-			void updateGuests();
-			void clearGuests();
 			
-			void addPerson(Person * person);
-			void removePerson(Person * person);
-			
-			//Convenience
 			bool areAllGuestsAsleep();
+			bool haveAllGuestsCheckedOut();
+			
+			virtual void didChangeOccupancy();
 			
 			
 			/**
-			 * Housekeeping
+			 * Janitor
 			 */
 		private:
 			Pointer<Janitor> assignedJanitor;
+			
 		public:
 			Janitor * getAssignedJanitor();
 			void setAssignedJanitor(Janitor * janitor);
@@ -87,14 +47,55 @@ namespace OSS {
 			
 			
 			/**
-			 * Notifications
+			 * People
 			 */
-			void initAutooccupyTime();
-			void onChangeOccupied();
-			void onChangeGuestAsleep();
+		public:
+			virtual void didAddPerson(Person * person);
+			virtual void willRemovePerson(Person * person);
+			
+			
+			/**
+			 * Simulation
+			 */
+		public:
+			void advanceItem(double dt);
+			
+			
+			/**
+			 * State
+			 */
+		private:
+			bool asleep;
+			bool dirty;
+			bool infested;
+			
+		public:
+			bool isAsleep();
+			void setAsleep(bool a);
+			
+			bool isDirty();
+			void setDirty(bool d);
+			
+			bool isInfested();
+			void setInfested(bool i);
+			
+			virtual void updateItem();
+			virtual void updateBackground();
+			
+			
+			/**
+			 * Drawing
+			 */
+		public:
+			string getTextureBaseName();
+			unsigned int getTextureSliceIndex();
 		};
 	}
 }
+
+
+#include "../../../people/individuals/hotelguest.h"
+#include "../../../people/individuals/janitor.h"
 
 
 #endif

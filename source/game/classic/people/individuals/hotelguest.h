@@ -2,17 +2,19 @@
 #define OSS_CLASSIC_PEOPLE_INDIVIDUALS_HOTELGUEST_H
 
 #include "../timedperson.h"
+#include "../../items/facilities/hotel/hotel.h"
 
 
 namespace OSS {
 	namespace Classic {
-		class HotelItem;
-		
 		class HotelGuest : public TimedPerson {
+			
+			/**
+			 * Initialization
+			 */
 		public:
 			const Pointer<HotelItem> hotel;
 			
-			//Initialization
 			HotelGuest(Tower * tower, HotelItem * hotel);
 			
 			//Intelligence
@@ -24,7 +26,7 @@ namespace OSS {
 			bool didSleep;
 		public:
 			void think();
-			bool isLeaving();
+			bool isCheckingOut();
 			
 			//Sleep
 		private:
@@ -34,11 +36,17 @@ namespace OSS {
 			void setAsleep(bool asleep);
 			
 			//Animation Sprite
-			void initAnimationSprite();
+			/*void initAnimationSprite();
 			void updateAnimationSprite();
 			
 			bool shouldAnimate();
-			void shuffleAnimation();
+			void shuffleAnimation();*/
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void updateNextDestination();
 		};
 	}
 }

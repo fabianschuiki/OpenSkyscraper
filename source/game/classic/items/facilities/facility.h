@@ -8,29 +8,26 @@
 namespace OSS {
 	namespace Classic {
 		class FacilityItem : public Item {
-		public:
-			//Initialization
-			FacilityItem(Tower * tower, ItemDescriptor * descriptor);
 			
 			/**
-			 * Basic Sprites
+			 * Initialization
 			 */
-			void initBasicSprites();
-			void updateBasicSprites();
-			
-			//Ceiling
-		protected:
-			Sprite ceiling;
-		private:
-			bool hasCeiling;
 		public:
-			virtual void initCeiling();
-			virtual void updateCeiling();
-			bool getHasCeiling() const;
-			void setHasCeiling(bool flag);
+			FacilityItem(Tower * tower, ItemDescriptor * descriptor);
 			
-			//Background
-			virtual void updateBackground();
+			
+			/**
+			 * Ceiling
+			 */
+		private:
+			bool ceiling;
+			Pointer<Texture> ceilingTexture;
+			
+		public:
+			bool hasCeiling() const;
+			void setCeiling(bool flag);
+			
+			rectd getCeilingRect();
 			
 			
 			/**
@@ -38,23 +35,27 @@ namespace OSS {
 			 */
 		private:
 			unsigned int variant;
+			
 		public:
 			unsigned int getVariant() const;
 			void setVariant(const unsigned int variant);
-			virtual void onChangeVariant();
+			
+			virtual void willChangeVariant(unsigned int newVariant) {}
+			virtual void didChangeVariant() {}
 			
 			
 			/**
 			 * Lighting
 			 */
 		private:
-			bool lit;
+			bool lightsOn;
+			
 		public:
-			bool isLit() const;
-			void setLit(bool lit);
+			bool areLightsOn();
+			void setLightsOn(bool lo);
+			
 			bool shouldBeLitDueToTime();
-			virtual void updateLighting();
-			virtual void onChangeLit();
+			bool isLit();
 			
 			
 			/**
@@ -64,9 +65,23 @@ namespace OSS {
 			
 			
 			/**
+			 * State
+			 */
+		public:
+			virtual void updateBackground();
+			virtual void updateCeiling();
+			virtual void updateLighting() {}
+			
+			Updatable::Conditional<FacilityItem> updateCeilingIfNeeded;
+			Updatable::Conditional<FacilityItem> updateLightingIfNeeded;
+			
+			
+			/**
 			 * Drawing
 			 */
-			virtual void draw(rectd visibleRect);
+		public:
+			virtual void draw(rectd dirtyRect);
+			virtual void drawCeiling(rectd dirtyRect);
 		};
 	}
 }

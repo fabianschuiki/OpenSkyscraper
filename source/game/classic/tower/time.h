@@ -42,6 +42,13 @@ namespace OSS {
 			
 			/**
 			 * Triggering
+			 *
+			 * Triggering is used to check whether a specific time just happened. The time keeps
+			 * track of the previous frame's time. If you check for a given alarm time, it will
+			 * check whether the queried time lies between the last frame's and the current.
+			 *
+			 * Use check() if you have an absolute time value (including date) to check against. Use
+			 * checkDaily() if you only want to check the time without date information.
 			 */
 		private:
 			double previousTime;
@@ -56,9 +63,15 @@ namespace OSS {
 			 * Simulation
 			 */
 		private:
-			double getTimeSpeed();
+			bool paused;
 			
 		public:
+			bool isPaused();
+			void setPaused(bool p);
+			
+			double debugSpeed;
+			double getTimeSpeed();
+			
 			virtual void advance(double dt);
 		};
 	}

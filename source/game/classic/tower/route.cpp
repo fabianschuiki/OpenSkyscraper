@@ -82,6 +82,18 @@ void Route::addNode(recti start, TransportItem * transport, recti end)
 	nodes.push_back(Node(this, start, transport, end));
 }
 
+Route::Node * Route::nextNode()
+{
+	if (nodes.empty())
+		return NULL;
+	return &nodes.front();
+}
+
+void Route::popNode()
+{
+	nodes.pop_front();
+}
+
 
 
 
@@ -126,7 +138,7 @@ Route & Route::operator= (const Route & route)
 bool Route::isValid()
 {
 	for (Nodes::iterator node = nodes.begin(); node != nodes.end(); node++) {
-		if (!(*node).transport->isValid())
+		if (!(*node).transport->isInTower())
 			return false;
 		if (!(*node).transport->connectsToFloor((*node).start.minY()))
 			return false;
@@ -199,7 +211,7 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 	for (std::set<int>::iterator floor = connectionFloors.begin(); floor != connectionFloors.end(); floor++) {
 		
 		//Find the transports on this floor
-		Tower::ItemSet * items = &tower->transportItemsByFloor[*floor];
+		/*TowerStructure::ItemSet * items = &tower->transportItemsByFloor[*floor];
 		for (Tower::ItemSet::iterator item = items->begin(); item != items->end(); item++) {
 			TransportItem * t = (TransportItem *)((Item *)*item);
 			
@@ -221,7 +233,7 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 			if (findRoute(tower, t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute))
 				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
 					shortestRoute = newRoute;
-		}
+		}*/
 	}
 	
 	//If we have found a route, copy it to the old one

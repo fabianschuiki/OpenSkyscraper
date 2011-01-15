@@ -18,6 +18,9 @@ using namespace Classic;
 TowerStructure::TowerStructure(Tower * tower) : tower(tower),
 ceilingHeight(12), cellSize(8, 24 + 12)
 {
+	//Initialize the members to zero
+	constructionsHalted = false;
+	
 	//Initialize the construction sound effect
 	constructionSound = new SoundEffect();
 	constructionSound->sound = Sound::named("simtower/construction/normal");
@@ -255,6 +258,11 @@ TowerStructure::ItemSet TowerStructure::getItems(rectmaski rectmask)
 
 
 
+bool TowerStructure::containsItem(Item * item)
+{
+	return items.count(item);
+}
+
 void TowerStructure::addItem(Item * item)
 {
 	if (!item) return;
@@ -406,6 +414,16 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 #pragma mark -
 #pragma mark Item Construction
 //----------------------------------------------------------------------------------------------------
+
+bool TowerStructure::areConstructionsHalted()
+{
+	return constructionsHalted;
+}
+
+void TowerStructure::setConstructionsHalted(bool ch)
+{
+	constructionsHalted = ch;
+}
 
 TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
 																 recti rect, recti initialRect)

@@ -12,10 +12,12 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-OccupiableItem::OccupiableItem(Tower * tower, ItemDescriptor * descriptor) : FacilityItem(tower, descriptor)
+OccupiableItem::OccupiableItem(Tower * tower, ItemDescriptor * descriptor) :
+FacilityItem(tower, descriptor),
+updateOccupyAtIfNeeded(this, &OccupiableItem::updateOccupyAt, &updateIfNeeded)
 {
 	occupied = false;
-	autooccupyTime = 25;
+	occupyAt = 0;
 }
 
 
@@ -32,20 +34,21 @@ bool OccupiableItem::isOccupied() const
 	return occupied;
 }
 
-void OccupiableItem::setOccupied(bool occupied)
+void OccupiableItem::setOccupancy(bool o)
 {
-	if (this->occupied != occupied) {
-		this->occupied = occupied;
-		OSSObjectLog << "occupied = " << occupied << std::endl;
-		if (!occupied)
-			resetOccupancyAutomation();
-		onChangeOccupied();
+	if (this->occupied != o) {
+		willChangeOccupancy(o);
+		
+		//Set the occupyAt time to 0 so that it gets updated later if we're vacating the item.
+		if (!o)
+			occupyAt = 0;
+		
+		//Apply the new state
+		this->occupied = o;
+		
+		didChangeOccupancy();
+		updateBackgroundIfNeeded.setNeeded();
 	}
-}
-
-void OccupiableItem::onChangeOccupied()
-{
-	updateBackground();
 }
 
 
@@ -54,42 +57,19 @@ void OccupiableItem::onChangeOccupied()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Occupancy Automation
+#pragma mark State
 //----------------------------------------------------------------------------------------------------
 
-double OccupiableItem::getAutooccupyTime()
+void OccupiableItem::update()
 {
-	return autooccupyTime;
+	FacilityItem::update();
+	
+	//Update the occupyAt time if required
+	updateOccupyAtIfNeeded();
 }
 
-void OccupiableItem::setAutooccupyTime(double time)
+void OccupiableItem::updateOccupyAt()
 {
-	if (autooccupyTime != time) {
-		autooccupyTime = time;
-		OSSObjectLog << time << std::endl;
-		updateOccupancyAutomation();
-	}
-}
-
-void OccupiableItem::initAutooccupyTime()
-{
-	setAutooccupyTime(24);
-}
-
-void OccupiableItem::resetOccupancyAutomation()
-{
-	setAutooccupyTime(25);
-}
-
-void OccupiableItem::updateOccupancyAutomation()
-{
-	if (tower->time->getTime() >= getAutooccupyTime())
-		setOccupied(true);
-}
-
-bool OccupiableItem::isSufficientlyAttractive()
-{
-	return true;
 }
 
 
@@ -101,13 +81,42 @@ bool OccupiableItem::isSufficientlyAttractive()
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-void OccupiableItem::advance(double dt)
+void OccupiableItem::advanceItem(double dt)
 {
-	FacilityItem::advance(dt);
+	FacilityItem::advanceItem(dt);
 	
-	if (!isOccupied() && isSufficientlyAttractive()) {
-		if (tower->checkTime(5) || getAutooccupyTime() > 24)
-			initAutooccupyTime();
-		updateOccupancyAutomation();
+	//Advance the occupancy
+	advanceOccupancy(dt);
+}
+
+void OccupiableItem::advanceOccupancy(double dt)
+{
+	//If we aren't occupied we have to deal with people moving in.
+	if (!isOccupied()) {
+		
+		//Only deal with this if the item is attractive enough for people to move in.
+		if (isSufficientlyAttractive()) {
+			
+			//If the occupyAt time is invalid, mark it as to be updated.
+			if (occupyAt <= 0)
+				updateOccupyAtIfNeeded.setNeeded();
+			
+			//If the occupyAt time has been reached, make people move in.
+			else if (tower->time->getTime() >= occupyAt)
+				setOccupancy(true);
+		}
 	}
+	
+	//Otherwise we have to deal with people possibly moving out.
+	else {
+		
+		//Only deal with this if the item is not attractive enough for people to stay.
+		if (!isSufficientlyAttractive() && tower->time->checkDaily(5))
+			setOccupancy(false);
+	}
+}
+
+bool OccupiableItem::isSufficientlyAttractive()
+{
+	return false;
 }

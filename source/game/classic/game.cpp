@@ -317,11 +317,11 @@ bool GameScene::eventKeyDown(KeyEvent * event)
 			//DEBUG: Change time
 		case 'h':	tower->time->setTime(tower->time->getTime() + 1); return true; break;
 		case ' ':	tower->time->setTime(tower->time->getTime() + 0.2); return true; break;
-		case 'a':	tower->debugSpeed--; return true; break;
-		case 's':	tower->debugSpeed++; return true; break;
+		case 'a':	tower->time->debugSpeed--; return true; break;
+		case 's':	tower->time->debugSpeed++; return true; break;
 			
 			//DEBUG: Pause
-		//case 'p':	tower->paused = !tower->paused; return true; break;
+		case 'p':	tower->time->setPaused(!tower->time->isPaused()); return true; break;
 	}
 	return false;
 }

@@ -388,6 +388,9 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	{0xF6D, "fire/chopper"},
 	{0xFA8, "fire/burnedfloor"},
 	
+	//Ceiling
+	{0x3E8, "ceiling"},
+	
 	{0, ""}
 };
 

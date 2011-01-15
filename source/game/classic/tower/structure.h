@@ -112,6 +112,8 @@ namespace OSS {
 			void addItem(Item * item);
 			void removeItem(Item * item);
 			
+			bool containsItem(Item * item);
+			
 			
 			/**
 			 * Reports
@@ -146,7 +148,12 @@ namespace OSS {
 			Pointer<SoundEffect> flexibleConstructionSound;
 			Pointer<SoundEffect> constructionSound;
 			
+			bool constructionsHalted;
+			
 		public:
+			bool areConstructionsHalted();
+			void setConstructionsHalted(bool ch);
+			
 			typedef struct {
 				bool success;
 				string failureReason;

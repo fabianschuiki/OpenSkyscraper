@@ -14,6 +14,8 @@ Tower
 
 	- Add fire ladders to the tower. The best idea would probably be to use the `getItems(int)` function together with the floor for which you are updating the fire ladders. Create the union rect over all items on that floor and position the ladders on the left and right of that rect.
 	
+	- Move the drawing of the entrances of the tower from the lobby class to the tower decoration.
+	
 	
 	###ÊStructure
 	

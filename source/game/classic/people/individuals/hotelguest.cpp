@@ -22,7 +22,7 @@ HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : TimedPerson(tower), h
 	didChooseSleepTime = false;
 	asleep = false;
 	
-	initAnimationSprite();
+	//initAnimationSprite();
 }
 
 
@@ -125,7 +125,7 @@ void HotelGuest::think()
 	assert(getNextDestinationTime() <= 12);
 }
 
-bool HotelGuest::isLeaving()
+bool HotelGuest::isCheckingOut()
 {
 	return didSleep;
 }
@@ -139,7 +139,8 @@ void HotelGuest::setAsleep(bool asleep)
 {
 	if (this->asleep != asleep) {
 		this->asleep = asleep;
-		hotel->onChangeGuestAsleep();
+		//hotel->onChangeGuestAsleep();
+		hotel->updateBackgroundIfNeeded.setNeeded();
 	}
 }
 
@@ -152,7 +153,7 @@ void HotelGuest::setAsleep(bool asleep)
 #pragma mark Animation Sprite
 //----------------------------------------------------------------------------------------------------
 
-void HotelGuest::initAnimationSprite()
+/*void HotelGuest::initAnimationSprite()
 {	
 	//Load the texture and set the slice size
 	animationSprite.texture = Texture::named("simtower/facilities/hotel/guests");
@@ -185,4 +186,17 @@ void HotelGuest::shuffleAnimation()
 	
 	//Position the guest
 	setAnimationLocation(int2(randi(0, hotel->getRect().size.x - 2), 0));
+}*/
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
+
+void HotelGuest::updateNextDestination()
+{
 }

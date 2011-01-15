@@ -12,267 +12,22 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Person::Person(Tower * tower) : tower(tower)
+Person::Person(Tower * tower) : tower(tower),
+updateRouteIfNeeded(this, &Person::updateRoute, &updateIfNeeded)
 {
 	assert(tower);
 	
-	//Attributes
+	//Reset all member variables
+	floor = 0;
+	arrivalTime = 0;
 	type = kManType;
 	stress = 0;
-	
-	//Animation Sprite
-	animationTime = 0;
-	animationIndex = 0;
-	
-	//Location
-	floor = 0;
-	
-	//Journey
-	nextFloor = 0;
-	nodeIndex = 0;
-	
-	//Route
-	arrivalTime = 0;
 }
 
-void Person::reset()
+Person::~Person()
 {
+	//Make sure we're removed from the current item's people list.
 	setItem(NULL);
-	setDestination(NULL);
-	
-	//DEBUG: Reset the properties
-	boolProps.clear();
-	intProps.clear();
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Attributes
-//----------------------------------------------------------------------------------------------------
-
-Person::Type Person::getType()
-{
-	return type;
-}
-
-void Person::setType(Type type)
-{
-	if (this->type != type) {
-		this->type = type;
-		onChangeType();
-	}
-}
-
-void Person::onChangeType()
-{
-	updateManagedSprites();
-}
-
-Person::Gender Person::getGender()
-{
-	if (getType() >= kWomanAType)
-		return kFemale;
-	return kMale;
-}
-
-
-
-double Person::getStress()
-{
-	return stress;
-}
-
-void Person::setStress(double stress)
-{
-	if (this->stress != stress) {
-		this->stress = stress;
-		onChangeStress();
-	}
-}
-
-void Person::onChangeStress()
-{
-	updateManagedSprites();
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Managed Sprites
-//----------------------------------------------------------------------------------------------------
-
-void Person::addManagedSprite(Sprite * sprite, SpriteType type, SpriteHeading heading)
-{
-	managedSprites.insert(sprite);
-	managedSpriteTypes[sprite] = type;
-	managedSpriteHeadings[sprite] = heading;
-	initManagedSprite(sprite);
-}
-
-void Person::removeManagedSprite(Sprite * sprite)
-{
-	managedSprites.erase(sprite);
-	managedSpriteTypes.erase(sprite);
-	managedSpriteHeadings.erase(sprite);
-}
-
-
-
-void Person::setManagedSpriteType(Sprite * sprite, SpriteType type)
-{
-	if (managedSpriteTypes[sprite] != type) {
-		managedSpriteTypes[sprite] = type;
-		updateManagedSprite(sprite);
-	}
-}
-
-void Person::setManagedSpriteHeading(Sprite * sprite, SpriteHeading heading)
-{
-	if (managedSpriteHeadings[sprite] != heading) {
-		managedSpriteHeadings[sprite] = heading;
-		updateManagedSprite(sprite);
-	}
-}
-
-
-
-void Person::initManagedSprite(Sprite * sprite)
-{
-}
-
-void Person::updateManagedSprite(Sprite * sprite)
-{
-}
-
-void Person::updateManagedSprites()
-{
-	for (SpriteSet::iterator i = managedSprites.begin(); i != managedSprites.end(); i++)
-		updateManagedSprite(*i);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Animation Sprite
-//----------------------------------------------------------------------------------------------------
-
-Sprite & Person::getAnimationSprite()
-{
-	return animationSprite;
-}
-
-
-
-unsigned int Person::getAnimationIndex()
-{
-	return animationIndex;
-}
-
-void Person::setAnimationIndex(unsigned int animationIndex)
-{
-	if (this->animationIndex != animationIndex) {
-		this->animationIndex = animationIndex;
-		onChangeAnimationIndex();
-	}
-}
-
-void Person::onChangeAnimationIndex()
-{
-	updateAnimationSprite();
-}
-
-
-
-const int2 & Person::getAnimationLocation()
-{
-	return animationLocation;
-}
-
-void Person::setAnimationLocation(int2 animationLocation)
-{
-	if (this->animationLocation != animationLocation) {
-		this->animationLocation = animationLocation;
-		onChangeAnimationLocation();
-	}
-}
-
-void Person::onChangeAnimationLocation()
-{
-	updateAnimationSprite();
-}
-
-
-
-void Person::initAnimationSprite()
-{
-	updateAnimationSprite();
-}
-
-void Person::updateAnimationSprite()
-{
-	if (!getItem())
-		return;
-	
-	//Position the animation sprite
-	rectd worldRect = animationSprite.rect;
-	worldRect.origin = getItem()->getWorldRect().origin;
-	worldRect.origin += tower->convertCellToWorldCoordinates(getAnimationLocation());
-	animationSprite.rect = worldRect;
-}
-
-
-
-double Person::getAnimationPeriod()
-{
-	return 0.75;
-}
-
-bool Person::shouldAnimate()
-{
-	return false;
-}
-
-void Person::resetAnimation()
-{
-	animationTime = 0;
-	if (shouldAnimate())
-		shuffleAnimation();
-}
-
-void Person::advanceAnimation(double dt)
-{
-	if (!shouldAnimate())
-		return;
-	
-	//Increase the animation time
-	animationTime += dt;
-	
-	//If we passed the animation period, shuffle the animation
-	double period = getAnimationPeriod();
-	if (animationTime >= period) {
-		animationTime -= period;
-		shuffleAnimation();
-	}
-}
-
-void Person::shuffleAnimation()
-{
-}
-
-void Person::drawAnimation(rectd visibleRect)
-{
-	if (shouldAnimate())
-		animationSprite.draw();
 }
 
 
@@ -289,51 +44,57 @@ int Person::getFloor()
 	return floor;
 }
 
-void Person::setFloor(int floor)
+void Person::setFloor(int f)
 {
-	this->floor = floor;
+	if (floor != f) {
+		floor = f;
+		updateRouteIfNeeded.setNeeded();
+	}
 }
+
+
 
 Item * Person::getItem() const
 {
 	return item;
 }
 
-void Person::setItem(Item * item)
+void Person::setItem(Item * i)
 {
-	if (this->item != item) {
-		//Retain us in case the retain count drops to 0 during the switch
-		retain();
-		
+	if (item != i) {		
 		//Remove the person from the current item
-		if (this->item)
-			this->item->removePerson(this);
+		if (item) item->removePerson(this);
 		
 		//Switch to the new item
-		this->item = item;
+		item = i;
 		
 		//Update the arrival time
 		setArrivalTime(tower->time->getTime());
 		
 		//Add person to the new item
-		if (this->item)
-			this->item->addPerson(this);
+		if (item) item->addPerson(this);
 		
-		//Reset the animation
-		resetAnimation();
-		
-		//Compensate the retain
-		release();
+		//Update the route
+		updateRouteIfNeeded.setNeeded();
 	}
 }
 
+recti Person::getItemRect()
+{
+	if (getItem())
+		return getItem()->getRect();
+	return tower->getGroundFloorRect();
+}
+
+bool Person::isAt(Item * i)
+{
+	return (getItem() == i);
+}
+
+
+
 double Person::getArrivalTime()
 {
-	//Wrap around the arrival time if required. If the person arrived yesterday at 17:00 and it is
-	//10:00 today, the time since arrival would be -7h, which makes no sense. Instead it should
-	//read as 17h.
-	if (arrivalTime < tower->time->getTime())
-		arrivalTime -= 24;
 	return arrivalTime;
 }
 
@@ -342,19 +103,59 @@ void Person::setArrivalTime(double time)
 	arrivalTime = time;
 }
 
-double Person::getTimeSinceArrival()
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Type
+//----------------------------------------------------------------------------------------------------
+
+Person::Type Person::getType()
 {
-	return (tower->time->getTime() - getArrivalTime());
+	return type;
 }
 
-bool Person::isAt(Item * item)
+void Person::setType(Type t)
 {
-	return (getItem() == item);
+	if (type != t) {
+		willChangeType(t);
+		type = t;
+		didChangeType();
+	}
 }
 
-bool Person::hasBeenAtFor(Item * item, double duration)
+
+
+Person::Gender Person::getGender()
 {
-	return (getItem() == item && getTimeSinceArrival() >= duration);
+	if (getType() >= kWomanAType)
+		return kFemale;
+	return kMale;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Stress
+//----------------------------------------------------------------------------------------------------
+
+double Person::getStress()
+{
+	return stress;
+}
+
+void Person::setStress(double s)
+{
+	if (stress != s) {
+		willChangeStress(s);
+		stress = s;
+		didChangeStress();
+	}
 }
 
 
@@ -366,118 +167,26 @@ bool Person::hasBeenAtFor(Item * item, double duration)
 #pragma mark Journey
 //----------------------------------------------------------------------------------------------------
 
-int Person::getNextFloor()
-{
-	return nextFloor;
-}
-
-void Person::setNextFloor(int nextFloor)
-{
-	this->nextFloor = nextFloor;
-}
-
-void Person::initJourney()
-{
-	nextFloor = getFloor();
-	nodeIndex = 0;
-	advanceJourney();
-}
-
-void Person::advanceJourney()
-{
-	assert(getRoute());
-	
-	//Check whether there are nodes left in the route
-	const Route::Nodes * nodes = &getRoute()->getNodes();
-	if (nodes->size() > nodeIndex) {
-		
-		//Fetch the next node
-		const Route::Node * node = &nodes->at(nodeIndex);
-		
-		//Extract the floor information
-		setFloor(node->start.minY());
-		setNextFloor(node->end.minY());
-		
-		//Attach to the transport
-		assert(node->transport);
-		setItem((Item *)((TransportItem *)node->transport));
-		
-		//Increase the node index
-		nodeIndex++;
-	}
-	
-	//No more route nodes
-	else {
-		onArrivedAtDestination();
-	}
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Route
-//----------------------------------------------------------------------------------------------------
-
 Item * Person::getDestination()
 {
 	return destination;
 }
 
-void Person::setDestination(Item * destination)
+void Person::setDestination(Item * d)
 {
-	if (this->destination != destination) {
-		this->destination = destination;
-		if (destination)
-			OSSObjectLog << "changed destination to " << destination->description() << std::endl;
-		else
-			OSSObjectLog << "changed destination to [out]" << std::endl;
-
-		updateRoute();
+	if (destination != d) {
+		willChangeDestination(d);
+		destination = d;
+		didChangeDestination();
+		updateRouteIfNeeded.setNeeded();
 	}
 }
 
-Route * Person::getRoute()
+recti Person::getDestinationRect()
 {
-	return route;
-}
-
-void Person::setRoute(Route * route)
-{
-	if (this->route != route) {
-		this->route = route;
-		if (route)
-			initJourney();
-	}
-}
-
-void Person::updateRoute()
-{
-	//Calculate the starting rect of the root. It's either the current item's rect or the ground
-	//floor.
-	recti start = (getItem() ? getItem()->getRect() : tower->getGroundFloorRect());
-	
-	//The destination rect likewise
-	recti destination = (getDestination() ? getDestination()->getRect() : tower->getGroundFloorRect());
-	
-	//If there's no current item, reset the current floor to the ground level.
-	/*if (!getItem())
-		setFloor(0);*/
-	
-	//If the item and destination are equal, set the route to null
-	if (getItem() == getDestination())
-		setRoute(NULL);
-	
-	//Otherwise find a route to the destination
-	else {
-		Route * route = Route::findRoute(tower, start, destination);
-		setRoute(route);
-		if (!route)
-			OSSObjectError << "cannot find route from " << start.description()
-			<< " to " << destination.description() << std::endl;
-	}
+	if (getDestination())
+		return getDestination()->getRect();
+	return tower->getGroundFloorRect();
 }
 
 bool Person::isAtDestination()
@@ -485,27 +194,39 @@ bool Person::isAtDestination()
 	return isAt(getDestination());
 }
 
+
+
 bool Person::hasRoute()
 {
-	return (getRoute() != NULL);
+	return (route != NULL);
 }
 
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Notifications
-//----------------------------------------------------------------------------------------------------
-
-void Person::onArrivedAtDestination()
+Route::Node * Person::getRouteNode()
 {
-	//Move to the destination item
-	setItem(getDestination());
-	
-	//Reset the route
-	setRoute(NULL);
+	if (!route)
+		return NULL;
+	return route->nextNode();
+}
+
+bool Person::isAtRouteNodeTransport()
+{
+	if (!getRouteNode())
+		return false;
+	return isAt(getRouteNode()->transport);
+}
+
+bool Person::isOnStartFloor()
+{
+	if (!getRouteNode())
+		return false;
+	return (getFloor() == getRouteNode()->start.origin.y);
+}
+
+bool Person::isOnEndFloor()
+{
+	if (!getRouteNode())
+		return false;
+	return (getFloor() == getRouteNode()->end.origin.y);
 }
 
 
@@ -514,9 +235,99 @@ void Person::onArrivedAtDestination()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Intelligence
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void Person::advance(double dt)
+{
+	GameObject::advance(dt);
+}
+
+bool Person::shouldBeAnimated()
+{
+	return false;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
 //----------------------------------------------------------------------------------------------------
 
 void Person::update()
 {
+	GameObject::update();
+	
+	//Update the route if required
+	updateRouteIfNeeded();
+}
+
+void Person::updateRoute()
+{
+	//Check whether we are not at our destination which means we have to travel around.
+	if (!isAtDestination()) {
+		
+		//Check whether the route is valid for our current destination. We do this by checking
+		//whether the route's destination equals our destination's rect, and that we are either on
+		//the current route node's start or end floor.
+		if (!route || route->destination != getDestinationRect() ||
+			(!isOnStartFloor() && isOnEndFloor())) {
+			
+			//Calculate a new route to the destination.
+			route = Route::findRoute(tower, getItemRect(), getDestinationRect());
+			
+			//If we were not able to find a round, post an error message and reset the person to the
+			//lobby.
+			if (!route) {
+				OSSObjectError << "can't find route from " << getItemRect().description()
+				<< " to " << getDestinationRect().description() << "!" << std::endl;
+				setItem(NULL);
+				setDestination(NULL);
+				setFloor(0);
+			}
+		}
+		
+		//Check whether it is time to advance to the next route node. This is accomplished by
+		//checking whether the route is set and we are on the route node's end floor.
+		if (route && isOnEndFloor()) {
+			
+			//Get rid of the current route node.
+			route->popNode();
+			
+			//If there is a next node, move to its transport.
+			if (getRouteNode())
+				setItem(getRouteNode()->transport);
+			
+			//Otherwise add us to the destination since we obviously arrived there.
+			else
+				setItem(getDestination());
+		}
+	}
+	
+	//Otherwise we may simply get rid of the route for good.
+	else {
+		route = NULL;
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Drawing
+//----------------------------------------------------------------------------------------------------
+
+void Person::draw(rectd dirtyRect)
+{
+	GameObject::draw(dirtyRect);
+}
+
+bool Person::shouldBeDrawn()
+{
+	return false;
 }
