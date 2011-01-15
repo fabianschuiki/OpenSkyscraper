@@ -57,6 +57,4 @@ User Interface
 GUI
 ---
 	
-	We need some way of changing GUI::View's superclass through a template or something similar. Eventually probably both variants of OpenSkyscraper (Classic & Deluxe) will use the same GUI code, and since the GUI stuff needs to be able to receive game events we somehow have to change the class which it is based on.
-	
-	Maybe there's some completely different approach to this?
+	Maybe we should use CEGUI?
