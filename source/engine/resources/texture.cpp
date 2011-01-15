@@ -1,6 +1,6 @@
 #include "texture.h"
 
-#include "application.h"
+#include "../application.h"
 
 using namespace OSS;
 

@@ -220,7 +220,7 @@ namespace OSS {
 
 
 //Include the forward-declared stuff
-#include "item.h"
+#include "../items/item.h"
 
 #include "background.h"
 #include "environment.h"

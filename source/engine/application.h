@@ -5,7 +5,7 @@
 #include "external.h"
 #include "base/object.h"
 #include "base/singleton.h"
-#include "basicresponder.h"
+#include "events/basicresponder.h"
 
 //Usage-induced includes
 #include "base/pointer.h"
