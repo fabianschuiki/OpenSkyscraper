@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Classic {	
 		class ToolsGroupButton;
 		
-		class ToolsWindow : public View, public Responder {
+		class ToolsWindow : public Window, public Responder {
 			
 			/**
 			 * Construction

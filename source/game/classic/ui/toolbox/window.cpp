@@ -53,7 +53,7 @@ void ToolsWindow::update()
 	updateButtonsIfNeeded();
 	
 	//Update the subviews etc.
-	View::update();
+	Window::update();
 }
 
 void ToolsWindow::updateButtons()
@@ -135,7 +135,7 @@ void ToolsWindow::draw(rectd dirtyRect)
 	quad.draw();
 	
 	//Call the original implementation of this method which will also draw the subviews
-	View::draw(dirtyRect);
+	Window::draw(dirtyRect);
 }
 
 

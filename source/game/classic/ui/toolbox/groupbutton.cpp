@@ -25,7 +25,7 @@ window(window), group(group)
 	setFrameSize(double2(32, 32));
 	
 	//Initialize the popup view
-	popup = new View;
+	popup = new Window;
 	
 	//Initialize the item buttons. To do this we iterate through all item types.
 	for (unsigned int i = kNoType + 1; i < kMaxType; i++) {

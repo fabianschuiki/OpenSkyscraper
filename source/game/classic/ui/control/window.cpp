@@ -63,5 +63,5 @@ void ControlWindow::draw(rectd dirtyRect)
 	quad.draw();
 	
 	//Call the original implementation of this method which will also draw the subviews
-	View::draw(dirtyRect);
+	Window::draw(dirtyRect);
 }

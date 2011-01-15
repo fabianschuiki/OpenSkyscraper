@@ -80,6 +80,7 @@
 		1F8BBC9F12CAA4D700892C16 /* libIL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBC9E12CAA4D700892C16 /* libIL.a */; };
 		1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F8BBCA012CAA4D700892C16 /* libpng.a */; };
 		1FAD1B8412C8E362004E5286 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FAD1B8312C8E362004E5286 /* OpenAL.framework */; };
+		1FC68C0012E1BA77001748F4 /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC68BFF12E1BA77001748F4 /* window.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
 		1FF3DB9F12DD362400BC33C8 /* application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1FF3DB9E12DD362400BC33C8 /* application.mm */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
@@ -282,6 +283,8 @@
 		1F8BBC9E12CAA4D700892C16 /* libIL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libIL.a; path = /usr/local/lib/libIL.a; sourceTree = "<absolute>"; };
 		1F8BBCA012CAA4D700892C16 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = /usr/local/lib/libpng.a; sourceTree = "<absolute>"; };
 		1FAD1B8312C8E362004E5286 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
+		1FC68BFE12E1BA77001748F4 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
+		1FC68BFF12E1BA77001748F4 /* window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = window.cpp; sourceTree = "<group>"; };
 		1FD010C111FA3E330062C093 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		1FF3DA0412DD118B00BC33C8 /* alc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alc.h; sourceTree = "<group>"; };
 		1FF3DB9E12DD362400BC33C8 /* application.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = application.mm; sourceTree = "<group>"; };
@@ -746,6 +749,8 @@
 			children = (
 				1F3233B712DF7FE40042FFBA /* view.cpp */,
 				1F3233B812DF7FE40042FFBA /* view.h */,
+				1FC68BFF12E1BA77001748F4 /* window.cpp */,
+				1FC68BFE12E1BA77001748F4 /* window.h */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -930,6 +935,7 @@
 				1F32390B12DFAAA20042FFBA /* elevatorbackground.cpp in Sources */,
 				1F32391312DFAAC20042FFBA /* standardelevator.cpp in Sources */,
 				1F3239D412DFB18C0042FFBA /* button.cpp in Sources */,
+				1FC68C0012E1BA77001748F4 /* window.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
