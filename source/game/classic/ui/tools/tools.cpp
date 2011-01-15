@@ -52,6 +52,7 @@ void ToolsUI::setTool(Tool * tool)
 {
 	if (this->tool != tool) {
 		this->tool = tool;
+		ui->sendEvent(new Event(Event::kToolChanged));
 	}
 }
 

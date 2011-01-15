@@ -22,6 +22,9 @@ namespace OSS {
 			virtual void eventQuarterChanged(Event * event) {}
 			virtual void eventYearChanged(Event * event) {}
 			
+			//UI
+			virtual void eventToolChanged(Event * event) {}
+			
 			//Transport
 			virtual void eventTransportIncreased(ItemEvent<TransportItem> * event) {}
 			virtual void eventTransportDecreased(ItemEvent<TransportItem> * event) {}

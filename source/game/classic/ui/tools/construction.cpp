@@ -40,6 +40,7 @@ void ConstructionTool::setItemType(ItemType type)
 	if (itemType != type) {
 		itemType = type;
 		setItemDescriptor(Item::descriptorForItemType(type));
+		ui->ui->sendEvent(new Event(Event::kToolChanged));
 	}
 }
 

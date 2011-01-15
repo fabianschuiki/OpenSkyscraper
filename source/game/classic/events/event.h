@@ -17,6 +17,9 @@ namespace OSS {
 				kQuarterChanged,
 				kYearChanged,
 				
+				//UI
+				kToolChanged,
+				
 				//Transport
 				kTransportIncreased,
 				kTransportDecreased,
