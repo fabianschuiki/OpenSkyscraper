@@ -46,9 +46,9 @@ void HotelGuest::setIntention(Intention intention)
 	}
 }*/
 
-void HotelGuest::think()
+void HotelGuest::updateNextDestination()
 {
-	TimedPerson::think();
+	TimedPerson::updateNextDestination();
 	OSSObjectLog << std::endl;
 	
 	//In case we're awake...
@@ -94,9 +94,9 @@ void HotelGuest::think()
 			return;
 		}
 		
-		//Decide when to wake up and go to sleep
+		//Decide when to wake up and then go to sleep
 		if (!didSleep) {
-			setPauseEndTimeFuture(randd(6, 8));
+			setPauseEndTimeDailyFuture(randd(6, 8));
 			OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
 			setAsleep(true);
 			return;
@@ -197,6 +197,4 @@ void HotelGuest::shuffleAnimation()
 #pragma mark State
 //----------------------------------------------------------------------------------------------------
 
-void HotelGuest::updateNextDestination()
-{
-}
+

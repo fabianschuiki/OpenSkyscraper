@@ -12,6 +12,9 @@
 		1F0D409111FEF2EB00C6D787 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0D409011FEF2EB00C6D787 /* SDL.framework */; };
 		1F0D40CB11FEF48500C6D787 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40CA11FEF48500C6D787 /* SDLMain.m */; };
 		1F0D40E011FEF7C900C6D787 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40DF11FEF7C900C6D787 /* main.cpp */; };
+		1F0ED14212E274D900125DD8 /* suite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335D12DF7FE40042FFBA /* suite.cpp */; };
+		1F0ED18E12E27BBB00125DD8 /* doubleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335512DF7FE40042FFBA /* doubleroom.cpp */; };
+		1F0ED18F12E27BBD00125DD8 /* singleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335B12DF7FE40042FFBA /* singleroom.cpp */; };
 		1F32308112DF5DFC0042FFBA /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32300912DF5D3C0042FFBA /* application.cpp */; };
 		1F32308412DF5E160042FFBA /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301612DF5D3C0042FFBA /* object.cpp */; };
 		1F32308512DF5E180042FFBA /* managedmemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301412DF5D3C0042FFBA /* managedmemory.cpp */; };
@@ -910,6 +913,9 @@
 				1FC68EFD12E25555001748F4 /* hotel.cpp in Sources */,
 				1FC68EFE12E25559001748F4 /* timedperson.cpp in Sources */,
 				1FC68F1312E258E4001748F4 /* hotelguest.cpp in Sources */,
+				1F0ED14212E274D900125DD8 /* suite.cpp in Sources */,
+				1F0ED18E12E27BBB00125DD8 /* doubleroom.cpp in Sources */,
+				1F0ED18F12E27BBD00125DD8 /* singleroom.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
