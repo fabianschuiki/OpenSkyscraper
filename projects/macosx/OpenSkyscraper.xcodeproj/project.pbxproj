@@ -67,6 +67,9 @@
 		1FC68EFD12E25555001748F4 /* hotel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335712DF7FE40042FFBA /* hotel.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
 		1FD466BD12E30BF700085164 /* person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338312DF7FE40042FFBA /* person.cpp */; };
+		1FD466F012E3134B00085164 /* doubleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335512DF7FE40042FFBA /* doubleroom.cpp */; };
+		1FD466F112E3134E00085164 /* singleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335B12DF7FE40042FFBA /* singleroom.cpp */; };
+		1FD466F212E3135000085164 /* suite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335D12DF7FE40042FFBA /* suite.cpp */; };
 		1FF3DB9F12DD362400BC33C8 /* application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1FF3DB9E12DD362400BC33C8 /* application.mm */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -906,6 +909,9 @@
 				1FC68E7912E228AC001748F4 /* occupiable.cpp in Sources */,
 				1FC68EFD12E25555001748F4 /* hotel.cpp in Sources */,
 				1FD466BD12E30BF700085164 /* person.cpp in Sources */,
+				1FD466F012E3134B00085164 /* doubleroom.cpp in Sources */,
+				1FD466F112E3134E00085164 /* singleroom.cpp in Sources */,
+				1FD466F212E3135000085164 /* suite.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
