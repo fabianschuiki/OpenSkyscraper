@@ -71,6 +71,11 @@ double TowerTime::getTimeOfDay()
 	return fmod(getTime(), 24);
 }
 
+double TowerTime::getLogicalTimeOfDay()
+{
+	return fmod(getTime() - 1.5, 24) + 1.5;
+}
+
 bool TowerTime::isAfter(double a)
 {
 	return (getTimeOfDay() >= a);
@@ -124,7 +129,17 @@ double TowerTime::getStartOfDay()
 
 double TowerTime::getLogicalStartOfDay()
 {
-	return floor((getTime() - 1.5) / 24) * 24 + 1.5;
+	return floor((getTime() - 1.5) / 24) * 24;
+}
+
+double TowerTime::getTodayRandom(double a, double b)
+{
+	return randd(maxd(getTimeOfDay(), a), b) + getStartOfDay();
+}
+
+double TowerTime::getLogicalTodayRandom(double a, double b)
+{
+	return randd(maxd(getLogicalTimeOfDay(), a), b) + getLogicalStartOfDay();
 }
 
 

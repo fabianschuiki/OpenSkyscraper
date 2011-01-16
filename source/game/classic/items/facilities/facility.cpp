@@ -16,12 +16,13 @@ FacilityItem::FacilityItem(Tower * tower, ItemDescriptor * descriptor) : Item(to
 updateCeilingIfNeeded(this, &FacilityItem::updateCeiling, &updateIfNeeded),
 updateLightingIfNeeded(this, &FacilityItem::updateLighting, &updateBackgroundIfNeeded)
 {
+	constructed = false;
 	ceiling = true;
 	variant = 0;
 	lightsOn = false;
 	
 	//Update the lighting
-	updateLighting();
+	//updateLighting();
 }
 
 
@@ -145,6 +146,15 @@ void FacilityItem::advance(double dt)
 #pragma mark -
 #pragma mark State
 //----------------------------------------------------------------------------------------------------
+
+void FacilityItem::update()
+{
+	Item::update();
+	
+	//Update the ceiling and lighting if required
+	updateCeilingIfNeeded();
+	updateLightingIfNeeded();
+}
 
 void FacilityItem::updateBackground()
 {	

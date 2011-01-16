@@ -7,7 +7,7 @@
 
 namespace OSS {
 	namespace Classic {
-		class HotelGuest : public TimedPerson {
+		class HotelGuest : public Person {
 			
 			/**
 			 * Initialization
@@ -16,6 +16,7 @@ namespace OSS {
 			const Pointer<HotelItem> hotel;
 			
 			HotelGuest(Tower * tower, HotelItem * hotel);
+			virtual string getTypeName() { return "hotel/guest"; }
 			
 			//Intelligence
 		private:
@@ -24,8 +25,8 @@ namespace OSS {
 			double sleepTime;
 			bool didChooseSleepTime;
 			bool didSleep;
+			bool checkingOut;
 		public:
-			void think();
 			bool isCheckingOut();
 			
 			//Sleep
@@ -43,10 +44,10 @@ namespace OSS {
 			void shuffleAnimation();*/
 			
 			/**
-			 * State
+			 * Simulation
 			 */
 		public:
-			virtual void updateNextDestination();
+			virtual void think();
 		};
 	}
 }

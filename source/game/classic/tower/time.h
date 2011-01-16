@@ -28,6 +28,7 @@ namespace OSS {
 			void setTime(double t);
 			
 			double getTimeOfDay();
+			double getLogicalTimeOfDay();
 			bool isAfter(double a);
 			bool isBetween(double a, double b);
 			bool isBefore(double b);
@@ -42,6 +43,9 @@ namespace OSS {
 			double getStartOfDay();			//returns 0:00 of the current day
 			double getLogicalStartOfDay();	//same as the above, but returns the previous day's
 											//start until 1:30.
+			
+			double getTodayRandom(double a, double b);
+			double getLogicalTodayRandom(double a, double b);
 			
 			
 			/**

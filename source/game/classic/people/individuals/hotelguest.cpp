@@ -13,7 +13,7 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : TimedPerson(tower), hotel(hotel)
+HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : Person(tower), hotel(hotel)
 {
 	initialVisitDone = false;
 	hadDinner = false;
@@ -46,88 +46,95 @@ void HotelGuest::setIntention(Intention intention)
 	}
 }*/
 
-void HotelGuest::updateNextDestination()
+void HotelGuest::think()
 {
-	TimedPerson::updateNextDestination();
+	Person::think();
 	OSSObjectLog << std::endl;
 	
-	//In case we're awake...
-	if (!isAsleep()) {
-		
-		//Do the initial visit to the room
-		if (!initialVisitDone) {
+	//If we haven't slept yet
+	if (!didSleep) {
+		//In case we're awake...
+		if (!isAsleep()) {
+			
+			//Do the initial visit to the room
+			if (!initialVisitDone) {
+				if (!isAt(hotel)) {
+					OSSObjectLog << "doing initial visit" << std::endl;
+					setDestination(hotel);
+					return;
+				} else {
+					initialVisitDone = true;
+					setPauseDuration(0.5);
+					return;
+				}
+			}
+			
+			//Have dinner if it is before 21:00
+			if (!hadDinner) {
+				if (tower->time->getTimeOfDay() >= 18.5 && tower->time->getTimeOfDay() < 21 && isAt(hotel)) {
+					OSSObjectLog << "going to have dinner" << std::endl;
+					setDestination(NULL);
+					return;
+				} else {
+					hadDinner = true;
+					setPauseDuration(0.75);
+					return;
+				}
+			}
+			
+			//Go back to the room
 			if (!isAt(hotel)) {
-				OSSObjectLog << "doing initial visit" << std::endl;
-				setNextDestination(hotel, 0.5);
-				return;
-			} else
-				initialVisitDone = true;
-		}
-		
-		//Have dinner if it is before 21:00
-		if (!hadDinner) {
-			if (tower->time->getTime() >= 18.5 && tower->time->getTime() < 21 && isAt(hotel)) {
-				OSSObjectLog << "going to have dinner" << std::endl;
-				setNextDestination(NULL, 0.75);
+				OSSObjectLog << "heading back to the hotel" << std::endl;
+				setDestination(hotel);
 				return;
 			}
-			hadDinner = true;
-		}
-		
-		//Go back to the room
-		if (!isAt(hotel)) {
-			OSSObjectLog << "heading back to the hotel" << std::endl;
-			setNextDestination(hotel);
-			return;
-		}
-		
-		//Decide when to go to sleep
-		if (!didChooseSleepTime) {
-			//In case it is already the next day, we have to subtract 24h from our sleep times
-			double offset = (tower->time->getTime() < 6 ? 24 : 0);
 			
-			//Calculate the sleep time
-			sleepTime = randd(std::max<double>(tower->time->getTime(), 23 - offset), 25.5 - offset);
-			OSSObjectLog << "decided to go to sleep at " << sleepTime << std::endl;
-			setPauseEndTime(sleepTime);
-			didChooseSleepTime = true;
-			return;
+			//Decide when to go to sleep
+			if (!didChooseSleepTime) {
+				//Calculate the sleep time
+				sleepTime = tower->time->getLogicalTodayRandom(23, 25.5);
+				OSSObjectLog << "decided to go to sleep at " << sleepTime << std::endl;
+				setPauseEndTime(sleepTime);
+				didChooseSleepTime = true;
+				return;
+			}
+			
+			//Decide when to wake up and then go to sleep
+			if (!didSleep) {
+				setPauseEndTimeTomorrow(randd(6, 8));
+				OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
+				setAsleep(true);
+				return;
+			}
 		}
 		
-		//Decide when to wake up and then go to sleep
-		if (!didSleep) {
-			setPauseEndTimeDailyFuture(randd(6, 8));
-			OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
-			setAsleep(true);
+		//Otherwise we wake up
+		else {
+			didSleep = true;
+			setPauseEndTimeToday(7);
+			OSSObjectLog << "waking up..." << std::endl;
+			setAsleep(false);
 			return;
 		}
-		
-		/*//Decide when to leave
-		if (didSleep) {
-			setPauseDuration(randd(0.25, 0.75));
-			OSSObjectLog << "going to leave at " << getPauseEndTime() << std::endl;
-			return;
-		}*/
 	}
 	
-	//Otherwise we wake up
-	else {
-		didSleep = true;
-		setPauseEndTime(7);
-		OSSObjectLog << "waking up..." << std::endl;
-		setAsleep(false);
+	//Decide when to check out
+	if (!checkingOut) {
+		setPauseEndTimeToday(randd(tower->time->getLogicalTimeOfDay() + 0.25, 8));
+		OSSObjectLog << "decided to check out at " << getPauseEndTime() << std::endl;
+		checkingOut = true;
 		return;
 	}
 	
-	//Leave
-	setNextDestination(randd(tower->time->getTime() + 0.25, 8), NULL);
-	OSSObjectLog << "leaving at " << getNextDestinationTime() << std::endl;
-	assert(getNextDestinationTime() <= 12);
+	//Check out
+	setDestination(NULL);
+	OSSObjectLog << "checking out" << std::endl;
+	//assert(getNextDestinationTime() <= 12);
 }
 
 bool HotelGuest::isCheckingOut()
 {
-	return didSleep;
+	return checkingOut;
 }
 
 bool HotelGuest::isAsleep()

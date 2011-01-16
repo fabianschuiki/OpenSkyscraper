@@ -76,6 +76,7 @@ namespace OSS {
 			double advanceTime;
 			
 			//Construction
+		protected:
 			bool constructed;
 			double constructionProgress;
 			
@@ -131,7 +132,7 @@ namespace OSS {
 			/**
 			 * People
 			 */
-		private:
+		protected:
 			typedef std::set<Person *> People;
 			People people;
 			

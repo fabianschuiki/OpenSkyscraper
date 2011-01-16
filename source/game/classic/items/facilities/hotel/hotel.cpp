@@ -63,6 +63,7 @@ void HotelItem::didChangeOccupancy()
 		
 		while (guests.size() < numberOfGuests) {
 			HotelGuest * guest = new HotelGuest(tower, this);
+			guest->updateIfNeeded.parent = &updateItemIfNeeded;
 			guest->setType(index++ == 0 ? Person::kManType : Person::kWomanBType);
 			guests.insert(guest);
 		}
@@ -158,7 +159,7 @@ void HotelItem::advanceItem(double dt)
 		assert(guests.empty());
 	
 	//Simulate the guests
-	if (isOccupied() && !isAsleep())
+	if (isOccupied())
 		for (Guests::iterator it = guests.begin(); it != guests.end(); it++)
 			(*it)->advance(dt);
 }
@@ -213,10 +214,11 @@ void HotelItem::setInfested(bool i)
 
 void HotelItem::updateItem()
 {
-	FacilityItem::updateItem();
+	OccupiableItem::updateItem();
 	
 	//Update the guests if required.
-	for (Guests::iterator it = guests.begin(); it != guests.end(); it++)
+	Guests tempGuests = guests;
+	for (Guests::iterator it = tempGuests.begin(); it != tempGuests.end(); it++)
 		(*it)->updateIfNeeded();
 	
 	//Set the asleep state according to whether all guests have gone to sleep
@@ -225,7 +227,7 @@ void HotelItem::updateItem()
 
 void HotelItem::updateBackground()
 {
-	FacilityItem::updateBackground();
+	OccupiableItem::updateBackground();
 	
 	//Determine what slice of the textures we're supposed to show
 	unsigned int slice = getTextureSliceIndex();
@@ -239,6 +241,21 @@ void HotelItem::updateBackground()
 		backgrounds[0]->texture = Texture::named(getTextureBaseName() + "/1");
 		backgrounds[0]->textureRect = rectd((slice - 1) * 0.125, 0, 0.125, 1);
 	}
+}
+
+void HotelItem::updateOccupyAt()
+{
+	/*//Decide when guests will occupy this hotel. We do this by calculating the earliest time guests
+	//would want to occupy. This is either 17:00 or the current time, if it's later.
+	double earliest = maxd(tower->time->getTimeOfDay(), 17);
+	
+	//Then we have to calculate the actual time we'll get occupied.
+	double time = randd(earliest, 21) + tower->time->getLogicalStartOfDay();
+	
+	//Set the occupancy time
+	setOccupyAt(time);*/
+	
+	setOccupyAt(tower->time->getLogicalTodayRandom(17, 21));
 }
 
 

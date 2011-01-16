@@ -209,6 +209,20 @@ Route::Node * Person::getRouteNode()
 	return route->nextNode();
 }
 
+int Person::getStartFloor()
+{
+	if (!getRouteNode())
+		return 0;
+	return getRouteNode()->start.origin.y;
+}
+
+int Person::getEndFloor()
+{
+	if (!getRouteNode())
+		return 0;
+	return getRouteNode()->end.origin.y;
+}
+
 bool Person::isAtRouteNodeTransport()
 {
 	if (!getRouteNode())
@@ -256,7 +270,7 @@ void Person::setPauseEndTimeToday(double t)
 
 void Person::setPauseEndTimeTomorrow(double t)
 {
-	setPauseEndTimeTomorrow(t + 24);
+	setPauseEndTimeToday(t + 24);
 }
 
 void Person::setPauseDuration(double d)
@@ -328,7 +342,7 @@ void Person::updateRoute()
 		//whether the route's destination equals our destination's rect, and that we are either on
 		//the current route node's start or end floor.
 		if (!route || route->destination != getDestinationRect() ||
-			(!isOnStartFloor() && isOnEndFloor())) {
+			(!isOnStartFloor() && !isOnEndFloor())) {
 			
 			//Calculate a new route to the destination.
 			route = Route::findRoute(tower, getItemRect(), getDestinationRect());
@@ -341,6 +355,12 @@ void Person::updateRoute()
 				setItem(NULL);
 				setDestination(NULL);
 				setFloor(0);
+			}
+			
+			//Otherwise do the first step of the route to get us going.
+			else {
+				if (getRouteNode())
+					setItem(getRouteNode()->transport);
 			}
 		}
 		

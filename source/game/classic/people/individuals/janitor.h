@@ -15,6 +15,7 @@ namespace OSS {
 			
 			//Initialization
 			Janitor(Tower * tower, HousekeepingItem * housekeeping);
+			virtual string getTypeName() { return "hotel/janitor"; }
 			
 			//Hotel
 		private:

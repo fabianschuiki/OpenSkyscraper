@@ -35,6 +35,9 @@ namespace OSS {
 			double occupyAt;
 			
 		public:
+			double getOccupyAt();
+			void setOccupyAt(double oa);
+			
 			virtual void advanceItem(double dt);
 			virtual void advanceOccupancy(double dt);
 			
@@ -46,7 +49,7 @@ namespace OSS {
 			 */
 		public:
 			virtual void update();
-			virtual void updateOccupyAt();
+			virtual void updateOccupyAt() {}
 			
 			Updatable::Conditional<OccupiableItem> updateOccupyAtIfNeeded;
 		};

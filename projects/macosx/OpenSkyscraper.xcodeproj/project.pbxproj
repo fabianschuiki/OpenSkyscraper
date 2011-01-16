@@ -70,6 +70,10 @@
 		1FD466F012E3134B00085164 /* doubleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335512DF7FE40042FFBA /* doubleroom.cpp */; };
 		1FD466F112E3134E00085164 /* singleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335B12DF7FE40042FFBA /* singleroom.cpp */; };
 		1FD466F212E3135000085164 /* suite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335D12DF7FE40042FFBA /* suite.cpp */; };
+		1FD466F612E326DC00085164 /* hotelguest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337F12DF7FE40042FFBA /* hotelguest.cpp */; };
+		1FD4676F12E32F2200085164 /* stairslike.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337812DF7FE40042FFBA /* stairslike.cpp */; };
+		1FD4679812E3306E00085164 /* stairs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337612DF7FE40042FFBA /* stairs.cpp */; };
+		1FD4679E12E3308A00085164 /* escalator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337412DF7FE40042FFBA /* escalator.cpp */; };
 		1FF3DB9F12DD362400BC33C8 /* application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1FF3DB9E12DD362400BC33C8 /* application.mm */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -912,6 +916,10 @@
 				1FD466F012E3134B00085164 /* doubleroom.cpp in Sources */,
 				1FD466F112E3134E00085164 /* singleroom.cpp in Sources */,
 				1FD466F212E3135000085164 /* suite.cpp in Sources */,
+				1FD466F612E326DC00085164 /* hotelguest.cpp in Sources */,
+				1FD4676F12E32F2200085164 /* stairslike.cpp in Sources */,
+				1FD4679812E3306E00085164 /* stairs.cpp in Sources */,
+				1FD4679E12E3308A00085164 /* escalator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -94,17 +94,8 @@ void StairslikeItem::setInUse(bool inUse)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Basic Sprites
+#pragma mark State
 //----------------------------------------------------------------------------------------------------
-
-void StairslikeItem::initBackground()
-{
-	TransportItem::initBackground();
-	
-	//Setup the background texture rects
-	for (int i = 0; i < 2; i++)
-		backgrounds[i].textureRect.size = double2(1.0 / numAnimationFramesPerTexture, 1);
-}
 
 void StairslikeItem::updateBackground()
 {
@@ -117,12 +108,13 @@ void StairslikeItem::updateBackground()
 		textureName << "/floor" << i;
 		if (numAnimationFrames > numAnimationFramesPerTexture)
 			textureName << (getAnimationFrame() / numAnimationFramesPerTexture);
-		backgrounds[i].texture = Texture::named(baseTextureName + textureName.str());
+		backgrounds[i]->texture = Texture::named(baseTextureName + textureName.str());
+		backgrounds[i]->textureRect.size = double2(1.0 / numAnimationFramesPerTexture, 1);
 		
 		//Calculate the texture x coordinate
 		double x = (getAnimationFrame() % numAnimationFramesPerTexture);
 		x /= numAnimationFramesPerTexture;
-		backgrounds[i].textureRect.origin.x = x;
+		backgrounds[i]->textureRect.origin.x = x;
 	}
 }
 
@@ -135,9 +127,9 @@ void StairslikeItem::updateBackground()
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-void StairslikeItem::advance(double dt)
+void StairslikeItem::advanceItem(double dt)
 {
-	TransportItem::advance(dt);
+	TransportItem::advanceItem(dt);
 	
 	//Advance people's transit
 	People peopleToAdvance;
@@ -151,8 +143,8 @@ void StairslikeItem::advance(double dt)
 	
 	//Advance people's journey where transit is over
 	for (People::iterator p = peopleToAdvance.begin(); p != peopleToAdvance.end(); p++) {
-		(*p)->setFloor((*p)->getNextFloor());
-		(*p)->advanceJourney();
+		(*p)->setFloor((*p)->getEndFloor());
+		//(*p)->advanceJourney();
 	}
 	
 	//Animate the stairs if in use
@@ -169,10 +161,8 @@ void StairslikeItem::advance(double dt)
 #pragma mark People
 //----------------------------------------------------------------------------------------------------
 
-void StairslikeItem::addPerson(Person * person)
+void StairslikeItem::didAddPerson(Person * person)
 {
-	TransportItem::addPerson(person);
-	
 	//Create a transit progress entry for this person
 	transitProgress[person] = 0.0;
 	
@@ -180,15 +170,12 @@ void StairslikeItem::addPerson(Person * person)
 	setInUse(true);
 }
 
-void StairslikeItem::removePerson(Person * person)
+void StairslikeItem::willRemovePerson(Person * person)
 {
 	//Get rid of the transit progress entry
 	transitProgress.erase(person);
 	
-	//Actually remove the person
-	TransportItem::removePerson(person);
-	
 	//Stop the animation if there are no more people using this item
-	if (people.empty())
+	if (transitProgress.empty())
 		setInUse(false);
 }

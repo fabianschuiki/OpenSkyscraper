@@ -81,6 +81,7 @@ namespace OSS {
 			
 			virtual void updateItem();
 			virtual void updateBackground();
+			virtual void updateOccupyAt();
 			
 			
 			/**

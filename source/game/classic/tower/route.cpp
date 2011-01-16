@@ -211,8 +211,8 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 	for (std::set<int>::iterator floor = connectionFloors.begin(); floor != connectionFloors.end(); floor++) {
 		
 		//Find the transports on this floor
-		/*TowerStructure::ItemSet * items = &tower->transportItemsByFloor[*floor];
-		for (Tower::ItemSet::iterator item = items->begin(); item != items->end(); item++) {
+		TowerStructure::ItemSet items = tower->structure->getItems(*floor, kTransportCategory);
+		for (TowerStructure::ItemSet::iterator item = items.begin(); item != items.end(); item++) {
 			TransportItem * t = (TransportItem *)((Item *)*item);
 			
 			//Skip transports we've already used
@@ -233,7 +233,7 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 			if (findRoute(tower, t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute))
 				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
 					shortestRoute = newRoute;
-		}*/
+		}
 	}
 	
 	//If we have found a route, copy it to the old one

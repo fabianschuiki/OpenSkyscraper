@@ -113,7 +113,9 @@ namespace OSS {
 			virtual void didChangeDestination() {}
 			
 			bool hasRoute();
-			Route::Node * getRouteNode();			
+			Route::Node * getRouteNode();
+			int getStartFloor();
+			int getEndFloor();
 			bool isAtRouteNodeTransport();
 			bool isOnStartFloor();
 			bool isOnEndFloor();

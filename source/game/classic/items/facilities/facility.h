@@ -68,6 +68,7 @@ namespace OSS {
 			 * State
 			 */
 		public:
+			virtual void update();
 			virtual void updateBackground();
 			virtual void updateCeiling();
 			virtual void updateLighting() {}

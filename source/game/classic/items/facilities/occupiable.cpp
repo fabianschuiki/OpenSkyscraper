@@ -57,29 +57,23 @@ void OccupiableItem::setOccupancy(bool o)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark State
-//----------------------------------------------------------------------------------------------------
-
-void OccupiableItem::update()
-{
-	FacilityItem::update();
-	
-	//Update the occupyAt time if required
-	updateOccupyAtIfNeeded();
-}
-
-void OccupiableItem::updateOccupyAt()
-{
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
+
+double OccupiableItem::getOccupyAt()
+{
+	return occupyAt;
+}
+
+void OccupiableItem::setOccupyAt(double oa)
+{
+	if (occupyAt != oa) {
+		occupyAt = oa;
+		OSSObjectLog << getTypeName() << " will be occupied at " << oa << std::endl;
+	}
+}
+
+
 
 void OccupiableItem::advanceItem(double dt)
 {
@@ -118,5 +112,22 @@ void OccupiableItem::advanceOccupancy(double dt)
 
 bool OccupiableItem::isSufficientlyAttractive()
 {
-	return false;
+	return true;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
+
+void OccupiableItem::update()
+{
+	FacilityItem::update();
+	
+	//Update the occupyAt time if required
+	updateOccupyAtIfNeeded();
 }

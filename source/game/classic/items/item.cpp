@@ -37,7 +37,7 @@ updateBackgroundIfNeeded(this, &Item::updateBackground, &updateItemIfNeeded)
 	//Reset all member values
 	advanceTime = false;
 	
-	constructed = false;
+	constructed = true;
 	constructionProgress = 0;
 	
 	unifiedBackground = false;
@@ -58,8 +58,8 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 	switch (descriptor->type) {
 			//Structure
 		case kLobbyType:			instance = new LobbyItem(tower); break;
-		//case kStairsType:			instance = new StairsItem(tower); break;
-		//case kEscalatorType:		instance = new EscalatorItem(tower); break;
+		case kStairsType:			instance = new StairsItem(tower); break;
+		case kEscalatorType:		instance = new EscalatorItem(tower); break;
 			
 			//Elevator
 		/*case kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
@@ -121,8 +121,8 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 			//Structure
 		case kLobbyType:			return &LobbyItem::descriptor; break;
 		case kFloorType:			return &floorItemDescriptor; break;
-		//case kStairsType:			return &StairsItem::descriptor; break;
-		//case kEscalatorType:		return &EscalatorItem::descriptor; break;
+		case kStairsType:			return &StairsItem::descriptor; break;
+		case kEscalatorType:		return &EscalatorItem::descriptor; break;
 			
 			//Elevator
 		/*case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
