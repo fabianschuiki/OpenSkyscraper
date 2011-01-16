@@ -117,6 +117,16 @@ bool TowerTime::isWeekend()
 	return (getDayOfWeek() == 2);
 }
 
+double TowerTime::getStartOfDay()
+{
+	return floor(getTime() / 24) * 24;
+}
+
+double TowerTime::getLogicalStartOfDay()
+{
+	return floor((getTime() - 1.5) / 24) * 24 + 1.5;
+}
+
 
 
 

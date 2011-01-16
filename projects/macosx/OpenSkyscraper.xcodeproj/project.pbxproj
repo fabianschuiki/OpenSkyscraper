@@ -62,13 +62,11 @@
 		1FC68C0012E1BA77001748F4 /* window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FC68BFF12E1BA77001748F4 /* window.cpp */; };
 		1FC68D8B12E2146F001748F4 /* item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336712DF7FE40042FFBA /* item.cpp */; };
 		1FC68DAD12E21547001748F4 /* facility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335212DF7FE40042FFBA /* facility.cpp */; };
-		1FC68DC412E21593001748F4 /* person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338312DF7FE40042FFBA /* person.cpp */; };
 		1FC68DC712E215AB001748F4 /* transport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337A12DF7FE40042FFBA /* transport.cpp */; };
 		1FC68E7912E228AC001748F4 /* occupiable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335F12DF7FE40042FFBA /* occupiable.cpp */; };
 		1FC68EFD12E25555001748F4 /* hotel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335712DF7FE40042FFBA /* hotel.cpp */; };
-		1FC68EFE12E25559001748F4 /* timedperson.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338712DF7FE40042FFBA /* timedperson.cpp */; };
-		1FC68F1312E258E4001748F4 /* hotelguest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337F12DF7FE40042FFBA /* hotelguest.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
+		1FD466BD12E30BF700085164 /* person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338312DF7FE40042FFBA /* person.cpp */; };
 		1FF3DB9F12DD362400BC33C8 /* application.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1FF3DB9E12DD362400BC33C8 /* application.mm */; };
 		1FFFCBCA11FCD629005D8446 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FFFCBC911FCD629005D8446 /* libz.dylib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -904,12 +902,10 @@
 				1FC68C0012E1BA77001748F4 /* window.cpp in Sources */,
 				1FC68D8B12E2146F001748F4 /* item.cpp in Sources */,
 				1FC68DAD12E21547001748F4 /* facility.cpp in Sources */,
-				1FC68DC412E21593001748F4 /* person.cpp in Sources */,
 				1FC68DC712E215AB001748F4 /* transport.cpp in Sources */,
 				1FC68E7912E228AC001748F4 /* occupiable.cpp in Sources */,
 				1FC68EFD12E25555001748F4 /* hotel.cpp in Sources */,
-				1FC68EFE12E25559001748F4 /* timedperson.cpp in Sources */,
-				1FC68F1312E258E4001748F4 /* hotelguest.cpp in Sources */,
+				1FD466BD12E30BF700085164 /* person.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

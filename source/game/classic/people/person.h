@@ -100,6 +100,8 @@ namespace OSS {
 			Pointer<Item> destination;
 			Pointer<Route> route;
 			
+			double pauseEndTime;
+			
 		public:
 			Item * getDestination();
 			void setDestination(Item * d);
@@ -111,10 +113,17 @@ namespace OSS {
 			virtual void didChangeDestination() {}
 			
 			bool hasRoute();
-			Route::Node * getRouteNode();
+			Route::Node * getRouteNode();			
 			bool isAtRouteNodeTransport();
 			bool isOnStartFloor();
 			bool isOnEndFloor();
+			
+			double getPauseEndTime();
+			double getPauseDuration();
+			void setPauseEndTime(double t);			//[0, inf[
+			void setPauseEndTimeToday(double t);	//[0, 24[
+			void setPauseEndTimeTomorrow(double t);	//[0, 24[
+			void setPauseDuration(double d);
 			
 			
 			/**
@@ -122,6 +131,8 @@ namespace OSS {
 			 */
 		public:
 			virtual void advance(double dt);
+			virtual void advanceRoute(double dt);
+			virtual void think() {}
 			
 			virtual bool shouldBeAnimated();
 			

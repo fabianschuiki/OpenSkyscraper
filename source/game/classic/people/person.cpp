@@ -22,6 +22,7 @@ updateRouteIfNeeded(this, &Person::updateRoute, &updateIfNeeded)
 	arrivalTime = 0;
 	type = kManType;
 	stress = 0;
+	pauseEndTime = 0;
 }
 
 Person::~Person()
@@ -231,6 +232,40 @@ bool Person::isOnEndFloor()
 
 
 
+double Person::getPauseEndTime()
+{
+	return pauseEndTime;
+}
+
+double Person::getPauseDuration()
+{
+	return (getPauseEndTime() - getArrivalTime());
+}
+
+void Person::setPauseEndTime(double t)
+{
+	if (pauseEndTime != t) {
+		pauseEndTime = t;
+	}
+}
+
+void Person::setPauseEndTimeToday(double t)
+{
+	setPauseEndTime(tower->time->getLogicalStartOfDay() + t);
+}
+
+void Person::setPauseEndTimeTomorrow(double t)
+{
+	setPauseEndTimeTomorrow(t + 24);
+}
+
+void Person::setPauseDuration(double d)
+{
+	setPauseEndTime(getArrivalTime() + d);
+}
+
+
+
 
 
 //----------------------------------------------------------------------------------------------------
@@ -241,6 +276,25 @@ bool Person::isOnEndFloor()
 void Person::advance(double dt)
 {
 	GameObject::advance(dt);
+	
+	//Advance the route
+	advanceRoute(dt);
+	
+	//TODO: Advance animation and stuff
+}
+
+void Person::advanceRoute(double dt)
+{
+	//If we are at our destination, we need some new plans.
+	if (isAtDestination()) {
+		
+		//Check if the pause has passed
+		if (tower->time->getTime() >= getPauseEndTime()) {
+			
+			//Make the person think where to go next.
+			think();
+		}
+	}
 }
 
 bool Person::shouldBeAnimated()

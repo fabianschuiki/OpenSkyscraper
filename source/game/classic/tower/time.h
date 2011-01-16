@@ -39,6 +39,10 @@ namespace OSS {
 			bool isWeekday();
 			bool isWeekend();
 			
+			double getStartOfDay();			//returns 0:00 of the current day
+			double getLogicalStartOfDay();	//same as the above, but returns the previous day's
+											//start until 1:30.
+			
 			
 			/**
 			 * Triggering
