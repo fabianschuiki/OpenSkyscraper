@@ -58,14 +58,14 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 	switch (descriptor->type) {
 			//Structure
 		case kLobbyType:			instance = new LobbyItem(tower); break;
-		/*case kStairsType:			instance = new StairsItem(tower); break;
-		case kEscalatorType:		instance = new EscalatorItem(tower); break;
+		//case kStairsType:			instance = new StairsItem(tower); break;
+		//case kEscalatorType:		instance = new EscalatorItem(tower); break;
 			
 			//Elevator
-		case kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
+		/*case kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
 			
 			//Office
-		case kOfficeType:			instance = new OfficeItem(tower); break;
+		case kOfficeType:			instance = new OfficeItem(tower); break;*/
 			
 			//Hotel
 		case kSingleRoomType:		instance = new SingleRoomItem(tower); break;
@@ -73,7 +73,7 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 		case kSuiteType:			instance = new SuiteItem(tower); break;
 			
 			//Services
-		case kHousekeepingType:		instance = new HousekeepingItem(tower); break;*/
+		/*case kHousekeepingType:		instance = new HousekeepingItem(tower); break;*/
 	}
 	
 	//Initialize the item
@@ -121,14 +121,14 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 			//Structure
 		case kLobbyType:			return &LobbyItem::descriptor; break;
 		case kFloorType:			return &floorItemDescriptor; break;
-		/*case kStairsType:			return &StairsItem::descriptor; break;
-		case kEscalatorType:		return &EscalatorItem::descriptor; break;
+		//case kStairsType:			return &StairsItem::descriptor; break;
+		//case kEscalatorType:		return &EscalatorItem::descriptor; break;
 			
 			//Elevator
-		case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
+		/*case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
 			
 			//Office
-		case kOfficeType:			return &OfficeItem::descriptor; break;
+		case kOfficeType:			return &OfficeItem::descriptor; break;*/
 			
 			//Hotel
 		case kSingleRoomType:		return &SingleRoomItem::descriptor; break;
@@ -136,7 +136,7 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 		case kSuiteType:			return &SuiteItem::descriptor; break;
 			
 			//Services
-		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;*/
+		/*case kHousekeepingType:		return &HousekeepingItem::descriptor; break;*/
 	}
 	return NULL;
 }
@@ -242,7 +242,7 @@ bool Item::shouldAdvance(string identifier, double period)
 	//If the difference between the advance time and the timestamp for this identifier exceeds the
 	//period, return true.
 	if (advanceTime - advanceTimestamps[identifier] >= period) {
-		advanceTimestamps[identifier] -= period;
+		advanceTimestamps[identifier] = advanceTime;
 		return true;
 	}
 	
@@ -348,11 +348,15 @@ void Item::updateConstruction()
 			//Calculate the worker's new rect
 			recti rect;
 			rect.size = int2(2, 1);
-			rect.origin.x = randi(0, getRect().size.x - rect.size.x);
+			rect.origin.x = getRect().minX() + randi(0, getRect().size.x - rect.size.x);
 			rect.origin.y = getMinFloor() + it->first;
 			
+			//Convert to world coordinates and adjust the height
+			rectd worldRect = tower->structure->cellToWorld(rect);
+			worldRect.size.y = 24;
+			
 			//Set the worker's rect
-			it->second->rect = tower->structure->cellToWorld(rect);
+			it->second->rect = worldRect;
 			
 			//Load the worker's texture
 			it->second->texture = Texture::named("simtower/construction/workers");
@@ -465,7 +469,7 @@ void Item::drawConstruction(rectd dirtyRect)
 		//the quad's origin.
 		double2 offset;
 		if (!isWidthFlexible())
-			offset = rect.origin;
+			offset = quad.rect.origin;
 		
 		//Autogenerate the texture rectangle.
 		quad.autogenerateTextureRect(true, false, offset);
