@@ -12,6 +12,8 @@
 		1F0D409111FEF2EB00C6D787 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0D409011FEF2EB00C6D787 /* SDL.framework */; };
 		1F0D40CB11FEF48500C6D787 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40CA11FEF48500C6D787 /* SDLMain.m */; };
 		1F0D40E011FEF7C900C6D787 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40DF11FEF7C900C6D787 /* main.cpp */; };
+		1F11E3FD12E49AE500AB0C20 /* housekeeping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335912DF7FE40042FFBA /* housekeeping.cpp */; };
+		1F11E40C12E49C6700AB0C20 /* janitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338112DF7FE40042FFBA /* janitor.cpp */; };
 		1F32308112DF5DFC0042FFBA /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32300912DF5D3C0042FFBA /* application.cpp */; };
 		1F32308412DF5E160042FFBA /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301612DF5D3C0042FFBA /* object.cpp */; };
 		1F32308512DF5E180042FFBA /* managedmemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301412DF5D3C0042FFBA /* managedmemory.cpp */; };
@@ -920,6 +922,8 @@
 				1FD4676F12E32F2200085164 /* stairslike.cpp in Sources */,
 				1FD4679812E3306E00085164 /* stairs.cpp in Sources */,
 				1FD4679E12E3308A00085164 /* escalator.cpp in Sources */,
+				1F11E3FD12E49AE500AB0C20 /* housekeeping.cpp in Sources */,
+				1F11E40C12E49C6700AB0C20 /* janitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

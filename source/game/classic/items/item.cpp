@@ -69,9 +69,7 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 		case kSingleRoomType:		instance = new SingleRoomItem(tower); break;
 		case kDoubleRoomType:		instance = new DoubleRoomItem(tower); break;
 		case kSuiteType:			instance = new SuiteItem(tower); break;
-			
-			//Services
-		/*case kHousekeepingType:		instance = new HousekeepingItem(tower); break;*/
+		case kHousekeepingType:		instance = new HousekeepingItem(tower); break;
 	}
 	
 	//Initialize the item
@@ -132,9 +130,7 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 		case kSingleRoomType:		return &SingleRoomItem::descriptor; break;
 		case kDoubleRoomType:		return &DoubleRoomItem::descriptor; break;
 		case kSuiteType:			return &SuiteItem::descriptor; break;
-			
-			//Services
-		/*case kHousekeepingType:		return &HousekeepingItem::descriptor; break;*/
+		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;
 	}
 	return NULL;
 }

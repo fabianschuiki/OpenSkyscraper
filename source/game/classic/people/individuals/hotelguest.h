@@ -1,7 +1,8 @@
 #ifndef OSS_CLASSIC_PEOPLE_INDIVIDUALS_HOTELGUEST_H
 #define OSS_CLASSIC_PEOPLE_INDIVIDUALS_HOTELGUEST_H
 
-#include "../timedperson.h"
+#include "../person.h"
+
 #include "../../items/facilities/hotel/hotel.h"
 
 
@@ -18,35 +19,30 @@ namespace OSS {
 			HotelGuest(Tower * tower, HotelItem * hotel);
 			virtual string getTypeName() { return "hotel/guest"; }
 			
-			//Intelligence
+			/**
+			 * Animation
+			 */
+			virtual void updateAnimation();
+			virtual bool shouldAnimate();
+			
+			/**
+			 * Simulation
+			 */
 		private:
 			bool initialVisitDone;
 			bool hadDinner;
 			double sleepTime;
 			bool didChooseSleepTime;
+			bool asleep;
 			bool didSleep;
 			bool checkingOut;
-		public:
-			bool isCheckingOut();
 			
-			//Sleep
-		private:
-			bool asleep;
 		public:
 			bool isAsleep();
 			void setAsleep(bool asleep);
 			
-			//Animation Sprite
-			/*void initAnimationSprite();*/
-			void updateAnimation();
+			bool isCheckingOut();
 			
-			bool shouldAnimate();
-			/*void shuffleAnimation();*/
-			
-			/**
-			 * Simulation
-			 */
-		public:
 			virtual void think();
 		};
 	}

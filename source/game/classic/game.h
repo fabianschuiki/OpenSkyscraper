@@ -97,6 +97,9 @@ namespace OSS {
 			
 			virtual bool eventScrollWheel(ScrollWheelEvent * event);
 			virtual bool eventKeyDown(KeyEvent * event);
+			
+			//DEBUG
+			void buildDebugTower();
 		};
 	}
 }

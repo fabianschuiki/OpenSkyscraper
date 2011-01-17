@@ -241,16 +241,6 @@ void HotelItem::updateBackground()
 
 void HotelItem::updateOccupyAt()
 {
-	/*//Decide when guests will occupy this hotel. We do this by calculating the earliest time guests
-	//would want to occupy. This is either 17:00 or the current time, if it's later.
-	double earliest = maxd(tower->time->getTimeOfDay(), 17);
-	
-	//Then we have to calculate the actual time we'll get occupied.
-	double time = randd(earliest, 21) + tower->time->getLogicalStartOfDay();
-	
-	//Set the occupancy time
-	setOccupyAt(time);*/
-	
 	setOccupyAt(tower->time->getLogicalTodayRandom(17, 21));
 }
 

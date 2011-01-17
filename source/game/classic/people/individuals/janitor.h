@@ -1,40 +1,57 @@
 #ifndef OSS_CLASSIC_PEOPLE_INDIVIDUALS_JANITOR_H
 #define OSS_CLASSIC_PEOPLE_INDIVIDUALS_JANITOR_H
 
-#include "../timedperson.h"
+#include "../person.h"
+
+#include "../../items/facilities/hotel/hotel.h"
+#include "../../items/facilities/hotel/housekeeping.h"
 
 
 namespace OSS {
-	namespace Classic {
-		class HousekeepingItem;
-		class HotelItem;
-		
-		class Janitor : public TimedPerson {
+	namespace Classic {		
+		class Janitor : public Person {
+			
+			/**
+			 * Initialization
+			 */
 		public:
 			const Pointer<HousekeepingItem> housekeeping;
 			
-			//Initialization
 			Janitor(Tower * tower, HousekeepingItem * housekeeping);
 			virtual string getTypeName() { return "hotel/janitor"; }
 			
-			//Hotel
+			
+			/**
+			 * Hotel
+			 */
 		private:
 			Pointer<HotelItem> assignedHotel;
+			
 		public:
 			HotelItem * getAssignedHotel();
 			void setAssignedHotel(HotelItem * hotel);
 			bool hasAssignedHotel();
-			void onChangeAssignedHotel();
 			
-			//Intelligence
-			void think();
+			virtual void willChangeAssignedHotel();
+			virtual void didChangeAssignedHotel();
 			
-			//Animation Sprite
-			void initAnimationSprite();
-			void updateAnimationSprite();
 			
-			bool shouldAnimate();
-			void shuffleAnimation();
+			/**
+			 * Animation
+			 */
+		public:
+			virtual void updateAnimation();
+			virtual bool shouldAnimate();
+			
+			
+			/**
+			 * Simulation
+			 */
+		private:
+			bool cleaningDone;
+			
+		public:
+			virtual void think();
 		};
 	}
 }

@@ -426,6 +426,12 @@ void TowerStructure::setConstructionsHalted(bool ch)
 }
 
 TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
+																 recti rect)
+{
+	return constructItem(descriptor, rect, rect);
+}
+
+TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
 																 recti rect, recti initialRect)
 {
 	if (!descriptor)
@@ -595,7 +601,7 @@ void TowerStructure::advance(double dt)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Drawing
+#pragma mark State
 //----------------------------------------------------------------------------------------------------
 
 void TowerStructure::update()
@@ -634,4 +640,20 @@ void TowerStructure::draw(rectd dirtyRect)
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
 		if ((*it)->getCategory() == kTransportCategory)
 			(*it)->draw(dirtyRect);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+bool TowerStructure::sendEventToNextResponders(OSS::Event * event)
+{
+	for (ItemPointerSet::iterator it = items.begin(); it != items.end(); it++)
+		if ((*it) && (*it)->sendEvent(event)) return true;
+	return GameObject::sendEventToNextResponders(event);
 }

@@ -29,20 +29,68 @@ HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : Person(tower), hotel(
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Intelligence
+#pragma mark Animation
 //----------------------------------------------------------------------------------------------------
 
-/*HotelGuest::Intention HotelGuest::getIntention()
+void HotelGuest::updateAnimation()
 {
-	return intention;
+	Person::updateAnimation();
+	if (!shouldAnimate())
+		return;
+	
+	//Initialize the animation sprite if required
+	if (!animationSprite) {
+		animationSprite = new Sprite;
+		
+		//Load the texture and set the slice size
+		animationSprite->texture = Texture::named("simtower/facilities/hotel/guests");
+		animationSprite->rect = rectd(0, 0, 16, 24);
+		animationSprite->textureRect.size.x = (1.0 / 16);
+	}
+	
+	//Set the animation index
+	unsigned int animationIndex = (getGender() == kMale ? randi(0, 10) : randi(11, 15));
+	
+	//Position the guest
+	int2 position = hotel->getRect().origin;
+	position.x += randi(0, hotel->getRect().size.x - 2);
+	animationSprite->rect.origin = tower->structure->cellToWorld(position);
+	
+	//Set the texture rect
+	animationSprite->textureRect.origin.x = animationIndex / 16.0;
 }
 
-void HotelGuest::setIntention(Intention intention)
+bool HotelGuest::shouldAnimate()
 {
-	if (this->intention != intention) {
-		this->intention = intention;
+	return isAt(hotel) && !asleep;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+bool HotelGuest::isAsleep()
+{
+	return asleep;
+}
+
+void HotelGuest::setAsleep(bool asleep)
+{
+	if (this->asleep != asleep) {
+		this->asleep = asleep;
+		hotel->updateItemIfNeeded.setNeeded();
 	}
-}*/
+}
+
+bool HotelGuest::isCheckingOut()
+{
+	return checkingOut;
+}
 
 void HotelGuest::think()
 {
@@ -132,76 +180,3 @@ void HotelGuest::think()
 	
 	setPauseEndTimeToday(12);
 }
-
-bool HotelGuest::isCheckingOut()
-{
-	return checkingOut;
-}
-
-bool HotelGuest::isAsleep()
-{
-	return asleep;
-}
-
-void HotelGuest::setAsleep(bool asleep)
-{
-	if (this->asleep != asleep) {
-		this->asleep = asleep;
-		//hotel->onChangeGuestAsleep();
-		hotel->updateItemIfNeeded.setNeeded();
-	}
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Animation Sprite
-//----------------------------------------------------------------------------------------------------
-
-void HotelGuest::updateAnimation()
-{
-	Person::updateAnimation();
-	
-	if (!shouldAnimate())
-		return;
-	
-	//Initialize the animation sprite if required
-	if (!animationSprite) {
-		animationSprite = new Sprite;
-		
-		//Load the texture and set the slice size
-		animationSprite->texture = Texture::named("simtower/facilities/hotel/guests");
-		animationSprite->rect = rectd(0, 0, 16, 24);
-		animationSprite->textureRect.size.x = (1.0 / 16);
-	}
-	
-	//Set the animation index
-	unsigned int animationIndex = (getGender() == kMale ? randi(0, 10) : randi(11, 15));
-	
-	//Position the guest
-	int2 position = hotel->getRect().origin;
-	position.x += randi(0, hotel->getRect().size.x - 2);
-	animationSprite->rect.origin = tower->structure->cellToWorld(position);
-	
-	//Set the texture rect
-	animationSprite->textureRect.origin.x = animationIndex / 16.0;
-}
-
-bool HotelGuest::shouldAnimate()
-{
-	return isAt(hotel) && !asleep;
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark State
-//----------------------------------------------------------------------------------------------------
-
-

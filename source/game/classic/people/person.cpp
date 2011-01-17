@@ -198,6 +198,7 @@ void Person::setDestination(Item * d)
 		destination = d;
 		didChangeDestination();
 		updateRouteIfNeeded.setNeeded();
+		setPauseEndTime(0);
 	}
 }
 
@@ -293,7 +294,7 @@ void Person::setPauseEndTimeTomorrow(double t)
 
 void Person::setPauseDuration(double d)
 {
-	setPauseEndTime(getArrivalTime() + d);
+	setPauseEndTime(/*getArrivalTime()*/tower->time->getTime() + d);
 }
 
 

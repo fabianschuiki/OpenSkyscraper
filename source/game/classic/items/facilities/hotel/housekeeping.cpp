@@ -27,42 +27,11 @@ ItemDescriptor HousekeepingItem::descriptor = {
 
 HousekeepingItem::HousekeepingItem(Tower * tower) : FacilityItem(tower, &descriptor)
 {
-}
-
-void HousekeepingItem::init()
-{
-	FacilityItem::init();
-	initJanitors();
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Basic Sprites
-//----------------------------------------------------------------------------------------------------
-
-void HousekeepingItem::initBackground()
-{
-	FacilityItem::initBackground();
-	backgrounds[0].texture = Texture::named("simtower/facilities/housekeeping");
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Simulation
-//----------------------------------------------------------------------------------------------------
-
-void HousekeepingItem::advance(double dt)
-{
-	FacilityItem::advance(dt);
-	updateJanitors();
+	//Create the janitors that work in this housekeeping facility
+	for (int i = 0; i < 6; i++) {
+		Janitor * janitor = new Janitor(tower, this);
+		janitors.insert(janitor);
+	}
 }
 
 
@@ -74,21 +43,6 @@ void HousekeepingItem::advance(double dt)
 #pragma mark Janitors
 //----------------------------------------------------------------------------------------------------
 
-void HousekeepingItem::initJanitors()
-{
-	janitors.clear();
-	for (int i = 0; i < 6; i++) {
-		Janitor * janitor = new Janitor(tower, this);
-		janitors.insert(janitor);
-	}
-}
-
-void HousekeepingItem::updateJanitors()
-{
-	for (JanitorSet::iterator i = janitors.begin(); i != janitors.end(); i++)
-		(*i)->update();
-}
-
 void HousekeepingItem::onJanitorDone(Janitor * janitor)
 {
 	if (!janitor) return;
@@ -97,15 +51,16 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 	
 	//Find the leftmost hotel on the closest floor that is dirty
 	HotelItem * nextHotel = NULL;
-	for (Tower::ItemIDMap::iterator i = tower->items.begin(); i != tower->items.end(); i++) {
+	TowerStructure::ItemSet hotels = tower->structure->getItems(kHotelGroup);
+	for (TowerStructure::ItemSet::iterator i = hotels.begin(); i != hotels.end(); i++) {
 		
-		//Skip non-hotel items
-		if (i->second->getGroup() != kHotelGroup)
+		//Skip housekeepers
+		if ((*i)->getType() == kHousekeepingType)
 			continue;
-		HotelItem * hotel = (HotelItem *)((Item *)i->second);
+		HotelItem * hotel = (HotelItem *)((Item *)*i);
 		
 		//Check whether the hotel is dirty and doesn't have a janitor yet
-		if (hotel->getState() == HotelItem::kDirtyState && !hotel->hasAssignedJanitor()) {
+		if (hotel->isDirty() && !hotel->hasAssignedJanitor()) {
 			if (nextHotel) {				
 				//Calculate the distance between the items
 				int distance = abs(hotel->getMinFloor() - janitor->getFloor());
@@ -135,18 +90,35 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
+
+void HousekeepingItem::updateBackground()
+{
+	FacilityItem::updateBackground();
+	
+	//Load the appropriate texture
+	backgrounds[0]->texture = Texture::named("simtower/facilities/housekeeping");
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Events
 //----------------------------------------------------------------------------------------------------
 
-void HousekeepingItem::eventHotelVacated(HotelItem * hotel)
+void HousekeepingItem::eventHotelVacated(ItemEvent<HotelItem> * event)
 {
-	OSSObjectLog << hotel->description() << std::endl;
+	OSSObjectLog << event->item->description() << std::endl;
 	
 	//Find a janitor to assign to this hotel if it doesn't yet have a janitor assigned
-	if (!hotel->hasAssignedJanitor()) {
+	if (!event->item->hasAssignedJanitor()) {
 		for (JanitorSet::iterator i = janitors.begin(); i != janitors.end(); i++) {
 			if ((*i)->isAt(this)) {
-				(*i)->setAssignedHotel(hotel);
+				(*i)->setAssignedHotel(event->item);
 				break;
 			}
 		}

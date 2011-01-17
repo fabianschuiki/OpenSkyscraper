@@ -17,7 +17,8 @@ using namespace Classic;
 TowerFunds::TowerFunds(Tower * tower) : tower(tower)
 {
 	//Set the initial money to 2'000'000
-	funds = 2e6;
+	//TODO: change back to 2e6
+	funds = 20e6;
 	
 	//Initialize the funds transfer sound effect.
 	transferSound = new SoundEffect();

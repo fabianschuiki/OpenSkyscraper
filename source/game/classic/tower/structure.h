@@ -159,6 +159,7 @@ namespace OSS {
 				string failureReason;
 			} ConstructionResult;
 			
+			ConstructionResult constructItem(ItemDescriptor * descriptor, recti rect);
 			ConstructionResult constructItem(ItemDescriptor * descriptor,
 											 recti rect, recti initialRect);
 			
@@ -182,6 +183,13 @@ namespace OSS {
 			 */
 		public:
 			virtual void draw(rectd dirtyRect);
+			
+			
+			/**
+			 * Events
+			 */
+		public:
+			bool sendEventToNextResponders(OSS::Event * event);
 		};
 	}
 }
