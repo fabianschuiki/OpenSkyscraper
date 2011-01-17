@@ -37,11 +37,11 @@ namespace OSS {
 			void setAsleep(bool asleep);
 			
 			//Animation Sprite
-			/*void initAnimationSprite();
-			void updateAnimationSprite();
+			/*void initAnimationSprite();*/
+			void updateAnimation();
 			
 			bool shouldAnimate();
-			void shuffleAnimation();*/
+			/*void shuffleAnimation();*/
 			
 			/**
 			 * Simulation

@@ -131,12 +131,14 @@ namespace OSS {
 			/**
 			 * Simulation
 			 */
-		public:
+		public:			
 			virtual void advance(double dt);
 			virtual void advanceRoute(double dt);
+			virtual void advanceAnimation(double dt);
 			virtual void think() {}
 			
-			virtual bool shouldBeAnimated();
+			virtual bool shouldAnimate() { return false; }
+			virtual double getAnimationPeriod() { return 0.75; }
 			
 			
 			/**
@@ -145,17 +147,20 @@ namespace OSS {
 		public:
 			virtual void update();
 			virtual void updateRoute();
+			virtual void updateAnimation() {}
 			
 			Updatable::Conditional<Person> updateRouteIfNeeded;
+			Updatable::Conditional<Person> updateAnimationIfNeeded;
 			
 			
 			/**
 			 * Drawing
 			 */
-		public:
-			virtual void draw(rectd dirtyRect);
+		protected:
+			Pointer<Sprite> animationSprite;
 			
-			virtual bool shouldBeDrawn();
+		public:
+			virtual void drawAnimation(rectd dirtyRect);
 		};
 	}
 }

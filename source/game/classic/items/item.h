@@ -71,18 +71,11 @@ namespace OSS {
 			/**
 			 * Simulation
 			 */
-		private:
-			map<string, double> advanceTimestamps;
-			double advanceTime;
-			
-			//Construction
 		protected:
 			bool constructed;
 			double constructionProgress;
 			
-		public:
-			bool shouldAdvance(string identifier, double period);
-			
+		public:			
 			bool isConstructed();
 			void setConstructed(bool c);
 			

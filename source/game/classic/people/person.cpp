@@ -13,7 +13,8 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 Person::Person(Tower * tower) : tower(tower),
-updateRouteIfNeeded(this, &Person::updateRoute, &updateIfNeeded)
+updateRouteIfNeeded(this, &Person::updateRoute, &updateIfNeeded),
+updateAnimationIfNeeded(this, &Person::updateAnimation, &updateIfNeeded)
 {
 	assert(tower);
 	
@@ -77,6 +78,9 @@ void Person::setItem(Item * i)
 		
 		//Update the route
 		updateRouteIfNeeded.setNeeded();
+		
+		//Also update the animation
+		updateAnimationIfNeeded.setNeeded();
 	}
 }
 
@@ -294,7 +298,9 @@ void Person::advance(double dt)
 	//Advance the route
 	advanceRoute(dt);
 	
-	//TODO: Advance animation and stuff
+	//Advance the animation if we're supposed to
+	if (shouldAnimate())
+		advanceAnimation(dt);
 }
 
 void Person::advanceRoute(double dt)
@@ -311,9 +317,11 @@ void Person::advanceRoute(double dt)
 	}
 }
 
-bool Person::shouldBeAnimated()
+void Person::advanceAnimation(double dt)
 {
-	return false;
+	//Update the animation, which means that the animation index and location get changed.
+	if (shouldAdvance("animation", getAnimationPeriod()))
+		updateAnimationIfNeeded.setNeeded();
 }
 
 
@@ -331,6 +339,9 @@ void Person::update()
 	
 	//Update the route if required
 	updateRouteIfNeeded();
+	
+	//Update the animation if required
+	updateAnimationIfNeeded();
 }
 
 void Person::updateRoute()
@@ -396,12 +407,8 @@ void Person::updateRoute()
 #pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
-void Person::draw(rectd dirtyRect)
+void Person::drawAnimation(rectd dirtyRect)
 {
-	GameObject::draw(dirtyRect);
-}
-
-bool Person::shouldBeDrawn()
-{
-	return false;
+	if (animationSprite && shouldAnimate())
+		animationSprite->draw();
 }

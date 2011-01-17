@@ -34,9 +34,7 @@ updateBackgroundIfNeeded(this, &Item::updateBackground, &updateItemIfNeeded)
 {
 	assert(tower && descriptor);
 	
-	//Reset all member values
-	advanceTime = false;
-	
+	//Reset all member values	
 	constructed = true;
 	constructionProgress = 0;
 	
@@ -233,24 +231,6 @@ int Item::getMinFloor() const
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-bool Item::shouldAdvance(string identifier, double period)
-{
-	//If there's no timestamp for this identifier, create one and set it to 0.
-	if (!advanceTimestamps.count(identifier))
-		advanceTimestamps[identifier] = 0;
-	
-	//If the difference between the advance time and the timestamp for this identifier exceeds the
-	//period, return true.
-	if (advanceTime - advanceTimestamps[identifier] >= period) {
-		advanceTimestamps[identifier] = advanceTime;
-		return true;
-	}
-	
-	return false;
-}
-
-
-
 bool Item::isConstructed()
 {
 	return constructed;
@@ -268,9 +248,6 @@ void Item::setConstructed(bool c)
 
 void Item::advance(double dt)
 {
-	//Advance the overall time value
-	advanceTime += dt;
-	
 	//If we're not yet constructed, advance the construction.
 	if (!isConstructed() && !tower->structure->areConstructionsHalted())
 		advanceConstruction(dt);
@@ -504,8 +481,7 @@ void Item::drawPeople(rectd dirtyRect)
 {
 	//Iterate through the people that are currently at this item and draw the ones that want to be.
 	for (People::iterator it = people.begin(); it != people.end(); it++)
-		if ((*it)->shouldBeDrawn())
-			(*it)->draw(dirtyRect);
+		(*it)->drawAnimation(dirtyRect);
 }
 
 

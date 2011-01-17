@@ -160,40 +160,39 @@ void HotelGuest::setAsleep(bool asleep)
 #pragma mark Animation Sprite
 //----------------------------------------------------------------------------------------------------
 
-/*void HotelGuest::initAnimationSprite()
-{	
-	//Load the texture and set the slice size
-	animationSprite.texture = Texture::named("simtower/facilities/hotel/guests");
-	animationSprite.rect = rectd(0, 0, 16, 24);
-	animationSprite.textureRect.size.x = (1.0 / 16);
-	
-	//Do the rest of the initialization
-	TimedPerson::initAnimationSprite();
-}
-
-void HotelGuest::updateAnimationSprite()
+void HotelGuest::updateAnimation()
 {
-	TimedPerson::updateAnimationSprite();
+	Person::updateAnimation();
+	
+	if (!shouldAnimate())
+		return;
+	
+	//Initialize the animation sprite if required
+	if (!animationSprite) {
+		animationSprite = new Sprite;
+		
+		//Load the texture and set the slice size
+		animationSprite->texture = Texture::named("simtower/facilities/hotel/guests");
+		animationSprite->rect = rectd(0, 0, 16, 24);
+		animationSprite->textureRect.size.x = (1.0 / 16);
+	}
+	
+	//Set the animation index
+	unsigned int animationIndex = (getGender() == kMale ? randi(0, 10) : randi(11, 15));
+	
+	//Position the guest
+	int2 position = hotel->getRect().origin;
+	position.x += randi(0, hotel->getRect().size.x - 2);
+	animationSprite->rect.origin = tower->structure->cellToWorld(position);
 	
 	//Set the texture rect
-	animationSprite.textureRect.origin.x = getAnimationIndex() / 16.0;
+	animationSprite->textureRect.origin.x = animationIndex / 16.0;
 }
 
 bool HotelGuest::shouldAnimate()
 {
-	return isAt(hotel);
+	return isAt(hotel) && !asleep;
 }
-
-void HotelGuest::shuffleAnimation()
-{
-	TimedPerson::shuffleAnimation();
-	
-	//Set the animation index
-	setAnimationIndex(getGender() == kMale ? randi(0, 10) : randi(11, 15));
-	
-	//Position the guest
-	setAnimationLocation(int2(randi(0, hotel->getRect().size.x - 2), 0));
-}*/
 
 
 
