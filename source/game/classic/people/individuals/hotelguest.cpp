@@ -21,8 +21,6 @@ HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : Person(tower), hotel(
 	didSleep = false;
 	didChooseSleepTime = false;
 	asleep = false;
-	
-	//initAnimationSprite();
 }
 
 
@@ -49,7 +47,7 @@ void HotelGuest::setIntention(Intention intention)
 void HotelGuest::think()
 {
 	Person::think();
-	OSSObjectLog << std::endl;
+	//OSSObjectLog << std::endl;
 	
 	//If we haven't slept yet
 	if (!didSleep) {
@@ -127,9 +125,12 @@ void HotelGuest::think()
 	}
 	
 	//Check out
-	setDestination(NULL);
-	OSSObjectLog << "checking out" << std::endl;
-	//assert(getNextDestinationTime() <= 12);
+	if (!isAt(NULL)) {
+		setDestination(NULL);
+		OSSObjectLog << "checking out" << std::endl;
+	}
+	
+	setPauseEndTimeToday(12);
 }
 
 bool HotelGuest::isCheckingOut()
@@ -147,7 +148,7 @@ void HotelGuest::setAsleep(bool asleep)
 	if (this->asleep != asleep) {
 		this->asleep = asleep;
 		//hotel->onChangeGuestAsleep();
-		hotel->updateBackgroundIfNeeded.setNeeded();
+		hotel->updateItemIfNeeded.setNeeded();
 	}
 }
 

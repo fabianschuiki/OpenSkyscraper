@@ -138,7 +138,7 @@ namespace OSS {
 			virtual void think() {}
 			
 			virtual bool shouldAnimate() { return false; }
-			virtual double getAnimationPeriod() { return 0.75; }
+			virtual double getAnimationPeriod() { return 1; }
 			
 			
 			/**

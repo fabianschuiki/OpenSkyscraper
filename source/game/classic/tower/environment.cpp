@@ -1,6 +1,6 @@
 #include "environment.h"
 
-#include "tower.h"
+#include "person.h"
 
 using namespace OSS;
 using namespace Classic;
@@ -15,7 +15,8 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 TowerEnvironment::TowerEnvironment(Tower * tower) : tower(tower),
-updatePopulationIfNeeded(this, &TowerEnvironment::updatePopulation)
+updatePopulationIfNeeded(this, &TowerEnvironment::updatePopulation, &updateIfNeeded),
+updatePeopleIfNeeded(this, &TowerEnvironment::updatePeople, &updateIfNeeded)
 {
 	rating = 1;
 	population = 0;
@@ -79,15 +80,89 @@ void TowerEnvironment::setPopulation(unsigned int p)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark People
+//----------------------------------------------------------------------------------------------------
+
+void TowerEnvironment::addPerson(Person * p)
+{
+	if (!p) return;
+	OSSObjectLog << "created person " << p->description() << std::endl;
+	existingPeople.insert(p);
+	
+	//Make sure the update needs are propagated appropriately to this instance
+	p->updateIfNeeded.parent = &updatePeopleIfNeeded;
+}
+
+void TowerEnvironment::removePerson(Person * p)
+{
+	if (!p) return;
+	OSSObjectLog << "killed person " << p->description() << std::endl;
+	existingPeople.erase(p);
+	
+	//Undo the update propagation
+	p->updateIfNeeded.parent = NULL;
+}
+
+void TowerEnvironment::addPersonToTower(Person * p)
+{
+	if (!p) return;
+	OSSObjectLog << p->description() << " moved in" << std::endl;
+	peopleInTower.insert(p);
+}
+
+void TowerEnvironment::removePersonFromTower(Person * p)
+{
+	if (!p) return;
+	OSSObjectLog << p->description() << " moved out" << std::endl;
+	peopleInTower.erase(p);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void TowerEnvironment::advance(double dt)
+{
+	advancePeople(dt);
+}
+
+void TowerEnvironment::advancePeople(double dt)
+{
+	//Iterate through the existing people and ask each to advance.
+	for (set<Person *>::iterator it = existingPeople.begin(); it != existingPeople.end(); it++)
+		(*it)->advance(dt);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark State
 //----------------------------------------------------------------------------------------------------
 
 void TowerEnvironment::update()
 {
 	updatePopulationIfNeeded();
+	
+	//Update the people
+	updatePeopleIfNeeded();
 }
 
 void TowerEnvironment::updatePopulation()
 {
 	//TODO: iterate through all the items and update the population
+}
+
+void TowerEnvironment::updatePeople()
+{
+	//Iterate through the existing people and ask each to update itself.
+	for (set<Person *>::iterator it = existingPeople.begin(); it != existingPeople.end(); it++)
+		(*it)->updateIfNeeded();
 }

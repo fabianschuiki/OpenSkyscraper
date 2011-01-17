@@ -63,13 +63,13 @@ void HotelItem::didChangeOccupancy()
 		
 		while (guests.size() < numberOfGuests) {
 			HotelGuest * guest = new HotelGuest(tower, this);
-			guest->updateIfNeeded.parent = &updateItemIfNeeded;
+			//guest->updateIfNeeded.parent = &updateItemIfNeeded;
 			guest->setType(index++ == 0 ? Person::kManType : Person::kWomanBType);
 			guests.insert(guest);
 		}
 	}
 	
-	//If the hotel room has just been vacated, remove all guests.
+	//If the hotel room has just been vacated, mark it as dirty and remove all guests.
 	else {
 		guests.clear();
 		setDirty(true);
@@ -128,7 +128,8 @@ void HotelItem::willRemovePerson(Person * person)
 	if (person->getTypeName() == "hotel/guest" && ((HotelGuest *)person)->isCheckingOut()) {
 		
 		//Remove the person from the guest set.
-		guests.erase((HotelGuest *)person);
+		//TODO: remove this, we have another way of telling
+		//guests.erase((HotelGuest *)person);
 		
 		//If all guests have checked out, mark the hotel room as vacant. This should call the next
 		//available janitor to the room for cleaning.
@@ -159,9 +160,9 @@ void HotelItem::advanceItem(double dt)
 		assert(guests.empty());
 	
 	//Simulate the guests
-	if (isOccupied())
+	/*if (isOccupied())
 		for (Guests::iterator it = guests.begin(); it != guests.end(); it++)
-			(*it)->advance(dt);
+			(*it)->advance(dt);*/
 }
 
 
@@ -215,11 +216,6 @@ void HotelItem::setInfested(bool i)
 void HotelItem::updateItem()
 {
 	OccupiableItem::updateItem();
-	
-	//Update the guests if required.
-	Guests tempGuests = guests;
-	for (Guests::iterator it = tempGuests.begin(); it != tempGuests.end(); it++)
-		(*it)->updateIfNeeded();
 	
 	//Set the asleep state according to whether all guests have gone to sleep
 	setAsleep(areAllGuestsAsleep());

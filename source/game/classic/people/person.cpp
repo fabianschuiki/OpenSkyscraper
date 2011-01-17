@@ -18,6 +18,9 @@ updateAnimationIfNeeded(this, &Person::updateAnimation, &updateIfNeeded)
 {
 	assert(tower);
 	
+	//Add us to the tower so we get simulated and updated appropriately.
+	tower->environment->addPerson(this);
+	
 	//Reset all member variables
 	floor = 0;
 	arrivalTime = 0;
@@ -28,6 +31,9 @@ updateAnimationIfNeeded(this, &Person::updateAnimation, &updateIfNeeded)
 
 Person::~Person()
 {
+	//Remove us from the tower.
+	tower->environment->removePerson(this);
+	
 	//Make sure we're removed from the current item's people list.
 	setItem(NULL);
 }
@@ -63,7 +69,11 @@ Item * Person::getItem() const
 
 void Person::setItem(Item * i)
 {
-	if (item != i) {		
+	if (item != i) {
+		//Decide whether we're moving into the tower or out of the tower
+		bool movingIn = (!item && i);
+		bool movingOut = (item && !i);
+		
 		//Remove the person from the current item
 		if (item) item->removePerson(this);
 		
@@ -75,6 +85,10 @@ void Person::setItem(Item * i)
 		
 		//Add person to the new item
 		if (item) item->addPerson(this);
+		
+		//If we're moving into the tower, add us to the appropriate list. Vice versa otherwise.
+		if (movingIn) tower->environment->addPersonToTower(this);
+		if (movingOut) tower->environment->removePersonFromTower(this);
 		
 		//Update the route
 		updateRouteIfNeeded.setNeeded();
