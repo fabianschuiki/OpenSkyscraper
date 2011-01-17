@@ -107,7 +107,7 @@ void StairslikeItem::updateBackground()
 		stringstream textureName;
 		textureName << "/floor" << i;
 		if (numAnimationFrames > numAnimationFramesPerTexture)
-			textureName << (getAnimationFrame() / numAnimationFramesPerTexture);
+			textureName << "/" << (getAnimationFrame() / numAnimationFramesPerTexture);
 		backgrounds[i]->texture = Texture::named(baseTextureName + textureName.str());
 		backgrounds[i]->textureRect.size = double2(1.0 / numAnimationFramesPerTexture, 1);
 		
