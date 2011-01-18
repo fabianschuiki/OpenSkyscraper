@@ -19,6 +19,15 @@ namespace OSS {
 			
 			
 			/**
+			 * Queues
+			 */
+		private:
+			typedef struct {
+				list<Person *> people;
+				
+			
+			
+			/**
 			 * Layout
 			 */
 		public:
@@ -100,6 +109,14 @@ namespace OSS {
 		public:
 			int debugFloor;
 			virtual bool eventKeyDown(KeyEvent * event);
+			
+			
+			/**
+			 * People
+			 */
+		public:
+			virtual void didAddPerson(Person * person);
+			virtual void willRemovePerson(Person * person);
 		};
 	}
 }

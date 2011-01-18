@@ -505,15 +505,17 @@ void GameScene::buildDebugTower()
 			tower->structure->constructItem(Item::descriptorForItemType(kDoubleRoomType),
 								 recti(-8 + (-x - 1) * 6, y, 6, 1));
 		}
-		tower->structure->constructItem(Item::descriptorForItemType(kEscalatorType),
-							 recti(-4, y - 1, 8, 2));
+		/*tower->structure->constructItem(Item::descriptorForItemType(kEscalatorType),
+							 recti(-4, y - 1, 8, 2));*/
 	}
 	
 	//Housekeeping
 	tower->structure->constructItem(Item::descriptorForItemType(kHousekeepingType),
 						 recti(-7, 6, 15, 1));
-	tower->structure->constructItem(Item::descriptorForItemType(kEscalatorType),
-						 recti(-4, 5, 8, 2));
+	/*tower->structure->constructItem(Item::descriptorForItemType(kEscalatorType),
+						 recti(-4, 5, 8, 2));*/
+	tower->structure->constructItem(Item::descriptorForItemType(kStandardElevatorType),
+									recti(-2, 0, 4, 1));
 	
 	/*//Offices
 	for (int y = 1; y < 15; y++) {

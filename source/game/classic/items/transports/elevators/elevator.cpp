@@ -375,3 +375,21 @@ bool ElevatorItem::eventKeyDown(KeyEvent * event)
 	}
 	return false;
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark People
+//----------------------------------------------------------------------------------------------------
+
+void ElevatorItem::didAddPerson(Person * person)
+{
+	OSSObjectLog << "added " << person->description() << std::endl;
+}
+
+void ElevatorItem::willRemovePerson(Person * person)
+{
+}
