@@ -13,7 +13,10 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 ElevatorItem::ElevatorItem(Tower * tower, ItemDescriptor * descriptor)
-: TransportItem(tower, descriptor)
+: TransportItem(tower, descriptor),
+respondToCallsIfNeeded(this, &ElevatorItem::respondToCalls, &updateItemIfNeeded),
+updateQueuesIfNeeded(this, &ElevatorItem::updateQueues, &updateItemIfNeeded),
+updateQueueLocationsIfNeeded(this, &ElevatorItem::updateQueueLocations, &updateQueuesIfNeeded)
 {
 	animationFrame = 0;
 	
@@ -27,6 +30,34 @@ ElevatorItem::ElevatorItem(Tower * tower, ItemDescriptor * descriptor)
 	lsHighlighted			= Texture::named("simtower/transport/floordigits/two/ls/highlighted");
 	msNormal				= Texture::named("simtower/transport/floordigits/two/ms/normal");
 	msHighlighted			= Texture::named("simtower/transport/floordigits/two/ms/highlighted");
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Queues
+//----------------------------------------------------------------------------------------------------
+
+ElevatorQueue * ElevatorItem::getQueue(int floor, Direction dir)
+{
+	//Initialize the queue if it doesn't exist yet
+	if (!queues[floor][dir]) {
+		
+		//Create the queue and set the appropriate direction.
+		ElevatorQueue * q = new ElevatorQueue(this);
+		q->setDirection(dir);
+		
+		//Make sure update requirements of the queue are being propagated to us.
+		q->updateIfNeeded.parent = &updateQueuesIfNeeded;
+		
+		//Store the queue and mark the queue locations as to be updated.
+		queues[floor][dir] = q;
+		updateQueueLocationsIfNeeded.setNeeded();
+	}
+	return queues[floor][dir];
 }
 
 
@@ -66,6 +97,11 @@ void ElevatorItem::removeCar(ElevatorCar * car)
 	
 	//Remove the car
 	cars.erase(car);
+}
+
+void ElevatorItem::respondToCalls()
+{
+	OSSObjectLog << std::endl;
 }
 
 
@@ -160,6 +196,12 @@ void ElevatorItem::updateItem()
 	//Update the cars
 	for (CarSet::iterator it = cars.begin(); it != cars.end(); it++)
 		(*it)->updateIfNeeded();
+	
+	//Update the queues
+	updateQueuesIfNeeded();
+	
+	//Respond to calls
+	respondToCallsIfNeeded();
 }
 
 void ElevatorItem::updateBackground()
@@ -192,6 +234,40 @@ void ElevatorItem::updateBackground()
 	bufferSprite->texture = motorSprite->texture;
 }
 
+void ElevatorItem::updateQueues()
+{
+	//Update the queue locations if needed
+	updateQueueLocationsIfNeeded();
+	
+	//Update the queues themselves
+	for (QueueMap::iterator qm = queues.begin(); qm != queues.end(); qm++)
+		for (QueuePair::iterator qp = qm->second.begin(); qp != qm->second.end(); qp++)
+			qp->second->updateIfNeeded();
+}
+
+void ElevatorItem::updateQueueLocations()
+{
+	//Iterate through the queues and calculate each queue's rect
+	for (QueueMap::iterator qm = queues.begin(); qm != queues.end(); qm++) {
+		for (QueuePair::iterator qp = qm->second.begin(); qp != qm->second.end(); qp++) {
+			
+			//Calculate the rect for this queue
+			//TODO: do this the right way by finding other elevators on this floor that might inter-
+			//fere with the item. Also use the future tower decoration and bounds facilities to find
+			//out where the floor ends so that people don't queue up in the air.
+			recti rect = getFloorRect(qm->first);
+			if (qp->first == kDown)
+				rect.origin.x = rect.maxX();
+			rect.size.x = 50;
+			if (qp->first == kUp)
+				rect.origin.x -= rect.size.x;
+			
+			//Use this rect
+			qp->second->setRect(rect);
+		}
+	}
+}
+
 
 
 
@@ -207,6 +283,9 @@ void ElevatorItem::drawItem(rectd dirtyRect)
 	
 	//Draw the elevator cars
 	drawCars(dirtyRect);
+	
+	//Draw the queues
+	drawQueues(dirtyRect);
 }
 
 void ElevatorItem::drawBackground(rectd dirtyRect)
@@ -356,6 +435,20 @@ void ElevatorItem::drawCars(rectd dirtyRect)
 		(*it)->draw(dirtyRect);
 }
 
+void ElevatorItem::drawQueues(rectd dirtyRect)
+{
+	//Calculate the lowest and highest visible floors.
+	recti dirtyCells = tower->structure->worldToCell(dirtyRect);
+	int lowestFloor = dirtyCells.minY();
+	int highestFloor = dirtyCells.maxY() - 1;
+	
+	//Iterate through all visible floors and each queue pair and ask them to draw.
+	for (int i = lowestFloor; i <= highestFloor; i++)
+		if (connectsToFloor(i))
+			for (QueuePair::iterator qp = queues[i].begin(); qp != queues[i].end(); qp++)
+				qp->second->draw(dirtyRect);
+}
+
 
 
 
@@ -387,9 +480,25 @@ bool ElevatorItem::eventKeyDown(KeyEvent * event)
 
 void ElevatorItem::didAddPerson(Person * person)
 {
-	OSSObjectLog << "added " << person->description() << std::endl;
+	if (!person)
+		return;
+	assert(connectsToFloor(person->getFloor()));
+	
+	//Decide which direction the person has to go
+	Direction dir = (person->getStartFloor() < person->getEndFloor() ? kUp : kDown);
+	
+	//Add the person to the appropriate queue
+	getQueue(person->getFloor(), dir)->addPerson(person);
 }
 
 void ElevatorItem::willRemovePerson(Person * person)
 {
+	//Remove the person from all queues (just to make sure).
+	for (QueueMap::iterator qm = queues.begin(); qm != queues.end(); qm++)
+		for (QueuePair::iterator qp = qm->second.begin(); qp != qm->second.end(); qp++)
+			qp->second->removePerson(person);
+	
+	//And of course from all cars.
+	//for (CarSet::iterator cs = cars.begin(); cs != cars.end(); cs++)
+	//	(*cs)->removePerson(person);
 }

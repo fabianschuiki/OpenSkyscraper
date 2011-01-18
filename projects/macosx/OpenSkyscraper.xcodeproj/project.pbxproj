@@ -14,6 +14,7 @@
 		1F035A4D12E5B93E00435702 /* express.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F035A4C12E5B93E00435702 /* express.cpp */; };
 		1F035A5412E5B9E200435702 /* service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F035A5312E5B9E200435702 /* service.cpp */; };
 		1F035A7012E5E0E200435702 /* car.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F035A6F12E5E0E200435702 /* car.cpp */; };
+		1F035BA712E636FA00435702 /* queue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F035BA612E636FA00435702 /* queue.cpp */; };
 		1F0D409111FEF2EB00C6D787 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0D409011FEF2EB00C6D787 /* SDL.framework */; };
 		1F0D40CB11FEF48500C6D787 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40CA11FEF48500C6D787 /* SDLMain.m */; };
 		1F0D40E011FEF7C900C6D787 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40DF11FEF7C900C6D787 /* main.cpp */; };
@@ -112,6 +113,8 @@
 		1F035A5312E5B9E200435702 /* service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = service.cpp; sourceTree = "<group>"; };
 		1F035A6E12E5E0E200435702 /* car.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = car.h; sourceTree = "<group>"; };
 		1F035A6F12E5E0E200435702 /* car.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = car.cpp; sourceTree = "<group>"; };
+		1F035BA512E636FA00435702 /* queue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = queue.h; sourceTree = "<group>"; };
+		1F035BA612E636FA00435702 /* queue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = queue.cpp; sourceTree = "<group>"; };
 		1F0D409011FEF2EB00C6D787 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		1F0D40C911FEF48500C6D787 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		1F0D40CA11FEF48500C6D787 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
@@ -628,16 +631,18 @@
 		1F32336C12DF7FE40042FFBA /* elevators */ = {
 			isa = PBXGroup;
 			children = (
+				1F035A6F12E5E0E200435702 /* car.cpp */,
+				1F035A6E12E5E0E200435702 /* car.h */,
 				1F32336D12DF7FE40042FFBA /* elevator.cpp */,
 				1F32336E12DF7FE40042FFBA /* elevator.h */,
 				1F035A4C12E5B93E00435702 /* express.cpp */,
 				1F035A4B12E5B93E00435702 /* express.h */,
+				1F035BA612E636FA00435702 /* queue.cpp */,
+				1F035BA512E636FA00435702 /* queue.h */,
 				1F035A5312E5B9E200435702 /* service.cpp */,
 				1F035A5212E5B9E200435702 /* service.h */,
 				1F32337112DF7FE40042FFBA /* standard.cpp */,
 				1F32337212DF7FE40042FFBA /* standard.h */,
-				1F035A6E12E5E0E200435702 /* car.h */,
-				1F035A6F12E5E0E200435702 /* car.cpp */,
 			);
 			path = elevators;
 			sourceTree = "<group>";
@@ -942,6 +947,7 @@
 				1F035A4D12E5B93E00435702 /* express.cpp in Sources */,
 				1F035A5412E5B9E200435702 /* service.cpp in Sources */,
 				1F035A7012E5E0E200435702 /* car.cpp in Sources */,
+				1F035BA712E636FA00435702 /* queue.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

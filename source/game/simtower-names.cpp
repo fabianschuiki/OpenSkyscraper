@@ -369,7 +369,7 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	{0x2BD, "people/stressed"},		//stressed people (intense red)
 	{0x2BE, "people/named"},		//named people (blue)
 	{0x2BF, "people/vip"},			//VIPs (yellow)
-	{0x468, "people/walking"},		//walking people (black)
+	{0x468, "people/queueing"},		//queueing people (black)
 	{0x469, "people/security"},		//walking security officers (black)
 	
 	//Splashes

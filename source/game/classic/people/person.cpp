@@ -437,3 +437,43 @@ void Person::drawAnimation(rectd dirtyRect)
 	if (animationSprite && shouldAnimate())
 		animationSprite->draw();
 }
+
+Texture * Person::getQueueingTexture()
+{
+	return Texture::named("simtower/people/queueing");
+}
+
+rectd Person::getQueueingTextureRect()
+{
+	//Since the queueing texture is organized into slice of the same width, we may just calculate
+	//the slice index for a given person type and calculate the texture rect from that.
+	unsigned int slice = 0;
+	switch (getType()) {
+		case kManType:				slice = 0; break;
+		case kSalesmanType:			slice = 1; break;
+		case kWomanAType:			slice = 2; break;
+		case kChildType:			slice = 3; break;
+		case kWomanBType:			slice = 4; break;
+		case kJanitorType:			slice = 5; break;
+		case kMotherWithChildType:	slice = 6; break;
+		case kMotherType:			slice = 7; break;
+	}
+	
+	//Calculate the texture rect
+	return rectd(slice / 8.0, 0, 0.125, 1);
+}
+
+double Person::getQueueingWidth()
+{
+	switch (getType()) {
+		case kJanitorType:
+		case kMotherWithChildType:
+		case kMotherType:
+			return 16;
+			break;
+			
+		default:
+			return 8;
+			break;
+	}
+}

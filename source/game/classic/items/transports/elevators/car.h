@@ -33,6 +33,9 @@ namespace OSS {
 			bool arrivingPlayed;
 			bool departingPlayed;
 			
+			bool moving;
+			bool hauling;
+			
 		public:
 			double getFloor();
 			void setFloor(double f);
@@ -41,6 +44,8 @@ namespace OSS {
 			void setDestinationFloor(int f);
 			
 			virtual void advance(double dt);
+			
+			bool isIdle();
 			
 			
 			/**

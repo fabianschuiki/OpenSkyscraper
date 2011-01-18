@@ -162,6 +162,10 @@ namespace OSS {
 			
 		public:
 			virtual void drawAnimation(rectd dirtyRect);
+			
+			Texture * getQueueingTexture();
+			rectd getQueueingTextureRect();
+			double getQueueingWidth();
 		};
 	}
 }

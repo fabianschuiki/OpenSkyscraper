@@ -7,6 +7,7 @@
 namespace OSS {
 	namespace Classic {
 		class ElevatorCar;
+		class ElevatorQueue;
 		
 		class ElevatorItem : public TransportItem {
 			
@@ -21,11 +22,20 @@ namespace OSS {
 			/**
 			 * Queues
 			 */
-		private:
-			typedef struct {
-				list<Person *> people;
-				
+		public:
+			typedef enum {
+				kUp = 1,
+				kDown = -1
+			} Direction;
 			
+		private:
+			typedef map<Direction, Pointer<ElevatorQueue> > QueuePair;
+			typedef map<int, QueuePair> QueueMap;
+			QueueMap queues;
+			
+		public:
+			ElevatorQueue * getQueue(int floor, Direction dir);
+				
 			
 			/**
 			 * Layout
@@ -55,6 +65,10 @@ namespace OSS {
 			virtual double maxCarAcceleration() { return 7.5; }
 			virtual double maxCarSpeed() { return 10.0; }
 			
+			virtual void respondToCalls();
+			
+			Updatable::Conditional<ElevatorItem> respondToCallsIfNeeded;
+			
 			
 			/**
 			 * Simulation
@@ -77,6 +91,11 @@ namespace OSS {
 		public:
 			virtual void updateItem();
 			virtual void updateBackground();
+			virtual void updateQueues();
+			virtual void updateQueueLocations();
+			
+			Updatable::Conditional<ElevatorItem> updateQueuesIfNeeded;
+			Updatable::Conditional<ElevatorItem> updateQueueLocationsIfNeeded;
 			
 			
 			/**
@@ -101,6 +120,7 @@ namespace OSS {
 			virtual void drawFloorBackground(int f, rectd rect);
 			virtual void drawFloorNumber(int f, rectd rect);
 			virtual void drawCars(rectd dirtyRect);
+			virtual void drawQueues(rectd dirtyRect);
 			
 			
 			/**
@@ -123,6 +143,7 @@ namespace OSS {
 
 
 #include "car.h"
+#include "queue.h"
 
 
 #endif
