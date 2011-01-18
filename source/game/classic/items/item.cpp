@@ -80,10 +80,10 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 		case kEscalatorType:		instance = new EscalatorItem(tower); break;
 			
 			//Elevator
-		/*case kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
+		case kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
 			
 			//Office
-		case kOfficeType:			instance = new OfficeItem(tower); break;*/
+		//case kOfficeType:			instance = new OfficeItem(tower); break;
 			
 			//Hotel
 		case kSingleRoomType:		instance = new SingleRoomItem(tower); break;
@@ -94,6 +94,10 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 	
 	//Initialize the item
 	if (instance) {
+		if (descriptor->type == kStandardElevatorType) {
+			rect.size.y += 109;
+			rect.origin.y -= 9;
+		}
 		instance->setRect(rect);
 	}
 	
@@ -141,10 +145,10 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 		case kEscalatorType:		return &EscalatorItem::descriptor; break;
 			
 			//Elevator
-		/*case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
+		case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
 			
 			//Office
-		case kOfficeType:			return &OfficeItem::descriptor; break;*/
+		//case kOfficeType:			return &OfficeItem::descriptor; break;
 			
 			//Hotel
 		case kSingleRoomType:		return &SingleRoomItem::descriptor; break;

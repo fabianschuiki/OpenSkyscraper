@@ -81,12 +81,6 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 	}
 	
 	//Assign the hotel
-	if (nextHotel) {
-		OSSObjectLog << "assigning " << janitor->description() << " to "
-		<< nextHotel->description() << std::endl;
-	} else {
-		OSSObjectLog << "calling " << janitor->description() << " home" << std::endl;
-	}
 	janitor->setAssignedHotel(nextHotel);
 }
 

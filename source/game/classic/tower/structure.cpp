@@ -521,6 +521,7 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	
 	//Calculate the costs of the construction by adding the total costs for the facility cells and
 	//the total floor cell costs together.
+	//TODO: make this work for transport items
 	long costs = 0;
 	costs += descriptor->price * report.additionalFacilityCellsRequired / descriptor->cells.x / descriptor->cells.y;
 	costs += Item::descriptorForItemType(kFloorType)->price * report.additionalFloorCellsRequired;

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		1F0247AE12CE00CD0023455F /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0247AD12CE00CD0023455F /* libfreetype.a */; };
+		1F0359F012E5A6EE00435702 /* elevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336D12DF7FE40042FFBA /* elevator.cpp */; };
+		1F0359FC12E5ACA500435702 /* standardelevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337112DF7FE40042FFBA /* standardelevator.cpp */; };
 		1F0D409111FEF2EB00C6D787 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0D409011FEF2EB00C6D787 /* SDL.framework */; };
 		1F0D40CB11FEF48500C6D787 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40CA11FEF48500C6D787 /* SDLMain.m */; };
 		1F0D40E011FEF7C900C6D787 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40DF11FEF7C900C6D787 /* main.cpp */; };
@@ -205,8 +207,6 @@
 		1F32336A12DF7FE40042FFBA /* items.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = items.h; sourceTree = "<group>"; };
 		1F32336D12DF7FE40042FFBA /* elevator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = elevator.cpp; sourceTree = "<group>"; };
 		1F32336E12DF7FE40042FFBA /* elevator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = elevator.h; sourceTree = "<group>"; };
-		1F32336F12DF7FE40042FFBA /* elevatorbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = elevatorbackground.cpp; sourceTree = "<group>"; };
-		1F32337012DF7FE40042FFBA /* elevatorbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = elevatorbackground.h; sourceTree = "<group>"; };
 		1F32337112DF7FE40042FFBA /* standardelevator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = standardelevator.cpp; sourceTree = "<group>"; };
 		1F32337212DF7FE40042FFBA /* standardelevator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = standardelevator.h; sourceTree = "<group>"; };
 		1F32337412DF7FE40042FFBA /* escalator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = escalator.cpp; sourceTree = "<group>"; };
@@ -621,8 +621,6 @@
 			children = (
 				1F32336D12DF7FE40042FFBA /* elevator.cpp */,
 				1F32336E12DF7FE40042FFBA /* elevator.h */,
-				1F32336F12DF7FE40042FFBA /* elevatorbackground.cpp */,
-				1F32337012DF7FE40042FFBA /* elevatorbackground.h */,
 				1F32337112DF7FE40042FFBA /* standardelevator.cpp */,
 				1F32337212DF7FE40042FFBA /* standardelevator.h */,
 			);
@@ -924,6 +922,8 @@
 				1FD4679E12E3308A00085164 /* escalator.cpp in Sources */,
 				1F11E3FD12E49AE500AB0C20 /* housekeeping.cpp in Sources */,
 				1F11E40C12E49C6700AB0C20 /* janitor.cpp in Sources */,
+				1F0359F012E5A6EE00435702 /* elevator.cpp in Sources */,
+				1F0359FC12E5ACA500435702 /* standardelevator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,6 +12,7 @@ namespace OSS {
 			
 			//Initialization
 			StandardElevatorItem(Tower * tower);
+			virtual string getTypeName() const { return "standard"; }
 		};
 	}
 }

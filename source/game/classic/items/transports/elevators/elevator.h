@@ -2,75 +2,76 @@
 #define OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_ELEVATOR_H
 
 #include "../transport.h"
-#include "elevatorbackground.h"
 
 
 namespace OSS {
 	namespace Classic {
 		class ElevatorItem : public TransportItem {
+			
+			/**
+			 * Initialization
+			 */
 		public:
-			//Initialization
 			ElevatorItem(Tower * tower, ItemDescriptor * descriptor);
-			
-			//Basic Sprites
-			void initBasicSprites();
-			void updateBasicSprites();
-			
-			//Background
-		private:
-			ElevatorBackground background;
-		public:
-			void initBackground();
-			bool isFloorActive(int floor);
-			bool isFloorHighlighted(int floor);
+			virtual string getMotorBufferTypeName() const { return "standard"; }
 			
 			
 			/**
-			 * Motor and Buffer
+			 * Layout
 			 */
-		private:
-			Sprite motorSprite;
-			Sprite bufferSprite;
 		public:
-			void initMotorBuffer();
-			void updateMotorBuffer();
+			bool isFloorActive(int floor);
+			bool isFloorHighlighted(int floor);
 			
-			//Animation
-		private:
-			bool animateMotorBuffer;
-			unsigned int motorbufferAnimationIndex;
-			double motorbufferAnimation;
-			
-		public:
-			bool getAnimateMotorBuffer();
-			void setAnimateMotorBuffer(bool animate);
-			
-			unsigned int getMotorbufferAnimationIndex();
-			void setMotorbufferAnimationIndex(unsigned int index);
-			
-			double getMotorBufferAnimation();
-			void setMotorbufferAnimation(double time);
+			recti getMotorRect();
+			recti getBufferRect();
+			recti getCarsRect();
 			
 			
 			/**
 			 * Simulation
 			 */
-			void advance(double dt);
-			void advanceMotorBuffer(double dt);
+		private:
+			unsigned int animationFrame;
+			
+		public:
+			unsigned int getAnimationFrame();
+			void setAnimationFrame(unsigned int af);
+			
+			virtual void advanceItem(double dt);
+			
+			bool shouldAnimate() { return true; }
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void updateBackground();
 			
 			
 			/**
 			 * Drawing
 			 */
-			void draw(rectd visibleRect);
+		private:
+			Pointer<Sprite> motorSprite;
+			Pointer<Sprite> bufferSprite;
 			
+			//Background textures
+			Pointer<Texture> backgroundNormal;
+			Pointer<Texture> backgroundHighlighted;
+			Pointer<Texture> lsNormal;
+			Pointer<Texture> lsHighlighted;
+			Pointer<Texture> msNormal;
+			Pointer<Texture> msHighlighted;
 			
-			/**
-			 * Notifications
-			 */
-			
-			//Location
-			virtual void onChangeLocation();
+		public:
+			virtual void drawItem(rectd dirtyRect);
+			virtual void drawBackground(rectd dirtyRect);
+			virtual void drawFloor(int f);
+			virtual void drawFloorBackground(int f, rectd rect);
+			virtual void drawFloorNumber(int f, rectd rect);
+			virtual void drawCars(rectd dirtyRect);
 		};
 	}
 }

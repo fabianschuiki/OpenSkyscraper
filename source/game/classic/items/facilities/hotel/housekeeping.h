@@ -17,6 +17,7 @@ namespace OSS {
 			static ItemDescriptor descriptor;
 			
 			HousekeepingItem(Tower * tower);
+			virtual string getTypeName() const { return "housekeeping"; }
 			
 			
 			/**
