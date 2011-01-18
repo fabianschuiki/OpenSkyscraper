@@ -47,7 +47,7 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 {
 	if (!janitor) return;
 	
-	OSSObjectLog << "janitor is done" << std::endl;
+	OSSObjectLog << "janitor " << janitor->description() << " is done" << std::endl;
 	
 	//Find the leftmost hotel on the closest floor that is dirty
 	HotelItem * nextHotel = NULL;
@@ -81,7 +81,23 @@ void HousekeepingItem::onJanitorDone(Janitor * janitor)
 	}
 	
 	//Assign the hotel
+	if (nextHotel) {
+		OSSObjectLog << "assigning " << janitor->description() << " to "
+		<< nextHotel->description() << std::endl;
+	} else {
+		OSSObjectLog << "calling " << janitor->description() << " home" << std::endl;
+	}
 	janitor->setAssignedHotel(nextHotel);
+}
+
+void HousekeepingItem::didChangeRect()
+{
+	FacilityItem::didChangeRect();
+	
+	//Make sure the janitors move to the new location
+	for (JanitorSet::iterator i = janitors.begin(); i != janitors.end(); i++)
+		if ((*i)->isAt(this))
+			(*i)->setFloor(getRect().minY());
 }
 
 

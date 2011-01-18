@@ -59,7 +59,6 @@ void Janitor::didChangeAssignedHotel()
 {
 	if (hasAssignedHotel())
 		getAssignedHotel()->setAssignedJanitor(this);
-	OSSObjectLog << "was assigned to " << getAssignedHotel()->description() << std::endl;
 	
 	//We're not done cleaning the new hotel
 	cleaningDone = false;

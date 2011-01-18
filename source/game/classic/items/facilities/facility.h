@@ -59,6 +59,12 @@ namespace OSS {
 			
 			
 			/**
+			 * People
+			 */
+			virtual void didAddPerson(Person * person);
+			
+			
+			/**
 			 * Simulation
 			 */
 			virtual void advance(double dt);

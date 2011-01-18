@@ -9,19 +9,26 @@ namespace OSS {
 		class Janitor;
 		
 		class HousekeepingItem : public FacilityItem {
+			
+			/**
+			 * Initialization
+			 */
 		public:
 			static ItemDescriptor descriptor;
 			
-			//Initialization
 			HousekeepingItem(Tower * tower);
 			
-			//Janitors
+			
+			/**
+			 * Janitors
+			 */
 		private:
 			typedef std::set< Pointer<Janitor> > JanitorSet;
 			JanitorSet janitors;
 			
 		public:
 			void onJanitorDone(Janitor * janitor);
+			virtual void didChangeRect();
 			
 			
 			/**

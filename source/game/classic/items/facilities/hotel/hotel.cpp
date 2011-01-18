@@ -117,6 +117,8 @@ bool HotelItem::hasAssignedJanitor()
 
 void HotelItem::didAddPerson(Person * person)
 {	
+	FacilityItem::didAddPerson(person);
+	
 	//If the janitor just arrived, mark the room as cleaned up.
 	if (person->getTypeName() == "hotel/janitor")
 		setDirty(false);
@@ -124,6 +126,8 @@ void HotelItem::didAddPerson(Person * person)
 
 void HotelItem::willRemovePerson(Person * person)
 {
+	FacilityItem::willRemovePerson(person);
+	
 	//If the person that is leaving the hotel room is a guest and the guest has decided to check
 	//out, we have to remove him from the list of guests.
 	if (person->getTypeName() == "hotel/guest" && ((HotelGuest *)person)->isCheckingOut()) {
@@ -159,6 +163,8 @@ void HotelItem::advanceItem(double dt)
 	//There shouldn't be any more guests after 12:00
 	if (tower->time->checkDaily(12))
 		assert(guests.empty());
+	
+	backgrounds[0]->color = (hasAssignedJanitor() ? (color4d){0.5, 1, 0.5, 1.0} : (color4d){1, 1, 1, 1});
 	
 	//Simulate the guests
 	/*if (isOccupied())

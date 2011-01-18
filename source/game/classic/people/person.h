@@ -19,6 +19,7 @@ namespace OSS {
 			const Pointer<Tower> tower;
 
 			Person(Tower * tower);
+			virtual string className() const;
 			virtual ~Person();
 			
 			

@@ -29,6 +29,14 @@ updateAnimationIfNeeded(this, &Person::updateAnimation, &updateIfNeeded)
 	pauseEndTime = 0;
 }
 
+string Person::className() const
+{
+	string type = getTypeName();
+	if (type.length() > 0)
+		return type;
+	return GameObject::className();
+}
+
 Person::~Person()
 {
 	//Remove us from the tower.
@@ -367,22 +375,12 @@ void Person::updateRoute()
 		//Check whether the route is valid for our current destination. We do this by checking
 		//whether the route's destination equals our destination's rect, and that we are either on
 		//the current route node's start or end floor.
-		if (!route || route->destination != getDestinationRect() ||
-			(!isOnStartFloor() && !isOnEndFloor())) {
-			
-			OSSObjectLog << "route has to be calculated!" << std::endl;
-			if (!route)
-				std::cout << "!route" << std::endl;
-			else {
-				std::cout << std::endl << "route->destination != getDestinationRect() ? "
-				<< (route->destination != getDestinationRect()) << std::endl
-				<< "!isOnStartFloor && !isOnEndFloor ? " << (!isOnStartFloor() && !isOnEndFloor())
-				<< std::endl;
-			}
+		bool destinationRectChanged = (route && route->destination != getDestinationRect());
+		bool neitherOnStartNorEndFloor = (!isOnStartFloor() && !isOnEndFloor());
+		if (!route || destinationRectChanged || neitherOnStartNorEndFloor) {
 			
 			//Calculate a new route to the destination.
 			route = Route::findRoute(tower, getItemRect(), getDestinationRect());
-			OSSObjectLog << "calculated new " << route->description() << std::endl;
 			
 			//If we were not able to find a round, post an error message and reset the person to the
 			//lobby.
@@ -411,11 +409,12 @@ void Person::updateRoute()
 			//If there is a next node, move to its transport.
 			if (getRouteNode())
 				setItem(getRouteNode()->transport);
-			
-			//Otherwise add us to the destination since we obviously arrived there.
-			else
-				setItem(getDestination());
 		}
+		
+		//Check whether we have arrived on the route's end floor. If we did, we may move on to the
+		//destination item.
+		if (route && getFloor() == route->destination.minY())
+			setItem(getDestination());
 	}
 	
 	//Otherwise we may simply get rid of the route for good.
