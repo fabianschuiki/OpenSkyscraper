@@ -201,14 +201,19 @@ void ElevatorItem::drawFloorBackground(int f, rectd rect)
 	//Draw the left wall.
 	quad.rect = rect;
 	quad.rect.size.x = 16;
-	quad.autogenerateTextureRect(true, false, rect.origin);
+	quad.textureRect.size.x = 16 / 352.0;
+	quad.draw();
+	
+	//Draw the middle part
+	quad.rect = rect.insetRect(int2(16, 0));
+	quad.textureRect.origin.x = 10 / 352.0;
 	quad.draw();
 	
 	//Draw the right wall
 	quad.rect = rect;
 	quad.rect.origin.x = quad.rect.maxX() - 16;
 	quad.rect.size.x = 16;
-	quad.autogenerateTextureRect(true, false, rect.origin);
+	quad.textureRect.origin.x = quad.textureRect.size.x;
 	quad.draw();
 }
 

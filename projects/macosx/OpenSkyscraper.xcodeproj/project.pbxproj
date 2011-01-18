@@ -10,7 +10,9 @@
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		1F0247AE12CE00CD0023455F /* libfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0247AD12CE00CD0023455F /* libfreetype.a */; };
 		1F0359F012E5A6EE00435702 /* elevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32336D12DF7FE40042FFBA /* elevator.cpp */; };
-		1F0359FC12E5ACA500435702 /* standardelevator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337112DF7FE40042FFBA /* standardelevator.cpp */; };
+		1F0359FC12E5ACA500435702 /* standard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32337112DF7FE40042FFBA /* standard.cpp */; };
+		1F035A4D12E5B93E00435702 /* express.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F035A4C12E5B93E00435702 /* express.cpp */; };
+		1F035A5412E5B9E200435702 /* service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F035A5312E5B9E200435702 /* service.cpp */; };
 		1F0D409111FEF2EB00C6D787 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F0D409011FEF2EB00C6D787 /* SDL.framework */; };
 		1F0D40CB11FEF48500C6D787 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40CA11FEF48500C6D787 /* SDLMain.m */; };
 		1F0D40E011FEF7C900C6D787 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40DF11FEF7C900C6D787 /* main.cpp */; };
@@ -103,6 +105,10 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1F0247AD12CE00CD0023455F /* libfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfreetype.a; path = /usr/local/lib/libfreetype.a; sourceTree = "<absolute>"; };
+		1F035A4B12E5B93E00435702 /* express.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = express.h; sourceTree = "<group>"; };
+		1F035A4C12E5B93E00435702 /* express.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = express.cpp; sourceTree = "<group>"; };
+		1F035A5212E5B9E200435702 /* service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = service.h; sourceTree = "<group>"; };
+		1F035A5312E5B9E200435702 /* service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = service.cpp; sourceTree = "<group>"; };
 		1F0D409011FEF2EB00C6D787 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = Library/Frameworks/SDL.framework; sourceTree = SDKROOT; };
 		1F0D40C911FEF48500C6D787 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		1F0D40CA11FEF48500C6D787 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
@@ -207,8 +213,8 @@
 		1F32336A12DF7FE40042FFBA /* items.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = items.h; sourceTree = "<group>"; };
 		1F32336D12DF7FE40042FFBA /* elevator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = elevator.cpp; sourceTree = "<group>"; };
 		1F32336E12DF7FE40042FFBA /* elevator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = elevator.h; sourceTree = "<group>"; };
-		1F32337112DF7FE40042FFBA /* standardelevator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = standardelevator.cpp; sourceTree = "<group>"; };
-		1F32337212DF7FE40042FFBA /* standardelevator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = standardelevator.h; sourceTree = "<group>"; };
+		1F32337112DF7FE40042FFBA /* standard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = standard.cpp; sourceTree = "<group>"; };
+		1F32337212DF7FE40042FFBA /* standard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = standard.h; sourceTree = "<group>"; };
 		1F32337412DF7FE40042FFBA /* escalator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = escalator.cpp; sourceTree = "<group>"; };
 		1F32337512DF7FE40042FFBA /* escalator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = escalator.h; sourceTree = "<group>"; };
 		1F32337612DF7FE40042FFBA /* stairs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stairs.cpp; sourceTree = "<group>"; };
@@ -621,8 +627,12 @@
 			children = (
 				1F32336D12DF7FE40042FFBA /* elevator.cpp */,
 				1F32336E12DF7FE40042FFBA /* elevator.h */,
-				1F32337112DF7FE40042FFBA /* standardelevator.cpp */,
-				1F32337212DF7FE40042FFBA /* standardelevator.h */,
+				1F035A4C12E5B93E00435702 /* express.cpp */,
+				1F035A4B12E5B93E00435702 /* express.h */,
+				1F035A5312E5B9E200435702 /* service.cpp */,
+				1F035A5212E5B9E200435702 /* service.h */,
+				1F32337112DF7FE40042FFBA /* standard.cpp */,
+				1F32337212DF7FE40042FFBA /* standard.h */,
 			);
 			path = elevators;
 			sourceTree = "<group>";
@@ -923,7 +933,9 @@
 				1F11E3FD12E49AE500AB0C20 /* housekeeping.cpp in Sources */,
 				1F11E40C12E49C6700AB0C20 /* janitor.cpp in Sources */,
 				1F0359F012E5A6EE00435702 /* elevator.cpp in Sources */,
-				1F0359FC12E5ACA500435702 /* standardelevator.cpp in Sources */,
+				1F0359FC12E5ACA500435702 /* standard.cpp in Sources */,
+				1F035A4D12E5B93E00435702 /* express.cpp in Sources */,
+				1F035A5412E5B9E200435702 /* service.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
