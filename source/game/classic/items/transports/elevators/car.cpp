@@ -177,6 +177,7 @@ void ElevatorCar::advance(double dt)
 		}
 		
 		//We should probably show the inner workings of the algorithm in the console for debuggin.
+		//DEBUG: remove this log stuff later. Seems to work anyway.
 		char buffer[512];
 		snprintf(buffer, 512, "s=%3.0f, v=%2.1f, t0=%2.1f, t1=%2.1f, tacc=%2.1f, tdec=%2.1f, %s",
 				 s, v, t0, t1, tacc, tdec,
