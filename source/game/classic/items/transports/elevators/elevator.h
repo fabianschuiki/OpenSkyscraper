@@ -6,6 +6,8 @@
 
 namespace OSS {
 	namespace Classic {
+		class ElevatorCar;
+		
 		class ElevatorItem : public TransportItem {
 			
 			/**
@@ -20,12 +22,29 @@ namespace OSS {
 			 * Layout
 			 */
 		public:
-			bool isFloorActive(int floor);
-			bool isFloorHighlighted(int floor);
+			virtual bool isFloorActive(int floor);
+			virtual bool isFloorHighlighted(int floor);
 			
 			recti getMotorRect();
 			recti getBufferRect();
 			recti getCarsRect();
+			
+			
+			/**
+			 * Cars
+			 */
+		private:
+			typedef set< Pointer<ElevatorCar> > CarSet;
+			CarSet cars;
+			
+		public:
+			void addCar(ElevatorCar * car);
+			void addCar(int floor);
+			void removeCar(ElevatorCar * car);
+			virtual long getCarPrice() { return 0; }
+			
+			virtual double maxCarAcceleration() { return 7.5; }
+			virtual double maxCarSpeed() { return 10.0; }
 			
 			
 			/**
@@ -47,6 +66,7 @@ namespace OSS {
 			 * State
 			 */
 		public:
+			virtual void updateItem();
 			virtual void updateBackground();
 			
 			
@@ -72,9 +92,20 @@ namespace OSS {
 			virtual void drawFloorBackground(int f, rectd rect);
 			virtual void drawFloorNumber(int f, rectd rect);
 			virtual void drawCars(rectd dirtyRect);
+			
+			
+			/**
+			 * Events
+			 */
+		public:
+			int debugFloor;
+			virtual bool eventKeyDown(KeyEvent * event);
 		};
 	}
 }
+
+
+#include "car.h"
 
 
 #endif

@@ -440,6 +440,14 @@ SimTower::ResourceName SimTower::soundResourceNames[] = {
 	
 	
 	/**
+	 * Elevator
+	 */
+	
+	{0x1771, "transport/elevator/arriving"},
+	{0x1772, "transport/elevator/departing"},
+	
+	
+	/**
 	 * Uncategorized
 	 */
 	

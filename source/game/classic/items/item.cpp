@@ -96,11 +96,15 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 	
 	//Initialize the item
 	if (instance) {
-		if (descriptor->type == kStandardElevatorType) {
+		if (descriptor->group == kElevatorGroup) {
 			rect.size.y += 109;
 			rect.origin.y -= 9;
 		}
 		instance->setRect(rect);
+		
+		//If this is an elevator, add a car to it
+		if (descriptor->group == kElevatorGroup)
+			((ElevatorItem *)instance)->addCar(0);
 	}
 	
 	return instance;

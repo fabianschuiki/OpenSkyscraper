@@ -26,3 +26,17 @@ ItemDescriptor ExpressElevatorItem::descriptor = {
 ExpressElevatorItem::ExpressElevatorItem(Tower * tower) : ElevatorItem(tower, &descriptor)
 {
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Layout
+//----------------------------------------------------------------------------------------------------
+
+bool ExpressElevatorItem::isFloorActive(int floor)
+{
+	return (ElevatorItem::isFloorActive(floor) && (floor % 15 == 0));
+}

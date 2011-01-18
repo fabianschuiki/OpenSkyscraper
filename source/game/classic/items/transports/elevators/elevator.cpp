@@ -17,6 +17,9 @@ ElevatorItem::ElevatorItem(Tower * tower, ItemDescriptor * descriptor)
 {
 	animationFrame = 0;
 	
+	//DEBUG: reset the debugfloor
+	debugFloor = 0;
+	
 	//Load the required textures
 	backgroundNormal		= Texture::named("simtower/transport/floordigits/one/normal");
 	backgroundHighlighted	= Texture::named("simtower/transport/floordigits/one/highlighted");
@@ -24,6 +27,45 @@ ElevatorItem::ElevatorItem(Tower * tower, ItemDescriptor * descriptor)
 	lsHighlighted			= Texture::named("simtower/transport/floordigits/two/ls/highlighted");
 	msNormal				= Texture::named("simtower/transport/floordigits/two/ms/normal");
 	msHighlighted			= Texture::named("simtower/transport/floordigits/two/ms/highlighted");
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Cars
+//----------------------------------------------------------------------------------------------------
+
+void ElevatorItem::addCar(ElevatorCar * car)
+{
+	//Insert the car
+	cars.insert(car);
+	
+	//Make sure the udpate need propagation works
+	car->updateIfNeeded.parent = &updateItemIfNeeded;
+}
+
+void ElevatorItem::addCar(int floor)
+{
+	//Create the new car
+	ElevatorCar * car = new ElevatorCar(this);
+	
+	//Transfer the funds
+	tower->funds->transfer(-getCarPrice());
+	
+	//Add the car
+	addCar(car);
+}
+
+void ElevatorItem::removeCar(ElevatorCar * car)
+{
+	//Disable the update propagation
+	car->updateIfNeeded.parent = NULL;
+	
+	//Remove the car
+	cars.erase(car);
 }
 
 
@@ -42,7 +84,7 @@ bool ElevatorItem::isFloorActive(int floor)
 
 bool ElevatorItem::isFloorHighlighted(int floor)
 {
-	return (floor == 0);
+	return (floor == debugFloor);
 }
 
 recti ElevatorItem::getMotorRect()
@@ -96,6 +138,10 @@ void ElevatorItem::advanceItem(double dt)
 	//Advance the animation
 	if (shouldAnimate() && shouldAdvance("animation", 1.0 / 3))
 		setAnimationFrame((getAnimationFrame() + 1) % 3);
+	
+	//Advance the cars
+	for (CarSet::iterator it = cars.begin(); it != cars.end(); it++)
+		(*it)->advance(dt);
 }
 
 
@@ -106,6 +152,15 @@ void ElevatorItem::advanceItem(double dt)
 #pragma mark -
 #pragma mark State
 //----------------------------------------------------------------------------------------------------
+
+void ElevatorItem::updateItem()
+{
+	TransportItem::updateItem();
+	
+	//Update the cars
+	for (CarSet::iterator it = cars.begin(); it != cars.end(); it++)
+		(*it)->updateIfNeeded();
+}
 
 void ElevatorItem::updateBackground()
 {
@@ -297,4 +352,26 @@ void ElevatorItem::drawFloorNumber(int f, rectd rect)
 
 void ElevatorItem::drawCars(rectd dirtyRect)
 {
+	for (CarSet::iterator it = cars.begin(); it != cars.end(); it++)
+		(*it)->draw(dirtyRect);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+bool ElevatorItem::eventKeyDown(KeyEvent * event)
+{
+	ElevatorCar * car = *cars.begin();
+	switch (event->unicode) {
+		case '+':	debugFloor++; return true; break;
+		case '-':	debugFloor--; return true; break;
+		case 3:		car->setDestinationFloor(debugFloor); return true; break;
+	}
+	return false;
 }

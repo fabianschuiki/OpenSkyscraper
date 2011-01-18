@@ -14,6 +14,13 @@ namespace OSS {
 			ExpressElevatorItem(Tower * tower);
 			virtual string getTypeName() const { return "express"; }
 			virtual string getMotorBufferTypeName() const { return "express"; }
+			
+			//Cars
+			virtual double maxCarAcceleration() { return 20.0; }
+			virtual double maxCarSpeed() { return 30.0; }
+			
+			//Layout
+			virtual bool isFloorActive(int floor);
 		};
 	}
 }
