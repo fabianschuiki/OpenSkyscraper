@@ -17,7 +17,7 @@ namespace OSS {
 			const Pointer<HotelItem> hotel;
 			
 			HotelGuest(Tower * tower, HotelItem * hotel);
-			virtual string getTypeName() { return "hotel/guest"; }
+			virtual string getTypeName() const { return "hotel/guest"; }
 			
 			/**
 			 * Animation
@@ -35,6 +35,7 @@ namespace OSS {
 			bool didChooseSleepTime;
 			bool asleep;
 			bool didSleep;
+			bool didChooseCheckoutTime;
 			bool checkingOut;
 			
 		public:

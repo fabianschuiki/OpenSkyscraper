@@ -59,6 +59,7 @@ void Janitor::didChangeAssignedHotel()
 {
 	if (hasAssignedHotel())
 		getAssignedHotel()->setAssignedJanitor(this);
+	OSSObjectLog << "was assigned to " << getAssignedHotel()->description() << std::endl;
 	
 	//We're not done cleaning the new hotel
 	cleaningDone = false;
@@ -122,6 +123,8 @@ bool Janitor::shouldAnimate()
 
 void Janitor::think()
 {
+	OSSObjectLog << std::endl;
+	
 	//Idle when at the housekeeping facility
 	if (isAt(housekeeping)) {
 		setPauseDuration(24);

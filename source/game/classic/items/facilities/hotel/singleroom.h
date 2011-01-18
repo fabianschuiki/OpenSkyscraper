@@ -12,7 +12,7 @@ namespace OSS {
 			
 			//Initialization
 			SingleRoomItem(Tower * tower);
-			string getTypeName();
+			virtual string getTypeName() const { return "single"; }
 			
 			//Guests
 			unsigned int getMaxNumberOfGuests();

@@ -18,7 +18,7 @@ namespace OSS {
 			const Pointer<HousekeepingItem> housekeeping;
 			
 			Janitor(Tower * tower, HousekeepingItem * housekeeping);
-			virtual string getTypeName() { return "hotel/janitor"; }
+			virtual string getTypeName() const { return "hotel/janitor"; }
 			
 			
 			/**

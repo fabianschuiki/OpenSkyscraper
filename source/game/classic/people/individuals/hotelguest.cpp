@@ -147,7 +147,7 @@ void HotelGuest::think()
 			
 			//Decide when to wake up and then go to sleep
 			if (!didSleep) {
-				setPauseEndTimeTomorrow(randd(6, 8));
+				setPauseEndTimeTomorrow(randd(6, /*8*/6));
 				OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
 				setAsleep(true);
 				return;
@@ -165,10 +165,10 @@ void HotelGuest::think()
 	}
 	
 	//Decide when to check out
-	if (!checkingOut) {
-		setPauseEndTimeToday(randd(tower->time->getLogicalTimeOfDay() + 0.25, 8));
+	if (!didChooseCheckoutTime) {
+		setPauseEndTimeToday(/*randd(tower->time->getLogicalTimeOfDay() + 0.25, 12)*/7.5);
 		OSSObjectLog << "decided to check out at " << getPauseEndTime() << std::endl;
-		checkingOut = true;
+		didChooseCheckoutTime = true;
 		return;
 	}
 	
@@ -176,6 +176,7 @@ void HotelGuest::think()
 	if (!isAt(NULL)) {
 		setDestination(NULL);
 		OSSObjectLog << "checking out" << std::endl;
+		checkingOut = true;
 	}
 	
 	setPauseEndTimeToday(12);

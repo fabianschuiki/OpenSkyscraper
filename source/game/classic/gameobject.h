@@ -15,7 +15,7 @@ namespace OSS {
 			//The type name should be some string identifying this object. It may be used for
 			//example in implementations of Item where you have to distinguish between different
 			//kinds of people moving to and from your item.
-			virtual string getTypeName() { return ""; }
+			virtual string getTypeName() const { return ""; }
 			
 			
 			/**

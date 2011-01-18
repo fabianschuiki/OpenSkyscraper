@@ -370,8 +370,19 @@ void Person::updateRoute()
 		if (!route || route->destination != getDestinationRect() ||
 			(!isOnStartFloor() && !isOnEndFloor())) {
 			
+			OSSObjectLog << "route has to be calculated!" << std::endl;
+			if (!route)
+				std::cout << "!route" << std::endl;
+			else {
+				std::cout << std::endl << "route->destination != getDestinationRect() ? "
+				<< (route->destination != getDestinationRect()) << std::endl
+				<< "!isOnStartFloor && !isOnEndFloor ? " << (!isOnStartFloor() && !isOnEndFloor())
+				<< std::endl;
+			}
+			
 			//Calculate a new route to the destination.
 			route = Route::findRoute(tower, getItemRect(), getDestinationRect());
+			OSSObjectLog << "calculated new " << route->description() << std::endl;
 			
 			//If we were not able to find a round, post an error message and reset the person to the
 			//lobby.

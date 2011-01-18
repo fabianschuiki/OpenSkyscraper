@@ -117,7 +117,7 @@ void HousekeepingItem::eventHotelVacated(ItemEvent<HotelItem> * event)
 	//Find a janitor to assign to this hotel if it doesn't yet have a janitor assigned
 	if (!event->item->hasAssignedJanitor()) {
 		for (JanitorSet::iterator i = janitors.begin(); i != janitors.end(); i++) {
-			if ((*i)->isAt(this)) {
+			if ((*i)->isAt(this) && !(*i)->hasAssignedHotel()) {
 				(*i)->setAssignedHotel(event->item);
 				break;
 			}

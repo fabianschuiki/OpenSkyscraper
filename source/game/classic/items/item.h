@@ -18,6 +18,8 @@ namespace OSS {
 			const Pointer<Tower> tower;
 			
 			Item(Tower * tower, ItemDescriptor * descriptor);
+			virtual string className() const;
+			virtual string instanceName() const;
 			
 			bool isInTower();
 			

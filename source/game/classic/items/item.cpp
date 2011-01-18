@@ -41,6 +41,26 @@ updateBackgroundIfNeeded(this, &Item::updateBackground, &updateItemIfNeeded)
 	unifiedBackground = false;
 }
 
+string Item::className() const
+{
+	string type = getTypeName();
+	if (type.length() > 0)
+		return type;
+	return GameObject::className();
+}
+
+string Item::instanceName() const
+{
+	stringstream s;
+	s << className();
+	s << " on floor ";
+	s << getRect().origin.y;
+	s << " ";
+	s.setf(std::ios::hex);
+	s << this;
+	return s.str();
+}
+
 bool Item::isInTower()
 {
 	return tower->structure->containsItem(this);

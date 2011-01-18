@@ -96,6 +96,7 @@ Janitor * HotelItem::getAssignedJanitor()
 void HotelItem::setAssignedJanitor(Janitor * janitor)
 {
 	if (assignedJanitor != janitor) {
+		assert(assignedJanitor == NULL || janitor == NULL);
 		assignedJanitor = janitor;
 	}
 }

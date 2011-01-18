@@ -41,10 +41,10 @@ namespace OSS {
 		 * Methods related to describing objects in human-readable form.
 		 */
 	public:
-		string className() const;
-		string instanceName() const;
+		virtual string className() const;
+		virtual string instanceName() const;
 		
-		string description() const;
+		virtual string description() const;
 	};
 }
 
