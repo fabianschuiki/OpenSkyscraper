@@ -13,7 +13,7 @@ Tower
 - Move the drawing of the entrances of the tower from the lobby class to the tower decoration.
 
 
-###ÊStructure
+### Structure
 
 - At the moment it is possible to build two unconnected items on a floor. This was not the case in SimTower, so we should modify the `constructItem()` function to check whether there already is a cell on that floor. If there is, the the distance between it and the construction rect needs to be filled with floor items. Note that `getCell(int2)` will return
 a cell if there is at least a floor cell at this location. So DON'T use `getItems(int)` to find any pre-existing stuff on that floor; use `getCells(int)` instead.
