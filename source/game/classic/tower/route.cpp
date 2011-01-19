@@ -157,21 +157,23 @@ bool Route::isValid()
 #pragma mark Pathfinder
 //----------------------------------------------------------------------------------------------------
 
-Route * Route::findRoute(Tower * tower, recti origin, recti destination)
+Route * Route::findRoute(Tower * tower, recti origin, recti destination, unsigned int options)
 {
 	Route * route = new Route(tower);
 	route->origin = origin;
 	route->destination = destination;
 	route->autorelease();
 	
-	if (!findRoute(tower, origin, destination, NULL, UsedTransportsSet(), PathfinderStats(), route))
+	if (!findRoute(tower, origin, destination, options, NULL, UsedTransportsSet(),
+				   PathfinderStats(), route))
 		route = NULL;
 	
 	return route;
 }
 
-bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportItem * transport,
-					  UsedTransportsSet usedTransports, PathfinderStats stats, Route * route)
+bool Route::findRoute(Tower * tower, recti origin, recti destination, unsigned int options,
+					  TransportItem * transport, UsedTransportsSet usedTransports,
+					  PathfinderStats stats, Route * route)
 {
 	//If there is no transport and the origin and destination are on the same floor, we already
 	//have a route.
@@ -215,6 +217,14 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 		for (TowerStructure::ItemSet::iterator item = items.begin(); item != items.end(); item++) {
 			TransportItem * t = (TransportItem *)((Item *)*item);
 			
+			//Avoid service elevators if demanded
+			if (options & kNoServiceElevators && t->getType() == kServiceElevatorType)
+				continue;
+			
+			//Avoid anything but service elevators if demanded
+			if (options & kOnlyServiceElevators && t->getType() != kServiceElevatorType)
+				continue;
+			
 			//Skip transports we've already used
 			if (usedTransports.count(t))
 				continue;
@@ -230,7 +240,8 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 			
 			//Find routes using this transport
 			//OSSObjectLog << "finding routes using " << t->description() << std::endl;
-			if (findRoute(tower, t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute))
+			if (findRoute(tower, t->getFloorRect(*floor), destination, options, t, usedTransports,
+						  stats, newRoute))
 				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
 					shortestRoute = newRoute;
 		}

@@ -344,31 +344,34 @@ void ElevatorCar::advance(double dt)
 				
 			case kHauling: {
 				Person * p = NULL;
+				bool handled = false;
 				assert(getDirection() != ElevatorItem::kNone);
 				
 				//Fetch the queue we're serving
 				ElevatorQueue * q = elevator->getQueue(getDestinationFloor(), getDirection());
 				
 				//Unhaul
-				if (!p) {
-					while (journeyTime >= 0.05 && (p = nextPassengerToUnmount())) {
-						journeyTime -= 0.05;
+				if (!handled && nextPassengerToUnmount()) {
+					while (journeyTime >= 0.025 && (p = nextPassengerToUnmount())) {
+						journeyTime -= 0.025;
 						removePassenger(p);
 						p->setFloor(getDestinationFloor());
 					}
+					handled = true;
 				}
 				
 				//Haul
-				if (!p && q) {
+				if (!handled && !isFull() && q && q->hasPeople()) {
 					q->setSteppingInside(true);
-					while (journeyTime >= 0.05 && !isFull() && (p = q->popPerson())) {
-						journeyTime -= 0.05;
+					while (journeyTime >= 0.025 && !isFull() && (p = q->popPerson())) {
+						journeyTime -= 0.025;
 						addPassenger(p);
 					}
+					handled = true;
 				}
 				
 				//Hauling complete, decide what to do.
-				if (!p && journeyTime >= 0.25) {
+				if (!handled && journeyTime >= 0.1) {
 					if (q) {
 						q->setSteppingInside(false);
 						q->clearCall();

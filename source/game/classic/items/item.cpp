@@ -103,8 +103,11 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 		instance->setRect(rect);
 		
 		//If this is an elevator, add a car to it
-		if (descriptor->group == kElevatorGroup)
+		if (descriptor->group == kElevatorGroup) {
 			((ElevatorItem *)instance)->addCar(0);
+			((ElevatorItem *)instance)->addCar(0);
+			((ElevatorItem *)instance)->addCar(0);
+		}
 	}
 	
 	return instance;

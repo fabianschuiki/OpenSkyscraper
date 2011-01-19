@@ -86,7 +86,7 @@ void TowerEnvironment::setPopulation(unsigned int p)
 void TowerEnvironment::addPerson(Person * p)
 {
 	if (!p) return;
-	OSSObjectLog << "created person " << p->description() << std::endl;
+	//OSSObjectLog << "created person " << p->description() << std::endl;
 	existingPeople.insert(p);
 	
 	//Make sure the update needs are propagated appropriately to this instance
@@ -96,7 +96,7 @@ void TowerEnvironment::addPerson(Person * p)
 void TowerEnvironment::removePerson(Person * p)
 {
 	if (!p) return;
-	OSSObjectLog << "killed person " << p->description() << std::endl;
+	//OSSObjectLog << "killed person " << p->description() << std::endl;
 	existingPeople.erase(p);
 	
 	//Undo the update propagation
@@ -106,7 +106,7 @@ void TowerEnvironment::removePerson(Person * p)
 void TowerEnvironment::addPersonToTower(Person * p)
 {
 	if (!p) return;
-	OSSObjectLog << p->description() << " moved in" << std::endl;
+	//OSSObjectLog << p->description() << " moved in" << std::endl;
 	peopleInTower.insert(p);
 }
 

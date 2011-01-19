@@ -62,6 +62,12 @@ namespace OSS {
 			/**
 			 * Pathfinder
 			 */
+		public:
+			enum {
+				kNoServiceElevators		= (1 << 0),
+				kOnlyServiceElevators	= (1 << 1)
+			};
+			
 		private:
 			typedef struct {
 				unsigned int elevatorsUsed;
@@ -70,12 +76,13 @@ namespace OSS {
 			} PathfinderStats;
 			typedef std::set<TransportItem *> UsedTransportsSet;
 			static bool findRoute(Tower * tower, recti origin, recti destination,
-								  TransportItem * transport,
+								  unsigned int options, TransportItem * transport,
 								  UsedTransportsSet usedTransports, PathfinderStats stats,
 								  Route * route);
 			
 		public:
-			static Route * findRoute(Tower * tower, recti origin, recti destination);
+			static Route * findRoute(Tower * tower, recti origin, recti destination,
+									 unsigned int options);
 		};
 	}
 }

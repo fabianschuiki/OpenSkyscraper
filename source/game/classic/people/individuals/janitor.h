@@ -19,6 +19,7 @@ namespace OSS {
 			
 			Janitor(Tower * tower, HousekeepingItem * housekeeping);
 			virtual string getTypeName() const { return "hotel/janitor"; }
+			virtual unsigned int routeFindingOptions() { return Route::kOnlyServiceElevators; }
 			
 			
 			/**

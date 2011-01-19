@@ -66,7 +66,7 @@ ElevatorQueue * ElevatorItem::getMostUrgentQueue()
 	ElevatorQueue * most = NULL;
 	for (QueueMap::iterator qm = queues.begin(); qm != queues.end(); qm++)
 		for (QueuePair::iterator qp = qm->second.begin(); qp != qm->second.end(); qp++)
-			if (qp->second->isCalled())
+			if (qp->second->isCalled() && !qp->second->isCallAnswered())
 				if (!most || most->getWaitDuration() < qp->second->getWaitDuration())
 					most = qp->second;
 	
@@ -92,6 +92,10 @@ ElevatorQueue * ElevatorItem::getNextQueue(ElevatorCar * car)
 		ElevatorQueue * q = qm->second[car->getDirection()];
 		assert(q); //q must exist now due to the prechecking of the map the line above.
 		
+		//Skip the queue if it is not called at all.
+		if (!q->isCalled() || q->isCallAnswered())
+			continue;
+		
 		//Calculate the distance (signed) between the car and the queue.
 		double distance = qm->first - car->getFloor();
 		
@@ -99,7 +103,8 @@ ElevatorQueue * ElevatorItem::getNextQueue(ElevatorCar * car)
 		//the queue does not lie in the car's path, so we have to skip it. Addendum: It is actually
 		//better to check if the distance is lower than 1. This catches all calls behind the car
 		//but also calls on the current floor which the car already had good reasons not to answer.
-		if (distance * car->getDirection() < 1)
+		distance *= car->getDirection();
+		if (distance < 0.5)
 			continue;
 		
 		//Compare the queue to the one we already found

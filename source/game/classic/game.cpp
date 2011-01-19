@@ -508,14 +508,16 @@ void GameScene::buildDebugTower()
 		/*tower->structure->constructItem(Item::descriptorForItemType(kEscalatorType),
 							 recti(-4, y - 1, 8, 2));*/
 	}
+	tower->structure->constructItem(Item::descriptorForItemType(kStandardElevatorType),
+									recti(-10, 0, 4, 1));
 	
 	//Housekeeping
 	tower->structure->constructItem(Item::descriptorForItemType(kHousekeepingType),
-						 recti(-7, 6, 15, 1));
-	/*tower->structure->constructItem(Item::descriptorForItemType(kEscalatorType),
-						 recti(-4, 5, 8, 2));*/
-	tower->structure->constructItem(Item::descriptorForItemType(kStandardElevatorType),
-									recti(-2, 0, 4, 1));
+									recti(-10, 6, 15, 1));
+	tower->structure->constructItem(Item::descriptorForItemType(kHousekeepingType),
+									recti(5, 6, 15, 1));
+	tower->structure->constructItem(Item::descriptorForItemType(kServiceElevatorType),
+									recti(16, 0, 4, 1));
 	
 	/*//Offices
 	for (int y = 1; y < 15; y++) {
@@ -530,10 +532,10 @@ void GameScene::buildDebugTower()
 									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));*/
 	
 	//Stairs
-	for (int y = 0; y < 1; y++) {
+	/*for (int y = 0; y < 1; y++) {
 		tower->structure->constructItem(Item::descriptorForItemType(kStairsType),
 							 recti(-4, y, 8, 2));
-	 }
+	 }*/
 	
 	Audio::shared()->enableSoundEffects();
 }

@@ -270,8 +270,8 @@ void OfficeItem::updateRouteFromLobby()
 	}
 	
 	//If there's no route from the lobby, try to calculate one
-	if (!route)
-		route = Route::findRoute(tower, tower->getGroundFloorRect(), getRect());
+	/*if (!route)
+		route = Route::findRoute(tower, tower->getGroundFloorRect(), getRect());*/
 	
 	//Store the route
 	setRouteFromLobby(route);

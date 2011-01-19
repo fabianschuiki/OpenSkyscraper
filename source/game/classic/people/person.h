@@ -120,6 +120,7 @@ namespace OSS {
 			bool isAtRouteNodeTransport();
 			bool isOnStartFloor();
 			bool isOnEndFloor();
+			virtual unsigned int routeFindingOptions() { return Route::kNoServiceElevators; }
 			
 			double getPauseEndTime();
 			double getPauseDuration();

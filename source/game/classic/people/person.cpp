@@ -380,7 +380,8 @@ void Person::updateRoute()
 		if (!route || destinationRectChanged || neitherOnStartNorEndFloor) {
 			
 			//Calculate a new route to the destination.
-			route = Route::findRoute(tower, getItemRect(), getDestinationRect());
+			route = Route::findRoute(tower, getItemRect(), getDestinationRect(),
+									 routeFindingOptions());
 			
 			//If we were not able to find a round, post an error message and reset the person to the
 			//lobby.
