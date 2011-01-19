@@ -328,6 +328,7 @@ void ElevatorCar::advance(double dt)
 		
 		//So we're obviously on the destination floor. Quite a few things to do here. First we have
 		//to act according to our current state. So let's do that.
+		//TODO: This needs some heavy documentation!
 		switch (getState()) {
 				
 			case kMoving: {
@@ -371,7 +372,8 @@ void ElevatorCar::advance(double dt)
 				}
 				
 				//Hauling complete, decide what to do.
-				if (!handled && journeyTime >= 0.1) {
+				//TODO: make this time constant adjustable!
+				if (!handled && (journeyTime >= 0.25 || isFull())) {
 					if (q) {
 						q->setSteppingInside(false);
 						q->clearCall();

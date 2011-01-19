@@ -92,6 +92,12 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 		case kDoubleRoomType:		instance = new DoubleRoomItem(tower); break;
 		case kSuiteType:			instance = new SuiteItem(tower); break;
 		case kHousekeepingType:		instance = new HousekeepingItem(tower); break;
+			
+			//Entertainment
+		case kFastFoodType:			instance = new FastFoodItem(tower); break;
+		case kRestaurantType:		instance = new RestaurantItem(tower); break;
+		case kShopType:				instance = new ShopItem(tower); break;
+		case kPartyHallType:		instance = new PartyHallItem(tower); break;
 	}
 	
 	//Initialize the item
@@ -166,6 +172,12 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 		case kDoubleRoomType:		return &DoubleRoomItem::descriptor; break;
 		case kSuiteType:			return &SuiteItem::descriptor; break;
 		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;
+			
+			//Entertainment
+		case kFastFoodType:			return &FastFoodItem::descriptor; break;
+		case kRestaurantType:		return &RestaurantItem::descriptor; break;
+		case kShopType:				return &ShopItem::descriptor; break;
+		case kPartyHallType:		return &PartyHallItem::descriptor; break;
 	}
 	return NULL;
 }

@@ -21,6 +21,10 @@
 		1F11E3FD12E49AE500AB0C20 /* housekeeping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335912DF7FE40042FFBA /* housekeeping.cpp */; };
 		1F11E40C12E49C6700AB0C20 /* janitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338112DF7FE40042FFBA /* janitor.cpp */; };
 		1F20EF8412E70F59007E95AF /* decoration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F20EF8312E70F59007E95AF /* decoration.cpp */; };
+		1F20F02012E72E8F007E95AF /* fastfood.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F20F01F12E72E8F007E95AF /* fastfood.cpp */; };
+		1F20F06D12E73474007E95AF /* restaurant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F20F06912E73474007E95AF /* restaurant.cpp */; };
+		1F20F06E12E73474007E95AF /* shop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F20F06B12E73474007E95AF /* shop.cpp */; };
+		1F20F09612E73954007E95AF /* partyhall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F20F09412E73954007E95AF /* partyhall.cpp */; };
 		1F32308112DF5DFC0042FFBA /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32300912DF5D3C0042FFBA /* application.cpp */; };
 		1F32308412DF5E160042FFBA /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301612DF5D3C0042FFBA /* object.cpp */; };
 		1F32308512DF5E180042FFBA /* managedmemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301412DF5D3C0042FFBA /* managedmemory.cpp */; };
@@ -123,6 +127,14 @@
 		1F20EF7A12E70EC1007E95AF /* floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floor.h; sourceTree = "<group>"; };
 		1F20EF8212E70F59007E95AF /* decoration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decoration.h; sourceTree = "<group>"; };
 		1F20EF8312E70F59007E95AF /* decoration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = decoration.cpp; sourceTree = "<group>"; };
+		1F20F01E12E72E8F007E95AF /* fastfood.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fastfood.h; sourceTree = "<group>"; };
+		1F20F01F12E72E8F007E95AF /* fastfood.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fastfood.cpp; sourceTree = "<group>"; };
+		1F20F06912E73474007E95AF /* restaurant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = restaurant.cpp; sourceTree = "<group>"; };
+		1F20F06A12E73474007E95AF /* restaurant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = restaurant.h; sourceTree = "<group>"; };
+		1F20F06B12E73474007E95AF /* shop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shop.cpp; sourceTree = "<group>"; };
+		1F20F06C12E73474007E95AF /* shop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shop.h; sourceTree = "<group>"; };
+		1F20F09412E73954007E95AF /* partyhall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = partyhall.cpp; sourceTree = "<group>"; };
+		1F20F09512E73954007E95AF /* partyhall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = partyhall.h; sourceTree = "<group>"; };
 		1F322E5712DF1F220042FFBA /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../source/engine/platform/common.h; sourceTree = SOURCE_ROOT; };
 		1F32300912DF5D3C0042FFBA /* application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = application.cpp; sourceTree = "<group>"; };
 		1F32300A12DF5D3C0042FFBA /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
@@ -358,6 +370,35 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1F20F01B12E72E7E007E95AF /* services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = services;
+			sourceTree = "<group>";
+		};
+		1F20F01C12E72E82007E95AF /* infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = infrastructure;
+			sourceTree = "<group>";
+		};
+		1F20F01D12E72E86007E95AF /* entertainment */ = {
+			isa = PBXGroup;
+			children = (
+				1F20F01F12E72E8F007E95AF /* fastfood.cpp */,
+				1F20F01E12E72E8F007E95AF /* fastfood.h */,
+				1F20F09412E73954007E95AF /* partyhall.cpp */,
+				1F20F09512E73954007E95AF /* partyhall.h */,
+				1F20F06912E73474007E95AF /* restaurant.cpp */,
+				1F20F06A12E73474007E95AF /* restaurant.h */,
+				1F20F06B12E73474007E95AF /* shop.cpp */,
+				1F20F06C12E73474007E95AF /* shop.h */,
+			);
+			path = entertainment;
+			sourceTree = "<group>";
+		};
 		1F32300812DF5D3C0042FFBA /* engine */ = {
 			isa = PBXGroup;
 			children = (
@@ -574,13 +615,16 @@
 		1F32335012DF7FE40042FFBA /* facilities */ = {
 			isa = PBXGroup;
 			children = (
+				1F20F01D12E72E86007E95AF /* entertainment */,
 				1F32335112DF7FE40042FFBA /* facilities.h */,
 				1F32335212DF7FE40042FFBA /* facility.cpp */,
 				1F32335312DF7FE40042FFBA /* facility.h */,
 				1F32335412DF7FE40042FFBA /* hotel */,
+				1F20F01C12E72E82007E95AF /* infrastructure */,
 				1F32335F12DF7FE40042FFBA /* occupiable.cpp */,
 				1F32336012DF7FE40042FFBA /* occupiable.h */,
 				1F32336112DF7FE40042FFBA /* office */,
+				1F20F01B12E72E7E007E95AF /* services */,
 				1F32336412DF7FE40042FFBA /* structure */,
 			);
 			path = facilities;
@@ -956,6 +1000,10 @@
 				1F035A7012E5E0E200435702 /* car.cpp in Sources */,
 				1F035BA712E636FA00435702 /* queue.cpp in Sources */,
 				1F20EF8412E70F59007E95AF /* decoration.cpp in Sources */,
+				1F20F02012E72E8F007E95AF /* fastfood.cpp in Sources */,
+				1F20F06D12E73474007E95AF /* restaurant.cpp in Sources */,
+				1F20F06E12E73474007E95AF /* shop.cpp in Sources */,
+				1F20F09612E73954007E95AF /* partyhall.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

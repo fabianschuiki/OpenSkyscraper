@@ -21,6 +21,9 @@ updateLightingIfNeeded(this, &FacilityItem::updateLighting, &updateBackgroundIfN
 	variant = 0;
 	lightsOn = false;
 	
+	autoTextured = false;
+	autoTextureSlice = false;
+	
 	//Update the lighting
 	//updateLighting();
 }
@@ -162,6 +165,36 @@ void FacilityItem::advance(double dt)
 #pragma mark State
 //----------------------------------------------------------------------------------------------------
 
+bool FacilityItem::isAutoTextured()
+{
+	return autoTextured;
+}
+
+void FacilityItem::setAutoTextured(bool at)
+{
+	if (autoTextured != at) {
+		autoTextured = at;
+		updateBackgroundIfNeeded.setNeeded();
+	}
+}
+
+
+
+unsigned int FacilityItem::getAutoTextureSlice()
+{
+	return autoTextureSlice;
+}
+
+void FacilityItem::setAutoTextureSlice(unsigned int slice)
+{
+	if (autoTextureSlice != slice) {
+		autoTextureSlice = slice;
+		updateBackgroundIfNeeded.setNeeded();
+	}
+}
+
+
+
 void FacilityItem::update()
 {
 	Item::update();
@@ -180,6 +213,16 @@ void FacilityItem::updateBackground()
 		unsigned int index = (getNumFloors() - 1);
 		if (backgrounds.count(index))
 			backgrounds[index]->rect.size.y -= getCeilingRect().size.y;
+	}
+	
+	//Autotexture if requested
+	if (isAutoTextured()) {
+		unsigned int slice = getAutoTextureSlice();
+		unsigned int numFloors = (hasUnifiedBackground() ? 1 : getNumFloors());
+		for (unsigned int i = 0; i < numFloors; i++) {
+			backgrounds[i]->texture = Texture::named(getAutoTextureName(i, slice));
+			backgrounds[i]->textureRect = getAutoTextureRect(i, slice);
+		}
 	}
 }
 

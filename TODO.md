@@ -30,10 +30,7 @@ Facilities
 	
 ### Items to be created
 	
-	- Fast Food, `FastFoodItem`, `facilities/entertainment/fastfood.h|.cpp`
-	- Shop, `ShopItem`, `facilities/entertainment/shop.h|.cpp`
 	- Cinema, `CinemaItem`, `facilities/entertainment/cinema.h|.cpp`
-	- Party Hall, `PartyHallItem`, `facilities/entertainment/partyhall.h|.cpp`
 	- Parking Ramp, `ParkingRampItem`, `facilities/infrastructure/parkingramp.h|.cpp`
 	- Parking Space, `ParkingSpaceItem`, `facilities/infrastructure/parkingspace.h|.cpp`
 	- Recycling Center, `RecyclingCenterItem`, `facilities/infrastructure/recyclingcenter.h|.cpp`
@@ -42,6 +39,15 @@ Facilities
 	- Security, `SecurityItem`, `facilities/services/security.h|.cpp`
 	- Medical Center, `MedicalCenterItem`, `facilities/services/medicalcenter.h|.cpp`
 	- Condo, `CondoItem`, `facilities/condo/condo.h|.cpp`
+	
+	
+### Items requiring simulation and mechanics
+	
+	- Fast Food
+	- Party Hall
+	- Restaurant
+	- Shop
+	- Office
 
 
 Transports

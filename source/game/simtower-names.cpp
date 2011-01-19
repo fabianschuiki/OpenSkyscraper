@@ -260,16 +260,16 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	{0x674, "facilities/shop/closed"},
 	
 	// -> cinema
-	{0xCA8, "facilities/cinema/screen/0/lower"},
-	{0xCA9, "facilities/cinema/screen/1/lower"},
-	{0xC68, "facilities/cinema/screen/0/upper"},
-	{0xC69, "facilities/cinema/screen/1/upper"},
-	{0x8A8, "facilities/cinema/lower"},
-	{0x868, "facilities/cinema/upper"},
+	{0xCA8, "facilities/cinema/screen/0/floor0"},
+	{0xCA9, "facilities/cinema/screen/1/floor0"},
+	{0xC68, "facilities/cinema/screen/0/floor1"},
+	{0xC69, "facilities/cinema/screen/1/floor1"},
+	{0x8A8, "facilities/cinema/floor0"},
+	{0x868, "facilities/cinema/floor1"},
 	
 	// -> party hall
-	{0xB28, "facilities/partyhall/lower"},
-	{0xB68, "facilities/partyhall/upper"},
+	{0xB28, "facilities/partyhall/floor1"},
+	{0xB68, "facilities/partyhall/floor0"},
 	
 	
 	//Infrastructure
@@ -283,19 +283,19 @@ SimTower::ResourceName SimTower::bitmapResourceNames[] = {
 	{0x6A9, "facilities/parking/space/occupied"},	//occupied and unreachable parking space
 	
 	// -> recycling center
-	{0x8E8, "facilities/recycling/empty"},			//empty recycling center
-	{0x929, "facilities/recycling/lower/filled/0"},	//lower floor, fill state 0
-	{0x92A, "facilities/recycling/lower/filled/1"},	//lower floor, fill state 1
-	{0x92B, "facilities/recycling/lower/filled/2"},	//lower floor, fill state 2
-	{0x92C, "facilities/recycling/lower/filled/3"},	//lower floor, fill state 3
-	{0x92D, "facilities/recycling/lower/filled/4"},	//lower floor, fill state 4
-	{0x92E, "facilities/recycling/lower/truck"},	//lower floor, recycling truck leaving
-	{0x928, "facilities/recycling/lower/empty"},	//lower floor, empty
-	{0x8E9, "facilities/recycling/upper/filled/0"},	//upper floor, fill state 0
-	{0x8EA, "facilities/recycling/upper/filled/1"},	//upper floor, fill state 1
-	{0x8EB, "facilities/recycling/upper/filled/2"},	//upper floor, fill state 2
-	{0x8EC, "facilities/recycling/upper/filled/3"},	//upper floor, fill state 3
-	{0x8ED, "facilities/recycling/upper/filled/4"},	//upper floor, fill state 4
+	{0x8E8, "facilities/recycling/empty"},		//empty recycling center
+	{0x929, "facilities/recycling/floor0/filled/0"},	//lower floor, fill state 0
+	{0x92A, "facilities/recycling/floor0/filled/1"},	//lower floor, fill state 1
+	{0x92B, "facilities/recycling/floor0/filled/2"},	//lower floor, fill state 2
+	{0x92C, "facilities/recycling/floor0/filled/3"},	//lower floor, fill state 3
+	{0x92D, "facilities/recycling/floor0/filled/4"},	//lower floor, fill state 4
+	{0x92E, "facilities/recycling/floor0/truck"},	//lower floor, recycling truck leaving
+	{0x928, "facilities/recycling/floor0/empty"},	//lower floor, empty
+	{0x8E9, "facilities/recycling/floor1/filled/0"},	//upper floor, fill state 0
+	{0x8EA, "facilities/recycling/floor1/filled/1"},	//upper floor, fill state 1
+	{0x8EB, "facilities/recycling/floor1/filled/2"},	//upper floor, fill state 2
+	{0x8EC, "facilities/recycling/floor1/filled/3"},	//upper floor, fill state 3
+	{0x8ED, "facilities/recycling/floor1/filled/4"},	//upper floor, fill state 4
 	
 	// -> metro
 	{0xC28, "facilities/metro/empty/floor0"},	//lowest floor with tracks

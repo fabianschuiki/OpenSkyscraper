@@ -73,7 +73,20 @@ namespace OSS {
 			/**
 			 * State
 			 */
+		private:
+			bool autoTextured;
+			unsigned int autoTextureSlice;
+			
 		public:
+			bool isAutoTextured();
+			void setAutoTextured(bool at);
+			
+			unsigned int getAutoTextureSlice();
+			void setAutoTextureSlice(unsigned int slice);
+			
+			virtual string getAutoTextureName(int floor, unsigned int slice) { return ""; }
+			virtual rectd getAutoTextureRect(int floor, unsigned int slice) { return rectd(); }
+			
 			virtual void update();
 			virtual void updateBackground();
 			virtual void updateCeiling();
