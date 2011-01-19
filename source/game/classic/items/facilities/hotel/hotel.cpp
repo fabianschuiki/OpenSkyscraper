@@ -157,12 +157,12 @@ void HotelItem::advanceItem(double dt)
 	OccupiableItem::advanceItem(dt);
 	
 	//Everyone should be asleep at 1:30
-	if (tower->time->checkDaily(1.5))
-		assert(areAllGuestsAsleep());
+	/*if (tower->time->checkDaily(1.5))
+		assert(areAllGuestsAsleep());*/
 	
 	//There shouldn't be any more guests after 12:00
-	if (tower->time->checkDaily(12))
-		assert(guests.empty());
+	/*if (tower->time->checkDaily(12))
+		assert(guests.empty());*/
 	
 	backgrounds[0]->color = (hasAssignedJanitor() ? (color4d){0.5, 1, 0.5, 1.0} : (color4d){1, 1, 1, 1});
 	

@@ -17,6 +17,10 @@ namespace OSS {
 				kQuarterChanged,
 				kYearChanged,
 				
+				//Structure,
+				kBoundsChanged,
+				kFloorRangeChanged,
+				
 				//UI
 				kToolChanged,
 				
@@ -44,6 +48,7 @@ namespace OSS {
 }
 
 //Include the various events
+#include "floor.h"
 #include "item.h"
 
 

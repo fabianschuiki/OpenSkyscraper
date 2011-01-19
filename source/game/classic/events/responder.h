@@ -22,6 +22,10 @@ namespace OSS {
 			virtual void eventQuarterChanged(Event * event) {}
 			virtual void eventYearChanged(Event * event) {}
 			
+			//Structure
+			virtual void eventBoundsChanged(Event * event) {}
+			virtual void eventFloorRangeChanged(FloorEvent * event) {}
+			
 			//UI
 			virtual void eventToolChanged(Event * event) {}
 			

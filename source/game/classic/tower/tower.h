@@ -9,6 +9,7 @@ namespace OSS {
 		class Item;
 		
 		class TowerBackground;
+		class TowerDecoration;
 		class TowerEnvironment;
 		class TowerFunds;
 		class TowerStructure;
@@ -54,6 +55,7 @@ namespace OSS {
 			 */
 		public:
 			Pointer<TowerTime> time;
+			Pointer<TowerDecoration> decoration;
 			Pointer<TowerEnvironment> environment;
 			Pointer<TowerFunds> funds;
 			Pointer<TowerBackground> background;
@@ -95,6 +97,7 @@ namespace OSS {
 #include "item.h"
 
 #include "background.h"
+#include "decoration.h"
 #include "environment.h"
 #include "funds.h"
 #include "structure.h"

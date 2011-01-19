@@ -18,6 +18,7 @@ Tower::Tower() : Classic::Responder(this)
 {	
 	//Initialize the subsystems
 	time = new TowerTime(this);
+	decoration = new TowerDecoration(this);
 	environment = new TowerEnvironment(this);
 	funds = new TowerFunds(this);
 	background = new TowerBackground(this);
@@ -25,6 +26,7 @@ Tower::Tower() : Classic::Responder(this)
 	
 	//Make sure update needs get propagated to the tower from its subsystems.
 	time->updateIfNeeded.parent = &updateIfNeeded;
+	decoration->updateIfNeeded.parent = &updateIfNeeded;
 	environment->updateIfNeeded.parent = &updateIfNeeded;
 	funds->updateIfNeeded.parent = &updateIfNeeded;
 	background->updateIfNeeded.parent = &updateIfNeeded;
@@ -85,6 +87,7 @@ void Tower::advance(double dt)
 {	
 	//Advance the subsystems
 	time->advance(dt);
+	decoration->advance(dt);
 	environment->advance(dt);
 	funds->advance(dt);
 	background->advance(dt);
@@ -104,6 +107,7 @@ void Tower::update()
 {
 	//Update the subsystems
 	time->updateIfNeeded();
+	decoration->updateIfNeeded();
 	environment->updateIfNeeded();
 	funds->updateIfNeeded();
 	background->updateIfNeeded();
@@ -124,6 +128,9 @@ void Tower::draw(rectd dirtyRect)
 	//Draw the background
 	background->draw(dirtyRect);
 	
+	//Draw the tower decoration
+	decoration->draw(dirtyRect);
+	
 	//Draw the tower structure
 	structure->draw(dirtyRect);
 }
@@ -140,6 +147,7 @@ void Tower::draw(rectd dirtyRect)
 bool Tower::sendEventToNextResponders(OSS::Event * event)
 {
 	if (time && time->sendEvent(event)) return true;
+	if (decoration && decoration->sendEvent(event)) return true;
 	if (environment && environment->sendEvent(event)) return true;
 	if (funds && funds->sendEvent(event)) return true;
 	if (structure && structure->sendEvent(event)) return true;

@@ -20,6 +20,7 @@
 		1F0D40E011FEF7C900C6D787 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F0D40DF11FEF7C900C6D787 /* main.cpp */; };
 		1F11E3FD12E49AE500AB0C20 /* housekeeping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335912DF7FE40042FFBA /* housekeeping.cpp */; };
 		1F11E40C12E49C6700AB0C20 /* janitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338112DF7FE40042FFBA /* janitor.cpp */; };
+		1F20EF8412E70F59007E95AF /* decoration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F20EF8312E70F59007E95AF /* decoration.cpp */; };
 		1F32308112DF5DFC0042FFBA /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32300912DF5D3C0042FFBA /* application.cpp */; };
 		1F32308412DF5E160042FFBA /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301612DF5D3C0042FFBA /* object.cpp */; };
 		1F32308512DF5E180042FFBA /* managedmemory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32301412DF5D3C0042FFBA /* managedmemory.cpp */; };
@@ -119,6 +120,9 @@
 		1F0D40C911FEF48500C6D787 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		1F0D40CA11FEF48500C6D787 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		1F0D40DF11FEF7C900C6D787 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		1F20EF7A12E70EC1007E95AF /* floor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = floor.h; sourceTree = "<group>"; };
+		1F20EF8212E70F59007E95AF /* decoration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decoration.h; sourceTree = "<group>"; };
+		1F20EF8312E70F59007E95AF /* decoration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = decoration.cpp; sourceTree = "<group>"; };
 		1F322E5712DF1F220042FFBA /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../source/engine/platform/common.h; sourceTree = SOURCE_ROOT; };
 		1F32300912DF5D3C0042FFBA /* application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = application.cpp; sourceTree = "<group>"; };
 		1F32300A12DF5D3C0042FFBA /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
@@ -546,6 +550,7 @@
 			isa = PBXGroup;
 			children = (
 				1F32346712DF85320042FFBA /* event.h */,
+				1F20EF7A12E70EC1007E95AF /* floor.h */,
 				1F32334E12DF7FE40042FFBA /* item.h */,
 				1F32348012DF86860042FFBA /* responder.cpp */,
 				1F32348112DF86860042FFBA /* responder.h */,
@@ -690,6 +695,8 @@
 			children = (
 				1F32338F12DF7FE40042FFBA /* background.cpp */,
 				1F32339012DF7FE40042FFBA /* background.h */,
+				1F20EF8312E70F59007E95AF /* decoration.cpp */,
+				1F20EF8212E70F59007E95AF /* decoration.h */,
 				1F32339112DF7FE40042FFBA /* environment.cpp */,
 				1F32339212DF7FE40042FFBA /* environment.h */,
 				1F32339312DF7FE40042FFBA /* funds.cpp */,
@@ -948,6 +955,7 @@
 				1F035A5412E5B9E200435702 /* service.cpp in Sources */,
 				1F035A7012E5E0E200435702 /* car.cpp in Sources */,
 				1F035BA712E636FA00435702 /* queue.cpp in Sources */,
+				1F20EF8412E70F59007E95AF /* decoration.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

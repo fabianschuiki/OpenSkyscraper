@@ -33,6 +33,7 @@ ceilingHeight(12), cellSize(8, 24 + 12)
 	flexibleConstructionSound->sound = Sound::named("simtower/construction/flexible");
 	flexibleConstructionSound->layer = SoundEffect::kTopLayer;
 	flexibleConstructionSound->minIntervalBetweenPlaybacks = 0.4;
+	flexibleConstructionSound->volume = 0.5;
 	flexibleConstructionSound->copyBeforeUse = true;
 }
 
@@ -68,6 +69,96 @@ recti TowerStructure::worldToCell(rectd v)
 	rect.origin = worldToCell(v.origin);
 	rect.size = worldToCell(v.origin + v.size) - rect.origin;
 	return rect;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Bounds
+//----------------------------------------------------------------------------------------------------
+
+const recti & TowerStructure::getBounds()
+{
+	return bounds;
+}
+
+void TowerStructure::setBounds(const recti & rect)
+{
+	if (bounds != rect) {
+		bounds = rect;
+		tower->sendEvent(new Event(Event::kBoundsChanged));
+	}
+}
+
+void TowerStructure::extendBounds(const recti & rect)
+{
+	//Create a working copy of the rect.
+	recti r = rect;
+	
+	//If our current bounds are not empty, we extend the working rect by them.
+	if (bounds.area() > 0)
+		r.unify(bounds);
+	
+	//Set the new bounds
+	setBounds(r);
+}
+
+
+
+rectd TowerStructure::getWorldBounds()
+{
+	return cellToWorld(getBounds());
+}
+
+
+
+TowerStructure::FloorRange TowerStructure::getFloorRange(int floor)
+{
+	return floorRanges[floor];
+}
+
+void TowerStructure::setFloorRange(int floor, FloorRange range)
+{
+	if (floorRanges[floor] != range) {
+		floorRanges[floor] = range;
+		tower->sendEvent(new FloorEvent(Event::kFloorRangeChanged, floor));
+	}
+}
+
+void TowerStructure::extendFloorRange(int floor, const recti & rect)
+{
+	//Get the current floor's range
+	FloorRange fr = floorRanges[floor];
+	
+	//Check whether the floor is empty, i.e. the minX and maxX are identical.
+	bool empty = (fr.minX == fr.maxX);
+	
+	//Add the rect's minX and maxX to the range appropriately.
+	if (empty || rect.minX() < fr.minX)
+		fr.minX = rect.minX();
+	if (empty || rect.maxX() > fr.maxX)
+		fr.maxX = rect.maxX();
+	
+	//Set the new floor range
+	setFloorRange(floor, fr);
+}
+
+
+recti TowerStructure::getFloorRect(int floor)
+{
+	recti r(0, floor, 0, 1);
+	FloorRange fr = getFloorRange(floor);
+	r.origin.x = fr.minX;
+	r.size.x = fr.maxX - fr.minX;
+	return r;
+}
+
+rectd TowerStructure::getWorldFloorRect(int floor)
+{
+	return cellToWorld(getFloorRect(floor));
 }
 
 
@@ -155,6 +246,13 @@ TowerStructure::CellAnalysis TowerStructure::analyseCells(rectmaski rectmask)
 void TowerStructure::assignCellsCoveredByItem(Item * item)
 {
 	if (!item) return;
+	
+	//Extend the tower bounds.
+	extendBounds(item->getRect());
+	
+	//Extend the floor ranges.
+	for (int i = item->getMinFloor(); i <= item->getMaxFloor(); i++)
+		extendFloorRange(i, item->getRect());
 	
 	//Get the cells the item covers
 	CellSet cells = getCells(item->getOccupiedRectMask(), true);
