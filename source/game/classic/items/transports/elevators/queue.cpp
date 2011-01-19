@@ -20,6 +20,25 @@ updateSpritesIfNeeded(this, &ElevatorQueue::updateSprites, &updateIfNeeded)
 	steppingInside = false;
 }
 
+string ElevatorQueue::className() const
+{
+	return "queue";
+}
+
+string ElevatorQueue::instanceName() const
+{
+	stringstream s;
+	s << className();
+	s << " of ";
+	s << elevator->description();
+	s << " on floor ";
+	s << getRect().minY();
+	s << " ";
+	s.setf(std::ios::hex);
+	s << this;
+	return s.str();
+}
+
 
 
 
@@ -89,6 +108,8 @@ bool ElevatorQueue::hasPeople()
 
 Person * ElevatorQueue::popPerson()
 {
+	if (people.empty())
+		return NULL;
 	Person * p = people.front();
 	people.pop_front();
 	personSprites.erase(p);
@@ -123,14 +144,25 @@ bool ElevatorQueue::isCalled()
 	return called;
 }
 
-bool ElevatorQueue::isCallAnswered()
-{
-	return (called && respondingCar);
-}
-
 double ElevatorQueue::getWaitDuration()
 {
 	return (elevator->tower->time->getTime() - callTime);
+}
+
+ElevatorCar * ElevatorQueue::getRespondingCar()
+{
+	return respondingCar;
+}
+
+void ElevatorQueue::answerCall(ElevatorCar * car)
+{
+	assert(!respondingCar);
+	respondingCar = car;
+}
+
+bool ElevatorQueue::isCallAnswered()
+{
+	return (called && respondingCar);
 }
 
 void ElevatorQueue::callCar()
@@ -146,6 +178,11 @@ void ElevatorQueue::clearCall()
 {
 	called = false;
 	callTime = 0;
+	respondingCar = NULL;
+	
+	//If there are still people queueing up, reissue a call
+	if (hasPeople())
+		callCar();
 }
 
 
@@ -215,7 +252,7 @@ void ElevatorQueue::updateSprites()
 		
 		
 		//Calculate the person rect
-		rectd rect(0, 0, 16, 36);
+		rectd rect(0, getWorldRect().minY(), 16, 36);
 		if (direction == ElevatorItem::kDown)
 			rect.origin.x = (getWorldRect().minX() + x);
 		else

@@ -60,6 +60,59 @@ ElevatorQueue * ElevatorItem::getQueue(int floor, Direction dir)
 	return queues[floor][dir];
 }
 
+ElevatorQueue * ElevatorItem::getMostUrgentQueue()
+{
+	//Iterate through the queues and find the one with the highest wait duration.
+	ElevatorQueue * most = NULL;
+	for (QueueMap::iterator qm = queues.begin(); qm != queues.end(); qm++)
+		for (QueuePair::iterator qp = qm->second.begin(); qp != qm->second.end(); qp++)
+			if (qp->second->isCalled())
+				if (!most || most->getWaitDuration() < qp->second->getWaitDuration())
+					most = qp->second;
+	
+	//Return whatever we have or haven't found.
+	return most;
+}
+
+ElevatorQueue * ElevatorItem::getNextQueue(ElevatorCar * car)
+{
+	if (!car) return NULL;
+	
+	//Iterage through all the queues with the same direction as the car and return the one closest
+	//to the car which is in the cars direction.
+	ElevatorQueue * closest = NULL;
+	double closestDistance;
+	for (QueueMap::iterator qm = queues.begin(); qm != queues.end(); qm++) {
+		
+		//If there's no queue for the car's direction, skip ahead.
+		if (!qm->second.count(car->getDirection()))
+			continue;
+		
+		//Get the queue for the car's direction
+		ElevatorQueue * q = qm->second[car->getDirection()];
+		assert(q); //q must exist now due to the prechecking of the map the line above.
+		
+		//Calculate the distance (signed) between the car and the queue.
+		double distance = qm->first - car->getFloor();
+		
+		//If the distance multiplied by the car's direction (1 for up, -1 for down) is negative,
+		//the queue does not lie in the car's path, so we have to skip it. Addendum: It is actually
+		//better to check if the distance is lower than 1. This catches all calls behind the car
+		//but also calls on the current floor which the car already had good reasons not to answer.
+		if (distance * car->getDirection() < 1)
+			continue;
+		
+		//Compare the queue to the one we already found
+		if (!closest || closestDistance > distance) {
+			closestDistance = distance;
+			closest = q;
+		}
+	}
+	
+	//Return whatever we've found
+	return closest;
+}
+
 
 
 
@@ -101,7 +154,33 @@ void ElevatorItem::removeCar(ElevatorCar * car)
 
 void ElevatorItem::respondToCalls()
 {
-	OSSObjectLog << std::endl;
+	//Iterate as long as there are queues to be responded to.
+	ElevatorQueue * q;
+	while ((q = getMostUrgentQueue())) {
+		
+		//Find the car closest to the queue's location.
+		ElevatorCar * car = getIdleCar(q->getRect().minY());
+		
+		//If we weren't able to find a car, we break out of the loop since obviously all cars are
+		//busy.
+		if (!car) break;
+		
+		//Otherwise set the car's direction and send it off to the queue.
+		car->answerCall(q);
+	}
+}
+
+ElevatorCar * ElevatorItem::getIdleCar(int floor)
+{
+	//Iterate through all the cars and find the one closest to the given floor.
+	ElevatorCar * car = NULL;
+	for (CarSet::iterator it = cars.begin(); it != cars.end(); it++)
+		if ((*it)->isIdle())
+			if (!car || fabs(car->getFloor() - floor) > fabs((*it)->getFloor() - floor))
+				car = *it;
+	
+	//Return whatever car we've found
+	return car;
 }
 
 

@@ -25,6 +25,7 @@ namespace OSS {
 		public:
 			typedef enum {
 				kUp = 1,
+				kNone = 0,
 				kDown = -1
 			} Direction;
 			
@@ -35,6 +36,9 @@ namespace OSS {
 			
 		public:
 			ElevatorQueue * getQueue(int floor, Direction dir);
+			
+			ElevatorQueue * getMostUrgentQueue();
+			ElevatorQueue * getNextQueue(ElevatorCar * car);
 				
 			
 			/**
@@ -64,10 +68,13 @@ namespace OSS {
 			
 			virtual double maxCarAcceleration() { return 7.5; }
 			virtual double maxCarSpeed() { return 10.0; }
+			virtual unsigned int maxCarCapacity() { return 21; }
 			
 			virtual void respondToCalls();
 			
 			Updatable::Conditional<ElevatorItem> respondToCallsIfNeeded;
+			
+			ElevatorCar * getIdleCar(int floor);
 			
 			
 			/**

@@ -30,6 +30,82 @@ updatePositionIfNeeded(this, &ElevatorCar::updatePosition, &updateIfNeeded)
 	departingSound->sound = Sound::named("simtower/transport/elevator/departing");
 	departingSound->layer = SoundEffect::kTopLayer;
 	departingSound->copyBeforeUse = true;
+	
+	//Initialize the basic values
+	floor = 0;
+	direction = ElevatorItem::kNone;
+	
+	startFloor = floor;
+	destinationFloor = floor;
+	journeyTime = 0;
+	
+	arrivingPlayed = false;
+	departingPlayed = false;
+	
+	state = kIdle;
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark People
+//----------------------------------------------------------------------------------------------------
+
+void ElevatorCar::addPassenger(Person * p)
+{
+	if (!p) return;
+	passengers.insert(p);
+	updateTextureIfNeeded.setNeeded();
+}
+
+void ElevatorCar::removePassenger(Person * p)
+{
+	if (!p) return;
+	passengers.erase(p);
+	updateTextureIfNeeded.setNeeded();
+}
+
+bool ElevatorCar::hasPassengers()
+{
+	return !passengers.empty();
+}
+
+bool ElevatorCar::isFull()
+{
+	return (passengers.size() >= elevator->maxCarCapacity());
+}
+
+
+
+Person * ElevatorCar::nextPassengerToUnmount()
+{
+	//Iterate through all passengers and return the first one we find that has the current floor
+	//as its end floor, i.e. that needs to get off on this floor.
+	for (PersonSet::iterator it = passengers.begin(); it != passengers.end(); it++)
+		if ((*it)->getEndFloor() == getDestinationFloor())
+			return (*it);
+	return NULL;
+}
+
+int ElevatorCar::closestPassengerDestinationFloor()
+{
+	//Iterate through all passengers and find the destination floor closest to the current one.
+	bool valid = false;
+	int dst = getDestinationFloor();
+	int closest = dst;
+	for (PersonSet::iterator it = passengers.begin(); it != passengers.end(); it++) {
+		int f = (*it)->getEndFloor();
+		if (!valid || abs(dst - closest) > abs(dst - f)) {
+			closest = f;
+			valid = true;
+		}
+	}
+	
+	//Return whatever we've found
+	return closest;
 }
 
 
@@ -54,6 +130,22 @@ void ElevatorCar::setFloor(double f)
 	}
 }
 
+
+
+ElevatorItem::Direction ElevatorCar::getDirection()
+{
+	return direction;
+}
+
+void ElevatorCar::setDirection(ElevatorItem::Direction dir)
+{
+	if (direction != dir) {
+		direction = dir;
+	}
+}
+
+
+
 int ElevatorCar::getDestinationFloor()
 {
 	return destinationFloor;
@@ -63,24 +155,69 @@ void ElevatorCar::setDestinationFloor(int f)
 {
 	if (destinationFloor != f) {
 		destinationFloor = f;
+		
+		//Reset the animation
 		startFloor = getFloor();
 		journeyTime = 0;
+		
+		//Reset the audio state
 		arrivingPlayed = false;
 		departingPlayed = false;
+		
+		//Mark us as moving around
+		setState(kMoving);
+	} else {
+		//Obviously we're already on the floor where we'd like to be, so we might as well just
+		//start hauling right away.
+		setState(kHauling);
 	}
 }
 
+
+
+ElevatorCar::State ElevatorCar::getState()
+{
+	return state;
+}
+
+void ElevatorCar::setState(State s)
+{
+	if (state != s) {
+		state = s;
+		journeyTime = 0;
+		
+		const static string states[5] = {
+			"idle", "moving", "opening doors", "hauling", "closing doors"
+		};
+		OSSObjectLog << states[s] << std::endl;
+		
+		//If we just switched to idle state we have to inform our elevator about this so it may
+		//assign us a new call to respond to. We also have to reset our direction.
+		if (state == kIdle) {
+			setDirection(ElevatorItem::kNone);
+			elevator->respondToCallsIfNeeded.setNeeded();
+		}
+	}
+}
+
+bool ElevatorCar::isIdle()
+{
+	//WTF: long bughunting ended in this line being state != kIdle. What was I thinking?
+	return (state == kIdle);
+}
+
+
+
 void ElevatorCar::advance(double dt)
 {
+	//Advance the journey time.
+	journeyTime += dt;
+	
 	//If we're not on our destination floor, we have to move there. Note that due to float/double
 	//imprecision, we can't use a simple comparison, but rather have to check whether the distance
 	//between destination floor and current floor is above a certain treshold which we consider "at
 	//destination".
 	if (fabs(destinationFloor - floor) > 0.01) {
-		
-		//Advance the journey time which we use for the formula for floor calculations.
-		journeyTime += dt;
-		
 		//First we need two constants. The acceleration of the elevator and the absolute maximum
 		//speed.
 		double a = elevator->maxCarAcceleration();
@@ -178,15 +315,119 @@ void ElevatorCar::advance(double dt)
 		
 		//We should probably show the inner workings of the algorithm in the console for debuggin.
 		//DEBUG: remove this log stuff later. Seems to work anyway.
-		char buffer[512];
+		/*char buffer[512];
 		snprintf(buffer, 512, "s=%3.0f, v=%2.1f, t0=%2.1f, t1=%2.1f, tacc=%2.1f, tdec=%2.1f, %s",
 				 s, v, t0, t1, tacc, tdec,
 				 (phase == 0 ? "accelerating" : (phase == 1 ? "travelling" : "decelerating")));
-		std::cout << buffer << std::endl;
+		std::cout << buffer << std::endl;*/
 		
 	} else {
+		
+		//Just to make sure :)
 		setFloor(destinationFloor);
+		
+		//So we're obviously on the destination floor. Quite a few things to do here. First we have
+		//to act according to our current state. So let's do that.
+		switch (getState()) {
+				
+			case kMoving: {
+				if (getDirection() != ElevatorItem::kNone)
+					setState(kOpeningDoors);
+				else
+					setState(kIdle);
+			} break;
+				
+			case kOpeningDoors: {
+				if (journeyTime >= 0.1)
+					setState(kHauling);
+			} break;
+				
+			case kHauling: {
+				Person * p = NULL;
+				assert(getDirection() != ElevatorItem::kNone);
+				
+				//Fetch the queue we're serving
+				ElevatorQueue * q = elevator->getQueue(getDestinationFloor(), getDirection());
+				
+				//Unhaul
+				if (!p) {
+					while (journeyTime >= 0.05 && (p = nextPassengerToUnmount())) {
+						journeyTime -= 0.05;
+						removePassenger(p);
+						p->setFloor(getDestinationFloor());
+					}
+				}
+				
+				//Haul
+				if (!p && q) {
+					q->setSteppingInside(true);
+					while (journeyTime >= 0.05 && !isFull() && (p = q->popPerson())) {
+						journeyTime -= 0.05;
+						addPassenger(p);
+					}
+				}
+				
+				//Hauling complete, decide what to do.
+				if (!p && journeyTime >= 0.25) {
+					if (q) {
+						q->setSteppingInside(false);
+						q->clearCall();
+					}
+					if (hasPassengers())
+						setState(kClosingDoors);
+					else
+						setState(kIdle);
+				}
+			} break;
+				
+			case kClosingDoors: {
+				if (journeyTime >= 0.1)
+					decideDestination();
+			} break;
+		}
 	}
+}
+
+
+
+void ElevatorCar::decideDestination()
+{
+	//If we don't have any passengers switch to idle state and abort. This check has usually already
+	//been done by advance(), but just in case to make sure we're not deciding something stupid.
+	if (!hasPassengers()) {
+		setState(kIdle);
+		return;
+	}
+	
+	//First we ask our passengers about the next floor they want to go.
+	int passengerWish = closestPassengerDestinationFloor();
+	
+	//Now we ask the elevator where the next call to be answered would be, based on our direction.
+	ElevatorQueue * nextQueue = elevator->getNextQueue(this);
+	
+	//If we're closer to the next call than the passenger wish and aren't full (quite important,
+	//acutally ^^), we answer the call first. We do this by first calculating both absolute dist-
+	//ances.
+	if (nextQueue && !isFull()) {
+		double passengerDistance = fabs(passengerWish - getFloor());
+		double queueDistance = fabs(nextQueue->getRect().minY() - getFloor());
+		if (queueDistance <= passengerDistance) {
+			answerCall(nextQueue);
+			return;
+		}
+	}
+	
+	//Service the passenger since there was obviously no other call to handle first.
+	setDestinationFloor(passengerWish);
+}
+
+void ElevatorCar::answerCall(ElevatorQueue * q)
+{
+	if (!q) return;
+	setDirection(q->getDirection());
+	setDestinationFloor(q->getRect().minY());
+	q->answerCall(this);
+	OSSObjectLog << q->description() << std::endl;
 }
 
 
@@ -200,7 +441,18 @@ void ElevatorCar::advance(double dt)
 
 unsigned int ElevatorCar::getTextureSliceIndex()
 {
-	return 2;
+	unsigned int c = passengers.size();
+	double f = (double)c / elevator->maxCarCapacity();
+	
+	if (c == 0)
+		return 0;
+	if (c == 1)
+		return 1;
+	if (f < 0.25)
+		return 2;
+	if (!isFull())
+		return 3;
+	return 4;
 }
 
 void ElevatorCar::update()
@@ -225,10 +477,9 @@ void ElevatorCar::updateTexture()
 	
 	//Choose the appropriate slice of the texture
 	if (slice == 0) {
-		sprite->textureRect.size.x = 1;
-		sprite->textureRect.origin.x = 0;
+		sprite->textureRect = rectd(0, 0, 1, 1);
 	} else {
-		sprite->textureRect.size.x = 0.25;
+		sprite->textureRect = rectd(0, 0, 0.25, 1);
 		sprite->textureRect.origin.x = (slice - 1) * 0.25;
 	}
 	

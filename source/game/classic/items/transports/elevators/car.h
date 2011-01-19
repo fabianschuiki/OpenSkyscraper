@@ -18,10 +18,28 @@ namespace OSS {
 			
 			
 			/**
+			 * People
+			 */
+		private:
+			typedef set<Person *> PersonSet;
+			PersonSet passengers;
+			
+		public:
+			void addPassenger(Person * p);
+			void removePassenger(Person * p);
+			bool hasPassengers();
+			
+			Person * nextPassengerToUnmount();
+			int closestPassengerDestinationFloor();
+			bool isFull();
+			
+			
+			/**
 			 * Simulation
 			 */
 		private:
 			double floor;
+			ElevatorItem::Direction direction;
 			
 			double startFloor;
 			int destinationFloor;
@@ -33,19 +51,33 @@ namespace OSS {
 			bool arrivingPlayed;
 			bool departingPlayed;
 			
-			bool moving;
-			bool hauling;
+			typedef enum {
+				kIdle,
+				kMoving,
+				kOpeningDoors,
+				kHauling,
+				kClosingDoors
+			} State;
+			State state;
 			
 		public:
 			double getFloor();
 			void setFloor(double f);
 			
+			ElevatorItem::Direction getDirection();
+			void setDirection(ElevatorItem::Direction dir);
+			
 			int getDestinationFloor();
 			void setDestinationFloor(int f);
 			
+			State getState();
+			void setState(State s);
+			bool isIdle();
+			
 			virtual void advance(double dt);
 			
-			bool isIdle();
+			void decideDestination();
+			void answerCall(ElevatorQueue * q);
 			
 			
 			/**

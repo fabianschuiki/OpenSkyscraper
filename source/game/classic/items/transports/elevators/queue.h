@@ -16,6 +16,9 @@ namespace OSS {
 			
 			ElevatorQueue(ElevatorItem * elevator);
 			
+			virtual string className() const;
+			virtual string instanceName() const;
+			
 			
 			/**
 			 * Layout
@@ -63,8 +66,11 @@ namespace OSS {
 			
 		public:
 			bool isCalled();
-			bool isCallAnswered();
 			double getWaitDuration();
+			
+			ElevatorCar * getRespondingCar();
+			void answerCall(ElevatorCar * car);
+			bool isCallAnswered();
 			
 			void callCar();
 			void clearCall();
