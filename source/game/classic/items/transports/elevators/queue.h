@@ -81,9 +81,11 @@ namespace OSS {
 			 */
 		public:
 			virtual void update();
-			virtual void updateSprites();
+			virtual void updatePersonSprites();
+			virtual void updateCallSprite();
 			
-			Updatable::Conditional<ElevatorQueue> updateSpritesIfNeeded;
+			Updatable::Conditional<ElevatorQueue> updatePersonSpritesIfNeeded;
+			Updatable::Conditional<ElevatorQueue> updateCallSpriteIfNeeded;
 			
 			
 			/**
@@ -92,6 +94,8 @@ namespace OSS {
 		private:
 			typedef map<Person *, Pointer<Sprite> > PersonSpriteMap;
 			PersonSpriteMap personSprites;
+			
+			Pointer<Sprite> callSprite;
 			
 		public:
 			virtual void draw(rectd dirtyRect);

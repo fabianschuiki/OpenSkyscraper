@@ -13,11 +13,18 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 ElevatorQueue::ElevatorQueue(ElevatorItem * elevator) : elevator(elevator),
-updateSpritesIfNeeded(this, &ElevatorQueue::updateSprites, &updateIfNeeded)
+updatePersonSpritesIfNeeded(this, &ElevatorQueue::updatePersonSprites, &updateIfNeeded),
+updateCallSpriteIfNeeded(this, &ElevatorQueue::updateCallSprite, &updateIfNeeded)
 {
 	called = false;
 	callTime = 0;
 	steppingInside = false;
+	
+	//Initialize the call sprite
+	callSprite = new Sprite;
+	callSprite->rect.size = double2(8, 8);
+	callSprite->texture = Texture::named("transport/elevator/calls.png");
+	callSprite->textureRect.size = double2(0.5, 0.5);
 }
 
 string ElevatorQueue::className() const
@@ -57,7 +64,7 @@ void ElevatorQueue::setRect(const recti & r)
 {
 	if (rect != r) {
 		rect = r;
-		updateSpritesIfNeeded.setNeeded();
+		updatePersonSpritesIfNeeded.setNeeded();
 	}
 }
 
@@ -75,7 +82,7 @@ void ElevatorQueue::setDirection(ElevatorItem::Direction dir)
 {
 	if (direction != dir) {
 		direction = dir;
-		updateSpritesIfNeeded.setNeeded();
+		updatePersonSpritesIfNeeded.setNeeded();
 	}
 }
 
@@ -91,7 +98,7 @@ void ElevatorQueue::setDirection(ElevatorItem::Direction dir)
 void ElevatorQueue::addPerson(Person * p)
 {
 	people.push_back(p);
-	updateSpritesIfNeeded.setNeeded();
+	updatePersonSpritesIfNeeded.setNeeded();
 	callCar();
 }
 
@@ -113,7 +120,7 @@ Person * ElevatorQueue::popPerson()
 	Person * p = people.front();
 	people.pop_front();
 	personSprites.erase(p);
-	updateSpritesIfNeeded.setNeeded();
+	updatePersonSpritesIfNeeded.setNeeded();
 	return p;
 }
 
@@ -126,7 +133,7 @@ void ElevatorQueue::setSteppingInside(bool si)
 {
 	if (steppingInside != si) {
 		steppingInside = si;
-		updateSpritesIfNeeded.setNeeded();
+		updatePersonSpritesIfNeeded.setNeeded();
 	}
 }
 
@@ -158,6 +165,7 @@ void ElevatorQueue::answerCall(ElevatorCar * car)
 {
 	assert(!respondingCar);
 	respondingCar = car;
+	updateCallSpriteIfNeeded.setNeeded();
 }
 
 bool ElevatorQueue::isCallAnswered()
@@ -171,6 +179,7 @@ void ElevatorQueue::callCar()
 		called = true;
 		callTime = elevator->tower->time->getTime();
 		elevator->respondToCallsIfNeeded.setNeeded();
+		updateCallSpriteIfNeeded.setNeeded();
 	}
 }
 
@@ -183,6 +192,9 @@ void ElevatorQueue::clearCall()
 	//If there are still people queueing up, reissue a call
 	if (hasPeople())
 		callCar();
+	
+	//Update the call sprite
+	updateCallSpriteIfNeeded.setNeeded();
 }
 
 
@@ -196,11 +208,12 @@ void ElevatorQueue::clearCall()
 
 void ElevatorQueue::update()
 {
-	updateSpritesIfNeeded();
+	updatePersonSpritesIfNeeded();
+	//updateCallSpriteIfNeeded();
 }
 
-void ElevatorQueue::updateSprites()
-{
+void ElevatorQueue::updatePersonSprites()
+{	
 	//We need a running variable for the x coordinate
 	double x = 16;
 	
@@ -280,6 +293,28 @@ void ElevatorQueue::updateSprites()
 	}
 }
 
+void ElevatorQueue::updateCallSprite()
+{
+	//Reposition the call sprite vertically.
+	callSprite->rect.origin.y = getWorldRect().minY() + 23;
+	
+	//Depending on the direction we have to choose different horizontal positions and texture rects.
+	if (direction == ElevatorItem::kDown) {
+		callSprite->rect.origin.x = getWorldRect().minX() - 4 - callSprite->rect.size.x;
+		callSprite->textureRect.origin.x = 0;
+	} else {
+		callSprite->rect.origin.x = getWorldRect().maxX() + 4 + 6;
+		callSprite->textureRect.origin.x = 0.5;
+	}
+	
+	//Depending on whether the call is answered or not we have to choose a different portion of the
+	//texture rect.
+	callSprite->textureRect.origin.y = (isCallAnswered() ? 0 : 0.5);
+	
+	//If we aren't called at all, we may simply hide the sprite.
+	callSprite->hidden = !isCalled();
+}
+
 
 
 
@@ -294,4 +329,7 @@ void ElevatorQueue::draw(rectd dirtyRect)
 	//Draw the person sprites
 	for (PersonSpriteMap::iterator it = personSprites.begin(); it != personSprites.end(); it++)
 		it->second->draw();
+	
+	//Draw the call sprite
+	//callSprite->draw();
 }
