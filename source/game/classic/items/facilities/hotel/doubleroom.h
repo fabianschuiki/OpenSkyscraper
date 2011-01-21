@@ -12,7 +12,7 @@ namespace OSS {
 			
 			//Initialization
 			DoubleRoomItem(Tower * tower);
-			string getTypeName();
+			virtual string getTypeName() const { return "double"; }
 		};
 	}
 }

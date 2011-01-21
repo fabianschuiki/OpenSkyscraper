@@ -18,6 +18,9 @@ using namespace Classic;
 TowerStructure::TowerStructure(Tower * tower) : tower(tower),
 ceilingHeight(12), cellSize(8, 24 + 12)
 {
+	//Initialize the members to zero
+	constructionsHalted = false;
+	
 	//Initialize the construction sound effect
 	constructionSound = new SoundEffect();
 	constructionSound->sound = Sound::named("simtower/construction/normal");
@@ -30,6 +33,7 @@ ceilingHeight(12), cellSize(8, 24 + 12)
 	flexibleConstructionSound->sound = Sound::named("simtower/construction/flexible");
 	flexibleConstructionSound->layer = SoundEffect::kTopLayer;
 	flexibleConstructionSound->minIntervalBetweenPlaybacks = 0.4;
+	flexibleConstructionSound->volume = 0.5;
 	flexibleConstructionSound->copyBeforeUse = true;
 }
 
@@ -73,6 +77,96 @@ recti TowerStructure::worldToCell(rectd v)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Bounds
+//----------------------------------------------------------------------------------------------------
+
+const recti & TowerStructure::getBounds()
+{
+	return bounds;
+}
+
+void TowerStructure::setBounds(const recti & rect)
+{
+	if (bounds != rect) {
+		bounds = rect;
+		tower->sendEvent(new Event(Event::kBoundsChanged));
+	}
+}
+
+void TowerStructure::extendBounds(const recti & rect)
+{
+	//Create a working copy of the rect.
+	recti r = rect;
+	
+	//If our current bounds are not empty, we extend the working rect by them.
+	if (bounds.area() > 0)
+		r.unify(bounds);
+	
+	//Set the new bounds
+	setBounds(r);
+}
+
+
+
+rectd TowerStructure::getWorldBounds()
+{
+	return cellToWorld(getBounds());
+}
+
+
+
+TowerStructure::FloorRange TowerStructure::getFloorRange(int floor)
+{
+	return floorRanges[floor];
+}
+
+void TowerStructure::setFloorRange(int floor, FloorRange range)
+{
+	if (floorRanges[floor] != range) {
+		floorRanges[floor] = range;
+		tower->sendEvent(new FloorEvent(Event::kFloorRangeChanged, floor));
+	}
+}
+
+void TowerStructure::extendFloorRange(int floor, const recti & rect)
+{
+	//Get the current floor's range
+	FloorRange fr = floorRanges[floor];
+	
+	//Check whether the floor is empty, i.e. the minX and maxX are identical.
+	bool empty = (fr.minX == fr.maxX);
+	
+	//Add the rect's minX and maxX to the range appropriately.
+	if (empty || rect.minX() < fr.minX)
+		fr.minX = rect.minX();
+	if (empty || rect.maxX() > fr.maxX)
+		fr.maxX = rect.maxX();
+	
+	//Set the new floor range
+	setFloorRange(floor, fr);
+}
+
+
+recti TowerStructure::getFloorRect(int floor)
+{
+	recti r(0, floor, 0, 1);
+	FloorRange fr = getFloorRange(floor);
+	r.origin.x = fr.minX;
+	r.size.x = fr.maxX - fr.minX;
+	return r;
+}
+
+rectd TowerStructure::getWorldFloorRect(int floor)
+{
+	return cellToWorld(getFloorRect(floor));
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Cells
 //----------------------------------------------------------------------------------------------------
 
@@ -105,10 +199,11 @@ TowerStructure::CellSet TowerStructure::getCells(recti rect, bool createIfInexis
 TowerStructure::CellSet TowerStructure::getCells(rectmaski rectmask, bool createIfInexistent)
 {
 	CellSet cells = getCells(rectmask.bounds(), createIfInexistent);
+	CellSet res;
 	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++)
-		if (!rectmask.containsPoint((*it)->location))
-			cells.erase(it);
-	return cells;
+		if (rectmask.containsPoint((*it)->location))
+			res.insert(*it);
+	return res;
 }
 
 
@@ -152,12 +247,20 @@ void TowerStructure::assignCellsCoveredByItem(Item * item)
 {
 	if (!item) return;
 	
+	//Extend the tower bounds.
+	extendBounds(item->getRect());
+	
+	//Extend the floor ranges.
+	for (int i = item->getMinFloor(); i <= item->getMaxFloor(); i++)
+		extendFloorRange(i, item->getRect());
+	
 	//Get the cells the item covers
 	CellSet cells = getCells(item->getOccupiedRectMask(), true);
 	
 	//Set the item in each cell's item slot
 	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++) {
-		Item ** slot = &(*it)->items[item->getCategory()];
+		Cell * cell = *it;
+		Item ** slot = &cell->items[item->getCategory()];
 		assert(*slot == NULL && "occupied by another item. check before adding.");
 		*slot = item;
 	}
@@ -253,6 +356,11 @@ TowerStructure::ItemSet TowerStructure::getItems(rectmaski rectmask)
 
 
 
+bool TowerStructure::containsItem(Item * item)
+{
+	return items.count(item);
+}
+
 void TowerStructure::addItem(Item * item)
 {
 	if (!item) return;
@@ -320,19 +428,22 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	//Check the attributes if they are fulfilled
 	report.unfulfilledAttributes = 0;
 	
-	//Allowed on ground
-	if (!(descriptor->attributes & kAllowedOnGroundAttribute) && rect.maxY() > 0 && rect.minY() <= 0)
-		report.unfulfilledAttributes |= kAllowedOnGroundAttribute;
-	
-	//Above/below ground
-	if ((descriptor->attributes & kNotAboveGroundAttribute) && rect.maxY() > 0)
-		report.unfulfilledAttributes |= kNotAboveGroundAttribute;
-	if ((descriptor->attributes & kNotBelowGroundAttribute) && rect.minY() < 0)
-		report.unfulfilledAttributes |= kNotBelowGroundAttribute;
-	
-	//Every 15th floor
-	if ((descriptor->attributes & kEvery15thFloorAttribute) && (rect.minY() % 15) != 0)
-		report.unfulfilledAttributes |= kEvery15thFloorAttribute;
+	//Facility limitations
+	if (descriptor->category == kFacilityCategory) {
+		//Allowed on ground
+		if (!(descriptor->attributes & kAllowedOnGroundAttribute) && rect.maxY() > 0 && rect.minY() <= 0)
+			report.unfulfilledAttributes |= kAllowedOnGroundAttribute;
+		
+		//Above/below ground
+		if ((descriptor->attributes & kNotAboveGroundAttribute) && rect.maxY() > 0)
+			report.unfulfilledAttributes |= kNotAboveGroundAttribute;
+		if ((descriptor->attributes & kNotBelowGroundAttribute) && rect.minY() < 0)
+			report.unfulfilledAttributes |= kNotBelowGroundAttribute;
+		
+		//Every 15th floor
+		if ((descriptor->attributes & kEvery15thFloorAttribute) && (rect.minY() % 15) != 0)
+			report.unfulfilledAttributes |= kEvery15thFloorAttribute;
+	}
 	
 	
 	//Check if the items above/below are valid
@@ -358,8 +469,8 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 		localMask.offset(rect.origin);
 	
 	
-	//Get all the items that are affected by the rectangle
-	ItemSet items = getItems(rect);
+	//Get all the items that are affected by the mask
+	ItemSet items = getItems(localMask);
 	
 	//Iterate through the items and check whether they collide in any form with the item
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
@@ -379,7 +490,7 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 							   report.adjacentCellsValid &&
 							   (analysis.facility == 0 || descriptor->attributes & kFlexibleWidthAttribute));
 	report.validForTransport = (!report.unfulfilledAttributes &&
-								report.adjacentCellsValid &&
+								/*report.adjacentCellsValid &&*/
 								analysis.transport == 0 &&
 								report.additionalFacilityCellsRequired == 0);
 	
@@ -401,6 +512,22 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 #pragma mark -
 #pragma mark Item Construction
 //----------------------------------------------------------------------------------------------------
+
+bool TowerStructure::areConstructionsHalted()
+{
+	return constructionsHalted;
+}
+
+void TowerStructure::setConstructionsHalted(bool ch)
+{
+	constructionsHalted = ch;
+}
+
+TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
+																 recti rect)
+{
+	return constructItem(descriptor, rect, rect);
+}
 
 TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor * descriptor,
 																 recti rect, recti initialRect)
@@ -492,6 +619,7 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	
 	//Calculate the costs of the construction by adding the total costs for the facility cells and
 	//the total floor cell costs together.
+	//TODO: make this work for transport items
 	long costs = 0;
 	costs += descriptor->price * report.additionalFacilityCellsRequired / descriptor->cells.x / descriptor->cells.y;
 	costs += Item::descriptorForItemType(kFloorType)->price * report.additionalFloorCellsRequired;
@@ -572,7 +700,7 @@ void TowerStructure::advance(double dt)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Drawing
+#pragma mark State
 //----------------------------------------------------------------------------------------------------
 
 void TowerStructure::update()
@@ -611,4 +739,20 @@ void TowerStructure::draw(rectd dirtyRect)
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
 		if ((*it)->getCategory() == kTransportCategory)
 			(*it)->draw(dirtyRect);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Events
+//----------------------------------------------------------------------------------------------------
+
+bool TowerStructure::sendEventToNextResponders(OSS::Event * event)
+{
+	for (ItemPointerSet::iterator it = items.begin(); it != items.end(); it++)
+		if ((*it) && (*it)->sendEvent(event)) return true;
+	return GameObject::sendEventToNextResponders(event);
 }

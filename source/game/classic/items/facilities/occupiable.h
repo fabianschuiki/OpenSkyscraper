@@ -7,42 +7,51 @@
 namespace OSS {
 	namespace Classic {
 		class OccupiableItem : public FacilityItem {
+			
+			/**
+			 * Initialization
+			 */
 		public:
-			//Initialization
 			OccupiableItem(Tower * tower, ItemDescriptor * descriptor);
 			
 			
 			/**
-			 * Occupation
+			 * Occupancy
 			 */
 		private:
 			bool occupied;
 		public:
 			bool isOccupied() const;
-			void setOccupied(bool occupied);
-			virtual void onChangeOccupied();
+			void setOccupancy(bool o);
 			
-			
-			/**
-			 * Occupancy Automation
-			 */
-		private:
-			double autooccupyTime;
-		public:
-			double getAutooccupyTime();
-			void setAutooccupyTime(double time);
-			virtual void initAutooccupyTime();
-			
-			void resetOccupancyAutomation();
-			void updateOccupancyAutomation();
-			
-			bool isSufficientlyAttractive();
+			virtual void willChangeOccupancy(bool newOccupancy) {}
+			virtual void didChangeOccupancy() {}
 			
 			
 			/**
 			 * Simulation
 			 */
-			virtual void advance(double dt);
+		private:
+			double occupyAt;
+			
+		public:
+			double getOccupyAt();
+			void setOccupyAt(double oa);
+			
+			virtual void advanceItem(double dt);
+			virtual void advanceOccupancy(double dt);
+			
+			bool isSufficientlyAttractive();
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void update();
+			virtual void updateOccupyAt() {}
+			
+			Updatable::Conditional<OccupiableItem> updateOccupyAtIfNeeded;
 		};
 	}
 }

@@ -26,49 +26,45 @@ static ItemDescriptor floorItemDescriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-Item::Item(Tower * tower, ItemDescriptor * descriptor) : tower(tower), descriptor(descriptor)
+Item::Item(Tower * tower, ItemDescriptor * descriptor) :
+tower(tower), descriptor(descriptor),
+updateConstructionIfNeeded(this, &Item::updateConstruction, &updateIfNeeded),
+updateItemIfNeeded(this, &Item::updateItem, &updateIfNeeded),
+updateBackgroundIfNeeded(this, &Item::updateBackground, &updateItemIfNeeded)
 {
 	assert(tower && descriptor);
 	
-	hasUnionBackground = false;
-}
-
-Item::~Item()
-{
-}
-
-void Item::init()
-{
-	//Initialize the item ID to 0
-	itemID = 0;
-	
-	//TODO: Move this to its appropriate function
-	constructionWorkerUpdateTimer = 0;
+	//Reset all member values	
+	constructed = true;
 	constructionProgress = 0;
-	underConstruction = false;
-	drawFlexibleConstruction = false;
 	
-	//Initialize the basic sprites
-	initBasicSprites();
-	
-	//Perform the initial update
-	update();
+	unifiedBackground = false;
 }
 
-void Item::update()
+string Item::className() const
 {
-	//Update the basic sprites
-	updateBasicSprites();
+	string type = getTypeName();
+	if (type.length() > 0)
+		return type;
+	return GameObject::className();
 }
-															 
-															 
 
+string Item::instanceName() const
+{
+	stringstream s;
+	s << className();
+	s << " on floor ";
+	s << getRect().origin.y;
+	s << " ";
+	s.setf(std::ios::hex);
+	s << this;
+	return s.str();
+}
 
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Factory
-//----------------------------------------------------------------------------------------------------
+bool Item::isInTower()
+{
+	return tower->structure->containsItem(this);
+}
 
 Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 {
@@ -85,23 +81,39 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 			
 			//Elevator
 		case kStandardElevatorType:	instance = new StandardElevatorItem(tower); break;
+		case kServiceElevatorType:	instance = new ServiceElevatorItem(tower); break;
+		case kExpressElevatorType:	instance = new ExpressElevatorItem(tower); break;
 			
 			//Office
-		case kOfficeType:			instance = new OfficeItem(tower); break;
+		//case kOfficeType:			instance = new OfficeItem(tower); break;
 			
 			//Hotel
 		case kSingleRoomType:		instance = new SingleRoomItem(tower); break;
 		case kDoubleRoomType:		instance = new DoubleRoomItem(tower); break;
 		case kSuiteType:			instance = new SuiteItem(tower); break;
-			
-			//Services
 		case kHousekeepingType:		instance = new HousekeepingItem(tower); break;
+			
+			//Entertainment
+		case kFastFoodType:			instance = new FastFoodItem(tower); break;
+		case kRestaurantType:		instance = new RestaurantItem(tower); break;
+		case kShopType:				instance = new ShopItem(tower); break;
+		case kPartyHallType:		instance = new PartyHallItem(tower); break;
 	}
 	
 	//Initialize the item
 	if (instance) {
-		instance->init();
+		if (descriptor->group == kElevatorGroup) {
+			rect.size.y += 109;
+			rect.origin.y -= 9;
+		}
 		instance->setRect(rect);
+		
+		//If this is an elevator, add a car to it
+		if (descriptor->group == kElevatorGroup) {
+			((ElevatorItem *)instance)->addCar(0);
+			((ElevatorItem *)instance)->addCar(0);
+			((ElevatorItem *)instance)->addCar(0);
+		}
 	}
 	
 	return instance;
@@ -113,7 +125,7 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Basic Attributes
+#pragma mark Descriptors
 //----------------------------------------------------------------------------------------------------
 
 ItemType Item::getType()
@@ -131,28 +143,43 @@ ItemCategory Item::getCategory()
 	return descriptor->category;
 }
 
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Identification
-//----------------------------------------------------------------------------------------------------
-
-unsigned int Item::getItemID() const
+bool Item::isWidthFlexible()
 {
-	return itemID;
+	return (descriptor->attributes & kFlexibleWidthAttribute);
 }
 
-void Item::setItemID(unsigned int itemID)
-{
-	this->itemID = itemID;
-}
 
-bool Item::isValid() const
+
+ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 {
-	return (getItemID() != 0);
+	switch (itemType) {
+			//Structure
+		case kLobbyType:			return &LobbyItem::descriptor; break;
+		case kFloorType:			return &floorItemDescriptor; break;
+		case kStairsType:			return &StairsItem::descriptor; break;
+		case kEscalatorType:		return &EscalatorItem::descriptor; break;
+			
+			//Elevator
+		case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
+		case kServiceElevatorType:	return &ServiceElevatorItem::descriptor; break;
+		case kExpressElevatorType:	return &ExpressElevatorItem::descriptor; break;
+			
+			//Office
+		//case kOfficeType:			return &OfficeItem::descriptor; break;
+			
+			//Hotel
+		case kSingleRoomType:		return &SingleRoomItem::descriptor; break;
+		case kDoubleRoomType:		return &DoubleRoomItem::descriptor; break;
+		case kSuiteType:			return &SuiteItem::descriptor; break;
+		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;
+			
+			//Entertainment
+		case kFastFoodType:			return &FastFoodItem::descriptor; break;
+		case kRestaurantType:		return &RestaurantItem::descriptor; break;
+		case kShopType:				return &ShopItem::descriptor; break;
+		case kPartyHallType:		return &PartyHallItem::descriptor; break;
+	}
+	return NULL;
 }
 
 
@@ -180,7 +207,9 @@ recti Item::getFloorRect(int floor) const
 void Item::setRect(const recti & rect)
 {
 	if (this->rect != rect) {
+		willChangeRect(rect);
 		this->rect = rect;
+		didChangeRect();
 		setWorldRect(tower->structure->cellToWorld(rect));
 	}
 }
@@ -190,16 +219,34 @@ const rectd & Item::getWorldRect() const
 	return worldRect;
 }
 
+rectd Item::getFloorWorldRect(int floor)
+{
+	rectd r = getWorldRect();
+	r.size.y /= getNumFloors();
+	r.origin.y += r.size.y * (floor - getMinFloor());
+	return r;
+}
+
 void Item::setWorldRect(const rectd & worldRect)
 {
 	if (this->worldRect != worldRect) {
+		willChangeWorldRect(worldRect);
 		this->worldRect = worldRect;
-		onChangeLocation();
+		didChangeWorldRect();
 	}
+}
+
+void Item::didChangeWorldRect()
+{
+	//Since the world rect changed we have to update the background and the construction.
+	updateBackgroundIfNeeded.setNeeded();
+	updateConstructionIfNeeded.setNeeded();
 }
 
 rectmaski Item::getOccupiedRectMask()
 {
+	if (descriptor && !descriptor->mask.empty())
+		return descriptor->mask.offsetRectMask(getRect().origin);
 	return rectmaski(&getRect(), NULL);
 }
 
@@ -224,113 +271,168 @@ int Item::getMinFloor() const
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Basic Sprites
-//----------------------------------------------------------------------------------------------------
-
-void Item::initBasicSprites()
-{
-	initBackground();
-}
-
-void Item::updateBasicSprites()
-{
-	updateBackground();
-}
-
-void Item::initBackground()
-{
-}
-
-void Item::updateBackground()
-{	
-	//If we're supposed to only have one big background, set its rect accordingly
-	if (hasUnionBackground) {
-		backgrounds[0].rect = getWorldRect();
-	}
-	
-	//Otherwise calculate the background sprite rects
-	else {
-		for (int floor = 0; floor < getNumFloors(); floor++) {
-			//Calculate the rect in cell coordinates
-			recti rect = getRect();
-			rect.size.y = 1;
-			rect.origin.y += floor;
-			
-			//Convert the rect to world coordinates
-			rectd worldRect = tower->structure->cellToWorld(rect);
-			
-			//Set the background rect
-			backgrounds[floor].rect = worldRect;
-		}
-	}
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Descriptors
-//----------------------------------------------------------------------------------------------------
-
-ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
-{
-	switch (itemType) {
-			//Structure
-		case kLobbyType:			return &LobbyItem::descriptor; break;
-		case kFloorType:			return &floorItemDescriptor; break;
-		case kStairsType:			return &StairsItem::descriptor; break;
-		case kEscalatorType:		return &EscalatorItem::descriptor; break;
-			
-			//Elevator
-		case kStandardElevatorType:	return &StandardElevatorItem::descriptor; break;
-			
-			//Office
-		case kOfficeType:			return &OfficeItem::descriptor; break;
-			
-			//Hotel
-		case kSingleRoomType:		return &SingleRoomItem::descriptor; break;
-		case kDoubleRoomType:		return &DoubleRoomItem::descriptor; break;
-		case kSuiteType:			return &SuiteItem::descriptor; break;
-			
-			//Services
-		case kHousekeepingType:		return &HousekeepingItem::descriptor; break;
-	}
-	return NULL;
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
+bool Item::isConstructed()
+{
+	return constructed;
+}
+
+void Item::setConstructed(bool c)
+{
+	if (constructed != c) {
+		constructed = c;
+		updateConstructionIfNeeded.setNeeded();
+	}
+}
+
+
+
 void Item::advance(double dt)
 {
-	//Simulate the construction
-	if (constructionProgress < 1.0) {
-		//Increase the construction worker update timer
-		constructionWorkerUpdateTimer += dt;
-		if (constructionWorkerUpdateTimer > 0.1) {
-			constructionWorkerUpdateTimer -= 0.1;
-			updateConstructionWorkerSprites();
-		}
-		
-		//Advance the construction progress
-		if (!tower->getConstructionsHalted()) {
-			constructionProgress += dt * 1.0;
-			if (constructionProgress >= 1.0 || drawFlexibleConstruction)
-				setUnderConstruction(false);
-		}
+	//If we're not yet constructed, advance the construction.
+	if (!isConstructed() && !tower->structure->areConstructionsHalted())
+		advanceConstruction(dt);
+	
+	//If we are constructed, advance the item
+	if (isConstructed())
+		advanceItem(dt);
+	
+	GameObject::advance(dt);
+}
+
+void Item::advanceConstruction(double dt)
+{
+	//Advance the construction progress.
+	constructionProgress += dt * 1.0;
+	
+	//If the construction is done or this is a flexible item, set constructed to true.
+	if (constructionProgress >= 1.0 || isWidthFlexible()) {
+		constructionProgress = 1.0;
+		setConstructed(true);
 	}
 	
-	//If the date advanced, issue a notification
-	if (tower->didDateAdvance())
-		onDateAdvance();
+	//If we're not yet constructed, update the construction which shuffles the worker sprites.
+	if (!isConstructed() && shouldAdvance("workers", 0.1))
+		updateConstructionIfNeeded.setNeeded();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
+
+void Item::update()
+{
+	//Update the item if needed
+	updateItemIfNeeded();
+	
+	//Update the construction
+	updateConstructionIfNeeded();
+	
+	GameObject::update();
+}
+
+void Item::updateConstruction()
+{
+	//If we aren't under construction we have to get rid of the construction workers.
+	if (isConstructed()) {
+		constructionWorkers.clear();
+		constructionTexture = NULL;
+	}
+	
+	//Otherwise we have to make sure that we have one construction worker for each floor.
+	else {
+		//Do the same as with backgrounds. Determine the number of workers first.
+		unsigned int numberOfWorkers = (isWidthFlexible() ? 0 : getNumFloors());
+		
+		//Erase the superfluous workers.
+		while (constructionWorkers.size() > numberOfWorkers && !constructionWorkers.empty())
+			constructionWorkers.erase(constructionWorkers.begin());
+		
+		//Add missing workers.
+		for (unsigned int i = 0; i < numberOfWorkers; i++) {
+			if (!constructionWorkers[i])
+				constructionWorkers[i] = new Sprite;
+		}
+		
+		//Now we have to position each individual worker and make sure it shows an animation sprite.
+		for (FloorSpriteMap::iterator it = constructionWorkers.begin();
+			 it != constructionWorkers.end(); it++) {
+			
+			//Calculate the worker's new rect
+			recti rect;
+			rect.size = int2(2, 1);
+			rect.origin.x = getRect().minX() + randi(0, getRect().size.x - rect.size.x);
+			rect.origin.y = getMinFloor() + it->first;
+			
+			//Convert to world coordinates and adjust the height
+			rectd worldRect = tower->structure->cellToWorld(rect);
+			worldRect.size.y = 24;
+			
+			//Set the worker's rect
+			it->second->rect = worldRect;
+			
+			//Load the worker's texture
+			it->second->texture = Texture::named("simtower/construction/workers");
+			
+			//Calculate the new texture rect
+			rectd texrect;
+			texrect.size = double2(1.0 / 6, 1);
+			texrect.origin.x = randi(0, 5) * texrect.size.x;
+			
+			//Set the new texture rect
+			it->second->textureRect = texrect;
+		}
+		
+		//Load the appropriate construction texture
+		stringstream textureName;
+		textureName << "simtower/construction/";
+		textureName << (isWidthFlexible() ? "floor" : "facility");
+		constructionTexture = Texture::named(textureName.str());
+	}
+}
+
+void Item::updateItem()
+{
+	//Update the background if required
+	updateBackgroundIfNeeded();
+}
+
+void Item::updateBackground()
+{
+	//Decide how many background sprites we need to have.
+	unsigned int numberOfBackgrounds = (hasUnifiedBackground() ? 1 : getNumFloors());
+	
+	//Make sure we have the right number of background sprites, which is one for each floor. We do
+	//this by removing superfluous sprites first.
+	while (backgrounds.size() > numberOfBackgrounds && !backgrounds.empty())
+		backgrounds.erase(backgrounds.begin());
+	
+	//Then we add fresh new sprites for missing floors.
+	for (unsigned int i = 0; i < numberOfBackgrounds; i++) {
+		if (!backgrounds[i])
+			backgrounds[i] = new Sprite;
+	}
+	
+	
+	//Now we may actually start laying out the background sprites. If we're supposed to have a uni-
+	//fied background it's very simple. The background simply covers the entire item.
+	if (hasUnifiedBackground()) {
+		backgrounds[0]->rect = getWorldRect();
+	}
+	
+	//Otherwise we have to give each background sprite its appropriate rect.
+	else {
+		//Iterate through the background rects. and assign each the appropriate floor.
+		for (FloorSpriteMap::iterator it = backgrounds.begin(); it != backgrounds.end(); it++)
+			backgrounds[it->first]->rect = getFloorWorldRect(it->first + getMinFloor());
+	}
 }
 
 
@@ -342,116 +444,87 @@ void Item::advance(double dt)
 #pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
+bool Item::hasUnifiedBackground()
+{
+	return unifiedBackground;
+}
+
+void Item::setUnifiedBackground(bool ub)
+{
+	if (unifiedBackground != ub) {
+		unifiedBackground = ub;
+		updateBackgroundIfNeeded.setNeeded();
+	}
+}
+
+
+
 void Item::draw(rectd dirtyRect)
 {
-	//Draw the construction
-	if (constructionSprite) {
-		constructionSprite->rect = (drawFlexibleConstruction ? worldRect : backgrounds[0].rect);
-		constructionSprite->autoTexRectAttributes &= ~(Sprite::kRelative);
-		if (!drawFlexibleConstruction)
-			constructionSprite->autoTexRectAttributes |= Sprite::kRelative;
-		constructionSprite->draw();
-	}
+	//If we're not yet constructed draw the construction.
+	if (!isConstructed())
+		drawConstruction(dirtyRect);
 	
-	//Draw the construction workers
-	if (!drawFlexibleConstruction)
-		for (int i = 0; i < 3; i++)
-			if (constructionWorkerSprite[i])
-				constructionWorkerSprite[i]->draw();
+	//Otherwise draw the item
+	else
+		drawItem(dirtyRect);
 	
-	//Draw the background sprites
-	if (!underConstruction) {
-		if (hasUnionBackground)
-			backgrounds[0].draw();
-		else
-			for (int i = 0; i < getRect().size.y; i++)
-				backgrounds[i].draw();
-	}
+	GameObject::draw(dirtyRect);
 }
 
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Notifications
-//----------------------------------------------------------------------------------------------------
-
-void Item::onChangeLocation()
+void Item::drawConstruction(rectd dirtyRect)
 {
-	updateBasicSprites();
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Uncategorized
-//----------------------------------------------------------------------------------------------------
-
-void Item::setUnderConstruction(bool uc)
-{
-	//Ignore if the construction state didn't change
-	if (underConstruction == uc) return;
-	underConstruction = uc;
+	//Create a textured quad which we will use to render the construction texture for each floor.
+	TexturedQuad quad;
+	quad.texture = constructionTexture;
 	
-	//Switch to construction mode
-	if (underConstruction) {
-		//Setup the construction sprite if required
-		if (!constructionSprite) {
-			constructionSprite = new Sprite;
-			constructionSprite->autoTexRectAttributes = Sprite::kAutoX;
-			
-			//Depending on whether the item is draggable the construction sprite differs
-			drawFlexibleConstruction = (this->descriptor->attributes & kFlexibleWidthAttribute);
-			string textureName = "simtower/construction/";
-			textureName += (drawFlexibleConstruction ? "floor" : "facility");
-			constructionSprite->texture = Texture::named(textureName);
-		}
+	//Iterate through the background sprites and draw the textured quad at each one's location.
+	for (FloorSpriteMap::iterator it = backgrounds.begin(); it != backgrounds.end(); it++) {
 		
-		//Setup the construction
-		constructionProgress = 0;
+		//Set the quad's rect to be the background's one
+		quad.rect = it->second->rect;
 		
-		//Setup the construction worker sprites
-		for (int i = 0; i < 3; i++) {
-			if (!constructionWorkerSprite[i] && rect.size.y > i) {
-				Sprite * sprite = new Sprite;
-				sprite->rect.size = double2(16, 24);
-				sprite->texture = Texture::named("simtower/construction/workers");
-				sprite->textureRect.size = double2(1.0 / 6, 1);
-				constructionWorkerSprite[i] = sprite;
-			}
-		}
-		updateConstructionWorkerSprites();
+		//Calculate the offset relative to which the texture is going to be drawn. Since we want to
+		//have the texture relative to the item if it's not flexible, we have to set the offset to
+		//the quad's origin.
+		double2 offset;
+		if (!isWidthFlexible())
+			offset = quad.rect.origin;
+		
+		//Autogenerate the texture rectangle.
+		quad.autogenerateTextureRect(true, false, offset);
+		
+		//Draw the quad
+		quad.draw();
 	}
 	
-	//Switch to constructed mode
-	else {
-		constructionSprite = NULL;
-		constructionProgress = 1.0;
-		
-		//Destroy construction worker sprites
-		for (int i = 0; i < 3; i++)
-			constructionWorkerSprite[i] = NULL;
-	}
+	//Iterate through the construction workers and draw each
+	for (FloorSpriteMap::iterator it = constructionWorkers.begin();
+		 it != constructionWorkers.end(); it++)
+		it->second->draw();
 }
 
-void Item::updateConstructionWorkerSprites()
+void Item::drawItem(rectd dirtyRect)
 {
-	for (int i = 0; i < 3; i++) {
-		Sprite * sprite = constructionWorkerSprite[i];
-		if (!sprite) continue;
-		
-		//Position the sprite
-		int2 newCoords(rand() % (rect.size.x - 1), i);
-		sprite->rect.origin = tower->convertCellToWorldCoordinates(newCoords + rect.origin);
-		
-		//Choose a new texture area
-		sprite->textureRect.origin.x = (rand() % 6) * sprite->textureRect.size.x;
-	}
+	//Draw the background
+	drawBackground(dirtyRect);
+	
+	//Draw the people
+	drawPeople(dirtyRect);
+}
+
+void Item::drawBackground(rectd dirtyRect)
+{
+	//Iterate through the backgrounds and draw each
+	for (FloorSpriteMap::iterator it = backgrounds.begin(); it != backgrounds.end(); it++)
+		it->second->draw();
+}
+
+void Item::drawPeople(rectd dirtyRect)
+{
+	//Iterate through the people that are currently at this item and draw the ones that want to be.
+	for (People::iterator it = people.begin(); it != people.end(); it++)
+		(*it)->drawAnimation(dirtyRect);
 }
 
 
@@ -465,10 +538,14 @@ void Item::updateConstructionWorkerSprites()
 
 void Item::addPerson(Person * person)
 {
+	willAddPerson(person);
 	people.insert(person);
+	didAddPerson(person);
 }
 
 void Item::removePerson(Person * person)
 {
+	willRemovePerson(person);
 	people.erase(person);
+	didRemovePerson(person);
 }

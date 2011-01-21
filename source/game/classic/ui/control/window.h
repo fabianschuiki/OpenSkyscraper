@@ -11,7 +11,7 @@ namespace OSS {
 		class WatchView;
 		class RatingView;
 		
-		class ControlWindow : public View {
+		class ControlWindow : public Window {
 			
 			/**
 			 * Construction

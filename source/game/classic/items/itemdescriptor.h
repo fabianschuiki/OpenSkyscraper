@@ -35,7 +35,7 @@ namespace OSS {
 			kRestaurantType,
 			kShopType,
 			kCinemaType,
-			kPartyHall,
+			kPartyHallType,
 			
 			//Infrastructure
 			kParkingRampType,
@@ -63,6 +63,7 @@ namespace OSS {
 			kElevatorGroup,
 			kOfficeGroup,
 			kHotelGroup,
+			kCondoGroup,
 			kEntertainmentGroup,
 			kInfrastructureGroup,
 			kServicesGroup,

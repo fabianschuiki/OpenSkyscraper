@@ -34,6 +34,40 @@ namespace OSS {
 			
 			
 			/**
+			 * Bounds
+			 */
+		public:
+			class FloorRange {
+			public:
+				int minX;
+				int maxX;
+				FloorRange() : minX(0), maxX(0) {}
+				bool operator != (const FloorRange & fr) {
+					return (minX != fr.minX || maxX != fr.maxX);
+				}
+			};
+			
+		private:
+			recti bounds;
+			typedef map<int, FloorRange> FloorRangeMap;
+			FloorRangeMap floorRanges;
+			
+		public:
+			const recti & getBounds();
+			void setBounds(const recti & rect);
+			void extendBounds(const recti & rect);
+			
+			rectd getWorldBounds();
+			
+			FloorRange getFloorRange(int floor);
+			void setFloorRange(int floor, FloorRange range);
+			void extendFloorRange(int floor, const recti & rect);
+			
+			recti getFloorRect(int floor);
+			rectd getWorldFloorRect(int floor);
+			
+			
+			/**
 			 * Cells
 			 *
 			 * The tower's structure is being kept track of in a cell map. Each cell represents a
@@ -112,6 +146,8 @@ namespace OSS {
 			void addItem(Item * item);
 			void removeItem(Item * item);
 			
+			bool containsItem(Item * item);
+			
 			
 			/**
 			 * Reports
@@ -146,12 +182,18 @@ namespace OSS {
 			Pointer<SoundEffect> flexibleConstructionSound;
 			Pointer<SoundEffect> constructionSound;
 			
+			bool constructionsHalted;
+			
 		public:
+			bool areConstructionsHalted();
+			void setConstructionsHalted(bool ch);
+			
 			typedef struct {
 				bool success;
 				string failureReason;
 			} ConstructionResult;
 			
+			ConstructionResult constructItem(ItemDescriptor * descriptor, recti rect);
 			ConstructionResult constructItem(ItemDescriptor * descriptor,
 											 recti rect, recti initialRect);
 			
@@ -175,6 +217,13 @@ namespace OSS {
 			 */
 		public:
 			virtual void draw(rectd dirtyRect);
+			
+			
+			/**
+			 * Events
+			 */
+		public:
+			bool sendEventToNextResponders(OSS::Event * event);
 		};
 	}
 }

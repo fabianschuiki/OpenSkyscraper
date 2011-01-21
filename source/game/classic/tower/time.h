@@ -28,6 +28,7 @@ namespace OSS {
 			void setTime(double t);
 			
 			double getTimeOfDay();
+			double getLogicalTimeOfDay();
 			bool isAfter(double a);
 			bool isBetween(double a, double b);
 			bool isBefore(double b);
@@ -39,9 +40,23 @@ namespace OSS {
 			bool isWeekday();
 			bool isWeekend();
 			
+			double getStartOfDay();			//returns 0:00 of the current day
+			double getLogicalStartOfDay();	//same as the above, but returns the previous day's
+											//start until 1:30.
+			
+			double getTodayRandom(double a, double b);
+			double getLogicalTodayRandom(double a, double b);
+			
 			
 			/**
 			 * Triggering
+			 *
+			 * Triggering is used to check whether a specific time just happened. The time keeps
+			 * track of the previous frame's time. If you check for a given alarm time, it will
+			 * check whether the queried time lies between the last frame's and the current.
+			 *
+			 * Use check() if you have an absolute time value (including date) to check against. Use
+			 * checkDaily() if you only want to check the time without date information.
 			 */
 		private:
 			double previousTime;
@@ -56,9 +71,15 @@ namespace OSS {
 			 * Simulation
 			 */
 		private:
-			double getTimeSpeed();
+			bool paused;
 			
 		public:
+			bool isPaused();
+			void setPaused(bool p);
+			
+			double debugSpeed;
+			double getTimeSpeed();
+			
 			virtual void advance(double dt);
 		};
 	}

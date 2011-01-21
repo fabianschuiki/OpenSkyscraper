@@ -29,6 +29,13 @@ bool Classic::Responder::handleClassicEvent(OSS::Event * engineEvent)
 	if (event->isType(Event::kQuarterChanged)) eventQuarterChanged(event);
 	if (event->isType(Event::kYearChanged)) eventYearChanged(event);
 	
+	//Structure
+	if (event->isType(Event::kBoundsChanged)) eventBoundsChanged(event);
+	if (event->isType(Event::kFloorRangeChanged)) eventFloorRangeChanged((FloorEvent *)event);
+	
+	//UI
+	if (event->isType(Event::kToolChanged)) eventToolChanged(event);
+	
 	//Transport
 	if (event->isType(Event::kTransportIncreased))
 		eventTransportIncreased((ItemEvent<TransportItem> *)event);

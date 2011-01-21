@@ -36,15 +36,15 @@ namespace OSS {
 			void updateBackground();
 			
 			//Simulation
-			void advance(double dt);
+			void advanceItem(double dt);
 			
 			//People
 		private:
 			typedef map< Person *, double > TransitProgressMap;
 			TransitProgressMap transitProgress;
 		public:
-			void addPerson(Person * person);
-			void removePerson(Person * person);
+			virtual void didAddPerson(Person * person);
+			virtual void willRemovePerson(Person * person);
 		};
 	}
 }

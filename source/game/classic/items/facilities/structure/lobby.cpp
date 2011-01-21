@@ -24,107 +24,101 @@ ItemDescriptor LobbyItem::descriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-LobbyItem::LobbyItem(Tower * tower) : FacilityItem(tower, &descriptor)
+LobbyItem::LobbyItem(Tower * tower) : FacilityItem(tower, &descriptor),
+updateEntrancesIfNeeded(this, &LobbyItem::updateEntrances, &updateIfNeeded)
 {
-	setHasCeiling(false);
+	//The lobby doesn't need a ceiling since it is included in the lobby texture itself.
+	setCeiling(false);
+	
+	//Initialize the outside entrances if this is the ground lobby.
+	for (int i = 0; i < 2; i++) {
+		Sprite * entrance = NULL;
+		if (getMinFloor() == 0) {
+			
+			//Initialize the sprite
+			entrance = new Sprite;
+			
+			//Setup its texture, texture rect and size
+			entrance->texture = Texture::named("simtower/decoration/entrance");
+			entrance->textureRect = rectd(i * 0.5, 0, 0.5, 1);
+			entrance->rect.size = double2(56, 36);
+		}
+		
+		//Keep the entrance we just create around for drawing
+		outsideEntrances[i] = entrance;
+	}
+	
+	//Initialize the inner entrance of the lobby.
+	insideEntrance = new Sprite;
+	insideEntrance->autoTexRectAttributes = (Sprite::kAutoX | Sprite::kRelative);
+	insideEntrance->autoTexRectRelativeTo = rectd::kMinXminY;
 }
 
-void LobbyItem::init()
-{
-	FacilityItem::init();
-	initEntrances();
-}
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
 
 void LobbyItem::update()
 {
 	FacilityItem::update();
-	updateEntrances();
-}
-
-string LobbyItem::getLobbyTextureBaseName()
-{
-	stringstream s;
-	s << "simtower/lobby/single/";
-	s << tower->environment->getLobbyStyle();
-	s << "/";
-	s << (getRect().minY() == 0 ? "ground" : "sky");
-	return s.str();
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Entrances
-//----------------------------------------------------------------------------------------------------
-
-void LobbyItem::initEntrances()
-{
-	//Setup the two entrance sprites
-	for (int i = 0; i < 2; i++) {
-		outsideEntrances[i].texture = Texture::named("simtower/decoration/entrance");
-		outsideEntrances[i].textureRect = rectd(i * 0.5, 0, 0.5, 1);
-	}
 	
-	//Update the entrances
-	updateEntrances();
-}
-
-void LobbyItem::updateEntrances()
-{
-	//Calculate the entrance rects
-	rectd outsideRects[2];
-	for (int i = 0; i < 2; i++) {
-		outsideRects[i].size = double2(56, 36);
-		outsideRects[i].origin.y = getWorldRect().minY();
-	}
-	rectd insideRect(0, getWorldRect().minY(), std::min<int>(56, getWorldRect().size.x), 36);
-	
-	//Position the entrance rects horizontally
-	outsideRects[0].origin.x = getWorldRect().minX() - outsideRects[0].size.x;
-	outsideRects[1].origin.x = getWorldRect().maxX();
-	insideRect.origin.x = getWorldRect().minX();
-	
-	//Adjust the inside rect's texture rect to compensate for rect widths < 56
-	insideEntrance.textureRect.size.x = (insideRect.size.x / 56);
-	
-	//Set the entrance rects and decide whether they should be shown or not
-	bool onGroundFloor = (getRect().origin.y == 0);
-	for (int i = 0; i < 2; i++) {
-		outsideEntrances[i].rect = outsideRects[i];
-		outsideEntrances[i].hidden = !onGroundFloor;
-	}
-	
-	//Set the inside entrance
-	insideEntrance.texture = Texture::named(getLobbyTextureBaseName() + "/entrance");
-	insideEntrance.rect = insideRect;
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Basic Sprites
-//----------------------------------------------------------------------------------------------------
-
-void LobbyItem::initBackground()
-{
-	FacilityItem::initBackground();
-		
-	//Load the background sprite
-	backgrounds[0].autoTexRectAttributes = Sprite::kAutoX;
+	//Update the entrances if needed
+	updateEntrancesIfNeeded();
 }
 
 void LobbyItem::updateBackground()
 {
 	FacilityItem::updateBackground();
 	
-	//Update the background sprite
-	backgrounds[0].texture = Texture::named(getLobbyTextureBaseName() + "/pattern");
+	//Set the background sprite texture
+	backgrounds[0]->texture = Texture::named(getLobbyTextureBaseName() + "/pattern");
+	backgrounds[0]->autoTexRectAttributes = Sprite::kAutoX;
+}
+
+void LobbyItem::updateEntrances()
+{
+	//Calculate the location and size of the inside entrance
+	insideEntrance->rect = getWorldRect();
+	insideEntrance->rect.size.x = mini(56, insideEntrance->rect.size.x);
+	
+	//Load the appropriate texture for the inside entrance.
+	insideEntrance->texture = Texture::named(getLobbyTextureBaseName() + "/entrance");
+	
+	//Position the outside entrances
+	for (unsigned int i = 0; i < 2; i++) {
+		Sprite * entrance = outsideEntrances[i];
+		
+		//Skip entrances that are not initialized
+		if (!entrance)
+			continue;
+		
+		//Load the appropriate entrance texture and set the texture rect.
+		entrance->texture = Texture::named("simtower/decoration/entrance");
+		entrance->textureRect = rectd(i * 0.5, 0, 0.5, 1);
+		
+		//Set the entrance location based on the index
+		switch (i) {
+			case 0: {
+				entrance->rect.origin.x = getWorldRect().minX() - entrance->rect.size.x;
+			} break;
+			case 1: {
+				entrance->rect.origin.x = getWorldRect().maxX();
+			} break;
+		}
+	}
+}
+
+void LobbyItem::didChangeWorldRect()
+{
+	FacilityItem::didChangeWorldRect();
+	
+	//We have to reposition the entrances since our bounds changed
+	updateEntrancesIfNeeded.setNeeded();
 }
 
 
@@ -136,29 +130,30 @@ void LobbyItem::updateBackground()
 #pragma mark Drawing
 //----------------------------------------------------------------------------------------------------
 
-void LobbyItem::draw(rectd visibleRect)
+string LobbyItem::getLobbyTextureBaseName()
 {
-	//Draw the item
-	FacilityItem::draw(visibleRect);
+	stringstream s;
+	s << "simtower/lobby/single/";
+	s << tower->environment->getLobbyStyle();
+	s << "/";
+	s << (getRect().minY() == 0 ? "ground" : "sky");
+	return s.str();
+}
+
+void LobbyItem::draw(rectd dirtyRect)
+{
+	FacilityItem::draw(dirtyRect);
 	
 	//Draw the entrances
 	for (int i = 0; i < 2; i++)
-		outsideEntrances[i].draw();
-	if (!underConstruction)
-		insideEntrance.draw();
+		if (outsideEntrances[i])
+			outsideEntrances[i]->draw();
 }
 
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Notifications
-//----------------------------------------------------------------------------------------------------
-
-void LobbyItem::onChangeLocation()
+void LobbyItem::drawBackground(rectd dirtyRect)
 {
-	FacilityItem::onChangeLocation();
-	updateEntrances();
+	FacilityItem::drawBackground(dirtyRect);
+	
+	//Draw the inside entrance
+	insideEntrance->draw();
 }

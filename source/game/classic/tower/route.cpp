@@ -82,6 +82,18 @@ void Route::addNode(recti start, TransportItem * transport, recti end)
 	nodes.push_back(Node(this, start, transport, end));
 }
 
+Route::Node * Route::nextNode()
+{
+	if (nodes.empty())
+		return NULL;
+	return &nodes.front();
+}
+
+void Route::popNode()
+{
+	nodes.pop_front();
+}
+
 
 
 
@@ -126,7 +138,7 @@ Route & Route::operator= (const Route & route)
 bool Route::isValid()
 {
 	for (Nodes::iterator node = nodes.begin(); node != nodes.end(); node++) {
-		if (!(*node).transport->isValid())
+		if (!(*node).transport->isInTower())
 			return false;
 		if (!(*node).transport->connectsToFloor((*node).start.minY()))
 			return false;
@@ -145,21 +157,23 @@ bool Route::isValid()
 #pragma mark Pathfinder
 //----------------------------------------------------------------------------------------------------
 
-Route * Route::findRoute(Tower * tower, recti origin, recti destination)
+Route * Route::findRoute(Tower * tower, recti origin, recti destination, unsigned int options)
 {
 	Route * route = new Route(tower);
 	route->origin = origin;
 	route->destination = destination;
 	route->autorelease();
 	
-	if (!findRoute(tower, origin, destination, NULL, UsedTransportsSet(), PathfinderStats(), route))
+	if (!findRoute(tower, origin, destination, options, NULL, UsedTransportsSet(),
+				   PathfinderStats(), route))
 		route = NULL;
 	
 	return route;
 }
 
-bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportItem * transport,
-					  UsedTransportsSet usedTransports, PathfinderStats stats, Route * route)
+bool Route::findRoute(Tower * tower, recti origin, recti destination, unsigned int options,
+					  TransportItem * transport, UsedTransportsSet usedTransports,
+					  PathfinderStats stats, Route * route)
 {
 	//If there is no transport and the origin and destination are on the same floor, we already
 	//have a route.
@@ -199,9 +213,17 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 	for (std::set<int>::iterator floor = connectionFloors.begin(); floor != connectionFloors.end(); floor++) {
 		
 		//Find the transports on this floor
-		Tower::ItemSet * items = &tower->transportItemsByFloor[*floor];
-		for (Tower::ItemSet::iterator item = items->begin(); item != items->end(); item++) {
+		TowerStructure::ItemSet items = tower->structure->getItems(*floor, kTransportCategory);
+		for (TowerStructure::ItemSet::iterator item = items.begin(); item != items.end(); item++) {
 			TransportItem * t = (TransportItem *)((Item *)*item);
+			
+			//Avoid service elevators if demanded
+			if (options & kNoServiceElevators && t->getType() == kServiceElevatorType)
+				continue;
+			
+			//Avoid anything but service elevators if demanded
+			if (options & kOnlyServiceElevators && t->getType() != kServiceElevatorType)
+				continue;
 			
 			//Skip transports we've already used
 			if (usedTransports.count(t))
@@ -218,7 +240,8 @@ bool Route::findRoute(Tower * tower, recti origin, recti destination, TransportI
 			
 			//Find routes using this transport
 			//OSSObjectLog << "finding routes using " << t->description() << std::endl;
-			if (findRoute(tower, t->getFloorRect(*floor), destination, t, usedTransports, stats, newRoute))
+			if (findRoute(tower, t->getFloorRect(*floor), destination, options, t, usedTransports,
+						  stats, newRoute))
 				if (!shortestRoute || newRoute->getDistance() < shortestRoute->getDistance())
 					shortestRoute = newRoute;
 		}

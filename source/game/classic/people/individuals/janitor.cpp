@@ -1,6 +1,4 @@
 #include "janitor.h"
-#include "../../items/facilities/hotel/housekeeping.h"
-#include "../../items/facilities/hotel/hotel.h"
 
 using namespace OSS;
 using namespace Classic;
@@ -15,11 +13,12 @@ using namespace Classic;
 //----------------------------------------------------------------------------------------------------
 
 Janitor::Janitor(Tower * tower, HousekeepingItem * housekeeping)
-: TimedPerson(tower), housekeeping(housekeeping)
+: Person(tower), housekeeping(housekeeping)
 {
-	initAnimationSprite();
+	cleaningDone = false;
 	setType(kJanitorType);
 	setItem(housekeeping);
+	setDestination(housekeeping);
 }
 
 
@@ -39,12 +38,9 @@ HotelItem * Janitor::getAssignedHotel()
 void Janitor::setAssignedHotel(HotelItem * hotel)
 {
 	if (assignedHotel != hotel) {
-		if (assignedHotel)
-			assignedHotel->setAssignedJanitor(NULL);
+		willChangeAssignedHotel();
 		assignedHotel = hotel;
-		if (assignedHotel)
-			assignedHotel->setAssignedJanitor(this);
-		onChangeAssignedHotel();
+		didChangeAssignedHotel();
 	}
 }
 
@@ -53,15 +49,27 @@ bool Janitor::hasAssignedHotel()
 	return (getAssignedHotel() != NULL);
 }
 
-void Janitor::onChangeAssignedHotel()
+void Janitor::willChangeAssignedHotel()
 {
+	if (hasAssignedHotel())
+		getAssignedHotel()->setAssignedJanitor(NULL);
+}
+
+void Janitor::didChangeAssignedHotel()
+{
+	if (hasAssignedHotel())
+		getAssignedHotel()->setAssignedJanitor(this);
+	
+	//We're not done cleaning the new hotel
+	cleaningDone = false;
+	
 	//If we have an assigned hotel, move there
-	if (getAssignedHotel())
-		setNextDestination(getAssignedHotel(), 0.25);
+	if (hasAssignedHotel())
+		setDestination(getAssignedHotel());
 	
 	//Otherwise go back to housekeeping
 	else
-		setNextDestination(housekeeping);
+		setDestination(housekeeping);
 }
 
 
@@ -70,58 +78,66 @@ void Janitor::onChangeAssignedHotel()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Intelligence
+#pragma mark Animation
 //----------------------------------------------------------------------------------------------------
 
-void Janitor::think()
+void Janitor::updateAnimation()
 {
-	//Idle when at the housekeeping facility
-	if (isAt(housekeeping))
+	Person::updateAnimation();
+	if (!shouldAnimate())
 		return;
 	
-	//Otherwise move on
-	assert(getAssignedHotel());
-	housekeeping->onJanitorDone(this);
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Animation Sprite
-//----------------------------------------------------------------------------------------------------
-
-void Janitor::initAnimationSprite()
-{	
-	//Load the texture and set the slice size
-	animationSprite.texture = Texture::named("simtower/facilities/hotel/janitor");
-	animationSprite.rect = rectd(0, 0, 16, 24);
-	animationSprite.textureRect.size.x = (1.0 / 3);
+	//Create the animation sprite if required
+	if (!animationSprite) {
+		animationSprite = new Sprite;
+		
+		//Load the texture and set the slice size
+		animationSprite->texture = Texture::named("simtower/facilities/hotel/janitor");
+		animationSprite->rect = rectd(0, 0, 16, 24);
+		animationSprite->textureRect.size.x = (1.0 / 3);
+	}
 	
-	//Do the rest of the initialization
-	TimedPerson::initAnimationSprite();
-}
-
-void Janitor::updateAnimationSprite()
-{
-	TimedPerson::updateAnimationSprite();
+	//Position the housekeeper
+	int2 position = getAssignedHotel()->getRect().origin;
+	position.x += randi(0, getAssignedHotel()->getRect().size.x - 2);
+	animationSprite->rect.origin = tower->structure->cellToWorld(position);
 	
 	//Set the texture rect
-	animationSprite.textureRect.origin.x = getAnimationIndex() / 3.0;
+	animationSprite->textureRect.origin.x = randi(0, 2) / 3.0;
 }
 
 bool Janitor::shouldAnimate()
 {
-	return (getItem() && getItem()->getGroup() == kHotelGroup);
+	return (hasAssignedHotel() && isAt(getAssignedHotel()));
 }
 
-void Janitor::shuffleAnimation()
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
+
+void Janitor::think()
 {
-	TimedPerson::shuffleAnimation();
-	if (hasAssignedHotel()) {
-		setAnimationIndex(randi(0, 2));
-		setAnimationLocation(int2(randi(0, getAssignedHotel()->getRect().size.x - 2), 0));
+	OSSObjectLog << std::endl;
+	
+	//Idle when at the housekeeping facility
+	if (isAt(housekeeping)) {
+		setPauseDuration(24);
+		return;
 	}
+	
+	//If we haven't cleaned the hotel, we have to do so first.
+	assert(getAssignedHotel());
+	if (!cleaningDone) {
+		setPauseDuration(0.25);
+		cleaningDone = true;
+		return;
+	}
+	
+	//We're done with everything, move on.
+	housekeeping->onJanitorDone(this);
 }

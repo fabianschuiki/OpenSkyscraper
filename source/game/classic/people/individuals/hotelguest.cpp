@@ -13,7 +13,7 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : TimedPerson(tower), hotel(hotel)
+HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : Person(tower), hotel(hotel)
 {
 	initialVisitDone = false;
 	hadDinner = false;
@@ -21,8 +21,6 @@ HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : TimedPerson(tower), h
 	didSleep = false;
 	didChooseSleepTime = false;
 	asleep = false;
-	
-	initAnimationSprite();
 }
 
 
@@ -31,104 +29,50 @@ HotelGuest::HotelGuest(Tower * tower, HotelItem * hotel) : TimedPerson(tower), h
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Intelligence
+#pragma mark Animation
 //----------------------------------------------------------------------------------------------------
 
-/*HotelGuest::Intention HotelGuest::getIntention()
+void HotelGuest::updateAnimation()
 {
-	return intention;
-}
-
-void HotelGuest::setIntention(Intention intention)
-{
-	if (this->intention != intention) {
-		this->intention = intention;
-	}
-}*/
-
-void HotelGuest::think()
-{
-	TimedPerson::think();
-	OSSObjectLog << std::endl;
-	
-	//In case we're awake...
-	if (!isAsleep()) {
-		
-		//Do the initial visit to the room
-		if (!initialVisitDone) {
-			if (!isAt(hotel)) {
-				OSSObjectLog << "doing initial visit" << std::endl;
-				setNextDestination(hotel, 0.5);
-				return;
-			} else
-				initialVisitDone = true;
-		}
-		
-		//Have dinner if it is before 21:00
-		if (!hadDinner) {
-			if (tower->time->getTime() >= 18.5 && tower->time->getTime() < 21 && isAt(hotel)) {
-				OSSObjectLog << "going to have dinner" << std::endl;
-				setNextDestination(NULL, 0.75);
-				return;
-			}
-			hadDinner = true;
-		}
-		
-		//Go back to the room
-		if (!isAt(hotel)) {
-			OSSObjectLog << "heading back to the hotel" << std::endl;
-			setNextDestination(hotel);
-			return;
-		}
-		
-		//Decide when to go to sleep
-		if (!didChooseSleepTime) {
-			//In case it is already the next day, we have to subtract 24h from our sleep times
-			double offset = (tower->time->getTime() < 6 ? 24 : 0);
-			
-			//Calculate the sleep time
-			sleepTime = randd(std::max<double>(tower->time->getTime(), 23 - offset), 25.5 - offset);
-			OSSObjectLog << "decided to go to sleep at " << sleepTime << std::endl;
-			setPauseEndTime(sleepTime);
-			didChooseSleepTime = true;
-			return;
-		}
-		
-		//Decide when to wake up and go to sleep
-		if (!didSleep) {
-			setPauseEndTimeFuture(randd(6, 8));
-			OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
-			setAsleep(true);
-			return;
-		}
-		
-		/*//Decide when to leave
-		if (didSleep) {
-			setPauseDuration(randd(0.25, 0.75));
-			OSSObjectLog << "going to leave at " << getPauseEndTime() << std::endl;
-			return;
-		}*/
-	}
-	
-	//Otherwise we wake up
-	else {
-		didSleep = true;
-		setPauseEndTime(7);
-		OSSObjectLog << "waking up..." << std::endl;
-		setAsleep(false);
+	Person::updateAnimation();
+	if (!shouldAnimate())
 		return;
+	
+	//Initialize the animation sprite if required
+	if (!animationSprite) {
+		animationSprite = new Sprite;
+		
+		//Load the texture and set the slice size
+		animationSprite->texture = Texture::named("simtower/facilities/hotel/guests");
+		animationSprite->rect = rectd(0, 0, 16, 24);
+		animationSprite->textureRect.size.x = (1.0 / 16);
 	}
 	
-	//Leave
-	setNextDestination(randd(tower->time->getTime() + 0.25, 8), NULL);
-	OSSObjectLog << "leaving at " << getNextDestinationTime() << std::endl;
-	assert(getNextDestinationTime() <= 12);
+	//Set the animation index
+	unsigned int animationIndex = (getGender() == kMale ? randi(0, 10) : randi(11, 15));
+	
+	//Position the guest
+	int2 position = hotel->getRect().origin;
+	position.x += randi(0, hotel->getRect().size.x - 2);
+	animationSprite->rect.origin = tower->structure->cellToWorld(position);
+	
+	//Set the texture rect
+	animationSprite->textureRect.origin.x = animationIndex / 16.0;
 }
 
-bool HotelGuest::isLeaving()
+bool HotelGuest::shouldAnimate()
 {
-	return didSleep;
+	return isAt(hotel) && !asleep;
 }
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Simulation
+//----------------------------------------------------------------------------------------------------
 
 bool HotelGuest::isAsleep()
 {
@@ -139,50 +83,101 @@ void HotelGuest::setAsleep(bool asleep)
 {
 	if (this->asleep != asleep) {
 		this->asleep = asleep;
-		hotel->onChangeGuestAsleep();
+		hotel->updateItemIfNeeded.setNeeded();
 	}
 }
 
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Animation Sprite
-//----------------------------------------------------------------------------------------------------
-
-void HotelGuest::initAnimationSprite()
-{	
-	//Load the texture and set the slice size
-	animationSprite.texture = Texture::named("simtower/facilities/hotel/guests");
-	animationSprite.rect = rectd(0, 0, 16, 24);
-	animationSprite.textureRect.size.x = (1.0 / 16);
-	
-	//Do the rest of the initialization
-	TimedPerson::initAnimationSprite();
+bool HotelGuest::isCheckingOut()
+{
+	return checkingOut;
 }
 
-void HotelGuest::updateAnimationSprite()
+void HotelGuest::think()
 {
-	TimedPerson::updateAnimationSprite();
+	Person::think();
+	//OSSObjectLog << std::endl;
 	
-	//Set the texture rect
-	animationSprite.textureRect.origin.x = getAnimationIndex() / 16.0;
-}
-
-bool HotelGuest::shouldAnimate()
-{
-	return isAt(hotel);
-}
-
-void HotelGuest::shuffleAnimation()
-{
-	TimedPerson::shuffleAnimation();
+	//If we haven't slept yet
+	if (!didSleep) {
+		//In case we're awake...
+		if (!isAsleep()) {
+			
+			//Do the initial visit to the room
+			if (!initialVisitDone) {
+				if (!isAt(hotel)) {
+					OSSObjectLog << "doing initial visit" << std::endl;
+					setDestination(hotel);
+					return;
+				} else {
+					initialVisitDone = true;
+					setPauseDuration(0.5);
+					return;
+				}
+			}
+			
+			//Have dinner if it is before 21:00
+			if (!hadDinner) {
+				if (tower->time->getTimeOfDay() >= 18.5 && tower->time->getTimeOfDay() < 21 && isAt(hotel)) {
+					OSSObjectLog << "going to have dinner" << std::endl;
+					setDestination(NULL);
+					return;
+				} else {
+					hadDinner = true;
+					setPauseDuration(0.75);
+					return;
+				}
+			}
+			
+			//Go back to the room
+			if (!isAt(hotel)) {
+				OSSObjectLog << "heading back to the hotel" << std::endl;
+				setDestination(hotel);
+				return;
+			}
+			
+			//Decide when to go to sleep
+			if (!didChooseSleepTime) {
+				//Calculate the sleep time
+				sleepTime = tower->time->getLogicalTodayRandom(23, 25.5);
+				OSSObjectLog << "decided to go to sleep at " << sleepTime << std::endl;
+				setPauseEndTime(sleepTime);
+				didChooseSleepTime = true;
+				return;
+			}
+			
+			//Decide when to wake up and then go to sleep
+			if (!didSleep) {
+				setPauseEndTimeTomorrow(randd(6, 8));
+				OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
+				setAsleep(true);
+				return;
+			}
+		}
+		
+		//Otherwise we wake up
+		else {
+			didSleep = true;
+			setPauseEndTimeToday(7);
+			OSSObjectLog << "waking up..." << std::endl;
+			setAsleep(false);
+			return;
+		}
+	}
 	
-	//Set the animation index
-	setAnimationIndex(getGender() == kMale ? randi(0, 10) : randi(11, 15));
+	//Decide when to check out
+	if (!didChooseCheckoutTime) {
+		setPauseEndTimeToday(randd(tower->time->getLogicalTimeOfDay() + 0.25, 11));
+		OSSObjectLog << "decided to check out at " << getPauseEndTime() << std::endl;
+		didChooseCheckoutTime = true;
+		return;
+	}
 	
-	//Position the guest
-	setAnimationLocation(int2(randi(0, hotel->getRect().size.x - 2), 0));
+	//Check out
+	if (!isAt(NULL)) {
+		setDestination(NULL);
+		OSSObjectLog << "checking out" << std::endl;
+		checkingOut = true;
+	}
+	
+	setPauseEndTimeToday(12);
 }

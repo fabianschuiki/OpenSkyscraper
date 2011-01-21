@@ -10,20 +10,46 @@
 
 namespace OSS {
 	namespace Classic {		
-		class Person : public SceneObject {
-		protected:
-			const Pointer<Tower> tower;
-			
-		public:
-			//Initialization
-			Person(Tower * tower);
-			virtual void reset();
+		class Person : public GameObject {
 			
 			/**
-			 * Attributes
+			 * Initialization
 			 */
+		public:
+			const Pointer<Tower> tower;
+
+			Person(Tower * tower);
+			virtual string className() const;
+			virtual ~Person();
 			
-			//Type
+			
+			/**
+			 * Location
+			 */
+		private:
+			int floor;
+			Pointer<Item> item;
+			double arrivalTime;
+		public:
+			int getFloor();
+			void setFloor(int f);
+			
+			Item * getItem() const;
+			void setItem(Item * i);
+			
+			recti getItemRect();
+			bool isAt(Item * i);
+			
+			virtual void willMoveToItem(Item * newItem) {}
+			virtual void didMoveToItem() {}
+			
+			double getArrivalTime();
+			void setArrivalTime(double time);
+			
+			
+			/**
+			 * Type
+			 */
 		public:
 			typedef enum {
 				kManType,
@@ -43,168 +69,104 @@ namespace OSS {
 			
 		public:
 			Type getType();
-			void setType(Type type);
-			virtual void onChangeType();
+			void setType(Type t);
+			
+			virtual void willChangeType(Type newType) {}
+			virtual void didChangeType() {}
+			
 			typedef enum {
 				kMale,
 				kFemale
 			} Gender;
 			Gender getGender();
 			
-			//Stress
+			
+			/**
+			 * Stress
+			 */
 		private:
 			double stress;
 		public:
 			double getStress();
-			void setStress(double stress);
-			virtual void onChangeStress();
+			void setStress(double s);
 			
-			
-			/**
-			 * Managed Sprites
-			 */
-		public:
-			typedef enum {
-				kPortraitType,
-				kQueuingType,
-				kMountingType,
-				kDescendingType
-			} SpriteType;
-			
-			typedef enum {
-				kHeadingLeft,
-				kHeadingRight
-			} SpriteHeading;
-			
-		private:
-			typedef std::set< Pointer<Sprite> > SpriteSet;
-			SpriteSet managedSprites;
-			
-			typedef map<Sprite *, SpriteType> SpriteTypeMap;
-			SpriteTypeMap managedSpriteTypes;
-			
-			typedef map<Sprite *, SpriteHeading> SpriteHeadingMap;
-			SpriteHeadingMap managedSpriteHeadings;
-			
-		public:
-			void addManagedSprite(Sprite * sprite, SpriteType type, SpriteHeading heading);
-			void removeManagedSprite(Sprite * sprite);
-			
-			void setManagedSpriteType(Sprite * sprite, SpriteType type);
-			void setManagedSpriteHeading(Sprite * sprite, SpriteHeading heading);
-			
-			void initManagedSprite(Sprite * sprite);
-			void updateManagedSprite(Sprite * sprite);
-			void updateManagedSprites();
-			
-			
-			/**
-			 * Animation Sprite
-			 */
-		protected:
-			Sprite animationSprite;
-			double animationTime;
-			unsigned int animationIndex;
-			int2 animationLocation;
-		public:
-			Sprite & getAnimationSprite();
-			
-			unsigned int getAnimationIndex();
-			void setAnimationIndex(unsigned int animationIndex);
-			virtual void onChangeAnimationIndex();
-			
-			const int2 & getAnimationLocation();
-			void setAnimationLocation(int2 animationLocation);
-			virtual void onChangeAnimationLocation();
-			
-			virtual void initAnimationSprite();
-			virtual void updateAnimationSprite();
-			
-			virtual double getAnimationPeriod();
-			virtual bool shouldAnimate();
-			void resetAnimation();
-			void advanceAnimation(double dt);
-			virtual void shuffleAnimation();
-			void drawAnimation(rectd visibleRect);
-			
-			
-			/**
-			 * Location
-			 */
-		private:
-			int floor;
-			Pointer<Item> item;
-			double arrivalTime;
-		public:
-			//Floor
-			int getFloor();
-			void setFloor(int floor);
-			
-			//Item
-			Item * getItem() const;
-			void setItem(Item * item);
-			
-			//Arrival time
-			double getArrivalTime();
-			void setArrivalTime(double time);
-			
-			//Convenience
-			double getTimeSinceArrival();
-			bool isAt(Item * item);
-			bool hasBeenAtFor(Item * item, double duration);
+			virtual void willChangeStress(double newStress) {}
+			virtual void didChangeStress() {}
 			
 			
 			/**
 			 * Journey
 			 */
 		private:
-			int nextFloor;
-			unsigned int nodeIndex;
-		public:
-			int getNextFloor();
-			void setNextFloor(int nextFloor);
-			void initJourney();
-			void advanceJourney();
-			
-			
-			/**
-			 * Route
-			 */
-		private:
 			Pointer<Item> destination;
 			Pointer<Route> route;
+			
+			double pauseEndTime;
+			
 		public:
 			Item * getDestination();
-			void setDestination(Item * destination);
-			Route * getRoute();
-			void setRoute(Route * route);
-			void updateRoute();
+			void setDestination(Item * d);
 			
-			//Convenience
+			recti getDestinationRect();
 			bool isAtDestination();
+			
+			virtual void willChangeDestination(Item * newDestination) {}
+			virtual void didChangeDestination() {}
+			
 			bool hasRoute();
+			Route::Node * getRouteNode();
+			int getStartFloor();
+			int getEndFloor();
+			bool isAtRouteNodeTransport();
+			bool isOnStartFloor();
+			bool isOnEndFloor();
+			virtual unsigned int routeFindingOptions() { return Route::kNoServiceElevators; }
+			
+			double getPauseEndTime();
+			double getPauseDuration();
+			void setPauseEndTime(double t);			//[0, inf[
+			void setPauseEndTimeToday(double t);	//[0, 24[
+			void setPauseEndTimeTomorrow(double t);	//[0, 24[
+			void setPauseDuration(double d);
 			
 			
 			/**
-			 * Notifications
+			 * Simulation
 			 */
-			virtual void onArrivedAtDestination();
+		public:			
+			virtual void advance(double dt);
+			virtual void advanceRoute(double dt);
+			virtual void advanceAnimation(double dt);
+			virtual void think() {}
+			
+			virtual bool shouldAnimate() { return false; }
+			virtual double getAnimationPeriod() { return 1; }
 			
 			
 			/**
-			 * Intelligence
+			 * State
 			 */
+		public:
 			virtual void update();
+			virtual void updateRoute();
+			virtual void updateAnimation() {}
+			
+			Updatable::Conditional<Person> updateRouteIfNeeded;
+			Updatable::Conditional<Person> updateAnimationIfNeeded;
 			
 			
 			/**
-			 * Uncategorized
+			 * Drawing
 			 */
+		protected:
+			Pointer<Sprite> animationSprite;
 			
-			//DEBUG: Properties. These are only used for debuggin purposes and ought to be replaced in
-			//later versions of the game by a more sophisticated system.
-			map<string, bool> boolProps;
-			map<string, int> intProps;
+		public:
+			virtual void drawAnimation(rectd dirtyRect);
+			
+			Texture * getQueueingTexture();
+			rectd getQueueingTextureRect();
+			double getQueueingWidth();
 		};
 	}
 }

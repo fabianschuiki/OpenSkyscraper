@@ -1,5 +1,5 @@
-#ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_STANDARDELEVATOR_H
-#define OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_STANDARDELEVATOR_H
+#ifndef OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_STANDARD_H
+#define OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_STANDARD_H
 
 #include "elevator.h"
 
@@ -12,6 +12,7 @@ namespace OSS {
 			
 			//Initialization
 			StandardElevatorItem(Tower * tower);
+			virtual string getTypeName() const { return "standard"; }
 		};
 	}
 }

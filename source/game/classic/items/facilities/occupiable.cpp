@@ -12,10 +12,12 @@ using namespace Classic;
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-OccupiableItem::OccupiableItem(Tower * tower, ItemDescriptor * descriptor) : FacilityItem(tower, descriptor)
+OccupiableItem::OccupiableItem(Tower * tower, ItemDescriptor * descriptor) :
+FacilityItem(tower, descriptor),
+updateOccupyAtIfNeeded(this, &OccupiableItem::updateOccupyAt, &updateIfNeeded)
 {
 	occupied = false;
-	autooccupyTime = 25;
+	occupyAt = 0;
 }
 
 
@@ -32,20 +34,21 @@ bool OccupiableItem::isOccupied() const
 	return occupied;
 }
 
-void OccupiableItem::setOccupied(bool occupied)
+void OccupiableItem::setOccupancy(bool o)
 {
-	if (this->occupied != occupied) {
-		this->occupied = occupied;
-		OSSObjectLog << "occupied = " << occupied << std::endl;
-		if (!occupied)
-			resetOccupancyAutomation();
-		onChangeOccupied();
+	if (this->occupied != o) {
+		willChangeOccupancy(o);
+		
+		//Set the occupyAt time to 0 so that it gets updated later if we're vacating the item.
+		if (!o)
+			occupyAt = 0;
+		
+		//Apply the new state
+		this->occupied = o;
+		
+		didChangeOccupancy();
+		updateBackgroundIfNeeded.setNeeded();
 	}
-}
-
-void OccupiableItem::onChangeOccupied()
-{
-	updateBackground();
 }
 
 
@@ -54,37 +57,57 @@ void OccupiableItem::onChangeOccupied()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Occupancy Automation
+#pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-double OccupiableItem::getAutooccupyTime()
+double OccupiableItem::getOccupyAt()
 {
-	return autooccupyTime;
+	return occupyAt;
 }
 
-void OccupiableItem::setAutooccupyTime(double time)
+void OccupiableItem::setOccupyAt(double oa)
 {
-	if (autooccupyTime != time) {
-		autooccupyTime = time;
-		OSSObjectLog << time << std::endl;
-		updateOccupancyAutomation();
+	if (occupyAt != oa) {
+		occupyAt = oa;
+		OSSObjectLog << getTypeName() << " will be occupied at " << oa << std::endl;
 	}
 }
 
-void OccupiableItem::initAutooccupyTime()
+
+
+void OccupiableItem::advanceItem(double dt)
 {
-	setAutooccupyTime(24);
+	FacilityItem::advanceItem(dt);
+	
+	//Advance the occupancy
+	advanceOccupancy(dt);
 }
 
-void OccupiableItem::resetOccupancyAutomation()
+void OccupiableItem::advanceOccupancy(double dt)
 {
-	setAutooccupyTime(25);
-}
-
-void OccupiableItem::updateOccupancyAutomation()
-{
-	if (tower->time->getTime() >= getAutooccupyTime())
-		setOccupied(true);
+	//If we aren't occupied we have to deal with people moving in.
+	if (!isOccupied()) {
+		
+		//Only deal with this if the item is attractive enough for people to move in.
+		if (isSufficientlyAttractive()) {
+			
+			//If the occupyAt time is invalid, mark it as to be updated.
+			if (occupyAt <= 0)
+				updateOccupyAtIfNeeded.setNeeded();
+			
+			//If the occupyAt time has been reached, make people move in.
+			else if (tower->time->getTime() >= occupyAt)
+				setOccupancy(true);
+		}
+	}
+	
+	//Otherwise we have to deal with people possibly moving out.
+	else {
+		
+		//Only deal with this if the item is not attractive enough for people to stay.
+		if (!isSufficientlyAttractive() && tower->time->checkDaily(5))
+			setOccupancy(false);
+	}
 }
 
 bool OccupiableItem::isSufficientlyAttractive()
@@ -98,16 +121,13 @@ bool OccupiableItem::isSufficientlyAttractive()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Simulation
+#pragma mark State
 //----------------------------------------------------------------------------------------------------
 
-void OccupiableItem::advance(double dt)
+void OccupiableItem::update()
 {
-	FacilityItem::advance(dt);
+	FacilityItem::update();
 	
-	if (!isOccupied() && isSufficientlyAttractive()) {
-		if (tower->checkTime(5) || getAutooccupyTime() > 24)
-			initAutooccupyTime();
-		updateOccupancyAutomation();
-	}
+	//Update the occupyAt time if required
+	updateOccupyAtIfNeeded();
 }

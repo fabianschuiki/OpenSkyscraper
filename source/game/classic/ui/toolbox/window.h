@@ -8,7 +8,7 @@ namespace OSS {
 	namespace Classic {	
 		class ToolsGroupButton;
 		
-		class ToolsWindow : public View {
+		class ToolsWindow : public Window, public Responder {
 			
 			/**
 			 * Construction
@@ -26,7 +26,8 @@ namespace OSS {
 			 * Subviews
 			 */
 		private:
-			map< ItemGroup, Pointer<ToolsGroupButton> > groupButtons;
+			typedef map< ItemGroup, Pointer<ToolsGroupButton> > GroupButtonMap;
+			GroupButtonMap groupButtons;
 			
 			
 			/**
@@ -34,9 +35,11 @@ namespace OSS {
 			 */
 		public:
 			virtual void update();
-			virtual void layoutSubviews();
+			virtual void updateButtons();
+			virtual void layout();
 			
-			Updatable::Conditional<ToolsWindow> layoutSubviewsIfNeeded;
+			Updatable::Conditional<ToolsWindow> updateButtonsIfNeeded;
+			Updatable::Conditional<ToolsWindow> layoutIfNeeded;
 			
 			
 			/**
@@ -44,6 +47,13 @@ namespace OSS {
 			 */			
 		public:
 			virtual void draw(rectd dirtyRect);
+			
+			
+			/**
+			 * Events
+			 */
+		public:
+			virtual void eventToolChanged(Event * event);
 		};
 	}
 }

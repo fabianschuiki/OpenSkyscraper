@@ -27,6 +27,7 @@ using std::stringstream;
 
 using std::list;
 using std::map;
+using std::set;
 using std::vector;
 
 //Platform-specific

@@ -1,5 +1,7 @@
 #include "game.h"
 
+#include "items/item.h"
+
 using namespace OSS;
 using namespace Classic;
 
@@ -317,11 +319,14 @@ bool GameScene::eventKeyDown(KeyEvent * event)
 			//DEBUG: Change time
 		case 'h':	tower->time->setTime(tower->time->getTime() + 1); return true; break;
 		case ' ':	tower->time->setTime(tower->time->getTime() + 0.2); return true; break;
-		case 'a':	tower->debugSpeed--; return true; break;
-		case 's':	tower->debugSpeed++; return true; break;
+		case 'a':	tower->time->debugSpeed--; return true; break;
+		case 's':	tower->time->debugSpeed++; return true; break;
 			
 			//DEBUG: Pause
-		//case 'p':	tower->paused = !tower->paused; return true; break;
+		case 'p':	tower->time->setPaused(!tower->time->isPaused()); return true; break;
+			
+			//DEBUG: Debugging tower
+		case 'd':	buildDebugTower(); return true; break;
 	}
 	return false;
 }
@@ -478,39 +483,43 @@ void GameScene::setTower(Tower * tower)
 	toolboxWindow.updateButtons();
 }*/
 
-/*void GameScene::buildDebugTower()
+void GameScene::buildDebugTower()
 {
-	Engine::shared()->audioTask.disableSoundEffects();
+	Audio::shared()->disableSoundEffects();
 	
 	//Lobby
-	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
+	tower->structure->constructItem(Item::descriptorForItemType(kLobbyType),
 									  recti(-50, 0, 0, 1), recti(50, 0, 0, 1));
 	
 	//Hotels
 	for (int y = 1; y < 6; y++) {
 		for (int x = 0; x < 2; x++) {
-			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
+			tower->structure->constructItem(Item::descriptorForItemType(kSingleRoomType),
 								 recti(x * 4, y, 4, 1));
-			tower->constructItem(Item::descriptorForItemType(Item::kSingleRoomType),
+			tower->structure->constructItem(Item::descriptorForItemType(kSingleRoomType),
 								 recti((-x - 1) * 4, y, 4, 1));
 		}
 		for (int x = 0; x < 6; x++) {
-			tower->constructItem(Item::descriptorForItemType(Item::kDoubleRoomType),
+			tower->structure->constructItem(Item::descriptorForItemType(kDoubleRoomType),
 								 recti(8 + x * 6, y, 6, 1));
-			tower->constructItem(Item::descriptorForItemType(Item::kDoubleRoomType),
+			tower->structure->constructItem(Item::descriptorForItemType(kDoubleRoomType),
 								 recti(-8 + (-x - 1) * 6, y, 6, 1));
 		}
-		tower->constructItem(Item::descriptorForItemType(Item::kEscalatorType),
-							 recti(-4, y - 1, 8, 2));
+		/*tower->structure->constructItem(Item::descriptorForItemType(kEscalatorType),
+							 recti(-4, y - 1, 8, 2));*/
 	}
+	tower->structure->constructItem(Item::descriptorForItemType(kStandardElevatorType),
+									recti(-10, 0, 4, 1));
 	
 	//Housekeeping
-	tower->constructItem(Item::descriptorForItemType(Item::kHousekeepingType),
-						 recti(-7, 6, 15, 1));
-	tower->constructItem(Item::descriptorForItemType(Item::kEscalatorType),
-						 recti(-4, 5, 8, 2));
+	tower->structure->constructItem(Item::descriptorForItemType(kHousekeepingType),
+									recti(-10, 6, 15, 1));
+	tower->structure->constructItem(Item::descriptorForItemType(kHousekeepingType),
+									recti(5, 6, 15, 1));
+	tower->structure->constructItem(Item::descriptorForItemType(kServiceElevatorType),
+									recti(16, 0, 4, 1));
 	
-	//Offices
+	/*//Offices
 	for (int y = 1; y < 15; y++) {
 		for (int x = 0; x < 1; x++) {
 			tower->constructItem(Item::descriptorForItemType(Item::kOfficeType),
@@ -520,12 +529,13 @@ void GameScene::setTower(Tower * tower)
 		}
 	}
 	tower->constructFlexibleWidthItem(Item::descriptorForItemType(Item::kLobbyType),
-									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));
+									  recti(-9, 15, 0, 1), recti(9, 15, 0, 1));*/
 	
 	//Stairs
-	for (int y = 0; y < 1; y++) {
-		tower->constructItem(Item::descriptorForItemType(Item::kStairsType),
+	/*for (int y = 0; y < 1; y++) {
+		tower->structure->constructItem(Item::descriptorForItemType(kStairsType),
 							 recti(-4, y, 8, 2));
-	 }
-	//Engine::shared()->audioTask.enableSoundEffects();
-}*/
+	 }*/
+	
+	Audio::shared()->enableSoundEffects();
+}

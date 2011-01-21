@@ -4,6 +4,7 @@
 #include "../game.h"
 
 #include "../../ui/view.h"
+#include "../../ui/window.h"
 
 
 namespace OSS {

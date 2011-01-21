@@ -40,6 +40,7 @@ void ConstructionTool::setItemType(ItemType type)
 	if (itemType != type) {
 		itemType = type;
 		setItemDescriptor(Item::descriptorForItemType(type));
+		ui->ui->sendEvent(new Event(Event::kToolChanged));
 	}
 }
 
@@ -96,8 +97,13 @@ void ConstructionTool::update()
 void ConstructionTool::updateTemplateRect()
 {
 	//Set the template's size
-	if (getItemDescriptor())
-		templateRect.size = getItemDescriptor()->minUnit;
+	ItemDescriptor * desc = getItemDescriptor();
+	if (desc) {
+		if (desc->attributes & kFlexibleWidthAttribute)
+			templateRect.size = desc->minUnit;
+		else
+			templateRect.size = desc->cells;
+	}
 	
 	//In order to position the template, we have to convert the template center which is in world
 	//coordinates to cell coordinates. The first step is to convert the template rect's size to
@@ -179,9 +185,11 @@ bool ConstructionTool::eventMouseDown(MouseButtonEvent * event)
 		result = ui->getTower()->structure->constructItem(getItemDescriptor(), templateRect,
 														  initialTemplateRect);
 		
-		//If the inital build was successful, we start dragging
-		if (result.success)
+		//If the inital build was successful, we start dragging and halt the constructions.
+		if (result.success) {
 			isDraggingConstruction = true;
+			ui->getTower()->structure->setConstructionsHalted(true);
+		}
 	}
 	
 	//Otherwise we have a fixed width item selected, which is trivial to construct
@@ -202,11 +210,14 @@ bool ConstructionTool::eventMouseDown(MouseButtonEvent * event)
 
 bool ConstructionTool::eventMouseUp(MouseButtonEvent * event)
 {
-	if (!getItemDescriptor())
+	if (!getItemDescriptor() || !isDraggingConstruction)
 		return false;
 	
 	//End any dragging construction going on
 	isDraggingConstruction = false;
+	
+	//Re-enable the constructions
+	ui->getTower()->structure->setConstructionsHalted(false);
 	
 	//TODO: resume constructions of the tower
 	return true;

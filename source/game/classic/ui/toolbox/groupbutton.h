@@ -28,7 +28,7 @@ namespace OSS {
 		private:
 			typedef map<ItemType, Pointer<Button> > ItemButtonMap;
 			
-			Pointer<View> popup;
+			Pointer<Window> popup;
 			ItemButtonMap itemButtons;
 			ItemType selectedItem;
 			

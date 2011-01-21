@@ -23,16 +23,6 @@ TimedPerson::TimedPerson(Tower * tower) : Person(tower)
 	pauseEndTime = 0;
 }
 
-void TimedPerson::reset()
-{
-	Person::reset();
-	
-	clearNextDestination();
-	setPauseDurationAtDestination(0);
-	setPauseDuration(0);
-	setPauseEndTime(0);
-}
-
 
 
 
@@ -92,43 +82,12 @@ void TimedPerson::setNextDestination(double time, Item * destination, double dur
 		
 		//Mark the destination as valid
 		nextDestinationValid = true;
-		
-		//Update the destination itself
-		updateTimedDestination();
 	}
 }
 
 void TimedPerson::clearNextDestination()
 {
 	nextDestinationValid = false;
-}
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------
-#pragma mark -
-#pragma mark Route
-//----------------------------------------------------------------------------------------------------
-
-void TimedPerson::updateTimedDestination()
-{
-	//If the day just advanced, reduce the various times by 24 hours
-	if (tower->didDateAdvance()) {
-		OSSObjectLog << "reducing time values by 24h" << std::endl;
-		if (nextDestinationTime >= 24)
-			nextDestinationTime -= 24;
-		if (pauseEndTime >= 24)
-			pauseEndTime -= 24;
-	}
-	
-	//If there's a next destination and the time is right, advance
-	if (isNextDestinationValid() && getNextDestinationTime() <= tower->time->getTime()) {
-		setDestination(getNextDestination());
-		setPauseDurationAtDestination(getNextDestinationPauseDuration());
-		clearNextDestination();
-	}
 }
 
 
@@ -173,11 +132,18 @@ void TimedPerson::setPauseEndTime(double time)
 	pauseEndTime = time;
 }
 
-void TimedPerson::setPauseEndTimeFuture(double time)
+void TimedPerson::setPauseEndTimeDaily(double time)
 {
-	if (tower->time->getTime() >= time)
+	unsigned int baseTime = tower->time->getTime() / 24;
+	baseTime *= 24;
+	setPauseEndTime(baseTime + time);
+}
+
+void TimedPerson::setPauseEndTimeDailyFuture(double time)
+{
+	if (tower->time->getTimeOfDay() >= time)
 		time += 24;
-	setPauseEndTime(time);
+	setPauseEndTimeDaily(time);
 }
 
 bool TimedPerson::isPausing()
@@ -196,23 +162,18 @@ bool TimedPerson::hasNoPlans()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Intelligence
+#pragma mark Location
 //----------------------------------------------------------------------------------------------------
 
-void TimedPerson::update()
+void TimedPerson::didMoveToItem()
 {
-	Person::update();
-	
-	//Update the timed destination
-	updateTimedDestination();
-	
-	//If the person has no more plans, think!
-	if (hasNoPlans())
-		think();
-}
+	//Check if the we arrived at our destination.
+	if (isAtDestination()) {
+		//Calculate the time until which the person will stay here
+		setPauseDuration(getPauseDurationAtDestination());
+	}
 
-void TimedPerson::think()
-{
+	Person::didMoveToItem();
 }
 
 
@@ -221,14 +182,39 @@ void TimedPerson::think()
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
-#pragma mark Notifications
+#pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
-void TimedPerson::onArrivedAtDestination()
+void TimedPerson::advance(double dt)
 {
-	//Calculate the time until the person will stay here
-	setPauseDuration(getPauseDurationAtDestination());
+	Person::advance(dt);
 	
-	//Update the rest
-	Person::onArrivedAtDestination();
+	//If there's a next destination and the time is right, advance
+	if (isNextDestinationValid() && getNextDestinationTime() <= tower->time->getTime()) {
+		setDestination(getNextDestination());
+		setPauseDurationAtDestination(getNextDestinationPauseDuration());
+		clearNextDestination();
+	}
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark State
+//----------------------------------------------------------------------------------------------------
+
+void TimedPerson::update()
+{
+	Person::update();
+	
+	//If the person has no more plans, think!
+	if (hasNoPlans())
+		updateNextDestination();
+}
+
+void TimedPerson::updateNextDestination()
+{
 }

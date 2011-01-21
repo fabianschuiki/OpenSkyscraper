@@ -1,44 +1,50 @@
 #ifndef OSS_CLASSIC_PEOPLE_INDIVIDUALS_HOTELGUEST_H
 #define OSS_CLASSIC_PEOPLE_INDIVIDUALS_HOTELGUEST_H
 
-#include "../timedperson.h"
+#include "../person.h"
+
+#include "../../items/facilities/hotel/hotel.h"
 
 
 namespace OSS {
 	namespace Classic {
-		class HotelItem;
-		
-		class HotelGuest : public TimedPerson {
+		class HotelGuest : public Person {
+			
+			/**
+			 * Initialization
+			 */
 		public:
 			const Pointer<HotelItem> hotel;
 			
-			//Initialization
 			HotelGuest(Tower * tower, HotelItem * hotel);
+			virtual string getTypeName() const { return "hotel/guest"; }
 			
-			//Intelligence
+			/**
+			 * Animation
+			 */
+			virtual void updateAnimation();
+			virtual bool shouldAnimate();
+			
+			/**
+			 * Simulation
+			 */
 		private:
 			bool initialVisitDone;
 			bool hadDinner;
 			double sleepTime;
 			bool didChooseSleepTime;
-			bool didSleep;
-		public:
-			void think();
-			bool isLeaving();
-			
-			//Sleep
-		private:
 			bool asleep;
+			bool didSleep;
+			bool didChooseCheckoutTime;
+			bool checkingOut;
+			
 		public:
 			bool isAsleep();
 			void setAsleep(bool asleep);
 			
-			//Animation Sprite
-			void initAnimationSprite();
-			void updateAnimationSprite();
+			bool isCheckingOut();
 			
-			bool shouldAnimate();
-			void shuffleAnimation();
+			virtual void think();
 		};
 	}
 }

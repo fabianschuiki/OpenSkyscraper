@@ -20,6 +20,8 @@ namespace OSS {
 			 * State
 			 */
 		public:
+			bool isSelected() { return (ui->getTool() == this); }
+			
 			virtual void update() {}
 			
 			

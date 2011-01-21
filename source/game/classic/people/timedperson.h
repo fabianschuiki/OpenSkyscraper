@@ -7,10 +7,13 @@
 namespace OSS {
 	namespace Classic {
 		class TimedPerson : public Person {
+			
+			/**
+			 * Initialization
+			 */
 		public:
 			//Initialization
 			TimedPerson(Tower * tower);
-			virtual void reset();
 			
 			
 			/**
@@ -38,14 +41,6 @@ namespace OSS {
 			
 			
 			/**
-			 * Route
-			 */
-			
-			//Journey
-			void updateTimedDestination();
-			
-			
-			/**
 			 * Location
 			 */
 		private:
@@ -53,6 +48,7 @@ namespace OSS {
 			double pauseDuration;
 			double pauseEndTime;
 		public:
+			virtual void didMoveToItem();
 			
 			//Pause duration once arrived at the destination
 			double getPauseDurationAtDestination();
@@ -65,7 +61,8 @@ namespace OSS {
 			//End of pause
 			double getPauseEndTime();
 			void setPauseEndTime(double time);
-			void setPauseEndTimeFuture(double time); //ensures that the pause end time lies in the future
+			void setPauseEndTimeDaily(double time);
+			void setPauseEndTimeDailyFuture(double time); //ensures that the pause end time lies in the future
 			
 			//Convenience
 			bool isPausing();
@@ -73,16 +70,18 @@ namespace OSS {
 			
 			
 			/**
-			 * Intelligence
+			 * Simulation
 			 */
-			virtual void update();
-			virtual void think();
+		public:
+			virtual void advance(double dt);
 			
 			
 			/**
-			 * Notifications
+			 * State
 			 */
-			void onArrivedAtDestination();
+		public:
+			virtual void update();
+			virtual void updateNextDestination();
 		};
 	}
 }

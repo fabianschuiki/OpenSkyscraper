@@ -123,7 +123,7 @@ void Audio::update()
 			
 			//Get rid of stopped effects
 			if ((*listEntry)->isStopped()) {
-				OSSObjectLog << "removing SoundEffect with " << (*listEntry)->sound->name << std::endl;
+				//OSSObjectLog << "removing SoundEffect with " << (*listEntry)->sound->name << std::endl;
 				mapEntry->second.erase(listEntry);
 				--listEntry;
 			}

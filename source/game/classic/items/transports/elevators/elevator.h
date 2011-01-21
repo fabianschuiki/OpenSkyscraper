@@ -2,78 +2,155 @@
 #define OSS_CLASSIC_ITEMS_TRANSPORTS_ELEVATORS_ELEVATOR_H
 
 #include "../transport.h"
-#include "elevatorbackground.h"
 
 
 namespace OSS {
 	namespace Classic {
+		class ElevatorCar;
+		class ElevatorQueue;
+		
 		class ElevatorItem : public TransportItem {
+			
+			/**
+			 * Initialization
+			 */
 		public:
-			//Initialization
 			ElevatorItem(Tower * tower, ItemDescriptor * descriptor);
-			
-			//Basic Sprites
-			void initBasicSprites();
-			void updateBasicSprites();
-			
-			//Background
-		private:
-			ElevatorBackground background;
-		public:
-			void initBackground();
-			bool isFloorActive(int floor);
-			bool isFloorHighlighted(int floor);
+			virtual string getMotorBufferTypeName() const { return "standard"; }
 			
 			
 			/**
-			 * Motor and Buffer
+			 * Queues
+			 */
+		public:
+			typedef enum {
+				kUp = 1,
+				kNone = 0,
+				kDown = -1
+			} Direction;
+			
+		private:
+			typedef map<Direction, Pointer<ElevatorQueue> > QueuePair;
+			typedef map<int, QueuePair> QueueMap;
+			QueueMap queues;
+			
+		public:
+			ElevatorQueue * getQueue(int floor, Direction dir);
+			
+			ElevatorQueue * getMostUrgentQueue();
+			ElevatorQueue * getNextQueue(ElevatorCar * car);
+				
+			
+			/**
+			 * Layout
+			 */
+		public:
+			virtual bool isFloorActive(int floor);
+			virtual bool isFloorHighlighted(int floor);
+			
+			recti getMotorRect();
+			recti getBufferRect();
+			recti getCarsRect();
+			
+			
+			/**
+			 * Cars
 			 */
 		private:
-			Sprite motorSprite;
-			Sprite bufferSprite;
-		public:
-			void initMotorBuffer();
-			void updateMotorBuffer();
-			
-			//Animation
-		private:
-			bool animateMotorBuffer;
-			unsigned int motorbufferAnimationIndex;
-			double motorbufferAnimation;
+			typedef set< Pointer<ElevatorCar> > CarSet;
+			CarSet cars;
 			
 		public:
-			bool getAnimateMotorBuffer();
-			void setAnimateMotorBuffer(bool animate);
+			void addCar(ElevatorCar * car);
+			void addCar(int floor);
+			void removeCar(ElevatorCar * car);
+			virtual long getCarPrice() { return 0; }
 			
-			unsigned int getMotorbufferAnimationIndex();
-			void setMotorbufferAnimationIndex(unsigned int index);
+			virtual double maxCarAcceleration() { return 7.5; }
+			virtual double maxCarSpeed() { return 10.0; }
+			virtual unsigned int maxCarCapacity() { return 21; }
 			
-			double getMotorBufferAnimation();
-			void setMotorbufferAnimation(double time);
+			virtual void respondToCalls();
+			
+			Updatable::Conditional<ElevatorItem> respondToCallsIfNeeded;
+			
+			ElevatorCar * getIdleCar(int floor);
 			
 			
 			/**
 			 * Simulation
 			 */
-			void advance(double dt);
-			void advanceMotorBuffer(double dt);
+		private:
+			unsigned int animationFrame;
+			
+		public:
+			unsigned int getAnimationFrame();
+			void setAnimationFrame(unsigned int af);
+			
+			virtual void advanceItem(double dt);
+			
+			bool shouldAnimate() { return true; }
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void updateItem();
+			virtual void updateBackground();
+			virtual void updateQueues();
+			virtual void updateQueueLocations();
+			
+			Updatable::Conditional<ElevatorItem> updateQueuesIfNeeded;
+			Updatable::Conditional<ElevatorItem> updateQueueLocationsIfNeeded;
 			
 			
 			/**
 			 * Drawing
 			 */
-			void draw(rectd visibleRect);
+		private:
+			Pointer<Sprite> motorSprite;
+			Pointer<Sprite> bufferSprite;
+			
+			//Background textures
+			Pointer<Texture> backgroundNormal;
+			Pointer<Texture> backgroundHighlighted;
+			Pointer<Texture> lsNormal;
+			Pointer<Texture> lsHighlighted;
+			Pointer<Texture> msNormal;
+			Pointer<Texture> msHighlighted;
+			
+		public:
+			virtual void drawItem(rectd dirtyRect);
+			virtual void drawBackground(rectd dirtyRect);
+			virtual void drawFloor(int f);
+			virtual void drawFloorBackground(int f, rectd rect);
+			virtual void drawFloorNumber(int f, rectd rect);
+			virtual void drawCars(rectd dirtyRect);
+			virtual void drawQueues(rectd dirtyRect);
 			
 			
 			/**
-			 * Notifications
+			 * Events
 			 */
+		public:
+			int debugFloor;
+			virtual bool eventKeyDown(KeyEvent * event);
 			
-			//Location
-			virtual void onChangeLocation();
+			
+			/**
+			 * People
+			 */
+		public:
+			virtual void didAddPerson(Person * person);
+			virtual void willRemovePerson(Person * person);
 		};
 	}
 }
+
+
+#include "car.h"
+#include "queue.h"
 
 
 #endif

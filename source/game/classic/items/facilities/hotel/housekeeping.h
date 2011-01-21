@@ -3,39 +3,53 @@
 
 #include "../facility.h"
 
-#include "../../../people/individuals/janitor.h"
-
 
 namespace OSS {
 	namespace Classic {
+		class Janitor;
+		
 		class HousekeepingItem : public FacilityItem {
+			
+			/**
+			 * Initialization
+			 */
 		public:
 			static ItemDescriptor descriptor;
 			
-			//Initialization
 			HousekeepingItem(Tower * tower);
-			void init();
+			virtual string getTypeName() const { return "housekeeping"; }
 			
-			//Basic sprites
-			void initBackground();
 			
-			//Simulation
-			void advance(double dt);
-			
-			//Janitors
+			/**
+			 * Janitors
+			 */
 		private:
 			typedef std::set< Pointer<Janitor> > JanitorSet;
 			JanitorSet janitors;
-		public:
-			void initJanitors();
-			void updateJanitors();
-			void onJanitorDone(Janitor * janitor);
 			
-			//Events
-			virtual void eventHotelVacated(HotelItem * hotel);
+		public:
+			void onJanitorDone(Janitor * janitor);
+			virtual void didChangeRect();
+			
+			
+			/**
+			 * State
+			 */
+		public:
+			virtual void updateBackground();
+			
+			
+			/**
+			 * Events
+			 */
+		public:
+			virtual void eventHotelVacated(ItemEvent<HotelItem> * event);
 		};
 	}
 }
+
+
+#include "../../../people/individuals/janitor.h"
 
 
 #endif

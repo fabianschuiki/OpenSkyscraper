@@ -25,7 +25,7 @@ namespace OSS {
 				
 				Node(Route * route, recti start, TransportItem * transport, recti end);
 			};
-			typedef vector<Node> Nodes;
+			typedef list<Node> Nodes;
 			
 			/**
 			 * Route
@@ -46,6 +46,8 @@ namespace OSS {
 			const Nodes & getNodes() const;
 			void addNode(const Node & node);
 			void addNode(recti start, TransportItem * transport, recti end);
+			Node * nextNode();
+			void popNode();
 			
 			//Distance
 			const unsigned int getDistance();
@@ -60,6 +62,12 @@ namespace OSS {
 			/**
 			 * Pathfinder
 			 */
+		public:
+			enum {
+				kNoServiceElevators		= (1 << 0),
+				kOnlyServiceElevators	= (1 << 1)
+			};
+			
 		private:
 			typedef struct {
 				unsigned int elevatorsUsed;
@@ -68,12 +76,13 @@ namespace OSS {
 			} PathfinderStats;
 			typedef std::set<TransportItem *> UsedTransportsSet;
 			static bool findRoute(Tower * tower, recti origin, recti destination,
-								  TransportItem * transport,
+								  unsigned int options, TransportItem * transport,
 								  UsedTransportsSet usedTransports, PathfinderStats stats,
 								  Route * route);
 			
 		public:
-			static Route * findRoute(Tower * tower, recti origin, recti destination);
+			static Route * findRoute(Tower * tower, recti origin, recti destination,
+									 unsigned int options);
 		};
 	}
 }
