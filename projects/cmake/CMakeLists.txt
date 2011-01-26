@@ -39,7 +39,6 @@ set(source
 ../../source/classic/items/facilities/facility.cpp
 ../../source/classic/items/facilities/occupiable.cpp
 ../../source/classic/items/facilities/structure/lobby.cpp
-../../source/classic/items/facilities/office/office.cpp
 ../../source/classic/items/item.cpp
 ../../source/classic/people/person.cpp
 ../../source/classic/people/individuals/janitor.cpp
