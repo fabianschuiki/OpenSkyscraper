@@ -10,7 +10,7 @@
 //Usage-induced includes
 #include "base/pointer.h"
 #include "base/autoreleasequeue.h"
-#include "event.h"
+#include "events/event.h"
 
 
 namespace OSS {
