@@ -1,6 +1,6 @@
 #include "environment.h"
 
-#include "person.h"
+#include "../people/person.h"
 
 using namespace OSS;
 using namespace Classic;

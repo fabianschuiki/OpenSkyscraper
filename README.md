@@ -33,3 +33,9 @@ Contributing
 ------------
 
 **OpenSkyscraper needs you!** If you like the idea and have some C/C++ or graphics skills or just want to contribute, please visit the [GitHub project site](http://github.com/fabianschuiki/OpenSkyscraper). The easiest way to help writing source code is *forking* the project on GitHub and hacking in your stuff, then sending a pull request to the original repository. *Any help is highly appreciated! Ideas, thoughts, studies, graphics, code, everything!*
+
+Developer Notes
+---------------
+
+To compile OpenSkyscraper, knab yourself either Xcode or CMake and find your way to the projects directory. It should be pretty self explanatory.
+To run OpenSkyscaper, put a copy of SIMTOWER.EXE in the same directory as the executable.
