@@ -45,7 +45,9 @@ SimTower::Resource * SimTower::getResource(unsigned short type, unsigned short i
 
 
 
-
+int SimTower::kPercellBitmapResource = 0;
+int SimTower::kSoundResource = 0;
+int SimTower::kReplacePaletteResource = 0;
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
@@ -141,13 +143,27 @@ void SimTower::loadResources()
 		uint16_t resourceType, numberOfResources;
 		fread(&resourceType, 1, sizeof(resourceType), fsimtower);
 		fread(&numberOfResources, 1, sizeof(numberOfResources), fsimtower);
-		resourceType = SDL_SwapLE16(resourceType) & 0x7FFF;	//The & 0x7FFF bitwise mask is used to
-															//cut off the most significant bit in
-															//the resource type and reset it to 0.
-															//Not sure anymore why that was ne-
-															//cessary since I wrote the code a few
-															//months ago.
+		resourceType = SDL_SwapLE16(resourceType);
 		numberOfResources = SDL_SwapLE16(numberOfResources);
+
+		if (!(resourceType & 0x8000)) {
+			// This is a non-standard resource, so we want to look up its name.
+			long pos = ftell(fsimtower);
+			fseek(fsimtower, shoffset + rtoffset + resourceType, SEEK_SET);
+			char length;
+			fread(&length, 1, sizeof(char), fsimtower);
+			char *buf = new char[length + 1];
+			fread(buf, length, sizeof(char), fsimtower);
+			buf[length] = 0;
+			fseek(fsimtower, pos, SEEK_SET);
+			if (!strcmp(buf, "CGPK"))
+				kPercellBitmapResource = resourceType;
+			else if (!strcmp(buf, "CLUT"))
+				kReplacePaletteResource = resourceType;
+			else if (!strcmp(buf, "WAVE"))
+				kSoundResource = resourceType;
+			delete [] buf;
+		}
 		
 		//A resource type of 0 marks the end of the list
 		if (resourceType == 0)
@@ -231,136 +247,127 @@ void SimTower::extractTextures()
 		Resource * resource = (*i);
 		
 		//Treat the supported resource types
-		switch (resource->type) {
-				//Bitmap
-			case 0x2: {
-				//Create the BMP header
-				struct {
-					uint16_t type;
-					uint32_t size;
-					uint32_t _reserved;
-					uint32_t offset;
-				} __attribute__((__packed__)) bmpHeader = {0x4D42, 0, 0, 0x436};
+		if (resource->type == kBitmapResource) {
+			//Create the BMP header
+			struct {
+				uint16_t type;
+				uint32_t size;
+				uint32_t _reserved;
+				uint32_t offset;
+			} __attribute__((__packed__)) bmpHeader = {0x4D42, 0, 0, 0x436};
+			
+			//Create a new buffer to hold the assembled data
+			unsigned int bufferLength = sizeof(bmpHeader) + resource->length;
+			uint8_t * buffer = (uint8_t *)malloc(bufferLength);
+			memcpy(buffer, &bmpHeader, sizeof(bmpHeader));
+			memcpy(buffer + sizeof(bmpHeader), resource->data, resource->length);
+			
+			//Postprocess the bitmap
+			postprocessTexture(resource->getName(), buffer, bufferLength);
+			
+			//Get rid of the buffer
+			free(buffer);
+		} else if (resource->type == kPercellBitmapResource) {
+			//Create the BMP header
+			struct {
+				uint16_t type;
+				uint32_t size;
+				uint32_t _reserved;
+				uint32_t offset;
+			} __attribute__((__packed__)) bmpHeader = {0x4D42, 0, 0, 0x436};
+			
+			//Calculate the image dimensions
+			const unsigned int floorHeight = 36;
+			const unsigned int cellWidth = 8;
+			const unsigned int cellPixels = floorHeight * cellWidth;
+			unsigned int cellsInResource = resource->length / cellPixels;
+			
+			//Create the DIB header
+			struct {
+				uint32_t size;
+				uint32_t width;
+				uint32_t height;
+				uint16_t numPlanes;
+				uint16_t bitsPerPixel;
+				uint32_t compression;
+				uint32_t imageSize;
+				uint32_t hDPI;
+				uint32_t vDPI;
+				uint32_t numColors;
+				uint32_t numImportantColors;
+			} __attribute__((__packed__)) dibHeader = {
+				40,
+				(cellsInResource * cellWidth), floorHeight,
+				1, 8,
+				0,
+				(cellsInResource * cellPixels),
+				0, 0, 256, 256
+			};
+			
+			//Create a new buffer to hold the assembled data
+			unsigned int bufferLength = sizeof(bmpHeader) + sizeof(dibHeader) + 0x400 + dibHeader.imageSize;
+			uint8_t * buffer = (uint8_t *)malloc(bufferLength);
+			
+			//Copy the bmpHeader into the buffer
+			memcpy(buffer, &bmpHeader, sizeof(bmpHeader));
+			
+			//Copy the dibHeader into the buffer
+			memcpy(buffer + sizeof(bmpHeader), &dibHeader, sizeof(dibHeader));
+			
+			//Assemble the palette
+			uint8_t * palette = (buffer + sizeof(bmpHeader) + sizeof(dibHeader));
+			Resource * paletteResource = getResource(kReplacePaletteResource, 0x3E8);
+			uint8_t * paletteSource = (uint8_t *)paletteResource->data;
+			for (int i = 0; i < paletteResource->length; i++) {
+				(*palette++) = paletteSource[i * 8 + 6];
+				(*palette++) = paletteSource[i * 8 + 4];
+				(*palette++) = paletteSource[i * 8 + 2];
+				(*palette++) = 0;
+			}
+			
+			//Since the actualy pixel data is only 8 pixels wide, with the individual cells
+			//stacked vertically, we re-organize the buffer by flipping the image vertically and
+			//lining up the cells horizontally to simplify postprocessing.
+			uint8_t * src = (uint8_t *)resource->data;
+			uint8_t * dst = buffer + bmpHeader.offset;
+			for (unsigned int i = 0; i < dibHeader.imageSize; i++) {
+				unsigned int srcx = (i % 8);
+				unsigned int srcy = (i / 8);
+				unsigned int dstx = srcx + (srcy / floorHeight) * 8;
+				unsigned int dsty = floorHeight - 1 - (srcy % floorHeight);
+				unsigned int dstidx = (dstx + dsty * dibHeader.width);
+				dst[dstidx] = src[i];
+			}
+			
+			//Postprocess the bitmap
+			postprocessTexture(resource->getName(), buffer, bufferLength);
+			
+			//Get rid of the buffer
+			free(buffer);
+		} else if (resource->type == kReplacePaletteResource) {	
+			FILE * fdump = fopen(getDumpPath("palettes", resource->getName() + ".act").c_str(), "w");
+			for (int i = 0; i < 256; i++) {
+				//Calculate the location of the replacement color
+				unsigned int replacementIndex = i;
 				
-				//Create a new buffer to hold the assembled data
-				unsigned int bufferLength = sizeof(bmpHeader) + resource->length;
-				uint8_t * buffer = (uint8_t *)malloc(bufferLength);
-				memcpy(buffer, &bmpHeader, sizeof(bmpHeader));
-				memcpy(buffer + sizeof(bmpHeader), resource->data, resource->length);
+				//For some reason, the color table has a duplicate entry for the color 184
+				if (replacementIndex >= 184)
+					replacementIndex++;
 				
-				//Postprocess the bitmap
-				postprocessTexture(resource->getName(), buffer, bufferLength);
+				//Since the replacement color palette still has 256 colors and compensating for the
+				//duplicate entry will access the inexistent index 256 of the palette, we have to wrap
+				//around at the end of the palette.
+				replacementIndex = replacementIndex % 256;
 				
-				//Get rid of the buffer
-				free(buffer);
-			} break;
-				
-				//Per-cell Bitmaps
-			case 0x7F02: {
-				//Create the BMP header
-				struct {
-					uint16_t type;
-					uint32_t size;
-					uint32_t _reserved;
-					uint32_t offset;
-				} __attribute__((__packed__)) bmpHeader = {0x4D42, 0, 0, 0x436};
-				
-				//Calculate the image dimensions
-				const unsigned int floorHeight = 36;
-				const unsigned int cellWidth = 8;
-				const unsigned int cellPixels = floorHeight * cellWidth;
-				unsigned int cellsInResource = resource->length / cellPixels;
-				
-				//Create the DIB header
-				struct {
-					uint32_t size;
-					uint32_t width;
-					uint32_t height;
-					uint16_t numPlanes;
-					uint16_t bitsPerPixel;
-					uint32_t compression;
-					uint32_t imageSize;
-					uint32_t hDPI;
-					uint32_t vDPI;
-					uint32_t numColors;
-					uint32_t numImportantColors;
-				} __attribute__((__packed__)) dibHeader = {
-					40,
-					(cellsInResource * cellWidth), floorHeight,
-					1, 8,
-					0,
-					(cellsInResource * cellPixels),
-					0, 0, 256, 256
-				};
-				
-				//Create a new buffer to hold the assembled data
-				unsigned int bufferLength = sizeof(bmpHeader) + sizeof(dibHeader) + 0x400 + dibHeader.imageSize;
-				uint8_t * buffer = (uint8_t *)malloc(bufferLength);
-				
-				//Copy the bmpHeader into the buffer
-				memcpy(buffer, &bmpHeader, sizeof(bmpHeader));
-				
-				//Copy the dibHeader into the buffer
-				memcpy(buffer + sizeof(bmpHeader), &dibHeader, sizeof(dibHeader));
-				
-				//Assemble the palette
-				uint8_t * palette = (buffer + sizeof(bmpHeader) + sizeof(dibHeader));
-				Resource * paletteResource = getResource(0x7F03, 0x3E8);
-				uint8_t * paletteSource = (uint8_t *)paletteResource->data;
-				for (int i = 0; i < paletteResource->length; i++) {
-					(*palette++) = paletteSource[i * 8 + 6];
-					(*palette++) = paletteSource[i * 8 + 4];
-					(*palette++) = paletteSource[i * 8 + 2];
-					(*palette++) = 0;
-				}
-				
-				//Since the actualy pixel data is only 8 pixels wide, with the individual cells
-				//stacked vertically, we re-organize the buffer by flipping the image vertically and
-				//lining up the cells horizontally to simplify postprocessing.
-				uint8_t * src = (uint8_t *)resource->data;
-				uint8_t * dst = buffer + bmpHeader.offset;
-				for (unsigned int i = 0; i < dibHeader.imageSize; i++) {
-					unsigned int srcx = (i % 8);
-					unsigned int srcy = (i / 8);
-					unsigned int dstx = srcx + (srcy / floorHeight) * 8;
-					unsigned int dsty = floorHeight - 1 - (srcy % floorHeight);
-					unsigned int dstidx = (dstx + dsty * dibHeader.width);
-					dst[dstidx] = src[i];
-				}
-				
-				//Postprocess the bitmap
-				postprocessTexture(resource->getName(), buffer, bufferLength);
-				
-				//Get rid of the buffer
-				free(buffer);
-			} break;
-				
-				//DEBUG: Replacement Palettes
-			case 0x7F03: {
-				FILE * fdump = fopen(getDumpPath("palettes", resource->getName() + ".act").c_str(), "w");
-				for (int i = 0; i < 256; i++) {
-					//Calculate the location of the replacement color
-					unsigned int replacementIndex = i;
-					
-					//For some reason, the color table has a duplicate entry for the color 184
-					if (replacementIndex >= 184)
-						replacementIndex++;
-					
-					//Since the replacement color palette still has 256 colors and compensating for the
-					//duplicate entry will access the inexistent index 256 of the palette, we have to wrap
-					//around at the end of the palette.
-					replacementIndex = replacementIndex % 256;
-					
-					//Extract the replacement color from the palette. The replacement palettes are organized
-					//as AARRGGBB, where the first byte of each channel corresponds to the value we want, and
-					//the second byte to some other color whose use I haven't found out yet.
-					ILubyte color[4];
-					for (int n = 0; n < 4; n++)
-						color[n] = ((ILubyte *)resource->data)[replacementIndex * 8 + (n * 2)];
-					fwrite(color + 1, 1, 3, fdump);
-				}
-				fclose(fdump);
-			} break;
+				//Extract the replacement color from the palette. The replacement palettes are organized
+				//as AARRGGBB, where the first byte of each channel corresponds to the value we want, and
+				//the second byte to some other color whose use I haven't found out yet.
+				ILubyte color[4];
+				for (int n = 0; n < 4; n++)
+					color[n] = ((ILubyte *)resource->data)[replacementIndex * 8 + (n * 2)];
+				fwrite(color + 1, 1, 3, fdump);
+			}
+			fclose(fdump);
 		}
 	}
 }
@@ -372,25 +379,22 @@ void SimTower::extractSounds()
 		Resource * resource = (*i);
 		
 		//Treat the supported resource types
-		switch (resource->type) {
-				//Wave Audio
-			case 0x7F0A: {
-				/*//DEBUG: Dump the buffer for debugging purposes
-				FILE * fdump = fopen((dumpPath + resource->getDumpName() + ".wav").c_str(), "w");
-				fwrite(resource->data, 1, resource->length, fdump);
-				fclose(fdump);*/
-				
-				//Assemble the sound name
-				string soundName = "simtower/";
-				soundName += resource->getName();
-				
-				//Dump the sound
-				dumpSound(soundName, resource->data, resource->length);
-				
-				//Create a sound from it
-				Sound * sound = Sound::named(soundName);
-				sound->assignLoadedData(resource->data, resource->length);
-			} break;
+		if (resource->type == kSoundResource) {
+			/*//DEBUG: Dump the buffer for debugging purposes
+			FILE * fdump = fopen((dumpPath + resource->getDumpName() + ".wav").c_str(), "w");
+			fwrite(resource->data, 1, resource->length, fdump);
+			fclose(fdump);*/
+			
+			//Assemble the sound name
+			string soundName = "simtower/";
+			soundName += resource->getName();
+
+			//Dump the sound
+			dumpSound(soundName, resource->data, resource->length);
+			
+			//Create a sound from it
+			Sound * sound = Sound::named(soundName);
+			sound->assignLoadedData(resource->data, resource->length);
 		}
 	}
 }
@@ -475,7 +479,7 @@ void SimTower::postprocessTexture(string resourceName,
 void SimTower::applyReplacementPalette(unsigned short id)
 {
 	//Fetch the resource containing the replacement palette
-	Resource * replacementPalette = getResource(0x7F03, id);
+	Resource * replacementPalette = getResource(kReplacePaletteResource, id);
 	
 	//Fetch a pointer to the current image's palette
 	colorPalette * palette = (colorPalette *)ilGetPalette();
