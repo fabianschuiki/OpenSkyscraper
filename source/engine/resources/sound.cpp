@@ -57,6 +57,13 @@ string Sound::instanceName()
 
 void Sound::assignLoadedData(const void * data, ALuint length)
 {
+	//Check whether the data is actually a RIFF file. Some versions of SimTower have resources with
+	//the audio wave type ID, but not of the WAVE file format.
+	if (memcmp(data, "RIFF", 4) != 0) {
+		OSSObjectLog << "resource " << this->name << " is not a RIFF file." << std::endl;
+		return;
+	}
+	
 	//DEBUG: We do the parsing of the sound data here for the sake of simplicity. Should be moved to
 	//the appropriate StoreItem functions below later on.
 	//Find the WAVE chunk
