@@ -65,6 +65,8 @@ Transports
 
 - Fix the size of the queue that is being drawn. It should be limited by elevators nearby as well as the floor bounds. The best thing would be to calculate the rect depending on the surrounding facilities, and then doing an intersection with the floor rect.
 
+- Adjust the elevator speeds since we now have the new time measurements which jcranmer provided. There's now also a possibility to actually calculate the elevator waiting time in seconds as it was in the original game.
+
 
 People
 ------
