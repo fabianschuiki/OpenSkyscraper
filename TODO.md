@@ -2,6 +2,14 @@ OpenSkyscraper TODO
 ===================
 
 
+Resources
+---------
+
+Implement the [KWAJ compression](http://www.cabextract.org.uk/libmspack/doc/szdd_kwaj_format.html) scheme so we're able to extract the resources even from a compressed variant of SimTower, i.e. before running the `SETUP.EXE` which would greatly benefit Linux and Mac users.
+
+As an addition, we could also implement reading the `SIMTOWER.EX_` directly from some form of .zip archive, then decompressing the `*.EX_` in memory and reading the resources. Just to proof that open source stuff really rocks :).
+
+
 Tower
 -----
 
