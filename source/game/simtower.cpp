@@ -476,6 +476,10 @@ void SimTower::applyReplacementPalette(unsigned short id)
 {
 	//Fetch the resource containing the replacement palette
 	Resource * replacementPalette = getResource(0x7F03, id);
+	if (!replacementPalette) {
+		OSSObjectLog << "unable to get replacement palette " << id << std::endl;
+		return;
+	}
 	
 	//Fetch a pointer to the current image's palette
 	colorPalette * palette = (colorPalette *)ilGetPalette();
