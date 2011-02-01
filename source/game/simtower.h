@@ -26,13 +26,20 @@ namespace OSS {
 		
 		//Resource Types
 		enum {
+			kCursorResource         = 0x1,
 			kBitmapResource			= 0x2,
-			kPercellBitmapResource	= 0x7F02,
-			kMenuResource			= 0x4,
-			kDialogBoxResource		= 0x5,
-			kStringTableResource	= 0x6,
-			kSoundResource			= 0x7F0A
+			kIconResource           = 0x3,
+			kMenuResource           = 0x4,
+			kDialogBoxResource      = 0x5,
+			kStringTableResource    = 0x6,
+			kAcceleratorResource    = 0x9,
+			kGroupCursorResource    = 0xC,
+			kGroupIconResource      = 0xE
 		};
+
+		static unsigned int kPercellBitmapResource; // CGPK
+		static unsigned int kSoundResource; // WAVE
+		static unsigned int kReplacePaletteResource; // CLUT
 		
 		//Resource Names
 		typedef struct {
