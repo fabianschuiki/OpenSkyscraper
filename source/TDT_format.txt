@@ -1,0 +1,184 @@
+SimTower .TDT SaveGame file format
+
+Prelude notes:
+The entire file format is little-endian (so native encoding), for Windows at
+least. I don't have access to a Mac version to see if the endianness is
+different for mac TDT files, nor do I know for certain if the two files are
+compatible. I also only have access to a single version of SimTower, so other
+versions may produce different results.
+
+In terms of structure data, I will generally use char, WORD, and DWORD to mean
+1 byte, 2 byte, and 4 byte values, respectively. I do not know which values are
+to be treated as signed and which ones are unsigned, but it looks like most
+WORD values are unsigned and most DWORD values are signed. When I have verified
+signedness, I will mention it.
+
+Another thing to mention is that the game does not appear to validate most of
+the data, so you can end up with some wonky simulation values if the data is
+not valid (for example, negative dates yielded a WD 0).
+
+There is unfortunately a large amount of variable-width data, so I cannot give
+precise location data for anything except the first block.
+
+Various global constants
+========================
+WORD version
+   This value should be 0x2400 (so laid out on disk as 00 24). If you don't see
+   this value, then you should assume that this document is not correct.
+WORD level
+   1 = 1 star tower, 2 = 2 stars, etc., 6 = TOWER level
+DWORD currentBalance
+DWORD otherIncome
+DWORD constructionCosts
+DWORD lastQuarterMoney
+   These are the amounts as shown in the overview of the finance window. See
+   the General money notes for more information on interpretation.
+WORD frameTime
+   The current time, as measured in frames. See the How time works for more
+   information on interpretation.
+DWORD currentDay (signed)
+   The current day, i.e., the number of days elapsed since WD 1, Q 1, Year 1.
+   See "How time works" for more information.
+WORD unknown
+WORD unknown (lobbyHeight ????)
+   This appears to be the height of the first-floor lobby.
+char unknown[8]
+   8 bytes of unknown value. Given context, probably 4 WORD values
+WORD lrPixel
+WORD udPixel
+   These two values are the current screen location, measured in pixels. I don't
+   recall if (0,0) is upper left or lower left corner.
+char unknown[518]
+   518 bytes of unknown data left in the header.
+
+[Note: hex 0x2e may be the number of fast food, etc., places. need verification]
+
+General money notes:
+Money is actually inconsistently handled in the game. Most of the UI displays a
+value 100 times that what is internally stored, with the exception of the
+Finance Window (bizarrely). The manual does mention this complaint, though. The
+save file, naturally, stores what is used for internal calculations, so it's
+better to think of it as the UI just lies to you about most money valuations.
+
+
+How time works:
+0 starts at 7:00 AM and will reset 2600 frames later. These frames are divided
+into 7 periods according to the time of day:
+      Frames      Time (24-hr)              Conversions
+1.    0 -  400 =  7:00 - 12:00  1 frame =  45 sec   30 min =  40 frames
+2.  400 -  800 = 12:00 - 12:30  1 frame = 4.5 sec   30 min = 400 frames
+3.  800 - 1200 = 12:30 - 13:00  1 frame = 4.5 sec   30 min = 400 frames
+4. 1200 - 1600 = 13:00 - 17:00  1 frame =  36 sec   30 min =  50 frames
+5. 1600 - 2000 = 17:00 - 21:00  1 frame =  36 sec   30 min =  50 frames
+6. 2000 - 2400 = 21:00 -  1:00  1 frame =  36 sec   30 min =  50 frames
+7. 2400 - 2600 =  1:00 -  7:00  1 frame = 126 sec   30 min ~= 17 frames
+
+Note that the date value will change at frame 2300 (or, rather, the transition
+from 2299 to 2300), so 2300 with day 0 is midnight of the first day. The periods
+also, not coincidentally, refer to the number of the block in the elevator
+panel, although the 7th period appears to be combined with the 6 period.
+
+Days: the date is stored as a day counter, which is a signed 32 bit integer.
+This means you can have a negative year--the game does not check for overflow.
+The simulation appears to get screwy with negative time...
+Day 0 = WD 1 / Q 1 / Year 1
+Day 1 = WD 2 / Q 1 / Year 1
+Day 2 = WE   / Q 1 / Year 1
+Day 3 = WD 1 / Q 2 / Year 1
+etc.
+
+Remember that the initial value for the time is 2300 on day 0 (or maybe later,
+the game starts up in fast mode, so grabbing a save of the initial state is not
+easy).
+
+Floor map
+=========
+The next section is the map of the tenants to the floors. This structure is
+variable-width:
+
+typedef struct {
+  WORD numTenants
+    The number of tenant entries in the floor.
+  WORD leftEdge
+  WORD rightEdge
+    The leftmost and rightmost edges of any tenant on the floor.
+  struct {
+    WORD leftEdge
+    WORD rightEdge
+      The left and right extents of the current tenant. Note that floors and
+      lobbies are coalesced to be one whole unit.
+    char tenantType (signed)
+      The type of the tenant. Negative values refer to tenants under
+      construction.
+    char unknown[3]
+      3 bytes of unknown data. Probably a char and a word
+    DWORD dataOffset
+      This is the offset into the tenant data for information specific to this
+      instantiation of the tenant. I don't know which data this is, though...
+    char unknown[6]
+      6 bytes of unknown data. The entire structure is 18 bytes long.
+  } tenants[numTenants];
+  char unknown[188]
+    188 bytes of unknown data
+} floorData;
+
+floorData floors[120]
+  There are 120 floors. Values 0-9 are B10, B9, etc., B1. Value 10 is the 1st
+  floor, with value 110 being the 100th floor. There are another 9 extra floors
+  above that, probably to let the screen just occupy the entire floor data map.
+
+Given no underground floors, floor 1 is located at hex value 0x9c4, and floor 2
+will be located at hex value 0xa98 if there is a 1-story lobby built.
+
+Tenant information:
+Each tenant has a distinct ID, which numbers ([*] is not confirmed):
+0 - Floor
+3 - Single Room[*]
+4 - Twin Room[*]
+5 - Hotel Suite[*]
+6 - Restaurant[*]
+7 - Office
+9 - Condo
+10 - Retail[*]
+11 - Parking Space[*]
+12 - Fast Food
+13 - Medical Center[*]
+14 - Security[*]
+15 - Housekeeping[*]
+17 - SECOM [1]
+18 - Movie [2]
+[ 19 - Movie floor 2? There is a gap here, so it makes sense ]
+20 - Recyclying Center[*]
+[ 21 - ? See above ? ]
+24 - Lobby
+29 - Party Hall[*]
+[ 30 - ? See above ? ]
+31 - Metro
+[ 32, 33 - ? See above ?]
+34 - Movie Theater [2]
+[ 35 - ? See above ?]
+36 - Cathedral
+[ 37, 38, 39, 40 - ? See above ? ]
+42 - "structures" [1]
+45 - Parking Ramp[*]
+48 - Burned Area[*]
+
+[1] These values are mentioned in the resource 710.STRL. SECOM in particular
+appears to have broader applicability, so I'm guessing it was a feature pulled
+close to release.
+
+[2] Movie Theater is listed in 710.STRL twice, so I'm not sure which one is
+actually used for real Movie Theaters nor am I sure what happens if you use the
+other one.
+
+Left and right extents are measured in terms of individual floor units, so each
+unit is about 8 pixels, with the left being 0x00 and the right being I don't
+know.
+
+Data for elevators and stairs do not appear to be in this map, as they are
+handled separately later in the file. I also suspect that this data is sorted,
+but I haven't played around enough to figure out if the game expects it to be.
+
+Tenants themselves have more per-tenant-interpreted data, which is of variable
+size... offices store 6 bytes of data while the fast food gets by with a
+whopping 48.
