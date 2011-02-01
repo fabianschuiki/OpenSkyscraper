@@ -191,12 +191,12 @@ double TowerTime::getTimeSpeed()
 	//According to jcranmer's investigations on the time subject, we know that the original game
 	//used to measure the day in frames which accorded to seconds on a different basis depending on
 	//the time of day. So for a basic scaling of speeds, we assume that the original game used to
-	//run at 30 Hz in order to convert the seconds/frame into gamehours/second.
+	//run at 15 Hz in order to convert the seconds/frame into gamehours/second.
 	double f = 0.25;
 	
 	//Define a scaling value which we will multiply the seconds/frame by in order to get the unit we
 	//want for our game engine.
-	const double c = 30.0 / 3600;
+	const double c = 15.0 / 3600;
 	
 	//7:00 to 12:00, 45s/frame
 	if (tod >= 7 && tod < 12)
