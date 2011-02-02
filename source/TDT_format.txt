@@ -52,6 +52,7 @@ char unknown[518]
    518 bytes of unknown data left in the header.
 
 [Note: hex 0x2e may be the number of fast food, etc., places. need verification]
+[Note: hex 0x3a may be the number of named tenants. need verification]
 
 General money notes:
 Money is actually inconsistently handled in the game. Most of the UI displays a
@@ -110,11 +111,15 @@ typedef struct {
     char tenantType (signed)
       The type of the tenant. Negative values refer to tenants under
       construction.
-    char unknown[3]
-      3 bytes of unknown data. Probably a char and a word
+    char numInTenant
+      This appears to be the number of the people currently inside the tenant.
+      For example, if there are five people currently in the office, this value
+      holds 5.
+    char unknown[2]
+      2 bytes of unknown data. Probably a word
     DWORD dataOffset
       This is the offset into the tenant data for information specific to this
-      instantiation of the tenant. I don't know which data this is, though...
+      instantiation of the tenant.
     char unknown[6]
       6 bytes of unknown data. The entire structure is 18 bytes long.
   } tenants[numTenants];
@@ -126,6 +131,22 @@ floorData floors[120]
   There are 120 floors. Values 0-9 are B10, B9, etc., B1. Value 10 is the 1st
   floor, with value 110 being the 100th floor. There are another 9 extra floors
   above that, probably to let the screen just occupy the entire floor data map.
+
+DWORD length
+char unknown[length * 16]
+  I have no idea what this does other than that it is variable, and that these
+  values appears to be correct.
+
+  Actually, on second thought, this may be part of the simulation data
+  structures. Values here seem to change a lot, and the length does appear to
+  be correlated to your tenant count, but the tenant dataOffset does not make
+  sense as an index into here.
+
+char dataBlock[0x2400]
+  I can't say what this data is, but it consists of the 18-byte sequence
+  FF 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 repeated over and over
+  again for 0x2400 data points.
+
 
 Given no underground floors, floor 1 is located at hex value 0x9c4, and floor 2
 will be located at hex value 0xa98 if there is a 1-story lobby built.
@@ -173,12 +194,83 @@ other one.
 
 Left and right extents are measured in terms of individual floor units, so each
 unit is about 8 pixels, with the left being 0x00 and the right being I don't
-know.
+know. The value is half-open, so a range of 0x96-0x9F means the following:
 
-Data for elevators and stairs do not appear to be in this map, as they are
-handled separately later in the file. I also suspect that this data is sorted,
-but I haven't played around enough to figure out if the game expects it to be.
+ 9999999999
+ 6789ABCDEF
+ TTTTTTTTT. [T = occupied, . = empty]
+
+The tenants are put into the array in sorted order by their left edge. Notably
+absent from this list are elevators, stairs and escalators, as they do not
+count as tenants (hence why they may overlap real tenant data). Instead, data
+for these structures is listed in later blocks in the file.
 
 Tenants themselves have more per-tenant-interpreted data, which is of variable
 size... offices store 6 bytes of data while the fast food gets by with a
 whopping 48.
+
+Elevators
+=========
+After the hard coded data block, the elevator data structures comes next. I
+don't know much about this.
+
+More static data
+================
+After the elevators is a block of static data including the population and the
+data for the finance window.
+
+If you have no elevators, this comes 4744 bytes after the end of the hard-coded
+data block. If you have elevators, this distance is somewhat dependent on the
+number of elevators and the number of the floors. I think.
+
+DWORD tenantPopulation[10]
+  The tenant population for the 10 income types in the window.
+DWORD towerPopulation
+  The total tower population.
+DWORD tenantIncome[10]
+  The tenant income for the 10 income types in the window.
+DWORD towerIncome
+  The total income for the tower.
+DWORD tenantMaintenance[10]
+  The tenant maintenance for the 10 maintenance types in the window.
+DWORD towerMaintenance
+  The total maintenance for the tower.
+
+To refresh your memory from the game, the 10 income types are, in order:
+Office, Single Room, Twin Room, Hotel Suite, Shops, Fast Food, Restaurant,
+Party Hall, Theater, and Condo.
+
+The 10 maintenance types are:
+Lobby, Elevator, Exp. Elevator, Ser. Elevator, Escalator, Parking Ramp,
+Recycling Center, Metro Station, Housekeeping, Security.
+
+char unknown[1102]
+
+Stairs
+======
+Somewhat after the elevators is the data map for stairs and escalators. This map
+appears to be fixed-width:
+
+struct stair {
+  char present;
+    If set to 1, this means that this stair is actually in use somewhere in the
+    building.
+  char stairType;
+    If this value is 0, you have an escalator. If it is one, this is a stair.
+  WORD leftrightpos;
+    This is correlated to left-right position of the stair, but I do not know
+    which column is used as this point.
+  WORD baseFloor;
+    This is the floor that this is on. Remember that "floor 1" is really 10.
+  char unknown[4];
+    4 bytes of unknown data; struct size should be 10.
+    The last 4 bytes may be the number of people currently on the stairs.
+} stairs[64];
+
+The End
+=======
+Named types seem to be at the end. Each name is a string of 16 bytes, written
+in C-style. Note that the width is 16 bytes, so you may get garbage if the name
+is shorter. This implies that the maximum length for any name is 15.
+
+I have no idea how the names are linked to the tenant or vice versa.
