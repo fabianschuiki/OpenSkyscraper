@@ -34,6 +34,8 @@ Facilities
 - Create classes for all items of SimTower.
 - Add people to the office item and animate them appropriately.
 - Add people to all other items.
+- Add a mechanism that checks whether a facility is accessible from the lobby or not.
+- Develop an algorithm to find the facilities that people from other facilities visit during the day. This includes Fast Foods for Office workers, or Restaurants for Hotel guests or Condo inhabitants.
 
 
 ### Items to be created
