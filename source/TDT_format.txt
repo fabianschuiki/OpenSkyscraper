@@ -7,6 +7,12 @@ different for mac TDT files, nor do I know for certain if the two files are
 compatible. I also only have access to a single version of SimTower, so other
 versions may produce different results.
 
+This format is prepared mostly by means of a smart binary hex editor (i.e., one
+that could handle variable-width structure data), a resource dump of the binary
+(the STRL files were nice for figuring out the index of tenants), the manual
+(which actually mentions some of how the simulation works... kind of), a lot of
+save files, and some guess-and-check.
+
 In terms of structure data, I will generally use char, WORD, and DWORD to mean
 1 byte, 2 byte, and 4 byte values, respectively. I do not know which values are
 to be treated as signed and which ones are unsigned, but it looks like most
@@ -17,8 +23,9 @@ Another thing to mention is that the game does not appear to validate most of
 the data, so you can end up with some wonky simulation values if the data is
 not valid (for example, negative dates yielded a WD 0).
 
-There is unfortunately a large amount of variable-width data, so I cannot give
-precise location data for anything except the first block.
+There is unfortunately a large amount of variable-width data, starting with the
+tenant floor map data, so I cannot give precise location data for anything
+except the first block.
 
 Various global constants
 ========================
@@ -88,6 +95,8 @@ Day 2 = WE   / Q 1 / Year 1
 Day 3 = WD 1 / Q 2 / Year 1
 etc.
 
+The day, however, rolls over at the end of Year 1000.
+
 Remember that the initial value for the time is 2300 on day 0 (or maybe later,
 the game starts up in fast mode, so grabbing a save of the initial state is not
 easy).
@@ -115,11 +124,13 @@ typedef struct {
       This appears to be the number of the people currently inside the tenant.
       For example, if there are five people currently in the office, this value
       holds 5.
-    char unknown[2]
-      2 bytes of unknown data. Probably a word
-    DWORD dataOffset
-      This is the offset into the tenant data for information specific to this
-      instantiation of the tenant.
+    WORD perTypeDataIndex
+      This is where to find this type in the appropriate value index (e.g.,
+      retailData structure).
+    DWORD peopleOffset
+      This is the offset into the people array for the people related to this
+      tenant. This would imply, I guess, that all people must consist in
+      consecutive locations?
     char unknown[6]
       6 bytes of unknown data. The entire structure is 18 bytes long.
   } tenants[numTenants];
@@ -131,22 +142,6 @@ floorData floors[120]
   There are 120 floors. Values 0-9 are B10, B9, etc., B1. Value 10 is the 1st
   floor, with value 110 being the 100th floor. There are another 9 extra floors
   above that, probably to let the screen just occupy the entire floor data map.
-
-DWORD length
-char unknown[length * 16]
-  I have no idea what this does other than that it is variable, and that these
-  values appears to be correct.
-
-  Actually, on second thought, this may be part of the simulation data
-  structures. Values here seem to change a lot, and the length does appear to
-  be correlated to your tenant count, but the tenant dataOffset does not make
-  sense as an index into here.
-
-char dataBlock[0x2400]
-  I can't say what this data is, but it consists of the 18-byte sequence
-  FF 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 repeated over and over
-  again for 0x2400 data points.
-
 
 Given no underground floors, floor 1 is located at hex value 0x9c4, and floor 2
 will be located at hex value 0xa98 if there is a 1-story lobby built.
@@ -186,7 +181,8 @@ Each tenant has a distinct ID, which numbers ([*] is not confirmed):
 
 [1] These values are mentioned in the resource 710.STRL. SECOM in particular
 appears to have broader applicability, so I'm guessing it was a feature pulled
-close to release.
+close to release. It may also account for the security-like-office present in a
+screenshot or two of the manual.
 
 [2] Movie Theater is listed in 710.STRL twice, so I'm not sure which one is
 actually used for real Movie Theaters nor am I sure what happens if you use the
@@ -205,21 +201,97 @@ absent from this list are elevators, stairs and escalators, as they do not
 count as tenants (hence why they may overlap real tenant data). Instead, data
 for these structures is listed in later blocks in the file.
 
-Tenants themselves have more per-tenant-interpreted data, which is of variable
-size... offices store 6 bytes of data while the fast food gets by with a
-whopping 48.
+People and retail data
+======================
+
+DWORD numPeople
+struct person {
+  char floorNum;
+    The index into the floors array of the tenant for this person.
+  char tenantInFloor;
+    The index into the tenant data for the tenant for this person.
+  WORD numInTenant;
+    The number of this person inside the tenant.
+  char tenantType;
+    The type of the tenant this person is in
+  char unknown;
+    I think this is some sort of status byte. I see values of 0x20, 0x21, 0x00,
+    0x05, 0x04
+  char unknown[6];
+    Unknown data
+  WORD stress;
+    The current amount of stress the person has.
+  WORD eval;
+    The eval of the current person.
+} personData[numPeople];
+  This is the map of the people for each tenant. Each tenant starts off with a
+  certain number of people in this structure (and probably doesn't get more?).
+  Known counts:
+    Condo - 3
+    Office - 6
+    Fast Food - 48
+
+  The first unknown character seems to be a status byte, and it seems that the
+  values of other bytes may change depending on the value of this byte. One of
+  the other ones appears to be a floor sometimes...
+
+struct retail {
+  char floor; (signed)
+    This is the floor it is on, but negative values mean that this entry is not
+    a valid retail entry.
+  char unknown[10];
+    Unknown data. The total structure size should be 18 bytes.
+    The second byte in this seems to start out as 03...
+  char type;
+    This is the type of the retail (e.g., English Pub, etc.)
+  char unknown[6];
+    More unknown data
+} retail_data[512];
+
+  This block is the structure of data for fast-food, shops, and restaurants,
+  which I will classify as "retail."
+
+For retail types, the following are the lists I culled from STRL tables:
+Restaurants
+0 - English Pub
+1 - French Restaurant
+2 - Chinese Restaurant
+3 - Sushi Bar
+4 - Steak House
+
+Fast Food
+0 - Japanese Soba
+1 - Chinese Cafe
+2 - Hamburger Stand
+3 - Ice Cream
+4 - Coffee Shop
+
+Shops
+0 - Men's Clothing
+1 - Pet Store
+2 - Flower Shop
+3 - Book Store
+4 - Drug Store
+5 - Boutique
+6 - Electronics
+7 - Bank
+8 - Hair Salon
+9 - Post Office
+10 - Sports Gear
+
 
 Elevators
 =========
 After the hard coded data block, the elevator data structures comes next. I
-don't know much about this.
+don't know much about this, other than it probably involves an array of 24
+variably-sized elements.
 
 More static data
 ================
 After the elevators is a block of static data including the population and the
 data for the finance window.
 
-If you have no elevators, this comes 4744 bytes after the end of the hard-coded
+If you have no elevators, this comes 4744 bytes after the end of the retail
 data block. If you have elevators, this distance is somewhat dependent on the
 number of elevators and the number of the floors. I think.
 
