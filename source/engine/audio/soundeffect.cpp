@@ -16,6 +16,13 @@ SoundEffect::SoundEffect()
 	init();
 }
 
+SoundEffect::SoundEffect(const SoundEffect & e)
+{
+	OSSObjectLog << "copying sound effect" << std::endl;
+	*this = e;
+	retainCount = 1;
+}
+
 SoundEffect::SoundEffect(Sound * sound, Layer layer)
 {
 	init();
@@ -38,6 +45,8 @@ void SoundEffect::init()
 
 SoundEffect::~SoundEffect()
 {
+	OSSObjectLog << std::endl;
+	
 	//Stop playback, this will also get rid of the source if necessary
 	stop();
 }

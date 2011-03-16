@@ -66,6 +66,7 @@ namespace OSS {
 		
 		//Initialization
 		SoundEffect();
+		SoundEffect(const SoundEffect & e);
 		SoundEffect(Sound * sound, Layer layer);
 		void init();
 		~SoundEffect();

@@ -14,7 +14,7 @@ namespace OSS {
 			/**
 			 * Route Node
 			 */
-			class Node {
+			class Node : public Object {
 			private:
 				Route * route;
 				
@@ -25,7 +25,7 @@ namespace OSS {
 				
 				Node(Route * route, recti start, TransportItem * transport, recti end);
 			};
-			typedef list<Node> Nodes;
+			typedef list< Pointer<Node> > Nodes;
 			
 			/**
 			 * Route
@@ -44,7 +44,7 @@ namespace OSS {
 			Nodes nodes;
 		public:
 			const Nodes & getNodes() const;
-			void addNode(const Node & node);
+			void addNode(Node * node);
 			void addNode(recti start, TransportItem * transport, recti end);
 			Node * nextNode();
 			void popNode();

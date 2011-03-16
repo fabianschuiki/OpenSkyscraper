@@ -247,7 +247,8 @@ int Person::getEndFloor()
 {
 	if (!getRouteNode())
 		return 0;
-	return getRouteNode()->end.origin.y;
+	recti end = getRouteNode()->end;
+	return end.origin.y;
 }
 
 bool Person::isAtRouteNodeTransport()
@@ -261,7 +262,10 @@ bool Person::isOnStartFloor()
 {
 	if (!getRouteNode())
 		return false;
-	return (getFloor() == getRouteNode()->start.origin.y);
+	Route::Node * node = getRouteNode();
+	if (!node)
+		return false;
+	return (getFloor() == node->start.origin.y);
 }
 
 bool Person::isOnEndFloor()

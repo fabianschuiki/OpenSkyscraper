@@ -17,14 +17,14 @@ ManagedMemory::ManagedMemory()
 {
 	retainCount = 1;
 	//TODO: re-enable this as soon as the sprites are fixed
-	//autorelease();
+	autorelease();
 }
 
 ManagedMemory::~ManagedMemory()
 {
 	//TODO: re-enable this assertion as soon as the problem with statically allocated memory managed
 	//objects (e.g. sprites) is solved.
-	//assert(retainCount == 0);
+	assert(retainCount == 0);
 }
 
 
