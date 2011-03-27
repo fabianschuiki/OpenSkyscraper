@@ -57,5 +57,7 @@ void ManagedMemory::autoretain()
 
 void ManagedMemory::autorelease()
 {
+	if (typeid(*this).name() == std::string("N3OSS7Classic5RouteE"))
+		std::cout << "blob!" << std::endl;
 	AutoreleaseQueue::autorelease(this);
 }

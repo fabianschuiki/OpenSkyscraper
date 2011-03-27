@@ -95,6 +95,7 @@ Route::Node * Route::nextNode()
 
 void Route::popNode()
 {
+	assert(!nodes.empty());
 	nodes.pop_front();
 }
 
@@ -170,7 +171,7 @@ Route * Route::findRoute(Tower * tower, recti origin, recti destination, unsigne
 	Route * route = new Route(tower);
 	route->origin = origin;
 	route->destination = destination;
-	route->autorelease();
+	//route->autorelease();
 	
 	if (!findRoute(tower, origin, destination, options, NULL, UsedTransportsSet(),
 				   PathfinderStats(), route))

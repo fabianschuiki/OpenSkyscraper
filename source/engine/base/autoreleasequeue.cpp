@@ -50,7 +50,9 @@ void AutoreleaseQueue::autorelease(ManagedMemory * garbage)
 void AutoreleaseQueue::drain()
 {
 	while (!garbageQueue.empty()) {
-		std::cout << "autoreleasing " << typeid(*garbageQueue.front()).name() << std::endl;
+		//std::cout << "autoreleasing " << typeid(*garbageQueue.front()).name() << std::endl;
+		if (typeid(*garbageQueue.front()).name() == std::string("N3OSS7Classic5RouteE"))
+			std::cout << "autoreleasing route " << garbageQueue.front() << std::endl;
 		garbageQueue.front()->release();
 		garbageQueue.pop();
 	}

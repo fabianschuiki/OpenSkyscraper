@@ -233,7 +233,9 @@ Route::Node * Person::getRouteNode()
 {
 	if (!route)
 		return NULL;
-	return route->nextNode();
+	Route::Node * node = route->nextNode();
+	assert(node == NULL || (unsigned long)node > 0x10000000);
+	return node;
 }
 
 int Person::getStartFloor()
@@ -260,8 +262,6 @@ bool Person::isAtRouteNodeTransport()
 
 bool Person::isOnStartFloor()
 {
-	if (!getRouteNode())
-		return false;
 	Route::Node * node = getRouteNode();
 	if (!node)
 		return false;
@@ -270,9 +270,10 @@ bool Person::isOnStartFloor()
 
 bool Person::isOnEndFloor()
 {
-	if (!getRouteNode())
+	Route::Node * node = getRouteNode();
+	if (!node)
 		return false;
-	return (getFloor() == getRouteNode()->end.origin.y);
+	return (getFloor() == node->end.origin.y);
 }
 
 
