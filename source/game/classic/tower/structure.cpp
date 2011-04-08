@@ -652,7 +652,7 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 			
 			//Assert that the item has the same type than us, since that must be the result of finding
 			//the actual rect.
-			assert((*it)->getType() == descriptor->type);
+			//assert((*it)->getType() == descriptor->type);
 			
 			//Find the union rect between the collison item and the actual rect.
 			actualRect.unify((*it)->getRect());
