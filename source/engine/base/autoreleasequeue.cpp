@@ -2,6 +2,8 @@
 
 #include "managedmemory.h"
 
+#include <typeinfo>
+
 using namespace OSS;
 
 
