@@ -2,6 +2,8 @@
 
 #include "autoreleasequeue.h"
 
+#include <typeinfo>
+
 using namespace OSS;
 
 
