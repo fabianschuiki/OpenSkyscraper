@@ -652,6 +652,7 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 			
 			//Assert that the item has the same type than us, since that must be the result of finding
 			//the actual rect.
+//Commented line below, mark this because needs future fixing. It caused a crash when building a floor
 			//assert((*it)->getType() == descriptor->type);
 			
 			//Find the union rect between the collison item and the actual rect.
