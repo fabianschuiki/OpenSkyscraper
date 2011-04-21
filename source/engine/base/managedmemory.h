@@ -20,7 +20,7 @@ namespace OSS {
 		/**
 		 * Reference Counting
 		 */
-	protected:
+	public:
 		int retainCount;
 		
 	public:

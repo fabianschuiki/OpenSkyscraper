@@ -96,7 +96,7 @@ void TowerEnvironment::addPerson(Person * p)
 void TowerEnvironment::removePerson(Person * p)
 {
 	if (!p) return;
-	//OSSObjectLog << "killed person " << p->description() << std::endl;
+	OSSObjectLog << "killing person " << p->description() << "(rc is " << p->retainCount << ")" << std::endl;
 	existingPeople.erase(p);
 	
 	//Undo the update propagation
@@ -114,7 +114,9 @@ void TowerEnvironment::removePersonFromTower(Person * p)
 {
 	if (!p) return;
 	OSSObjectLog << p->description() << " moved out" << std::endl;
+	p->retain();
 	peopleInTower.erase(p);
+	p->autorelease();
 }
 
 
