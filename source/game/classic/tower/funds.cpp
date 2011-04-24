@@ -55,7 +55,7 @@ void TowerFunds::setFunds(long f)
 
 void TowerFunds::transfer(long amount)
 {
-	OSSObjectLog << amount << "€" << std::endl;
+	//OSSObjectLog << amount << "€" << std::endl;
 	setFunds(getFunds() + amount);
 }
 

@@ -59,16 +59,16 @@ void Audio::play(SoundEffect * effect)
 		
 		//Reject the sound effect if this exceeds the maximum
 		if (effect->maxConcurrentPlaybacks && concurrentPlaybacks >= effect->maxConcurrentPlaybacks) {
-			OSSObjectLog << "rejecting " << effect->description()
-			<< " due to exceeded concurrent playbacks" << std::endl;
+			/*OSSObjectLog << "rejecting " << effect->description()
+			<< " due to exceeded concurrent playbacks" << std::endl;*/
 			return;
 		}
 		
 		//Reject the sound effect if the minimal interval has not been reached yet
 		if (shortest < effect->minIntervalBetweenPlaybacks) {
-			OSSObjectLog << "rejecting " << effect->description()
+			/*OSSObjectLog << "rejecting " << effect->description()
 			<< " due to limitation of minimal interval between playbacks ("
-			<< shortest << " < " << effect->minIntervalBetweenPlaybacks << ")" << std::endl;
+			<< shortest << " < " << effect->minIntervalBetweenPlaybacks << ")" << std::endl;*/
 			return;
 		}
 	}
