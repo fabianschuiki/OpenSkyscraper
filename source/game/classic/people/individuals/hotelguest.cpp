@@ -104,7 +104,6 @@ void HotelGuest::think()
 			//Do the initial visit to the room
 			if (!initialVisitDone) {
 				if (!isAt(hotel)) {
-					OSSObjectLog << "doing initial visit" << std::endl;
 					setDestination(hotel);
 					return;
 				} else {
@@ -117,7 +116,6 @@ void HotelGuest::think()
 			//Have dinner if it is before 21:00
 			if (!hadDinner) {
 				if (tower->time->getTimeOfDay() >= 18.5 && tower->time->getTimeOfDay() < 21 && isAt(hotel)) {
-					OSSObjectLog << "going to have dinner" << std::endl;
 					setDestination(NULL);
 					return;
 				} else {
@@ -129,7 +127,6 @@ void HotelGuest::think()
 			
 			//Go back to the room
 			if (!isAt(hotel)) {
-				OSSObjectLog << "heading back to the hotel" << std::endl;
 				setDestination(hotel);
 				return;
 			}
@@ -138,7 +135,6 @@ void HotelGuest::think()
 			if (!didChooseSleepTime) {
 				//Calculate the sleep time
 				sleepTime = tower->time->getLogicalTodayRandom(23, 25.5);
-				OSSObjectLog << "decided to go to sleep at " << sleepTime << std::endl;
 				setPauseEndTime(sleepTime);
 				didChooseSleepTime = true;
 				return;
@@ -147,7 +143,6 @@ void HotelGuest::think()
 			//Decide when to wake up and then go to sleep
 			if (!didSleep) {
 				setPauseEndTimeTomorrow(randd(6, 8));
-				OSSObjectLog << "going to sleep, decided to wake up at " << getPauseEndTime() << std::endl;
 				setAsleep(true);
 				return;
 			}
@@ -157,7 +152,6 @@ void HotelGuest::think()
 		else {
 			didSleep = true;
 			setPauseEndTimeToday(7);
-			OSSObjectLog << "waking up..." << std::endl;
 			setAsleep(false);
 			return;
 		}
@@ -166,7 +160,6 @@ void HotelGuest::think()
 	//Decide when to check out
 	if (!didChooseCheckoutTime) {
 		setPauseEndTimeToday(randd(tower->time->getLogicalTimeOfDay() + 0.25, 11));
-		OSSObjectLog << "decided to check out at " << getPauseEndTime() << std::endl;
 		didChooseCheckoutTime = true;
 		return;
 	}
@@ -174,7 +167,6 @@ void HotelGuest::think()
 	//Check out
 	if (!isAt(NULL)) {
 		setDestination(NULL);
-		OSSObjectLog << "checking out" << std::endl;
 		checkingOut = true;
 	}
 	

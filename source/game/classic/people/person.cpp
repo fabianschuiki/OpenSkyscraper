@@ -233,8 +233,7 @@ Route::Node * Person::getRouteNode()
 {
 	if (!route)
 		return NULL;
-	Route::Node * node = route->nextNode();
-	assert(node == NULL || (unsigned long)node > 0x10000000);
+	Route::Node * node = route->nextNode();;
 	return node;
 }
 

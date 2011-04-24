@@ -186,10 +186,10 @@ void ElevatorCar::setState(State s)
 		state = s;
 		journeyTime = 0;
 		
-		const static string states[5] = {
+		/*const static string states[5] = {
 			"idle", "moving", "opening doors", "hauling", "closing doors"
 		};
-		OSSObjectLog << states[s] << std::endl;
+		OSSObjectLog << states[s] << std::endl;*/
 		
 		//If we just switched to idle state we have to inform our elevator about this so it may
 		//assign us a new call to respond to. We also have to reset our direction.
@@ -432,7 +432,7 @@ void ElevatorCar::answerCall(ElevatorQueue * q)
 	setDirection(q->getDirection());
 	setDestinationFloor(q->getRect().minY());
 	q->answerCall(this);
-	OSSObjectLog << q->description() << std::endl;
+	//OSSObjectLog << q->description() << std::endl;
 }
 
 

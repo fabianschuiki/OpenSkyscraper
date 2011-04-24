@@ -18,6 +18,22 @@ namespace OSS {
 			
 			OfficeWorker(Tower * tower, OfficeItem * office);
 			virtual string getTypeName() const { return "office/worker"; }
+			
+			/**
+			 * Simulation
+			 */
+		private:
+			double arrivalTime;
+			bool didChooseArrivalTime;
+			bool hasArrived;
+			
+			double departureTime;
+			bool didChooseDepartureTime;
+			bool hasDeparted;
+			
+		public:
+			void reset();
+			virtual void think();
 		};
 	}
 }

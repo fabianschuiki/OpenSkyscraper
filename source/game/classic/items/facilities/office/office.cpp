@@ -77,7 +77,7 @@ void OfficeItem::didChangeOccupancy()
 
 bool OfficeItem::shouldOccupy()
 {
-	return tower->time->isBetween(7, 17) && tower->time->isWeekday();
+	return tower->time->isBetween(7, 13) && tower->time->isWeekday();
 }
 
 
@@ -108,7 +108,7 @@ void OfficeItem::updateBackground()
 
 void OfficeItem::updateOccupyAt()
 {
-	setOccupyAt(tower->time->getTodayRandom(7, std::max<double>(7, tower->time->getTimeOfDay() + 1)));
+	setOccupyAt(tower->time->getTodayRandom(7, std::max<double>(7, tower->time->getTimeOfDay() + 0.5)));
 }
 
 
