@@ -49,7 +49,7 @@ set(source
 	game/classic/items/transports/elevators/car.cpp
 	game/classic/items/transports/elevators/queue.cpp
 	game/classic/items/item.cpp
-#	game/classic/items/facilities/office/office.cpp # Broken
+	game/classic/items/facilities/office/office.cpp
 	game/classic/items/facilities/occupiable.cpp
 	game/classic/items/facilities/hotel/hotel.cpp
 	game/classic/items/facilities/hotel/suite.cpp
@@ -67,6 +67,7 @@ set(source
 	game/classic/people/person.cpp
 	game/classic/people/individuals/janitor.cpp
 	game/classic/people/individuals/hotelguest.cpp
+	game/classic/people/individuals/officeworker.cpp
 	game/classic/game.cpp
 	game/classic/ui/control/rating.cpp
 	game/classic/ui/control/window.cpp

@@ -295,3 +295,4 @@ unsigned int HotelItem::getTextureSliceIndex()
 	
 	return index;
 }
+

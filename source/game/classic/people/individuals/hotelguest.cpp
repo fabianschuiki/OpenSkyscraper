@@ -1,5 +1,4 @@
 #include "hotelguest.h"
-#include "../../items/facilities/hotel/hotel.h"
 
 using namespace OSS;
 using namespace Classic;

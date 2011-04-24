@@ -89,7 +89,7 @@ void OccupiableItem::advanceOccupancy(double dt)
 	if (!isOccupied()) {
 		
 		//Only deal with this if the item is attractive enough for people to move in.
-		if (isSufficientlyAttractive()) {
+		if (isSufficientlyAttractive() && shouldOccupy()) {
 			
 			//If the occupyAt time is invalid, mark it as to be updated.
 			if (occupyAt <= 0)
@@ -108,6 +108,11 @@ void OccupiableItem::advanceOccupancy(double dt)
 		if (!isSufficientlyAttractive() && tower->time->checkDaily(5))
 			setOccupancy(false);
 	}
+}
+
+bool OccupiableItem::shouldOccupy()
+{
+	return true;
 }
 
 bool OccupiableItem::isSufficientlyAttractive()

@@ -41,7 +41,8 @@ namespace OSS {
 			virtual void advanceItem(double dt);
 			virtual void advanceOccupancy(double dt);
 			
-			bool isSufficientlyAttractive();
+			virtual bool shouldOccupy();
+			virtual bool isSufficientlyAttractive();
 			
 			
 			/**

@@ -85,7 +85,7 @@ Item * Item::make(Tower * tower, ItemDescriptor * descriptor, recti rect)
 		case kExpressElevatorType:	instance = new ExpressElevatorItem(tower); break;
 			
 			//Office
-		//case kOfficeType:			instance = new OfficeItem(tower); break;
+		case kOfficeType:			instance = new OfficeItem(tower); break;
 			
 			//Hotel
 		case kSingleRoomType:		instance = new SingleRoomItem(tower); break;
@@ -165,7 +165,7 @@ ItemDescriptor * Item::descriptorForItemType(ItemType itemType)
 		case kExpressElevatorType:	return &ExpressElevatorItem::descriptor; break;
 			
 			//Office
-		//case kOfficeType:			return &OfficeItem::descriptor; break;
+		case kOfficeType:			return &OfficeItem::descriptor; break;
 			
 			//Hotel
 		case kSingleRoomType:		return &SingleRoomItem::descriptor; break;
