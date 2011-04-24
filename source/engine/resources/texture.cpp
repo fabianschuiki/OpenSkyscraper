@@ -115,15 +115,15 @@ void Texture::load()
 			if (useTransparentColor) {
 				ILubyte * imageData = ilGetData();
 				for (unsigned int i = 0; i < ilGetInteger(IL_IMAGE_SIZE_OF_DATA); i += ilGetInteger(IL_IMAGE_BYTES_PER_PIXEL)) {
-					if (imageData[i + 0] == transparentColor.c.r * 255 &&
-						imageData[i + 1] == transparentColor.c.g * 255 &&
-						imageData[i + 2] == transparentColor.c.b * 255) {
+					if (abs(imageData[i + 0] - transparentColor.c.r * 255) <= 1 &&
+						abs(imageData[i + 1] - transparentColor.c.g * 255) <= 1 &&
+						abs(imageData[i + 2] - transparentColor.c.b * 255) <= 1) {
 						imageData[i + 3] = 0.0;
 					}
 					for (vector<color3d>::iterator c = transparentColors.begin(); c != transparentColors.end(); c++) {
-						if (imageData[i + 0] == (*c).c.r * 255 &&
-							imageData[i + 1] == (*c).c.g * 255 &&
-							imageData[i + 2] == (*c).c.b * 255) {
+						if (abs(imageData[i + 0] - (*c).c.r * 255) <= 1 &&
+							abs(imageData[i + 1] - (*c).c.g * 255) <= 1 &&
+							abs(imageData[i + 2] - (*c).c.b * 255) <= 1) {
 							imageData[i + 3] = 0.0;
 						}
 					}
