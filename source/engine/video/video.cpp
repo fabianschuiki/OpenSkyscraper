@@ -24,7 +24,7 @@ Video::Video(Engine * engine) : engine(engine)
 	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
 	
 	//Setup some default values
-	safeMode.resolution = int2(1000, 600);
+	safeMode.resolution = int2(1280, 768);
 	safeMode.fullscreen = false;
 	desiredMode = safeMode;
 	currentMode = safeMode;
