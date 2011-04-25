@@ -85,15 +85,27 @@ set(source
 	main.cpp
 )
 
+# Add the PkgConfig package to find packages that CMake doesn't.
+find_package(PkgConfig)
+
+# libmspack for decompressing KWAJ files (SIMTOWER.EX_)
+# http://www.cabextract.org.uk/libmspack/
+pkg_check_modules(MSPACK libmspack)
+include_directories(${MSPACK_INCLUDE_DIRS})
+link_directories(${MSPACK_LIBRARY_DIRS})
+
+# other packages
 find_package(SDL)
 find_package(OpenGL)
 find_package(OpenAL)
 find_package(DevIL)
 
+# setup the executable
 add_executable(OpenSkyscraper ${source})
 target_link_libraries(OpenSkyscraper
 	${SDL_LIBRARY}
 	${OPENGL_LIBRARY}
 	${OPENAL_LIBRARY}
 	${IL_LIBRARIES}
+	${MSPACK_LIBRARIES}
 )

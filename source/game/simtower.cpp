@@ -1,6 +1,9 @@
 #include "simtower.h"
 
 #include <sys/stat.h>
+extern "C" {
+	#include <mspack.h>
+}
 
 using namespace OSS;
 
@@ -110,6 +113,23 @@ void SimTower::loadResources()
 	
 	//Get the path to the SimTower instance
 	string path = application->pathToResource("SIMTOWER.EXE");
+	
+	//If there is no file at the specified path, check whether there is a SIMTOWER.EX_ file.
+	if (path == "") {
+		
+		//Decide where to decompress the file.
+		path = "/tmp/SIMTOWER.EXE";
+		
+		//Find the compressed version.
+		string compressed = application->pathToResource("SIMTOWER.EX_");
+		std::cout << "decompressing " << compressed << " to " << path << " ";
+		
+		//Decompress the file.
+		mskwaj_decompressor * decompressor = mspack_create_kwaj_decompressor(NULL);
+		decompressor->decompress(decompressor, (char *)compressed.c_str(), (char *)path.c_str());
+		mspack_destroy_kwaj_decompressor(decompressor);
+		std::cout << "done" << std::endl;
+	}
 	
 	//Open the file
 	FILE * fsimtower = fopen(path.c_str(), "rb");
