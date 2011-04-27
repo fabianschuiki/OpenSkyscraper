@@ -22,7 +22,11 @@ namespace OSS {
 			typedef std::set< Pointer<OfficeWorker> > Workers;
 			Workers workers;
 			
+			bool isAnyoneHere();
 			virtual void didChangeOccupancy();
+			
+			virtual void didAddPerson(Person * person);
+			virtual void didRemovePerson(Person * person);
 			
 			
 			//Simulation

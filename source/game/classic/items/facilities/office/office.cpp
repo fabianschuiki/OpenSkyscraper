@@ -37,6 +37,11 @@ OfficeItem::OfficeItem(Tower * tower) : OccupiableItem(tower, &descriptor)
 #pragma mark Workers
 //----------------------------------------------------------------------------------------------------
 
+bool OfficeItem::isAnyoneHere()
+{
+	return !people.empty();
+}
+
 void OfficeItem::didChangeOccupancy()
 {
 	//Transfer funds based on the vacancy.
@@ -64,6 +69,18 @@ void OfficeItem::didChangeOccupancy()
 	else {
 		workers.clear();
 	}
+}
+
+void OfficeItem::didAddPerson(Person * person)
+{
+	FacilityItem::didAddPerson(person);
+	updateBackgroundIfNeeded.setNeeded();
+}
+
+void OfficeItem::didRemovePerson(Person * person)
+{
+	FacilityItem::didRemovePerson(person);
+	updateBackgroundIfNeeded.setNeeded();
 }
 
 
@@ -140,7 +157,7 @@ unsigned int OfficeItem::getTextureSliceIndex()
 	else
 		index = 0;
 	
-	if (!isLit())
+	if ((!isLit() && !isAnyoneHere()) || tower->time->isWeekend())
 		index++;
 	
 	return index;
