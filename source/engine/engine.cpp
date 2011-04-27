@@ -52,20 +52,20 @@ void Engine::heartbeat()
 	
 	//Update the audio subsystem
 	audio->update();
-		
-	//We're done rendering
-	timing->renderingDone();
 	
 	//Show some basic information in the window title
 	char title[512];
 	snprintf(title, 512, "OpenSkyscraper | %3.0f Hz, %3.0f ms, %3.0f%%",
 			 timing->damped_freq,
-			 timing->damped_dt * 1000,
+			 (timing->damped_dt - timing->damped_idle_dt) * 1000,
 			 timing->damped_idle_ratio * 100);
 	SDL_WM_SetCaption(title, NULL);
 	
 	//Swap the OpenGL buffers
 	video->swapBuffers();
+		
+	//We're done rendering
+	timing->renderingDone();
 }
 
 

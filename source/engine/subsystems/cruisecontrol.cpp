@@ -50,10 +50,11 @@ void CruiseControl::frameStart()
 	do {
 		timeToWaste = current_frameTime + (1.0 / freq_upperLimit) - engine->getTimeElapsed();
 		if (timeToWaste > 0) {
-			engine->sleep(timeToWaste * 0.8);
+			engine->sleep(timeToWaste);
 			upperFrequencyLimitEnforced = true;
 		}
 	} while (timeToWaste > 0);
+	
 	
 	//Set the previous frame time and fetch the current one
 	previous_frameTime = current_frameTime;
