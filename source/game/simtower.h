@@ -76,9 +76,9 @@ namespace OSS {
 		void spawnFloordigitTextures(string textureName, ILuint image);
 		
 		//Dumping textures to disk for debugging purposes
-		string getDumpPath(string type, string name);
-		void dumpTexture(Texture * texture);
-		void dumpSound(string name, const void * buffer, unsigned int bufferLength);
+		static string getDumpPath(string type, string name);
+		static void dumpTexture(Texture * texture);
+		static void dumpSound(string name, const void * buffer, unsigned int bufferLength);
 	};
 }
 

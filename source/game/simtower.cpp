@@ -849,7 +849,7 @@ void SimTower::dumpTexture(Texture * texture)
 {
 	if (!texture) return;
 	ilBindImage(texture->tempImage);
-	ilSaveImage(getDumpPath("textures", texture->name.substr(9) + ".bmp").c_str());
+	ilSaveImage(getDumpPath("textures", texture->name.substr(9) + ".png").c_str());
 }
 
 void SimTower::dumpSound(string name, const void * buffer, unsigned int bufferLength)

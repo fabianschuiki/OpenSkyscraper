@@ -118,13 +118,15 @@ void Texture::load()
 					if (abs(imageData[i + 0] - transparentColor.c.r * 255) <= 1 &&
 						abs(imageData[i + 1] - transparentColor.c.g * 255) <= 1 &&
 						abs(imageData[i + 2] - transparentColor.c.b * 255) <= 1) {
-						imageData[i + 3] = 0.0;
+						for (int c = 0; c < 4; c++)
+							imageData[i + c] = 0;
 					}
 					for (vector<color3d>::iterator c = transparentColors.begin(); c != transparentColors.end(); c++) {
 						if (abs(imageData[i + 0] - (*c).c.r * 255) <= 1 &&
 							abs(imageData[i + 1] - (*c).c.g * 255) <= 1 &&
 							abs(imageData[i + 2] - (*c).c.b * 255) <= 1) {
-							imageData[i + 3] = 0.0;
+							for (int c = 0; c < 4; c++)
+								imageData[i + c] = 0;
 						}
 					}
 				}
@@ -171,8 +173,8 @@ void Texture::finalize()
 				 ilGetData());
 	
 	//Some texture parameters
-	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	
 	//Get rid of the temporary image
 	ilBindImage(0);

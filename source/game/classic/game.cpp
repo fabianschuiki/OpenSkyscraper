@@ -264,8 +264,8 @@ void GameScene::didMoveOnScreen()
 	Scene::didMoveOnScreen();
 	
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);
-	glEnable(GL_BLEND);
 	
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
