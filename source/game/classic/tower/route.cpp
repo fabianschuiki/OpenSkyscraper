@@ -110,7 +110,14 @@ void Route::popNode()
 
 const unsigned int Route::getDistance()
 {
-	return 100;
+	recti offset = origin;
+	double distance = 0;
+	for (Nodes::const_iterator it = nodes.begin(); it != nodes.end(); it++) {
+		distance += offset.distanceX((*it)->start);
+		offset = (*it)->end;
+	}
+	distance += offset.distanceX(destination);
+	return distance;
 }
 
 

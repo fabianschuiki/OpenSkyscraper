@@ -104,6 +104,14 @@ namespace OSS {
 			//Area
 			inline T area() const { return (size.x * size.y); }
 			
+			//Shortest distance between rects.
+			inline T distanceX(const Rect<T> &r) const {
+				if (maxX() <= r.maxX() && minX() <= r.minX())
+					return 0;
+				return std::min<T>(	fabs(r.minX() - maxX()),
+									fabs(r.maxX() - minX()));
+			}
+			
 			//Boolean operations
 			bool containsPoint(const Vector2D<T> &p) const {
 				return (p.x >= minX() && p.y >= minY() && p.x < maxX() && p.y < maxY());
