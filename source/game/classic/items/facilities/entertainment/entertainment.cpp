@@ -39,6 +39,7 @@ void EntertainmentItem::setOpen(bool o)
 		open = o;
 		didChangeOpenness();
 		updateBackgroundIfNeeded.setNeeded();
+		OSSObjectLog << (isOpen() ? "opening" : "closing") << std::endl;
 	}
 }
 

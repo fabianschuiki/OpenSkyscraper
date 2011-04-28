@@ -60,6 +60,11 @@ Facilities
 - Office
 
 
+### Items requiring confirmation of their inner workings
+
+- *Restaurant* lookup maximum number of guests and apply it to the RestaurantItem class
+
+
 Transports
 ----------
 

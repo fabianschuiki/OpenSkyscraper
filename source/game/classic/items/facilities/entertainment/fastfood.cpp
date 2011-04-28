@@ -46,7 +46,6 @@ bool FastFoodItem::shouldBeOpen()
 
 void FastFoodItem::didChangeOpenness()
 {
-	std::cout << " is " << (isOpen() ? "opening" : "closing") << std::endl;
 }
 
 

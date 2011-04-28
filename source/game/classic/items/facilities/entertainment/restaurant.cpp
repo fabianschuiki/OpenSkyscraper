@@ -23,11 +23,29 @@ ItemDescriptor RestaurantItem::descriptor = {
 #pragma mark Initialization
 //----------------------------------------------------------------------------------------------------
 
-RestaurantItem::RestaurantItem(Tower * tower) : FacilityItem(tower, &descriptor)
+RestaurantItem::RestaurantItem(Tower * tower) : EntertainmentItem(tower, &descriptor)
 {
 	setVariant(randui(0, 4));
 	setAutoTextured(true);
 	setAutoTextureSlice(0);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Openness
+//----------------------------------------------------------------------------------------------------
+
+bool RestaurantItem::shouldBeOpen()
+{
+	return tower->time->isBetween(17, 23);
+}
+
+void RestaurantItem::didChangeOpenness()
+{
 }
 
 
@@ -53,3 +71,15 @@ rectd RestaurantItem::getAutoTextureRect(int floor, unsigned int slice)
 {
 	return rectd((slice % 2) * 0.5, 0, 0.5, 1);
 }
+
+void RestaurantItem::updateBackground()
+{
+	EntertainmentItem::updateBackground();
+	
+	if (isOpen()) {
+		setAutoTextureSlice(ceil((double)people.size() / 52 * 2)); //TODO: lookup max number of guests
+	} else {
+		setAutoTextureSlice(3);
+	}
+}
+
