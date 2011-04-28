@@ -58,6 +58,7 @@ set(source
 	game/classic/items/facilities/hotel/housekeeping.cpp
 	game/classic/items/facilities/structure/lobby.cpp
 	game/classic/items/facilities/facility.cpp
+	game/classic/items/facilities/entertainment/entertainment.cpp
 	game/classic/items/facilities/entertainment/partyhall.cpp
 	game/classic/items/facilities/entertainment/restaurant.cpp
 	game/classic/items/facilities/entertainment/fastfood.cpp

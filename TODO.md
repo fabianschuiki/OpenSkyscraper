@@ -32,7 +32,7 @@ Facilities
 
 - When two adjacent items are collapsed, they both show the construction animation. It should be possible to only show the animation for the part that was actually added to cause the collapse.
 - Create classes for all items of SimTower.
-- Add people to the office item and animate them appropriately.
+- Add animate office workers appropriately.
 - Add people to all other items.
 - Add a mechanism that checks whether a facility is accessible from the lobby or not.
 - Develop an algorithm to find the facilities that people from other facilities visit during the day. This includes Fast Foods for Office workers, or Restaurants for Hotel guests or Condo inhabitants.
