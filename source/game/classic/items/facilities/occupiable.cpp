@@ -99,6 +99,11 @@ void OccupiableItem::advanceOccupancy(double dt)
 			else if (tower->time->getTime() >= occupyAt)
 				setOccupancy(true);
 		}
+		
+		//Otherwise mark the occupyAt time as invalid so it gets recalculated as soon as possible.
+		else if (occupyAt > 0) {
+			occupyAt = 0;
+		}
 	}
 	
 	//Otherwise we have to deal with people possibly moving out.
@@ -117,7 +122,7 @@ bool OccupiableItem::shouldOccupy()
 
 bool OccupiableItem::isSufficientlyAttractive()
 {
-	return true;
+	return isReachableFromLobby();
 }
 
 
@@ -136,3 +141,4 @@ void OccupiableItem::update()
 	//Update the occupyAt time if required
 	updateOccupyAtIfNeeded();
 }
+

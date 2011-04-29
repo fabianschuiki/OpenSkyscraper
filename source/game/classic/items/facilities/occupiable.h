@@ -1,5 +1,4 @@
-#ifndef OSS_CLASSIC_ITEMS_FACILITIES_OCCUPIABLE_H
-#define OSS_CLASSIC_ITEMS_FACILITIES_OCCUPIABLE_H
+#pragma once
 
 #include "facility.h"
 
@@ -57,5 +56,3 @@ namespace OSS {
 	}
 }
 
-
-#endif

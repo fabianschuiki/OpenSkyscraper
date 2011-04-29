@@ -671,6 +671,10 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	//Play the construction sound. Cadung-cadoush ^^.
 	Audio::shared()->play(isFlexible ? flexibleConstructionSound : constructionSound);
 	
+	//If we built a transport item, send an event so the reachabilities may be adjusted.
+	if (descriptor->category == kTransportCategory)
+		tower->sendEvent(new ItemEvent<TransportItem>(Event::kTransportIncreased, (TransportItem *)item));
+	
 	return (ConstructionResult){true, ""};
 }
 

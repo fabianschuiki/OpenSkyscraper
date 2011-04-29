@@ -14,7 +14,8 @@ using namespace Classic;
 
 FacilityItem::FacilityItem(Tower * tower, ItemDescriptor * descriptor) : Item(tower, descriptor),
 updateCeilingIfNeeded(this, &FacilityItem::updateCeiling, &updateIfNeeded),
-updateLightingIfNeeded(this, &FacilityItem::updateLighting, &updateBackgroundIfNeeded)
+updateLightingIfNeeded(this, &FacilityItem::updateLighting, &updateBackgroundIfNeeded),
+updateReachabilityIfNeeded(this, &FacilityItem::updateReachability, &updateIfNeeded)
 {
 	constructed = false;
 	ceiling = true;
@@ -24,8 +25,8 @@ updateLightingIfNeeded(this, &FacilityItem::updateLighting, &updateBackgroundIfN
 	autoTextured = false;
 	autoTextureSlice = false;
 	
-	//Update the lighting
-	//updateLighting();
+	//Update the reachability..
+	//updateReachabilityIfNeeded.setNeeded();
 }
 
 
@@ -144,6 +145,30 @@ void FacilityItem::didAddPerson(Person * person)
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Reachability
+//----------------------------------------------------------------------------------------------------
+
+bool FacilityItem::isReachableFromLobby()
+{
+	return routeFromLobby;
+}
+
+void FacilityItem::eventTransportIncreased(ItemEvent<TransportItem> * event)
+{
+	updateReachabilityIfNeeded.setNeeded();
+}
+
+void FacilityItem::eventTransportDecreased(ItemEvent<TransportItem> * event)
+{
+	updateReachabilityIfNeeded.setNeeded();
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 
@@ -199,9 +224,10 @@ void FacilityItem::update()
 {
 	Item::update();
 	
-	//Update the ceiling and lighting if required
+	//Update the other components if required.
 	updateCeilingIfNeeded();
 	updateLightingIfNeeded();
+	updateReachabilityIfNeeded();
 }
 
 void FacilityItem::updateBackground()
@@ -237,6 +263,24 @@ void FacilityItem::updateCeiling()
 		ceilingTexture = NULL;
 }
 
+void FacilityItem::updateReachability()
+{
+	bool before = routeFromLobby;
+	
+	//If the route has become invalid, clear it so it gets recalculated properly.
+	if (routeFromLobby && !routeFromLobby->isValid())
+		routeFromLobby = NULL;
+	
+	//If there is no route, try to calculate one.
+	if (!routeFromLobby)
+		routeFromLobby = Route::findRoute(tower, tower->structure->getFloorRect(0), this->getRect(),
+			Route::kNoServiceElevators);
+	
+	//Subclass notification.
+	if ((bool)routeFromLobby != before)
+		didChangeReachability();
+}
+
 
 
 
@@ -268,3 +312,4 @@ void FacilityItem::drawCeiling(rectd dirtyRect)
 	//Draw the ceiling quad
 	quad.draw();
 }
+

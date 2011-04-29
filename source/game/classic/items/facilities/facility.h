@@ -65,8 +65,23 @@ namespace OSS {
 			
 			
 			/**
+			 * Reachability
+			 */
+		private:
+			Pointer<Route> routeFromLobby;
+			
+		public:
+			bool isReachableFromLobby();
+			virtual void didChangeReachability() {}
+			
+			virtual void eventTransportIncreased(ItemEvent<TransportItem> * event);
+			virtual void eventTransportDecreased(ItemEvent<TransportItem> * event);
+			
+			
+			/**
 			 * Simulation
 			 */
+		public:
 			virtual void advance(double dt);
 			
 			
@@ -91,9 +106,11 @@ namespace OSS {
 			virtual void updateBackground();
 			virtual void updateCeiling();
 			virtual void updateLighting() {}
+			virtual void updateReachability();
 			
 			Updatable::Conditional<FacilityItem> updateCeilingIfNeeded;
 			Updatable::Conditional<FacilityItem> updateLightingIfNeeded;
+			Updatable::Conditional<FacilityItem> updateReachabilityIfNeeded;
 			
 			
 			/**
