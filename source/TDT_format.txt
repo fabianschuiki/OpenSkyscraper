@@ -120,8 +120,9 @@ typedef struct {
     char tenantType (signed)
       The type of the tenant. Negative values refer to tenants under
       construction.
-    char numInTenant
-      This appears to be the number of the people currently inside the tenant.
+    char unknown
+      This appears to be the status for some simulation value. Previously, I
+      called this a count of the people inside, but I'm no longer sure.
       For example, if there are five people currently in the office, this value
       holds 5.
     WORD perTypeDataIndex
@@ -131,8 +132,14 @@ typedef struct {
       This is the offset into the people array for the people related to this
       tenant. This would imply, I guess, that all people must consist in
       consecutive locations?
-    char unknown[6]
-      6 bytes of unknown data. The entire structure is 18 bytes long.
+    char indexInFloor
+      This is the 0-based index of the current location in the floor.
+    char unknown[3]
+      3 bytes of unknown data. The entire structure is 18 bytes long.
+    char rentClass
+      This is the rent class of this tenant.
+    char unknown[1]
+      Yet more unknown data
   } tenants[numTenants];
   char unknown[188]
     188 bytes of unknown data

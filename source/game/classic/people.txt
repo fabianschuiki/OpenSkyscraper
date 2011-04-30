@@ -1,0 +1,48 @@
+This document documents detailed simulation characteristics detailing people.
+
+70x.bmp contains the bitmaps for people. Each index refers to 1/8 the leftmost
+pixel of the bitmap rectangle. Characters 6, 8, and 10 take up two of these
+blocks.
+0 - Office #2, Office #3, Condo #0, Hotel #1+, Outsider even
+1 - Office #0, Office #1
+2 - Office #4, Outsider #1
+3 - Condo #2, 
+4 - Office #5, Hotel #0, Outsider #3
+5 - Security
+6/7 - Outsider #5
+8/9 - Condo #1, Outsider #7
+10/11 - Housekeeping
+
+Note: the numbers refer to the index of the person in the tenant, so #0 is the
+first person. These are invariate. For "outsiders" (anyone marked as going to
+some sort of retail), the number refers to only the low 3 bits of the value.
+
+700.bmp = Black people
+701.bmp = Red people
+702.bmp = Blue people
+703.bmp = Yellow people
+
+Each person is invariably from a single location; this is the tenant with which
+they are associated.
+
+Stress, eval, and all that
+==========================
+Eval and stress go on a scale between 0 and 300. There are two thresholds:
+0 <= eval < 80: High (blue) eval
+80 <= eval < 150 or 200: Medium (yellow) eval
+150 or 200 <= eval <= 300: Low (red) eval
+
+The medium-high boundary depends on your tower level; on towers of 4 or higher,
+the eval is 200, otherwise it's 150.
+
+Eval appears to merely be an average of the individual stress runs for each
+trip, over some period of time (day? quarter? all time?).
+
+Stress is accumulated as a function of waiting time for elevators, and some
+constant value for stairs and escalators. I haven't done enough studying to
+find these constant values...
+
+The average evaluation of all tenants determines how "happy" a tenant is for
+some tenant types; evaluation of visitors also determines how many visitors a
+retail shop will get the next time, and probably plays into the population of
+the retail units as well.
