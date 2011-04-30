@@ -94,6 +94,9 @@ find_package(PkgConfig)
 pkg_check_modules(MSPACK libmspack)
 include_directories(${MSPACK_INCLUDE_DIRS})
 link_directories(${MSPACK_LIBRARY_DIRS})
+if(NOT MSPACK_FOUND)
+	add_definitions(-DNOMSPACK)
+endif(NOT MSPACK_FOUND)
 
 # other packages
 find_package(SDL)

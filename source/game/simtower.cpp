@@ -1,9 +1,11 @@
 #include "simtower.h"
 
 #include <sys/stat.h>
+#ifndef NOMSPACK
 extern "C" {
 	#include <mspack.h>
 }
+#endif
 
 using namespace OSS;
 
@@ -115,6 +117,7 @@ void SimTower::loadResources()
 	string path = application->pathToResource("SIMTOWER.EXE");
 	
 	//If there is no file at the specified path, check whether there is a SIMTOWER.EX_ file.
+#ifndef NOMSPACK
 	if (path == "") {
 		
 		//Decide where to decompress the file.
@@ -130,6 +133,7 @@ void SimTower::loadResources()
 		mspack_destroy_kwaj_decompressor(decompressor);
 		std::cout << "done" << std::endl;
 	}
+#endif
 	
 	//Open the file
 	FILE * fsimtower = fopen(path.c_str(), "rb");
