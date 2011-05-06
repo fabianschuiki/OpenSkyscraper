@@ -1,0 +1,6 @@
+## arg 1:  the new package version
+post_install() {
+    echo ""
+    echo "When you run OpenSkyscraper, you need to have a copy of the retail SimTower exe sitting in your current working directory as SIMTOWER.EXE. Capitalization matters."
+}
+

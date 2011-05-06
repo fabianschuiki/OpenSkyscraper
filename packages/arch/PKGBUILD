@@ -1,0 +1,42 @@
+# Maintainer: Andrew Dorney <andrewd18 _at_ gmail.com>
+pkgname=openskyscraper-git
+pkgver=20110506
+pkgrel=1
+pkgdesc="Tower simulation game inspired by SimTower; based on SDL, OpenGL and OpenAL."
+arch=('i686' 'x86_64')
+url="https://github.com/fabianschuiki/OpenSkyscraper"
+license=('unknown')
+depends=('devil' 'openal' 'sdl' 'libmspack')
+makedepends=('cmake' 'git')
+install='openskyscraper.install'
+
+
+_gitroot="git://github.com/fabianschuiki/OpenSkyscraper.git"
+_gitname="OpenSkyscraper"
+
+
+build() {
+    cd ${srcdir}/
+
+    msg "Connecting to GITHUB..."
+    if [[ -d ${srcdir}/${_gitname} ]] ; then
+    	cd ${_gitname}
+    	git pull origin
+    	msg "Updated existing local copy to master."
+    else
+    	git clone ${_gitroot}
+    fi
+
+    msg "GIT checkout done."
+    msg "Starting cmake configuration."
+
+    cd ${srcdir}/${_gitname}/source
+    cmake .
+    make
+}
+
+package() {
+    cd "${srcdir}/${_gitname}/source"
+    install -d ${pkgdir}/usr/bin/
+    install -m 755 OpenSkyscraper ${pkgdir}/usr/bin/openskyscraper
+}
