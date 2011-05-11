@@ -1,17 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 unsigned short version;
 
-void readfile(FILE *, FILE *, int);
+void readfile(FILE *, FILE *, int, int);
+
+int dumpUnknown = 0;
 
 int main(int argc, char **argv) {
-	if (argc != 2) {
-		fprintf(stderr, "Usage: %s file.TDT\n", argv[0]);
+	int opt;
+	while ((opt = getopt(argc, argv, "+a")) != -1) {
+		switch (opt) {
+		case 'a':
+			dumpUnknown = 1;
+			break;
+		default:
+			fprintf(stderr, "Usage: %s [-a] file.TDT\n", argv[0]);
+			return -1;
+		}
+	}
+	if (optind >= argc) {
+		fprintf(stderr, "Usage: %s [-a] file.TDT\n", argv[0]);
 		return -1;
 	}
-	const char *infile = argv[1];
+	const char *infile = argv[optind];
 	char *outfile = strdup(infile);
 	char *munge;
 	if (!(munge = strstr(outfile, ".tdt")) &&
@@ -29,13 +43,13 @@ int main(int argc, char **argv) {
 	}
 
 	fread(&version, sizeof(version), 1, in);
-	readfile(in, out, 0);
+	readfile(in, out, 0, 1);
 	fclose(in);
 	fclose(out);
 }
 
 #define BEGIN_STRUCT(name) \
-void read##name(FILE *in, FILE *out, int space) { \
+void read##name(FILE *in, FILE *out, int space, int important) { \
 	void *buffer = malloc(100); \
 	size_t curSize = 100;
 #define STRUCT_ELEMENT(type, str) \
@@ -44,19 +58,41 @@ void read##name(FILE *in, FILE *out, int space) { \
 		curSize = sizeof(type); \
 	} \
 	fread(buffer, sizeof(type), 1, in); \
-	fprintf(out, "%*s" #str ": %d\n", space, "", *(type*)(buffer));
+	if (important) \
+		fprintf(out, "%*s" #str ": %d\n", space, "", *(type*)(buffer));
 #define UNKNOWN_DATA(type, size) \
-	fseek(in, sizeof(type) * size, SEEK_CUR);
+	if (important && dumpUnknown) {\
+		fprintf(out, "%*sUnknown data:\n", space, ""); \
+		uint8_t buffer[8]; \
+		int i = 0; \
+		for (; i + 8 < sizeof(type) * size; i+= 8) { \
+			fread(buffer, 1, 8, in); \
+			fprintf(out, "%*s%02x %02x %02x %02x %02x %02x %02x %02x%s", \
+				i % 16 == 0 ? space + 1 : 0, "", \
+				buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], \
+				buffer[5], buffer[6], buffer[7], i % 16 == 0 ? "  " : "\n"); \
+		} \
+		if (i % 16 == 0) fprintf(out, "%*s", space + 1, ""); \
+		for (; i < sizeof(type) * size; i++) { \
+			fread(buffer, 1, 1, in); \
+			fprintf(out, "%02x ", buffer[0]); \
+		} \
+		if (i % 16 != 0) fprintf(out, "\n"); \
+	} else { \
+		fseek(in, sizeof(type) * size, SEEK_CUR); \
+	}
 #define NAMED_STRUCT_ELEMENT(type, var, str) \
 	type var; \
 	fread(&var, sizeof(type), 1, in); \
-	fprintf(out, "%*s" #str ": %d\n", space, "", var);
+	if (important) \
+		fprintf(out, "%*s" #str ": %d\n", space, "", var);
 #define STRUCT_ELEMENT_STRUCT_ARRAY(st, count, str) \
 	{ \
 		int i = 0; \
 		for (i = 0; i < count; i++) { \
-			fprintf(out, "%*s" #str " %d:\n", space, "", i); \
-			read ##st (in, out, space + 1); \
+			if (important) \
+				fprintf(out, "%*s" #str " %d:\n", space, "", i); \
+			read ##st (in, out, space + 1, important); \
 		} \
 	}
 #define STRUCT_ELEMENT_ARRAY(type, count, str) \
@@ -65,7 +101,7 @@ void read##name(FILE *in, FILE *out, int space) { \
 		curSize = sizeof(type) * count; \
 	} \
 	fread(buffer, sizeof(type), count, in); \
-	{ \
+	if (important) { \
 		int i = 0; \
 		for (i = 0; i < count; i++) { \
 			fprintf(out, "%*s" #str " %d: %d\n", space + 1, "", i, \
@@ -75,4 +111,5 @@ void read##name(FILE *in, FILE *out, int space) { \
 #define END_STRUCT(name) \
 }
 
+#define OUTPUT_STRUCT
 #include "file.h"

@@ -15,6 +15,9 @@ END_STRUCT(tenant)
 
 BEGIN_STRUCT(floor)
 	NAMED_STRUCT_ELEMENT(uint16_t, num, Number)
+#ifdef OUTPUT_STRUCT
+	if (num == 0) important = 0;
+#endif
 	STRUCT_ELEMENT(uint16_t, Left)
 	STRUCT_ELEMENT(uint16_t, Right)
 	STRUCT_ELEMENT_STRUCT_ARRAY(tenant, num, Tenant)
@@ -22,7 +25,10 @@ BEGIN_STRUCT(floor)
 END_STRUCT(floor)
 
 BEGIN_STRUCT(person)
-	STRUCT_ELEMENT(uint8_t, Tenant Floor)
+	NAMED_STRUCT_ELEMENT(uint8_t, floor, Tenant Floor)
+#ifdef OUTPUT_STRUCT
+	if (floor == 0) important = 0;
+#endif
 	STRUCT_ELEMENT(uint8_t, Tenant Floor Index)
 	STRUCT_ELEMENT(uint16_t, Index in Tenant)
 	STRUCT_ELEMENT(uint8_t, Tenant Type)
@@ -34,7 +40,10 @@ BEGIN_STRUCT(person)
 END_STRUCT(person)
 
 BEGIN_STRUCT(retail)
-	STRUCT_ELEMENT(int8_t, Floor)
+	NAMED_STRUCT_ELEMENT(int8_t, floor, Floor)
+#ifdef OUTPUT_STRUCT
+	if (floor < 0) important = 0;
+#endif
 	UNKNOWN_DATA(uint8_t, 10)
 	STRUCT_ELEMENT(uint8_t, Type)
 	UNKNOWN_DATA(uint8_t, 6)
