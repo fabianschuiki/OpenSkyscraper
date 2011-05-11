@@ -43,7 +43,7 @@ DWORD lastQuarterMoney
 WORD frameTime
    The current time, as measured in frames. See the How time works for more
    information on interpretation.
-DWORD currentDay (signed)
+int32_t currentDay
    The current day, i.e., the number of days elapsed since WD 1, Q 1, Year 1.
    See "How time works" for more information.
 WORD unknown
@@ -106,34 +106,34 @@ Floor map
 The next section is the map of the tenants to the floors. This structure is
 variable-width:
 
-typedef struct {
-  WORD numTenants
+struct floor {
+  uint16_t numTenants
     The number of tenant entries in the floor.
   WORD leftEdge
   WORD rightEdge
     The leftmost and rightmost edges of any tenant on the floor.
-  struct {
+  struct tenant {
     WORD leftEdge
     WORD rightEdge
       The left and right extents of the current tenant. Note that floors and
       lobbies are coalesced to be one whole unit.
-    char tenantType (signed)
+    int8_t tenantType
       The type of the tenant. Negative values refer to tenants under
       construction.
-    char unknown
+    uint8_t status
       This appears to be the status for some simulation value. Previously, I
       called this a count of the people inside, but I'm no longer sure.
       For example, if there are five people currently in the office, this value
       holds 5.
-    WORD perTypeDataIndex
+    uint8_t perTypeDataIndex
       This is where to find this type in the appropriate value index (e.g.,
       retailData structure).
-    DWORD peopleOffset
+    uint32_t peopleOffset
       This is the offset into the people array for the people related to this
       tenant. This would imply, I guess, that all people must consist in
       consecutive locations?
-    char indexInFloor
-      This is the 0-based index of the current location in the floor.
+    int8_t indexInFloor
+      This is the 0-based index of the current location in the indexMap array.
     char unknown[3]
       3 bytes of unknown data. The entire structure is 18 bytes long.
     char rentClass
@@ -141,11 +141,14 @@ typedef struct {
     char unknown[1]
       Yet more unknown data
   } tenants[numTenants];
-  char unknown[188]
-    188 bytes of unknown data
-} floorData;
-
-floorData floors[120]
+  uint16_t indexMap[94]
+    This is a map to account for reordering of tenants within a floor. Most of
+    the time, when a "tenant index" is referred to, it's to an index in this
+    array instead of the index into the tenants array. The contents of this
+    array is an index into the tenants. So getting the floor for a
+    (floor, index) looks as follows:
+    floors[floor].tenants[floors[floor].indexMap[index]]
+} floors[120];
   There are 120 floors. Values 0-9 are B10, B9, etc., B1. Value 10 is the 1st
   floor, with value 110 being the 100th floor. There are another 9 extra floors
   above that, probably to let the screen just occupy the entire floor data map.
@@ -211,9 +214,9 @@ for these structures is listed in later blocks in the file.
 People and retail data
 ======================
 
-DWORD numPeople
+uint32_t numPeople
 struct person {
-  char floorNum;
+  char tenantFloor;
     The index into the floors array of the tenant for this person.
   char tenantInFloor;
     The index into the tenant data for the tenant for this person.
@@ -221,10 +224,13 @@ struct person {
     The number of this person inside the tenant.
   char tenantType;
     The type of the tenant this person is in
-  char unknown;
+  char status;
     I think this is some sort of status byte. I see values of 0x20, 0x21, 0x00,
     0x05, 0x04
-  char unknown[6];
+  int8_t currentFloor;
+    The current floor for this person. Negative values probably refer to out of
+    the building or something similar
+  char unknown[5];
     Unknown data
   WORD stress;
     The current amount of stress the person has.
@@ -243,7 +249,7 @@ struct person {
   the other ones appears to be a floor sometimes...
 
 struct retail {
-  char floor; (signed)
+  int8_t floor;
     This is the floor it is on, but negative values mean that this entry is not
     a valid retail entry.
   char unknown[10];
@@ -335,10 +341,10 @@ struct stair {
     If set to 1, this means that this stair is actually in use somewhere in the
     building.
   char stairType;
-    If this value is 0, you have an escalator. If it is one, this is a stair.
+    If this value is 0, you have an escalator. If it is 1, this is a stair.
   WORD leftrightpos;
-    This is correlated to left-right position of the stair, but I do not know
-    which column is used as this point.
+    This is correlated to left position of the stair, as measured in floor
+    units (not pixels).
   WORD baseFloor;
     This is the floor that this is on. Remember that "floor 1" is really 10.
   char unknown[4];
