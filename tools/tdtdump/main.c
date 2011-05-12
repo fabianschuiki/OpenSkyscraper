@@ -44,6 +44,25 @@ int main(int argc, char **argv) {
 
 	fread(&version, sizeof(version), 1, in);
 	readfile(in, out, 0, 1);
+	if (dumpUnknown) {
+		// Show the rest of the file.... Painful, I know
+		fprintf(out, "Unknown data:\n", "");
+		unsigned char buffer[8];
+		int i = 0, val = 0;
+		for (;; i+= 8) {
+			val = fread(buffer, 1, 8, in);
+			if (val < 8) break;
+			fprintf(out, "%s%02x %02x %02x %02x %02x %02x %02x %02x%s",
+				i % 16 == 0 ? " " : "",
+				buffer[0], buffer[1], buffer[2], buffer[3], buffer[4],
+				buffer[5], buffer[6], buffer[7], i % 16 == 0 ? "  " : "\n");
+		}
+		if (i % 16 == 0) fprintf(out, " ");
+		for (i = 0; i < val; i++) {
+			fprintf(out, "%02x ", buffer[i]);
+		}
+		fprintf(out, "\n");
+	}
 	fclose(in);
 	fclose(out);
 }
@@ -104,7 +123,7 @@ void read##name(FILE *in, FILE *out, int space, int important) { \
 	if (important) { \
 		int i = 0; \
 		for (i = 0; i < count; i++) { \
-			fprintf(out, "%*s" #str " %d: %d\n", space + 1, "", i, \
+			fprintf(out, "%*s" #str " %d: %d\n", space, "", i, \
 				((type*)buffer)[i]); \
 		} \
 	}

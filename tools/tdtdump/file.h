@@ -49,6 +49,17 @@ BEGIN_STRUCT(retail)
 	UNKNOWN_DATA(uint8_t, 6)
 END_STRUCT(retail)
 
+BEGIN_STRUCT(stair)
+	NAMED_STRUCT_ELEMENT(uint8_t, built, Valid)
+#ifdef OUTPUT_STRUCT
+	if (built == 0) important = 0;
+#endif
+	STRUCT_ELEMENT(uint8_t, Regular Stair)
+	STRUCT_ELEMENT(uint16_t, Left Position)
+	STRUCT_ELEMENT(uint8_t, Base Floor)
+	UNKNOWN_DATA(uint8_t, 5)
+END_STRUCT(stair)
+
 BEGIN_STRUCT(file)
 	STRUCT_ELEMENT(uint16_t, Level)
 	STRUCT_ELEMENT(int32_t, Current Balance)
@@ -65,4 +76,13 @@ BEGIN_STRUCT(file)
 	NAMED_STRUCT_ELEMENT(uint32_t, peopleCount, Number of People)
 	STRUCT_ELEMENT_STRUCT_ARRAY(person, peopleCount, Person)
 	STRUCT_ELEMENT_STRUCT_ARRAY(retail, 512, Retail)
+	UNKNOWN_DATA(uint8_t, 4744) /* Elevators are somewhere in here */
+	STRUCT_ELEMENT_ARRAY(uint32_t, 10, Tenant Population)
+	STRUCT_ELEMENT(uint32_t, Tower Population)
+	STRUCT_ELEMENT_ARRAY(uint32_t, 10, Tenant Income)
+	STRUCT_ELEMENT(uint32_t, Tower Income)
+	STRUCT_ELEMENT_ARRAY(uint32_t, 10, Tenant Maintenance)
+	STRUCT_ELEMENT(uint32_t, Tower Maintenance)
+	UNKNOWN_DATA(uint8_t, 1102)
+	STRUCT_ELEMENT_STRUCT_ARRAY(stair, 64, Stair)
 END_STRUCT(file)
