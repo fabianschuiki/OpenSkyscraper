@@ -67,18 +67,48 @@ int main(int argc, char **argv) {
 	fclose(out);
 }
 
+const char *printTenantType(signed char type) {
+	static const char *types[] = {"Floor", "__TYPE_1__", "__TYPE_2__",
+		"Single Room", "Twin Room", "Hotel Suite", "Restaurant", "Office",
+		"__TYPE_8__", "Condo", "Retail", "Parking Space", "Fast Food",
+		"Medical Center", "Security", "Housekeeping", "__TYPE_16__", "SECOM",
+		"Movie_18", "Movie_19", "Recycling_20", "Recycling_21", "__TYPE_22__",
+		"__TYPE_23__", "Lobby", "__TYPE_25__", "__TYPE_26__", "__TYPE_27__",
+		"__TYPE_28__", "Party Hall_29", "Party Hall_30", "Metro_31", "Metro_32",
+		"Metro_33", "Movie_34", "Movie_35", "Cathedral_36", "Cathedral_37",
+		"Cathedral_38", "Cathedral_39", "Cathedral_40", "__TYPE_41__",
+		"structures", "__TYPE_43__", "__TYPE_44__", "Parking Ramp",
+		"__TYPE_46__", "__TYPE_47__", "__TYPE_48__"};
+	static char buf[128];
+	unsigned char rawType = type < 0 ? -type : type;
+	if (rawType >= sizeof(types)/sizeof(types[0]))
+		sprintf(buf, "__TYPE_%hhd__", type);
+	else
+		sprintf(buf, "%s%s", types[rawType], type < 0 ? " (construction)" : "");
+	return buf;
+}
+
 #define BEGIN_STRUCT(name) \
 void read##name(FILE *in, FILE *out, int space, int important) { \
 	void *buffer = malloc(100); \
 	size_t curSize = 100;
-#define STRUCT_ELEMENT(type, str) \
-	if (sizeof(type) > curSize) { \
-		buffer = realloc(buffer, sizeof(type)); \
-		curSize = sizeof(type); \
+#define ENSURE_SPACE(size) \
+	do { \
+	if (size > curSize) { \
+		buffer = realloc(buffer, size); \
+		curSize = size; \
 	} \
+	} while (0)
+#define STRUCT_ELEMENT(type, str) \
+	ENSURE_SPACE(sizeof(type)); \
 	fread(buffer, sizeof(type), 1, in); \
 	if (important) \
 		fprintf(out, "%*s" #str ": %d\n", space, "", *(type*)(buffer));
+#define STRUCT_SPECIAL_ELEMENT(type, str, print) \
+	ENSURE_SPACE(sizeof(type)); \
+	fread(buffer, sizeof(type), 1, in); \
+	if (important) \
+		fprintf(out, "%*s" #str ": %s\n", space, "", print(*(type*)buffer));
 #define UNKNOWN_DATA(type, size) \
 	if (important && dumpUnknown) {\
 		fprintf(out, "%*sUnknown data:\n", space, ""); \
