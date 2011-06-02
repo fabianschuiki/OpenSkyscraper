@@ -20,27 +20,23 @@ namespace OSS {
 	public:
 		//Constructs a pointer to NULL.
 		Pointer() {
-			assert((unsigned long)this > 0x1000000);
 			obj = NULL;
 		}
 		
 		//Constructs a pointer with a given pointer value.
 		Pointer(T* o) {
-			assert((unsigned long)this > 0x1000000);
 			obj = NULL;
 			*this = o;
 		}
 		
 		//Constructs a pointer from another Pointer instance.
 		Pointer(const Pointer<T>& p) {
-			assert((unsigned long)this > 0x1000000);
 			obj = NULL;
 			*this = p;
 		}
 		
 		//Destructs the pointer, releasing the object if there is one.
 		~Pointer() {
-			assert((unsigned long)this > 0x1000000);
 			if (obj) obj->release();
 		}
 		
