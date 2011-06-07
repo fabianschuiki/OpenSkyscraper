@@ -560,7 +560,7 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	report.validForTransport = (!report.unfulfilledAttributes &&
 								/*report.adjacentCellsValid &&*/
 								analysis.transport == 0 &&
-								report.additionalFacilityCellsRequired == 0);
+								report.additionalFloorCellsRequired == 0);
 	
 	//Check the overall validity of the location based on the descriptor's category
 	report.valid = false;
