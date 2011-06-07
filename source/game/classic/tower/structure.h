@@ -45,6 +45,7 @@ namespace OSS {
 				bool operator != (const FloorRange & fr) {
 					return (minX != fr.minX || maxX != fr.maxX);
 				}
+				int length() { return abs(maxX - minX); }
 			};
 			
 		private:
@@ -159,6 +160,7 @@ namespace OSS {
 				
 				ItemSet collidesWith;
 				unsigned int unfulfilledAttributes;
+				vector<recti> additionalAdjacentFloorCellRects;
 				
 				bool cellsAboveValid;
 				bool cellsBelowValid;

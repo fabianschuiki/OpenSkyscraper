@@ -501,6 +501,44 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 		case kTransportCategory:	report.valid = report.validForTransport; break;
 	}
 	
+	//For each floor of the item, check whether there is something else on this floor that we need
+	//to connect to using empty floor cells.
+	OSSObjectLog << "--- starting analysis ---" << std::endl;
+	int adjacentFloorArea = 0;
+	for (int floor = rect.minY(); floor < rect.maxY(); floor++) {
+		OSSObjectLog << "checking floor " << floor << std::endl;
+		
+		//Fetch the local floor range.
+		FloorRange range = getFloorRange(floor);
+		
+		//If there is nothing on this floor, skip ahead.
+		if (!range.length())
+			continue;
+		
+		//Find the rect that lies between the item rect and the floor range.
+		recti gap(0, floor, 0, 1);
+		if (range.maxX <= rect.minX()) {
+			gap.origin.x = range.maxX;
+			gap.size.x = rect.minX() - gap.origin.x;
+		}
+		if (range.minX >= rect.maxX()) {
+			gap.origin.x = rect.maxX();
+			gap.size.x = range.minX - gap.origin.x;
+		}
+		
+		//If the gap has an area > 0, add it to the additional adjacent floor cells mask.
+		if (gap.area()) {
+			adjacentFloorArea += gap.area();
+			report.additionalAdjacentFloorCellRects.push_back(gap);
+		}
+		
+		OSSObjectLog << "range [" << range.minX << ", " << range.maxX << "], gap " << gap.description() << std::endl;
+	}
+	OSSObjectLog << "additional floor area " << adjacentFloorArea << std::endl;
+	
+	//Add the adjacent floor cells to the overall additional floor cell count.
+	report.additionalFloorCellsRequired += adjacentFloorArea;
+	
 	return report;
 }
 
@@ -668,6 +706,20 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 	Item * item = Item::make(tower, descriptor, actualRect);
 	addItem(item);
 	
+	//Fill the gaps to existing floors.
+	vector<recti> cellRects = report.additionalAdjacentFloorCellRects;
+	for (vector<recti>::iterator it = cellRects.begin(); it != cellRects.end(); it++) {
+		OSSObjectLog << "building floor in " << (*it).description() << std::endl;
+		
+		//Create the required cells.
+		CellSet cells = getCells(*it, true);
+		
+		//Iterate through the cells and set the facility category item to NULL which represents an
+		//empty floor.
+		for (CellSet::iterator c = cells.begin(); c != cells.end(); c++)
+			(*c)->items[kFacilityCategory] = NULL;
+	}
+	
 	//Play the construction sound. Cadung-cadoush ^^.
 	Audio::shared()->play(isFlexible ? flexibleConstructionSound : constructionSound);
 	
@@ -744,6 +796,16 @@ void TowerStructure::draw(rectd dirtyRect)
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
 		if ((*it)->getCategory() == kTransportCategory)
 			(*it)->draw(dirtyRect);
+	
+	//Draw empty floors.
+	TexturedQuad quad;
+	quad.color = (color4d){1, 0, 0, 1};
+	CellSet cells = getCells(dirtyCells);
+	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++) {
+		if ((*it)->items[kFacilityCategory]) continue;
+		quad.rect = cellToWorld(recti((*it)->location, int2(1, 1)));
+		quad.draw();
+	}
 }
 
 
