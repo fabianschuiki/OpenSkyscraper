@@ -109,6 +109,18 @@ namespace OSS {
 			
 			
 			/**
+			 * Empty Floors
+			 *
+			 * Facility which accumulates adjacent empty floor cells into bigger rectangles that are
+			 * easier to send off to the graphics card.
+			 */
+		private:
+			map<int, vector<recti> > emptyFloorRects;
+			
+			void recalculateEmptyFloorRectsOnFloor(int floor);
+			
+			
+			/**
 			 * Items
 			 */
 		public:
@@ -219,6 +231,7 @@ namespace OSS {
 			 */
 		public:
 			virtual void draw(rectd dirtyRect);
+			void drawEmptyFloors(recti dirtyCells);
 			
 			
 			/**

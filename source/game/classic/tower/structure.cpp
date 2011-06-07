@@ -264,6 +264,10 @@ void TowerStructure::assignCellsCoveredByItem(Item * item)
 		assert(*slot == NULL && "occupied by another item. check before adding.");
 		*slot = item;
 	}
+	
+	//Update the empty floor cells.
+	for (int i = item->getMinFloor(); i <= item->getMaxFloor(); i++)
+		recalculateEmptyFloorRectsOnFloor(i);
 }
 
 void TowerStructure::unassignCellsCoveredByItem(Item * item)
@@ -279,6 +283,68 @@ void TowerStructure::unassignCellsCoveredByItem(Item * item)
 		assert(*slot == item && "not all cells covered by the item are assigned to it!");
 		*slot = NULL;
 	}
+	
+	//Update the empty floor cells.
+	for (int i = item->getMinFloor(); i <= item->getMaxFloor(); i++)
+		recalculateEmptyFloorRectsOnFloor(i);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
+#pragma mark Empty Floors
+//----------------------------------------------------------------------------------------------------
+
+void TowerStructure::recalculateEmptyFloorRectsOnFloor(int floor)
+{
+	OSSObjectLog << "on " << floor << std::endl;
+	vector<recti> rects;
+	
+	//Iterate through all cells on this floor and find adjacent empty floor cells.
+	FloorRange range = getFloorRange(floor);
+	recti rect;
+	
+	for (int i = range.minX; i < range.maxX; i++) {
+		
+		//Fetch this cell, skipping if it is invalid.
+		Cell * cell = getCell(int2(i, floor), false);
+		if (!cell)
+			continue;
+		
+		//If the rect is not of valid width, keep moving it along with the iteration.
+		if (!rect.size.x)
+			rect.origin.x = i;
+		
+		//If the cell is an empty floor, adjust the current rect to cover it.
+		if (!cell->items[kFacilityCategory]) {
+			rect.origin.y = floor;
+			rect.size.y = 1;
+			rect.size.x = (i + 1 - rect.origin.x);
+		}
+		
+		//Otherwise check whether the accumulated rect was valid, in which case we add it to the
+		//list.
+		else if (rect.size.x) {
+			rects.push_back(rect);
+			
+			//Reset the rect.
+			rect.size.x = 0;
+		}
+	}
+	
+	//If there is some valid rect left in the accumulator, add it to the list too.
+	if (rect.size.x)
+		rects.push_back(rect);
+	
+	//Dump the content of the rects array.
+	for (int i = 0; i < rects.size(); i++)
+		OSSObjectLog << " - " << rects[i].description() << std::endl;
+	
+	//Replace this floor's rects.
+	emptyFloorRects[floor] = rects;
 }
 
 
@@ -449,8 +515,10 @@ TowerStructure::Report TowerStructure::getReport(recti rect, ItemDescriptor * de
 	//Check if the items above/below are valid
 	recti rectAbove(rect.origin.x, rect.maxY(), rect.size.x, 1);
 	recti rectBelow(rect.origin.x, rect.minY() - 1, rect.size.x, 1);
-	report.cellsAboveValid = (analyseCells(rectAbove).facility == rectAbove.size.x);
-	report.cellsBelowValid = (analyseCells(rectBelow).facility == rectBelow.size.x);
+	CellAnalysis analysisAbove = analyseCells(rectAbove);
+	CellAnalysis analysisBelow = analyseCells(rectBelow);
+	report.cellsAboveValid = (analysisAbove.facility + analysisAbove.floor == rectAbove.size.x);
+	report.cellsBelowValid = (analysisBelow.facility + analysisBelow.floor == rectBelow.size.x);
 	
 	//Decide whether the adjacent cells (above/below) are valid for the given rect
 	if (rect.minY() > 0)
@@ -690,7 +758,7 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 			
 			//Assert that the item has the same type than us, since that must be the result of finding
 			//the actual rect.
-//Commented line below, mark this because needs future fixing. It caused a crash when building a floor
+			//Commented line below, mark this because needs future fixing. It caused a crash when building a floor
 			//assert((*it)->getType() == descriptor->type);
 			
 			//Find the union rect between the collison item and the actual rect.
@@ -701,15 +769,9 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 		}
 	}
 	
-	
-	//Now we have to actually build the item. Pretty straightforward: Create the item and add it.
-	Item * item = Item::make(tower, descriptor, actualRect);
-	addItem(item);
-	
 	//Fill the gaps to existing floors.
 	vector<recti> cellRects = report.additionalAdjacentFloorCellRects;
 	for (vector<recti>::iterator it = cellRects.begin(); it != cellRects.end(); it++) {
-		OSSObjectLog << "building floor in " << (*it).description() << std::endl;
 		
 		//Create the required cells.
 		CellSet cells = getCells(*it, true);
@@ -719,6 +781,11 @@ TowerStructure::ConstructionResult TowerStructure::constructItem(ItemDescriptor 
 		for (CellSet::iterator c = cells.begin(); c != cells.end(); c++)
 			(*c)->items[kFacilityCategory] = NULL;
 	}
+	
+	
+	//Now we have to actually build the item. Pretty straightforward: Create the item and add it.
+	Item * item = Item::make(tower, descriptor, actualRect);
+	addItem(item);
 	
 	//Play the construction sound. Cadung-cadoush ^^.
 	Audio::shared()->play(isFlexible ? flexibleConstructionSound : constructionSound);
@@ -786,6 +853,9 @@ void TowerStructure::draw(rectd dirtyRect)
 	//Now we can ask for the items in that rect.
 	ItemSet items = getItems(dirtyCells);
 	
+	//Draw the empty floors.
+	drawEmptyFloors(dirtyCells);
+	
 	//In the first pass we only draw the facility items. We have to do the facilities and transports
 	//in two passes since we don't want any items to be drawn ontop of transportation.
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
@@ -796,15 +866,42 @@ void TowerStructure::draw(rectd dirtyRect)
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++)
 		if ((*it)->getCategory() == kTransportCategory)
 			(*it)->draw(dirtyRect);
+}
+
+void TowerStructure::drawEmptyFloors(recti dirtyCells)
+{
+	//Assemble floor quad.
+	TexturedQuad floorQuad;
+	floorQuad.color = (color4d){0.3, 0.3, 0.3, 1};
 	
-	//Draw empty floors.
-	TexturedQuad quad;
-	quad.color = (color4d){1, 0, 0, 1};
-	CellSet cells = getCells(dirtyCells);
-	for (CellSet::iterator it = cells.begin(); it != cells.end(); it++) {
-		if ((*it)->items[kFacilityCategory]) continue;
-		quad.rect = cellToWorld(recti((*it)->location, int2(1, 1)));
-		quad.draw();
+	//Assemble the ceiling quad.
+	TexturedQuad ceilingQuad;
+	ceilingQuad.texture = Texture::named("ceiling.png");
+	
+	//Draw the empty floors rects.
+	for (int floor = dirtyCells.minY(); floor < dirtyCells.maxY(); floor++) {
+		
+		//First fetch the empty floor rects on this floor,
+		const vector<recti> & rects = emptyFloorRects[floor];
+		
+		//Iterate through them and draw each.
+		for (vector<recti>::const_iterator it = rects.begin(); it != rects.end(); it++) {
+			
+			//Skip rects out of bounds.
+			if (!dirtyCells.intersectsRect(*it))
+				continue;
+			
+			//Adjust the quad rectangles.
+			floorQuad.rect = cellToWorld(*it);
+			floorQuad.rect.size.y -= ceilingHeight;
+			ceilingQuad.rect = floorQuad.rect;
+			ceilingQuad.rect.origin.y = floorQuad.rect.maxY();
+			ceilingQuad.rect.size.y = ceilingHeight;
+			
+			//Draw the rectangles.
+			floorQuad.draw();
+			ceilingQuad.draw();
+		}
 	}
 }
 
