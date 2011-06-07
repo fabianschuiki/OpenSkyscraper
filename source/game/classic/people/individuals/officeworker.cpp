@@ -23,6 +23,36 @@ OfficeWorker::OfficeWorker(Tower * tower, OfficeItem * office) : Person(tower), 
 
 //----------------------------------------------------------------------------------------------------
 #pragma mark -
+#pragma mark Animation
+//----------------------------------------------------------------------------------------------------
+
+void OfficeWorker::updateAnimation()
+{
+	Person::updateAnimation();
+	if (!shouldAnimate())
+		return;
+	
+	//Inititalize the animation sprite if not done so yet.
+	if (!animationSprite) {
+		animationSprite = new Sprite;
+		
+		//Load the texture and set the slice size.
+		animationSprite->texture = Texture::named("simtower/facilities/office/workers");
+		animationSprite->rect = rectd(0, 0, 16, 24);
+	}
+}
+
+bool OfficeWorker::shouldAnimate()
+{
+	return isAt(office);
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------
+#pragma mark -
 #pragma mark Simulation
 //----------------------------------------------------------------------------------------------------
 

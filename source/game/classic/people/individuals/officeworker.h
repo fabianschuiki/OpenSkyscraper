@@ -20,6 +20,13 @@ namespace OSS {
 			virtual string getTypeName() const { return "office/worker"; }
 			
 			/**
+			 * Animation
+			 */
+		public:
+			virtual void updateAnimation();
+			virtual bool shouldAnimate();
+			
+			/**
 			 * Simulation
 			 */
 		private:
