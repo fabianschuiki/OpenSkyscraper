@@ -67,6 +67,9 @@ namespace OSS {
 			recti getFloorRect(int floor);
 			rectd getWorldFloorRect(int floor);
 			
+			recti getEnvironmentRect();
+			rectd getWorldEnvironmentRect();
+			
 			
 			/**
 			 * Cells

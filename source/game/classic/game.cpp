@@ -41,6 +41,15 @@ const double2 & GameScene::getPOI()
 void GameScene::setPOI(double2 p)
 {
 	if (POI != p) {
+		
+		//Make sure the visible frame does not exceed the tower's bounds.
+		rectd bounds = tower->structure->getWorldEnvironmentRect();
+		p.x = std::max<double>(bounds.minX() + visibleRect.size.x / 2, p.x);
+		p.x = std::min<double>(bounds.maxX() - visibleRect.size.x / 2, p.x);
+		p.y = std::max<double>(bounds.minY() + visibleRect.size.y / 2, p.y);
+		p.y = std::min<double>(bounds.maxY() - visibleRect.size.y / 2, p.y);
+		
+		//Set the point.
 		POI = p;
 		updateVisibleRectIfNeeded.setNeeded();
 	}

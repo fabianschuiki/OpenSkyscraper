@@ -282,8 +282,8 @@ void TowerBackground::draw(rectd dirtyRect)
 void TowerBackground::drawSky(rectd dirtyRect)
 {
 	//Find the lowest and hightest sky indices to draw
-	unsigned int lowest = clampi(floor(dirtyRect.minY() / 360), 0, 9);
-	unsigned int highest = clampi(ceil(dirtyRect.maxY() / 360), 0, 9);
+	unsigned int lowest = clampi(floor(dirtyRect.minY() / 360), 0, /*9*/10);
+	unsigned int highest = clampi(ceil(dirtyRect.maxY() / 360), 0, /*9*/10);
 	
 	//Create the interpolated texture quad and find the basic rectangle of one sky slice
 	InterpolatedTextureQuad quad;
@@ -292,9 +292,10 @@ void TowerBackground::drawSky(rectd dirtyRect)
 	
 	//Draw the slices
 	for (unsigned int y = lowest; y <= highest; y++) {
+		unsigned int slice = std::min<unsigned int>(y, 9);
 		quad.rect.origin.y = y * quad.rect.size.y;
-		quad.state0.texture = currentSkyTextures[y];
-		quad.state1.texture = targetSkyTextures[y];
+		quad.state0.texture = currentSkyTextures[slice];
+		quad.state1.texture = targetSkyTextures[slice];
 		quad.interpolation = getSkyInterpolation();
 		quad.autogenerateTextureRect(true, false);
 		quad.draw();

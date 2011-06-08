@@ -161,6 +161,16 @@ rectd TowerStructure::getWorldFloorRect(int floor)
 	return cellToWorld(getFloorRect(floor));
 }
 
+recti TowerStructure::getEnvironmentRect()
+{
+	return recti(-200, -10, 400, 100 + 10 + 5);
+}
+
+rectd TowerStructure::getWorldEnvironmentRect()
+{
+	return cellToWorld(getEnvironmentRect());
+}
+
 
 
 
