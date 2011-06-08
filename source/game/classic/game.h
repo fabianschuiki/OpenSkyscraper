@@ -38,6 +38,7 @@ namespace OSS {
 		private:
 			double2 POI;
 			rectd visibleRect;
+			rectd animatedVisibleRect;
 			
 		public:
 			const double2 & getPOI();

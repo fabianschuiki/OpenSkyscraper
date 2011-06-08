@@ -59,7 +59,7 @@ void GameScene::setPOI(double2 p)
 
 const rectd & GameScene::getVisibleRect()
 {
-	return visibleRect;
+	return animatedVisibleRect;
 }
 
 void GameScene::setVisibleRect(rectd rect)
@@ -136,6 +136,35 @@ rectd GameScene::worldToWindow(rectd v)
 
 void GameScene::advance(double dt)
 {
+	//If the size of the visible rect and its animated counterparts disagree, copy jump to the
+	//targeted state immediately.
+	if (visibleRect.size != animatedVisibleRect.size)
+		animatedVisibleRect = visibleRect;
+	
+	//Otherwise, if the rects' positions disagree, animate.
+	else if (visibleRect.origin != animatedVisibleRect.origin) {
+		
+		//Calculate the offset between the two rect origins.
+		double2 offset = (visibleRect.origin - animatedVisibleRect.origin);
+		
+		//Calculate an exponential decay for the position if they disagree by too much. The snap
+		//distance constant is the proximity below which the rects will just snap into place. This
+		//yields a crisp termination of the animation and ensures that the animated rect is set
+		//to the target rect using the = operator (float imprecision, where 5.0 != 5.0).
+		const double snapDistance = 2;
+		if (std::max<double>(fabs(offset.x), fabs(offset.y)) > snapDistance) {
+			const double speed = 10;
+			offset *= std::min<double>(1.0, dt * speed);
+			animatedVisibleRect.origin += offset;
+		}
+		
+		//If we're supposed to snap, just copy the rects.
+		else {
+			animatedVisibleRect = visibleRect;
+		}
+
+	}
+	
 	//Advance the GUI
 	ui->advance(dt);
 	
@@ -188,11 +217,11 @@ void GameScene::draw(rectd dirtyRect)
 	glLoadIdentity();
 	
 	//Translate modelview matrix so that the POI is centered on screen
-	double2 origin = getVisibleRect().origin;
+	double2 origin = animatedVisibleRect.origin;
 	glTranslated(-origin.x, -origin.y, 0);
 	
 	//Draw the tower
-	tower->draw(visibleRect);
+	tower->draw(animatedVisibleRect);
 	
 	//Draw a red cross at the origin of the world
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
