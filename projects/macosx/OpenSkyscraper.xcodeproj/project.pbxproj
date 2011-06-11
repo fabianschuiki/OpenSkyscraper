@@ -364,6 +364,7 @@
 		1058C7A2FEA54F0111CA2CBB /* Third-party */ = {
 			isa = PBXGroup;
 			children = (
+				1F106F951368094900E50671 /* libmspack.a */,
 				1F8BBC9E12CAA4D700892C16 /* libIL.a */,
 				1F8BBCA012CAA4D700892C16 /* libpng.a */,
 				1F0D409011FEF2EB00C6D787 /* SDL.framework */,
@@ -836,7 +837,6 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks and Libraries */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				1F106F951368094900E50671 /* libmspack.a */,
 			);
 			name = OpenSkyscraper;
 			sourceTree = "<group>";

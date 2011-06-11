@@ -86,6 +86,12 @@ set(source
 	main.cpp
 )
 
+# Add Mac OS X specific stuff.
+if(CMAKE_HOST_APPLE)
+	list(APPEND source ../projects/macosx/SDLMain.m)
+	list(APPEND source ../projects/macosx/application.mm)
+endif(CMAKE_HOST_APPLE)
+
 # Add the PkgConfig package to find packages that CMake doesn't.
 find_package(PkgConfig)
 
@@ -103,6 +109,7 @@ find_package(SDL)
 find_package(OpenGL)
 find_package(OpenAL)
 find_package(DevIL)
+find_package(png)
 
 # setup the executable
 add_executable(OpenSkyscraper ${source})
@@ -111,5 +118,6 @@ target_link_libraries(OpenSkyscraper
 	${OPENGL_LIBRARY}
 	${OPENAL_LIBRARY}
 	${IL_LIBRARIES}
+	${PNG_LIBRARIES}
 	${MSPACK_LIBRARIES}
 )
