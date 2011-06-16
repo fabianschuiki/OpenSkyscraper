@@ -28,6 +28,28 @@ layoutIfNeeded(this, &ToolsWindow::layout, &updateIfNeeded)
 		addSubview(button);
 		groupButtons[(ItemGroup)i] = button;
 	}
+	
+	//Initialize the tool buttons.
+	bulldozerButton = new Button();
+	bulldozerButton->normalTexture = Texture::named("simtower/ui/toolbox/tools/normal");
+	bulldozerButton->normalTextureRect = rectd(0, 0, 63 / 64.0 / 3, 1);
+	bulldozerButton->setFrameSize(double2(21, 21));
+	
+	fingerButton = new Button();
+	fingerButton->normalTexture = bulldozerButton->normalTexture;
+	fingerButton->normalTextureRect = bulldozerButton->normalTextureRect;
+	fingerButton->normalTextureRect.origin.x += fingerButton->normalTextureRect.size.x;
+	fingerButton->setFrameSize(double2(21, 21));
+	
+	inspectorButton = new Button();
+	inspectorButton->normalTexture = bulldozerButton->normalTexture;
+	inspectorButton->normalTextureRect = bulldozerButton->normalTextureRect;
+	inspectorButton->normalTextureRect.origin.x += 2 *inspectorButton->normalTextureRect.size.x;
+	inspectorButton->setFrameSize(double2(21, 21));
+	
+	addSubview(bulldozerButton);
+	addSubview(fingerButton);
+	addSubview(inspectorButton);
 }
 
 Tower * ToolsWindow::getTower()
@@ -82,6 +104,11 @@ void ToolsWindow::updateButtons()
 		if (groupEquals)
 			it->second->setSelectedItem(desc->type);
 	}
+	
+	//Decide whether one of the main tools should be pressed.
+	//bulldozerButton.pressed = ui->tools->bulldozerTool->isSelected();
+	//fingerButton.pressed    = ui->tools->fingerTool->isSelected();
+	//inspectorButton.pressed = ui->tools->inspectorTool->isSelected();
 }
 
 void ToolsWindow::layout()
@@ -98,7 +125,7 @@ void ToolsWindow::layout()
 	for (GroupButtonMap::iterator it = groupButtons.begin(); it != groupButtons.end(); it++) {
 		
 		//Calculate the button position
-		double2 position((buttonIndex % 2) * 32, (buttonIndex / 2) * -32);
+		double2 position((buttonIndex % 2) * 32, (buttonIndex / 2 + 1) * -32);
 		
 		//Position the group button
 		it->second->setFrameOrigin(offset + position);
@@ -109,11 +136,16 @@ void ToolsWindow::layout()
 	}
 	
 	//Position bulldozer etc. right above the last button. Maybe use some union rect to do that.
+	bulldozerButton->setFrameOrigin(offset + int2(0 * 21 + 1, 0));
+	fingerButton->setFrameOrigin   (offset + int2(1 * 21 + 1, 0));
+	inspectorButton->setFrameOrigin(offset + int2(2 * 21 + 1, 0));
+	rect.size.y += 21;
 	
 	//Position play/pause controls right above the previous. If its location changed, update the
 	//window's height to cover the entire contents and nothing more.
+	rect.size.y += 32;
 	
-	//Set the window's size
+	//Set the window's size.
 	setFrameSize(rect.size);
 }
 

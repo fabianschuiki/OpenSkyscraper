@@ -11,13 +11,30 @@ namespace OSS {
 			Button();
 			
 			bool pressed;
+			bool disabled;
 			
 			Pointer<Texture> normalTexture;
 			Pointer<Texture> pressedTexture;
+			Pointer<Texture> disabledTexture;
 			rectd normalTextureRect;
 			rectd pressedTextureRect;
+			rectd disabledTextureRect;
 			
 			virtual void draw(rectd dirtyRect);
+			
+			
+			/**
+			 * Events
+			 */
+		public:
+			virtual bool eventMouseDown(MouseButtonEvent * event);
+			
+			
+			/**
+			 * Actions
+			 */
+		public:
+			sigc::signal<void> onClicked;
 		};
 	}
 }

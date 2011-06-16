@@ -7,6 +7,7 @@
 namespace OSS {
 	namespace Classic {	
 		class ToolsGroupButton;
+		class Button;
 		
 		class ToolsWindow : public Window, public Responder {
 			
@@ -28,6 +29,10 @@ namespace OSS {
 		private:
 			typedef map< ItemGroup, Pointer<ToolsGroupButton> > GroupButtonMap;
 			GroupButtonMap groupButtons;
+			
+			Pointer<Button> bulldozerButton;
+			Pointer<Button> fingerButton;
+			Pointer<Button> inspectorButton;
 			
 			
 			/**
@@ -60,6 +65,7 @@ namespace OSS {
 
 
 #include "groupbutton.h"
+#include "../button.h"
 
 
 #endif

@@ -83,6 +83,7 @@
 		1FC68E7912E228AC001748F4 /* occupiable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335F12DF7FE40042FFBA /* occupiable.cpp */; };
 		1FC68EFD12E25555001748F4 /* hotel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335712DF7FE40042FFBA /* hotel.cpp */; };
 		1FD010C211FA3E330062C093 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD010C111FA3E330062C093 /* OpenGL.framework */; };
+		1FD0B62513AA6174007EA9C6 /* libsigc-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD0B62413AA6174007EA9C6 /* libsigc-2.0.dylib */; };
 		1FD466BD12E30BF700085164 /* person.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32338312DF7FE40042FFBA /* person.cpp */; };
 		1FD466F012E3134B00085164 /* doubleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335512DF7FE40042FFBA /* doubleroom.cpp */; };
 		1FD466F112E3134E00085164 /* singleroom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F32335B12DF7FE40042FFBA /* singleroom.cpp */; };
@@ -317,6 +318,7 @@
 		1FC68BFE12E1BA77001748F4 /* window.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
 		1FC68BFF12E1BA77001748F4 /* window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = window.cpp; sourceTree = "<group>"; };
 		1FD010C111FA3E330062C093 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		1FD0B62413AA6174007EA9C6 /* libsigc-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libsigc-2.0.dylib"; path = "usr/local/lib/libsigc-2.0.dylib"; sourceTree = SDKROOT; };
 		1FF3DA0412DD118B00BC33C8 /* alc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alc.h; sourceTree = "<group>"; };
 		1FF3DB9E12DD362400BC33C8 /* application.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = application.mm; sourceTree = "<group>"; };
 		1FFFCBC911FCD629005D8446 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -341,6 +343,7 @@
 				1F8BBCA112CAA4D700892C16 /* libpng.a in Frameworks */,
 				1F0247AE12CE00CD0023455F /* libfreetype.a in Frameworks */,
 				1F106F961368094900E50671 /* libmspack.a in Frameworks */,
+				1FD0B62513AA6174007EA9C6 /* libsigc-2.0.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +372,7 @@
 				1F8BBCA012CAA4D700892C16 /* libpng.a */,
 				1F0D409011FEF2EB00C6D787 /* SDL.framework */,
 				1F0247AD12CE00CD0023455F /* libfreetype.a */,
+				1FD0B62413AA6174007EA9C6 /* libsigc-2.0.dylib */,
 			);
 			name = "Third-party";
 			sourceTree = "<group>";
@@ -1049,7 +1053,10 @@
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "OpenSkyscraper-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = (
+					"-I/usr/local/Cellar/libsigc++/2.2.8/include/sigc++-2.0",
+					"-I/usr/local/Cellar/libsigc++/2.2.8/lib/sigc++-2.0/include",
+				);
 				PRODUCT_NAME = OpenSkyscraper;
 			};
 			name = Debug;
@@ -1069,7 +1076,10 @@
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				INFOPLIST_FILE = "OpenSkyscraper-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = (
+					"-I/usr/local/Cellar/libsigc++/2.2.8/include/sigc++-2.0",
+					"-I/usr/local/Cellar/libsigc++/2.2.8/lib/sigc++-2.0/include",
+				);
 				PRODUCT_NAME = OpenSkyscraper;
 			};
 			name = Release;

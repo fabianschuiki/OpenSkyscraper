@@ -3,4 +3,7 @@
 
 #include "../engine/headers.h"
 
+//libsigc++
+#include <sigc++/sigc++.h>
+
 #endif
