@@ -104,6 +104,11 @@ if(NOT MSPACK_FOUND)
 	add_definitions(-DNOMSPACK)
 endif(NOT MSPACK_FOUND)
 
+# libsigc++
+pkg_check_modules(SIGCPP sigc++-2.0)
+include_directories(${SIGCPP_INCLUDE_DIRS})
+link_directories(${SIGCPP_LIBRARY_DIRS})
+
 # other packages
 find_package(SDL)
 find_package(OpenGL)
