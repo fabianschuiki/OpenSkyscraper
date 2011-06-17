@@ -106,8 +106,8 @@ endif(NOT MSPACK_FOUND)
 
 # libsigc++
 pkg_check_modules(SIGCPP sigc++-2.0)
-include_directories(${SIGCPP_INCLUDE_DIRS} /usr/lib/libstdc++-2.0/include /usr/include/libstdc++-2.0)
-link_directories(${SIGCPP_LIBRARY_DIRS} /usr/include)
+include_directories(${SIGCPP_INCLUDE_DIRS})
+link_directories(${SIGCPP_LIBRARY_DIRS})
 
 # other packages
 find_package(SDL)
@@ -119,11 +119,11 @@ find_package(PNG)
 # setup the executable
 add_executable(OpenSkyscraper ${source})
 target_link_libraries(OpenSkyscraper
+	sigc-2.0
 	${SDL_LIBRARY}
 	${OPENGL_LIBRARY}
 	${OPENAL_LIBRARY}
 	${IL_LIBRARIES}
 	${PNG_LIBRARIES}
 	${MSPACK_LIBRARIES}
-	sigc-2.0
 )
