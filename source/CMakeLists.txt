@@ -114,11 +114,12 @@ find_package(SDL)
 find_package(OpenGL)
 find_package(OpenAL)
 find_package(DevIL)
-find_package(png)
+find_package(PNG)
 
 # setup the executable
 add_executable(OpenSkyscraper ${source})
 target_link_libraries(OpenSkyscraper
+	sigc-2.0
 	${SDL_LIBRARY}
 	${OPENGL_LIBRARY}
 	${OPENAL_LIBRARY}
