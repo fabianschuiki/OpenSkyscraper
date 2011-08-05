@@ -9,6 +9,7 @@ include_directories(../macosx/sfml/SFML.framework)
 set(frameworks
 	../macosx/sfml/sfml-system.framework
 	../macosx/sfml/sfml-window.framework
+	../macosx/sfml/sfml-graphics.framework
 )
 set(FRAMEWORKS_DIR ${CMAKE_BINARY_DIR}/OpenSkyscraper.app/Contents/Frameworks)
 install(DIRECTORY ${frameworks} DESTINATION ${FRAMEWORKS_DIR})
@@ -21,5 +22,6 @@ add_executable(
 target_link_libraries(
 	OpenSkyscraper
 	"-F../macosx/sfml/"
-	-framework\ sfml-window
+	"-framework sfml-window"
+	"-framework sfml-graphics"
 )
