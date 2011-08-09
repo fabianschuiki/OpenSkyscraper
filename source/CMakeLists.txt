@@ -119,7 +119,7 @@ find_package(PNG)
 # setup the executable
 add_executable(OpenSkyscraper ${source})
 target_link_libraries(OpenSkyscraper
-	sigc-2.0
+	${SIGCPP_LIBRARIES}
 	${SDL_LIBRARY}
 	${OPENGL_LIBRARY}
 	${OPENAL_LIBRARY}

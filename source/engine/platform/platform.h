@@ -8,7 +8,7 @@
 #endif
 
 // GNU/Linux
-#if defined(linux) || defined(__linux)
+#if defined(linux) || defined(__linux) || defined (__FreeBSD__)
 	#define PLATFORM_LINUX
 	#include "linux.h"
 #endif
