@@ -1,5 +1,6 @@
 # ignore most things in the build folder
 /build/*
+/projects/*
 !/build/resources
 
 # Mac OS X and Xcode stuff
