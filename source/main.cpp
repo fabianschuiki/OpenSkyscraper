@@ -17,6 +17,7 @@ int main()
 	//Load an image to be drawn.
 	sf::Image condo;
 	condo.LoadFromFile("../Resources/condo.png");
+	condo.SetSmooth(false);
 	
 	//Create a sprite that uses the image.
 	sf::Sprite sprite;
