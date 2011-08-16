@@ -3,6 +3,10 @@ project(OpenSkyscraper)
 
 set(sources
 	main.cpp
+	space.cpp
+	spacepartition.cpp
+	spaceslice.cpp
+	sprite.cpp
 )
 
 include_directories(../macosx/sfml/SFML.framework)
