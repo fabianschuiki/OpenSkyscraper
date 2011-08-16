@@ -2,7 +2,6 @@
 #include <iostream>
 #include "space.h"
 #include "spacepartition.h"
-#include "spaceslice.h"
 #include "sprite.h"
 
 
@@ -27,15 +26,48 @@ void Space::removeSprite(Sprite * s)
 }
 
 
-SpaceSlice * Space::makeSlice(int x0, int y0, int x1, int y1)
+void Space::setVisibleRect(const sf::FloatRect & r)
 {
-	SpaceSlice * s = new SpaceSlice(x0, y0, x1, y1);
-	toPartitionCoordinates(x0, y0, x1, y1);
-	for (int x = x0; x <= x1; x++)
-		for (int y = y0; y <= y1; y++)
-			if (partitionGrid.count(x) && partitionGrid[x].count(y))
-				s->partitions.insert(partitionGrid[x][y]);
-	return s;
+	visibleRect = r;
+	
+	//Clear the currently visible partitions.
+	for (std::set<SpacePartition *>::iterator p = visiblePartitions.begin();
+		 p != visiblePartitions.end(); p++)
+		(*p)->visible = false;
+	visiblePartitions.clear();
+	
+	//Find new visible partitions.
+	int minx = r.Left, miny = r.Top, maxx = r.Right, maxy = r.Bottom;
+	toPartitionCoordinates(minx, miny, maxx, maxy);
+	for (int x = minx; x <= maxx; x++) {
+		for (int y = miny; y <= maxy; y++) {
+			if (partitionGrid.count(x) && partitionGrid[x].count(y)) {
+				SpacePartition * p = partitionGrid[x][y];
+				visiblePartitions.insert(p);
+				p->visible = true;
+			}
+		}
+	}
+	
+	//Clear the list of visible sprites.
+	for (std::set<Sprite *>::iterator s = visibleSprites.begin(); s != visibleSprites.end(); s++)
+		(*s)->visible = false;
+	visibleSprites.clear();
+	sortedVisibleSprites.clear();
+	
+	//Build the sorted list of visible sprites.
+	for (std::set<SpacePartition *>::iterator p = visiblePartitions.begin();
+		 p != visiblePartitions.end(); p++) {
+		for (std::set<Sprite *>::iterator s = (*p)->sprites.begin();
+			 s != (*p)->sprites.end(); s++) {
+			insertVisibleSprite(*s);
+		}
+	}
+}
+
+const std::vector<Sprite *> & Space::getSortedVisibleSprites()
+{
+	return sortedVisibleSprites;
 }
 
 
@@ -44,6 +76,29 @@ void Space::draw(sf::RenderTarget & context)
 	//Draw all partitions for debugging purposes.
 	for (std::set<SpacePartition *>::iterator p = partitions.begin(); p != partitions.end(); p++)
 		(*p)->draw(context);
+}
+
+
+void Space::insertVisibleSprite(Sprite * s)
+{
+	if (visibleSprites.count(s)) return;
+	s->visible = true;
+	visibleSprites.insert(s);
+	
+	//Find the right place to insert this sprite through a binary search.
+	int f = 0, l = sortedVisibleSprites.size(), i = 0;
+	while (f < l) {
+		i = (f + l) / 2;
+		std::cout << "   trying " << i << "\n";
+		float z = sortedVisibleSprites[i]->z;
+		if (z < s->z) f = i = i + 1;
+		if (z > s->z) l = i;
+		if (z == s->z) f = l = i;
+	};
+	
+	//Insert the sprite there.
+	std::cout << "inserting " << s << " at " << i << "\n";
+	sortedVisibleSprites.insert(sortedVisibleSprites.begin() + i, s);
 }
 
 

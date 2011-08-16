@@ -11,4 +11,8 @@ class Sprite : public sf::Sprite {
 	
 protected:
 	std::set<SpacePartition *> partitions;
+	bool visible;
+	
+public:
+	double z;
 };

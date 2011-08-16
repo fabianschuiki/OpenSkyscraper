@@ -11,6 +11,7 @@ class SpacePartition {
 	
 protected:
 	std::set<Sprite *> sprites;
+	bool visible;
 	
 public:
 	const int x;

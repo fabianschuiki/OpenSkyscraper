@@ -5,7 +5,6 @@ set(sources
 	main.cpp
 	space.cpp
 	spacepartition.cpp
-	spaceslice.cpp
 	sprite.cpp
 )
 

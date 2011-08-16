@@ -1,7 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "space.h"
-#include "spaceslice.h"
 #include "sprite.h"
 
 int main()
@@ -26,18 +25,23 @@ int main()
 	Sprite sprite;
 	sprite.SetImage(condo);
 	sprite.SetPosition(80, 70);
+	sprite.z = 0;
+	
+	Sprite sprite2;
+	sprite2.SetImage(condo);
+	sprite2.SetPosition(130, 85);
+	sprite2.z = 1;
 	
 	//Create some space partition.
 	Space s;
 	s.addSprite(&sprite);
+	s.addSprite(&sprite2);
 	
 	//Center the view.
 	app.GetDefaultView().SetCenter(0, 0);
 	
-	//Get the space slice.
-	SpaceSlice * slice = NULL;
-	
 	//Run the main loop.
+	bool visibleRectChanged = true;
 	while (app.IsOpened()) {
 		
 		//Process events.
@@ -53,8 +57,7 @@ int main()
 				std::cout << "resized to " << event.Size.Width << " x " << event.Size.Height << "\n";
 				app.GetDefaultView().SetHalfSize(app.GetWidth()/2.0, app.GetHeight()/2.0);
 				app.GetDefaultView().Zoom(std::min<double>(1, std::min<double>(app.GetWidth() / 800.0, app.GetHeight() / 600.0)));
-				if (slice) delete slice;
-				slice = NULL;
+				visibleRectChanged = true;
 			}
 			
 			//Text entered.
@@ -78,16 +81,19 @@ int main()
 					case sf::Key::Up:		app.GetDefaultView().Move(0, -10); break;
 					case sf::Key::Down:		app.GetDefaultView().Move(0,  10); break;
 				}
-				if (slice) delete slice;
-				slice = NULL;
+				visibleRectChanged = true;
 			}
 		}
 		
 		//Update the slice if required.
-		if (!slice) {
-			const sf::FloatRect & rect = app.GetDefaultView().GetRect();
-			slice = s.makeSlice(rect.Left + 200, rect.Top, rect.Right - 200, rect.Bottom);
-			std::cout << "slice contains " << slice->partitions.size() << " partitions\n";
+		if (visibleRectChanged) {
+			sf::FloatRect rect = app.GetDefaultView().GetRect();
+			rect.Left   += 200;
+			rect.Top    += 200;
+			rect.Right  -= 200;
+			rect.Bottom -= 200;
+			s.setVisibleRect(rect);
+			visibleRectChanged = false;
 		}
 		
 		//Clear the screen.
@@ -97,7 +103,10 @@ int main()
 		app.Draw(text);
 		
 		//Draw the sprites.
-		app.Draw(sprite);
+		//app.Draw(sprite);
+		const std::vector<Sprite *> & sprites = s.getSortedVisibleSprites();
+		for (std::vector<Sprite *>::const_iterator sp = sprites.begin(); sp != sprites.end(); sp++)
+			app.Draw(**sp);
 		
 		//Draw other stuff.
 		s.draw(app);
