@@ -1,5 +1,5 @@
 /*
- *  sprite.cpp
+ *  entity.cpp
  *  
  *
  *  Created by Fabian Schuiki on 16.08.11.
@@ -7,5 +7,5 @@
  *
  */
 
-#include "sprite.h"
+#include "entity.h"
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "space.h"
-#include "sprite.h"
+#include "entity.h"
 
 int main()
 {
@@ -21,21 +21,21 @@ int main()
 	condo.LoadFromFile("../Resources/condo.png");
 	condo.SetSmooth(false);
 	
-	//Create a sprite that uses the image.
-	Sprite sprite;
-	sprite.SetImage(condo);
-	sprite.SetPosition(80, 70);
-	sprite.z = 0;
+	//Create a entity that uses the image.
+	Entity entity;
+	entity.SetImage(condo);
+	entity.SetPosition(80, 70);
+	entity.z = 0;
 	
-	Sprite sprite2;
-	sprite2.SetImage(condo);
-	sprite2.SetPosition(130, 85);
-	sprite2.z = 1;
+	Entity entity2;
+	entity2.SetImage(condo);
+	entity2.SetPosition(130, 85);
+	entity2.z = 1;
 	
 	//Create some space partition.
 	Space s;
-	s.addSprite(&sprite);
-	s.addSprite(&sprite2);
+	s.addEntity(&entity);
+	s.addEntity(&entity2);
 	
 	//Center the view.
 	app.GetDefaultView().SetCenter(0, 0);
@@ -73,7 +73,7 @@ int main()
 				text.SetText((std::wstring)text.GetText() + (wchar_t)event.Text.Unicode);
 			}
 			
-			//Sprite movement.
+			//Entity movement.
 			if (event.Type == sf::Event::KeyPressed) {
 				switch (event.Key.Code) {
 					case sf::Key::Left:		app.GetDefaultView().Move(-10, 0); break;
@@ -88,11 +88,9 @@ int main()
 		//Update the slice if required.
 		if (visibleRectChanged) {
 			sf::FloatRect rect = app.GetDefaultView().GetRect();
-			rect.Left   += 200;
-			rect.Top    += 200;
-			rect.Right  -= 200;
-			rect.Bottom -= 200;
-			s.setVisibleRect(rect);
+			rectd r(rect.Left + 200, rect.Top + 200,
+					rect.Right - rect.Left - 400, rect.Bottom - rect.Top - 400);
+			s.setVisibleRect(r);
 			visibleRectChanged = false;
 		}
 		
@@ -102,10 +100,10 @@ int main()
 		//Draw the text.
 		app.Draw(text);
 		
-		//Draw the sprites.
-		//app.Draw(sprite);
-		const std::vector<Sprite *> & sprites = s.getSortedVisibleSprites();
-		for (std::vector<Sprite *>::const_iterator sp = sprites.begin(); sp != sprites.end(); sp++)
+		//Draw the entities.
+		//app.Draw(entity);
+		const std::vector<Entity *> & entities = s.getSortedVisibleEntitys();
+		for (std::vector<Entity *>::const_iterator sp = entities.begin(); sp != entities.end(); sp++)
 			app.Draw(**sp);
 		
 		//Draw other stuff.

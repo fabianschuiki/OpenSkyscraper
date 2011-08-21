@@ -2,7 +2,7 @@
 #include <iostream>
 #include "space.h"
 #include "spacepartition.h"
-#include "sprite.h"
+#include "entity.h"
 
 
 Space::~Space()
@@ -14,19 +14,19 @@ Space::~Space()
 }
 
 
-void Space::addSprite(Sprite * s)
+void Space::addEntity(Entity * s)
 {
-	sprites.insert(s);
-	remapSprite(s);
+	entities.insert(s);
+	remapEntity(s);
 }
 
-void Space::removeSprite(Sprite * s)
+void Space::removeEntity(Entity * s)
 {
-	sprites.erase(s);
+	entities.erase(s);
 }
 
 
-void Space::setVisibleRect(const sf::FloatRect & r)
+void Space::setVisibleRect(const rectd & r)
 {
 	visibleRect = r;
 	
@@ -37,10 +37,10 @@ void Space::setVisibleRect(const sf::FloatRect & r)
 	visiblePartitions.clear();
 	
 	//Find new visible partitions.
-	int minx = r.Left, miny = r.Top, maxx = r.Right, maxy = r.Bottom;
-	toPartitionCoordinates(minx, miny, maxx, maxy);
-	for (int x = minx; x <= maxx; x++) {
-		for (int y = miny; y <= maxy; y++) {
+	int2 min = r.minXminY(), max = r.maxXmaxY();
+	toPartitionCoordinates(min, max);
+	for (int x = min.x; x <= max.x; x++) {
+		for (int y = min.y; y <= max.y; y++) {
 			if (partitionGrid.count(x) && partitionGrid[x].count(y)) {
 				SpacePartition * p = partitionGrid[x][y];
 				visiblePartitions.insert(p);
@@ -49,25 +49,25 @@ void Space::setVisibleRect(const sf::FloatRect & r)
 		}
 	}
 	
-	//Clear the list of visible sprites.
-	for (std::set<Sprite *>::iterator s = visibleSprites.begin(); s != visibleSprites.end(); s++)
+	//Clear the list of visible entities.
+	for (std::set<Entity *>::iterator s = visibleEntitys.begin(); s != visibleEntitys.end(); s++)
 		(*s)->visible = false;
-	visibleSprites.clear();
-	sortedVisibleSprites.clear();
+	visibleEntitys.clear();
+	sortedVisibleEntitys.clear();
 	
-	//Build the sorted list of visible sprites.
+	//Build the sorted list of visible entities.
 	for (std::set<SpacePartition *>::iterator p = visiblePartitions.begin();
 		 p != visiblePartitions.end(); p++) {
-		for (std::set<Sprite *>::iterator s = (*p)->sprites.begin();
-			 s != (*p)->sprites.end(); s++) {
-			insertVisibleSprite(*s);
+		for (std::set<Entity *>::iterator s = (*p)->entities.begin();
+			 s != (*p)->entities.end(); s++) {
+			insertVisibleEntity(*s);
 		}
 	}
 }
 
-const std::vector<Sprite *> & Space::getSortedVisibleSprites()
+const std::vector<Entity *> & Space::getSortedVisibleEntitys()
 {
-	return sortedVisibleSprites;
+	return sortedVisibleEntitys;
 }
 
 
@@ -79,65 +79,63 @@ void Space::draw(sf::RenderTarget & context)
 }
 
 
-void Space::insertVisibleSprite(Sprite * s)
+void Space::insertVisibleEntity(Entity * s)
 {
-	if (visibleSprites.count(s)) return;
+	if (visibleEntitys.count(s)) return;
 	s->visible = true;
-	visibleSprites.insert(s);
+	visibleEntitys.insert(s);
 	
-	//Find the right place to insert this sprite through a binary search.
-	int f = 0, l = sortedVisibleSprites.size(), i = 0;
+	//Find the right place to insert this entity through a binary search.
+	int f = 0, l = sortedVisibleEntitys.size(), i = 0;
 	while (f < l) {
 		i = (f + l) / 2;
 		std::cout << "   trying " << i << "\n";
-		float z = sortedVisibleSprites[i]->z;
+		float z = sortedVisibleEntitys[i]->z;
 		if (z < s->z) f = i = i + 1;
 		if (z > s->z) l = i;
 		if (z == s->z) f = l = i;
 	};
 	
-	//Insert the sprite there.
+	//Insert the entity there.
 	std::cout << "inserting " << s << " at " << i << "\n";
-	sortedVisibleSprites.insert(sortedVisibleSprites.begin() + i, s);
+	sortedVisibleEntitys.insert(sortedVisibleEntitys.begin() + i, s);
 }
 
 
-void Space::toPartitionCoordinates(int & minx, int & miny, int & maxx, int & maxy)
+void Space::toPartitionCoordinates(int2 & min, int2 & max)
 {
-	minx = round((double)minx / SpacePartition::w);
-	miny = round((double)miny / SpacePartition::h);
-	maxx = round((double)maxx / SpacePartition::w);
-	maxy = round((double)maxy / SpacePartition::h);
+	min.x = round((double)min.x / SpacePartition::size.x);
+	min.y = round((double)min.y / SpacePartition::size.y);
+	max.x = round((double)max.x / SpacePartition::size.x);
+	max.y = round((double)max.y / SpacePartition::size.y);
 }
 
 
-void Space::remapSprite(Sprite * s)
+void Space::remapEntity(Entity * s)
 {
-	//Find the outer dimensions of the sprite.
+	//Find the outer dimensions of the entity.
 	const sf::Vector2f & vp = s->GetPosition();
 	const sf::Vector2f & vs = s->GetSize();
-	int minx = vp.x;
-	int miny = vp.y;
-	int maxx = minx + vs.x;
-	int maxy = miny + vs.y;
-	std::cout << "(" << minx << " -> " << maxx << ") x (" << miny << " -> " << maxy << ") => ";
+	int2 min(vp.x, vp.y);
+	int2 max(min.x + vs.x, min.y + vs.y);
+	std::cout << "(" << min.x << " -> " << max.x << ") x (" << min.y << " -> " << max.y << ") => ";
 	
 	//Fit the coordinates to space partition segments.
-	toPartitionCoordinates(minx, miny, maxx, maxy);
-	std::cout << "(" << minx << " -> " << maxx << ") x (" << miny << " -> " << maxy << ")\n";
+	toPartitionCoordinates(min, max);
+	std::cout << "(" << min.x << " -> " << max.x << ") x (" << min.y << " -> " << max.y << ")\n";
 	
-	//Unlink the sprite from its existing partitions.
+	//Unlink the entity from its existing partitions.
 	for (std::set<SpacePartition *>::iterator p = s->partitions.begin();
 		 p != s->partitions.end(); p++) {
-		(*p)->sprites.erase(s);
-		if ((*p)->sprites.empty())
+		(*p)->entities.erase(s);
+		if ((*p)->entities.empty())
 			emptyPartitions.insert(*p);
 	}
 	s->partitions.clear();
 	
-	//Map the sprite to these coordinates.
-	for (int x = minx; x <= maxx; x++) {
-		for (int y = miny; y <= maxy; y++) {
+	//Map the entity to these coordinates.
+	for (int x = min.x; x <= max.x; x++) {
+		for (int y = min.y; y <= max.y; y++) {
 			
 			//Get the partition at this location, creating one if there's none.
 			SpacePartition * p = partitionGrid[x][y];
@@ -148,8 +146,8 @@ void Space::remapSprite(Sprite * s)
 				partitions.insert(p);
 			}
 			
-			//Link the partition and sprite.
-			p->sprites.insert(s);
+			//Link the partition and entity.
+			p->entities.insert(s);
 			s->partitions.insert(p);
 		}
 	}
@@ -159,8 +157,8 @@ void Space::cleanEmptyPartitions()
 {
 	for (std::set<SpacePartition *>::iterator p = emptyPartitions.begin();
 		 p != emptyPartitions.end(); p++) {
-		if ((*p)->sprites.empty()) {
-			partitionGrid[(*p)->x].erase((*p)->y);
+		if ((*p)->entities.empty()) {
+			partitionGrid[(*p)->pos.x].erase((*p)->pos.y);
 			partitions.erase(*p);
 			delete *p;
 		}

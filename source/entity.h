@@ -1,12 +1,12 @@
 #pragma once
-#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics.hpp>
 #include <vector>
 
 class Space;
 class SpacePartition;
 
 
-class Sprite : public sf::Sprite {
+class Entity : public sf::Sprite {
 	friend class Space;
 	
 protected:
