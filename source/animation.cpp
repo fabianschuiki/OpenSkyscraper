@@ -1,6 +1,6 @@
 #include "animation.h"
 
 
-Animation::Animation(Engine * e) : engine(e)
+Animation::Animation(Game * e) : game(e)
 {
 }

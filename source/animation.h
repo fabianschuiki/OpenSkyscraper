@@ -1,10 +1,10 @@
 #pragma once
 
-class Engine;
+class Game;
 
 
 class Animation {
 public:
-	Engine * const engine;
-	Animation(Engine * e);
+	Game * const game;
+	Animation(Game * e);
 };

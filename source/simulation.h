@@ -2,15 +2,18 @@
 #include <queue>
 #include <list>
 
-class Engine;
+class Game;
 class Item;
 
 
 class Simulation {
 public:
-	Engine * const engine;
-	Simulation(Engine * e);
+	/** The game that owns this simulation core. */
+	Game * const game;
 	
+	Simulation(Game * e);
+	
+	/** Advances the simulation by the given amount of time. */
 	void advance(double dt);
 	
 private:

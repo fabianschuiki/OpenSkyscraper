@@ -1,6 +1,6 @@
 #include "tower.h"
 
 
-Tower::Tower(Engine * e) : engine(e)
+Tower::Tower(Game * e) : game(e)
 {
 }

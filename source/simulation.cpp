@@ -1,7 +1,7 @@
 #include "simulation.h"
 
 
-Simulation::Simulation(Engine * e) : engine(e)
+Simulation::Simulation(Game * e) : game(e)
 {
 }
 

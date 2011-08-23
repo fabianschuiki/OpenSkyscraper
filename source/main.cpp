@@ -2,11 +2,20 @@
 #include <SFML/Graphics.hpp>
 #include "space.h"
 #include "entity.h"
+#include "packages/room.h"
+#include "game.h"
+#include "path.h"
 
 int main()
 {
 	//Create the main window.
 	sf::RenderWindow app(sf::VideoMode(800, 600, 32), "OpenSkyscraper SFML");
+	
+	//Limit the framerate.
+	app.SetFramerateLimit(60);
+	
+	//Create a game instance.
+	Game game;
 	
 	//Create a string to be drawn.
 	sf::Font jura;
@@ -39,6 +48,9 @@ int main()
 	
 	//Center the view.
 	app.GetDefaultView().SetCenter(0, 0);
+	
+	//Debug stuff.
+	Room::debug();
 	
 	//Run the main loop.
 	bool visibleRectChanged = true;
@@ -96,6 +108,10 @@ int main()
 		
 		//Clear the screen.
 		app.Clear();
+		
+		//Advance the game.
+		double dt = std::min<double>(app.GetFrameTime(), 0.1);
+		game.advance(dt);
 		
 		//Draw the text.
 		app.Draw(text);

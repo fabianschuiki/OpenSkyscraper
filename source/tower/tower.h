@@ -2,14 +2,14 @@
 #include <set>
 
 class Item;
-class Engine;
+class Game;
 
 
 class Tower {
 public:
-	Engine * const engine;
+	Game * const game;
 	
-	Tower(Engine * e);
+	Tower(Game * e);
 	
 	std::set<Item *> items;
 	std::set<Item *> uninitializedItems;
