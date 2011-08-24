@@ -5,6 +5,8 @@
 #include "packages/item.h"
 #include "game.h"
 #include "path.h"
+#include "sprite.h"
+#include "tower.h"
 
 int main()
 {
@@ -42,20 +44,34 @@ int main()
 	entity2.z = 1;
 	
 	//Create some space partition.
-	Space s;
-	s.addEntity(&entity);
-	s.addEntity(&entity2);
+	game.addEntity(&entity);
+	game.addEntity(&entity2);
 	
 	//Center the view.
 	app.GetDefaultView().SetCenter(0, 0);
 	
 	//Expose the Item class.
 	Item::expose(game.lua);
+	Sprite::expose(game.lua);
+	
+	//Create a new tower.
+	Tower tower(&game);
 	
 	//Create a new item an try to simulate it.
 	game.lua.dofile("../Resources/debug/condo.lua");
-	Item item(game.lua, "CondoItem");
+	Item item(&tower, "CondoItem");
 	item.simulate(0.13);
+	
+	//Expose the Sprite class.
+	
+	//Run the sprite debug script.
+	/*lua_settop(game.lua, 0);
+	game.lua.dofile("../Resources/debug/sprite_debug.lua");
+	Sprite * debugSprite = Sprite::fromStack(game.lua, -1);
+	debugSprite->SetImage(condo);
+	lua_pop(game.lua, 1);
+	std::cout << "received debugSprite " << debugSprite << "\n";
+	s.addEntity(debugSprite);*/
 	
 	//Run the main loop.
 	bool visibleRectChanged = true;
@@ -107,7 +123,7 @@ int main()
 			sf::FloatRect rect = app.GetDefaultView().GetRect();
 			rectd r(rect.Left + 200, rect.Top + 200,
 					rect.Right - rect.Left - 400, rect.Bottom - rect.Top - 400);
-			s.setVisibleRect(r);
+			game.space.setVisibleRect(r);
 			visibleRectChanged = false;
 		}
 		
@@ -123,12 +139,12 @@ int main()
 		
 		//Draw the entities.
 		//app.Draw(entity);
-		const std::vector<Entity *> & entities = s.getSortedVisibleEntitys();
+		const std::vector<Entity *> & entities = game.space.getSortedVisibleEntitys();
 		for (std::vector<Entity *>::const_iterator sp = entities.begin(); sp != entities.end(); sp++)
 			app.Draw(**sp);
 		
 		//Draw other stuff.
-		s.draw(app);
+		game.space.draw(app);
 		
 		//Display whatever we have drawn so far
 		app.Display();

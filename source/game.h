@@ -3,6 +3,9 @@
 #include "animation.h"
 #include "packages/package.h"
 #include "simulation.h"
+#include "space.h"
+
+class Sprite;
 
 
 class Game {
@@ -25,4 +28,12 @@ public:
 	 doesn't exceed a certain value so the simulation is able to run at a minimal frequency without
 	 freezing up because it tries to keep up. */
 	void advance(double dt);
+	
+	
+	void addEntity(Entity * e);
+	void removeEntity(Entity * e);
+	
+public:
+	/** The spatial container for the sprites. */
+	Space space;
 };

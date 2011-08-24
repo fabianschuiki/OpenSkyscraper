@@ -14,6 +14,9 @@ class("CondoItem", Item)
 -- Simulation
 function CondoItem:simulate(dt)
 	print("Simulating a CondoItem (dt = " .. dt .. "s)")
+	local sprite = Sprite:new()
+	sprite:setPosition(100, 200)
+	self:addSprite(sprite)
 end
 
 
