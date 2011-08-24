@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "space.h"
 #include "entity.h"
-#include "packages/room.h"
+#include "packages/item.h"
 #include "game.h"
 #include "path.h"
 
@@ -49,8 +49,13 @@ int main()
 	//Center the view.
 	app.GetDefaultView().SetCenter(0, 0);
 	
-	//Debug stuff.
-	Room::debug();
+	//Expose the Item class.
+	Item::expose(game.lua);
+	
+	//Create a new item an try to simulate it.
+	game.lua.dofile("../Resources/debug/condo.lua");
+	Item item(game.lua, "CondoItem");
+	item.simulate(0.13);
 	
 	//Run the main loop.
 	bool visibleRectChanged = true;

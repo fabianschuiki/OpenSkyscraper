@@ -1,6 +1,6 @@
 #pragma once
+#include <objlua/objlua.h>
 #include "animation.h"
-#include "lua.h"
 #include "packages/package.h"
 #include "simulation.h"
 

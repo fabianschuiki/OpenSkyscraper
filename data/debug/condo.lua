@@ -7,8 +7,13 @@ item.min_rating = 1
 item.w = 16
 item.h = 1
 
-function CondoItem:initAnimation()
-	print("init condo anim")
+
+-- Create a condo class.
+class("CondoItem", Item)
+
+-- Simulation
+function CondoItem:simulate(dt)
+	print("Simulating a CondoItem (dt = " .. dt .. "s)")
 end
 
 

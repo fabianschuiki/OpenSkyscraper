@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 project(OpenSkyscraper)
 
+# Include the ObjectiveLua headers.
+include_directories(../thirdparty/objectivelua/include/)
+
 set(sources
 	main.cpp
 	space.cpp
