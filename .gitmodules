@@ -1,0 +1,3 @@
+[submodule "thirdparty/objectivelua"]
+	path = thirdparty/objectivelua
+	url = git@github.com:fabianschuiki/objectivelua.git
