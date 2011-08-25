@@ -31,9 +31,5 @@ function CondoItem:simulate(dt)
 end
 
 
-local i = CondoItem:new("Hello, World")
-dump(i)
-
-
 -- Return the item template.
 return item

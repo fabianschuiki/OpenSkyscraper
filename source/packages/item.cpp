@@ -13,6 +13,10 @@ Item::Item(lua_State * L) : LuaExposable<Item>(L)
 Item::Item(Tower * tower, const char * className)
 : tower(tower), LuaExposable<Item>(tower->game->lua)
 {
+	//Add us to the tower.
+	tower->addItem(this);
+	
+	//Construct the Lua representation.
 	constructLua(className);
 }
 
@@ -23,6 +27,9 @@ Item::~Item()
 		delete *s;
 	}
 	sprites.clear();
+	
+	//Remove us from the tower.
+	tower->removeItem(this);
 }
 
 void Item::expose(lua_State * L)
