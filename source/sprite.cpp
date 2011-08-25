@@ -2,6 +2,11 @@
 #include "sprite.h"
 
 
+Sprite::Sprite(lua_State * L, const char * className) : LuaExposable<Sprite>(L)
+{
+	constructLua(className);
+}
+
 void Sprite::expose(lua_State * L)
 {
 	//Create the Sprite class and expose the base functions.

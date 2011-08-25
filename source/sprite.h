@@ -6,7 +6,8 @@
 /** Sprite exposes various functions of the Entity class to Lua. */
 class Sprite : public Entity, public LuaExposable<Sprite> {
 public:
-	OBJLUA_CONSTRUCTOR_WITH_CLASS_NAME(Sprite, NULL) {}
+	OBJLUA_CONSTRUCTOR(Sprite) {}
+	Sprite(lua_State * L, const char * className);
 	static void expose(lua_State * L);
 	
 private:

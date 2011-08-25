@@ -6,9 +6,14 @@
 #include "tower.h"
 
 
-Item::Item(Tower * tower, const char * className)
-: tower(tower), LuaExposable<Item>(tower->game->lua, className)
+Item::Item(lua_State * L) : LuaExposable<Item>(L)
 {
+}
+
+Item::Item(Tower * tower, const char * className)
+: tower(tower), LuaExposable<Item>(tower->game->lua)
+{
+	constructLua(className);
 }
 
 Item::~Item()

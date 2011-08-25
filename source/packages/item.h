@@ -21,9 +21,9 @@ class Item : public LuaExposable<Item> {
 	friend class LuaExposable<Item>;
 	
 public:
-	Tower * const tower;
+	Tower * tower;
 	
-	OBJLUA_CONSTRUCTOR_WITH_CLASS_NAME(Item, NULL), tower(NULL) {}
+	Item(lua_State * L);
 	Item(Tower * tower, const char * className = "Item");
 	~Item();
 	static void expose(lua_State * L);
