@@ -11,6 +11,17 @@ item.h = 1
 -- Create a condo class.
 class("CondoItem", Item)
 
+function Item:Item()
+	print("constructing Item")
+	self.floor = 12;
+end
+
+function CondoItem:CondoItem()
+	self:Item()
+	print("constructing CondoItem")
+	self.children = {"Fred", "Anna"}
+end
+
 -- Simulation
 function CondoItem:simulate(dt)
 	print("Simulating a CondoItem (dt = " .. dt .. "s)")
@@ -18,6 +29,10 @@ function CondoItem:simulate(dt)
 	sprite:setPosition(100, 200)
 	self:addSprite(sprite)
 end
+
+
+local i = CondoItem:new("Hello, World")
+dump(i)
 
 
 -- Return the item template.

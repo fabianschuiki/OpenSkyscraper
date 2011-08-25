@@ -7,7 +7,7 @@
 
 
 Item::Item(Tower * tower, const char * className)
-: tower(tower), LuaExposable<Item>(tower->game->lua, className, false)
+: tower(tower), LuaExposable<Item>(tower->game->lua, className)
 {
 }
 
@@ -24,7 +24,7 @@ void Item::expose(lua_State * L)
 {
 	//Create the Item class and expose the base functions.
 	LuaClass::make(L, "Item");
-	//LuaExposable<Item>::expose(L);
+	LuaExposable<Item>::expose(L);
 	
 	//Register the exposed functions.
 	const static luaL_Reg functions[] = {
@@ -40,28 +40,12 @@ void Item::expose(lua_State * L)
 
 void Item::animate(double dt)
 {
-	//Load the animation function.
-	loadFunction("animate");
-	
-	//Add the dt parameter.
-	lua_pushnumber(L, dt);
-	
-	//Call the function.
-	if (lua_pcall(L, 2, 0, 0) != 0)
-		LuaError::report(L);
+	callFunction("animate", "n", 0, dt);
 }
 
 void Item::simulate(double dt)
 {
-	//Load the animation function.
-	loadFunction("simulate");
-	
-	//Add the dt parameter.
-	lua_pushnumber(L, dt);
-	
-	//Call the function.
-	if (lua_pcall(L, 2, 0, 0) != 0)
-		LuaError::report(L);
+	callFunction("simulate", "n", 0, dt);
 }
 
 void Item::addSprite(Sprite * s)
@@ -78,7 +62,16 @@ void Item::removeSprite(Sprite * s)
 	s->owner = NULL;
 	tower->game->removeEntity(s);
 	sprites.erase(s);
+	delete s;
 }
+
+
+
+/*int Item::lua_new(lua_State * L)
+{
+	new Item(L);
+	return 1;
+}*/
 
 
 

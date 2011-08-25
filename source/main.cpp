@@ -50,7 +50,7 @@ int main()
 	//Center the view.
 	app.GetDefaultView().SetCenter(0, 0);
 	
-	//Expose the Item class.
+	//Expose the classes.
 	Item::expose(game.lua);
 	Sprite::expose(game.lua);
 	
@@ -61,17 +61,6 @@ int main()
 	game.lua.dofile("../Resources/debug/condo.lua");
 	Item item(&tower, "CondoItem");
 	item.simulate(0.13);
-	
-	//Expose the Sprite class.
-	
-	//Run the sprite debug script.
-	/*lua_settop(game.lua, 0);
-	game.lua.dofile("../Resources/debug/sprite_debug.lua");
-	Sprite * debugSprite = Sprite::fromStack(game.lua, -1);
-	debugSprite->SetImage(condo);
-	lua_pop(game.lua, 1);
-	std::cout << "received debugSprite " << debugSprite << "\n";
-	s.addEntity(debugSprite);*/
 	
 	//Run the main loop.
 	bool visibleRectChanged = true;

@@ -6,10 +6,24 @@ class Sprite;
 class Tower;
 
 
+/** Base class for all items that can be built in a tower. The Item class is exposed to Lua and re-
+ lies on Lua scripts to subclass Item and provide implementations for various functions.
+ 
+ The following functions need to be implemented in Lua:
+ - animate
+ - simulate
+ 
+ The following functions are available in Lua:
+ - addSprite
+ - removeSprite
+ */
 class Item : public LuaExposable<Item> {
+	friend class LuaExposable<Item>;
+	
 public:
 	Tower * const tower;
 	
+	OBJLUA_CONSTRUCTOR_WITH_CLASS_NAME(Item, NULL), tower(NULL) {}
 	Item(Tower * tower, const char * className = "Item");
 	~Item();
 	static void expose(lua_State * L);
@@ -29,6 +43,9 @@ public:
 	
 private:
 	std::set<Sprite *> sprites;
+	
+protected:
+	//static int lua_new(lua_State * L);
 	
 	static int lua_addSprite(lua_State * L);
 	static int lua_removeSprite(lua_State * L);
