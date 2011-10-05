@@ -1,0 +1,446 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1F2F0244143C597000CCF2FC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1F2F0242143C597000CCF2FC /* InfoPlist.strings */; };
+		1F2F024A143C597000CCF2FC /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2F0248143C597000CCF2FC /* Credits.rtf */; };
+		1F2F0250143C597000CCF2FC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F2F024E143C597000CCF2FC /* MainMenu.xib */; };
+		1F2F027B143C599000CCF2FC /* animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0257143C599000CCF2FC /* animation.cpp */; };
+		1F2F027C143C599000CCF2FC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1F2F0259143C599000CCF2FC /* CMakeLists.txt */; };
+		1F2F027D143C599000CCF2FC /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F025B143C599000CCF2FC /* entity.cpp */; };
+		1F2F027E143C599000CCF2FC /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F025D143C599000CCF2FC /* game.cpp */; };
+		1F2F027F143C599000CCF2FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F025F143C599000CCF2FC /* main.cpp */; };
+		1F2F0280143C599000CCF2FC /* clamp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0261143C599000CCF2FC /* clamp.cpp */; };
+		1F2F0281143C599000CCF2FC /* rand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0263143C599000CCF2FC /* rand.cpp */; };
+		1F2F0282143C599000CCF2FC /* item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0268143C599000CCF2FC /* item.cpp */; };
+		1F2F0283143C599000CCF2FC /* package.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F026A143C599000CCF2FC /* package.cpp */; };
+		1F2F0284143C599000CCF2FC /* path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F026C143C599000CCF2FC /* path.cpp */; };
+		1F2F0285143C599000CCF2FC /* simulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F026E143C599000CCF2FC /* simulation.cpp */; };
+		1F2F0286143C599000CCF2FC /* space.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0270143C599000CCF2FC /* space.cpp */; };
+		1F2F0287143C599000CCF2FC /* spacepartition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0272143C599000CCF2FC /* spacepartition.cpp */; };
+		1F2F0288143C599000CCF2FC /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0274143C599000CCF2FC /* sprite.cpp */; };
+		1F2F0289143C599000CCF2FC /* item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0277143C599000CCF2FC /* item.cpp */; };
+		1F2F028A143C599000CCF2FC /* tower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0279143C599000CCF2FC /* tower.cpp */; };
+		1F2F028F143C5A2800CCF2FC /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028B143C5A2800CCF2FC /* sfml-graphics.framework */; };
+		1F2F0290143C5A2800CCF2FC /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028C143C5A2800CCF2FC /* sfml-system.framework */; };
+		1F2F0291143C5A2800CCF2FC /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028D143C5A2800CCF2FC /* sfml-window.framework */; };
+		1F2F0292143C5A2800CCF2FC /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028E143C5A2800CCF2FC /* SFML.framework */; };
+		1F2F0294143C5B0D00CCF2FC /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F0293143C5B0D00CCF2FC /* liblua.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1F2F0235143C597000CCF2FC /* OpenSkyscraper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenSkyscraper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F2F0241143C597000CCF2FC /* OpenSkyscraper-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OpenSkyscraper-Info.plist"; sourceTree = "<group>"; };
+		1F2F0243143C597000CCF2FC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1F2F0247143C597000CCF2FC /* OpenSkyscraper-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OpenSkyscraper-Prefix.pch"; sourceTree = "<group>"; };
+		1F2F0249143C597000CCF2FC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		1F2F024F143C597000CCF2FC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		1F2F0257143C599000CCF2FC /* animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = animation.cpp; sourceTree = "<group>"; };
+		1F2F0258143C599000CCF2FC /* animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = animation.h; sourceTree = "<group>"; };
+		1F2F0259143C599000CCF2FC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		1F2F025B143C599000CCF2FC /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity.cpp; sourceTree = "<group>"; };
+		1F2F025C143C599000CCF2FC /* entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity.h; sourceTree = "<group>"; };
+		1F2F025D143C599000CCF2FC /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
+		1F2F025E143C599000CCF2FC /* game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game.h; sourceTree = "<group>"; };
+		1F2F025F143C599000CCF2FC /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		1F2F0261143C599000CCF2FC /* clamp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clamp.cpp; sourceTree = "<group>"; };
+		1F2F0262143C599000CCF2FC /* clamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clamp.h; sourceTree = "<group>"; };
+		1F2F0263143C599000CCF2FC /* rand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rand.cpp; sourceTree = "<group>"; };
+		1F2F0264143C599000CCF2FC /* rand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rand.h; sourceTree = "<group>"; };
+		1F2F0265143C599000CCF2FC /* rect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
+		1F2F0266143C599000CCF2FC /* vector2D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector2D.h; sourceTree = "<group>"; };
+		1F2F0268143C599000CCF2FC /* item.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = item.cpp; sourceTree = "<group>"; };
+		1F2F0269143C599000CCF2FC /* item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item.h; sourceTree = "<group>"; };
+		1F2F026A143C599000CCF2FC /* package.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = package.cpp; sourceTree = "<group>"; };
+		1F2F026B143C599000CCF2FC /* package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = package.h; sourceTree = "<group>"; };
+		1F2F026C143C599000CCF2FC /* path.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = path.cpp; sourceTree = "<group>"; };
+		1F2F026D143C599000CCF2FC /* path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = path.h; sourceTree = "<group>"; };
+		1F2F026E143C599000CCF2FC /* simulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = simulation.cpp; sourceTree = "<group>"; };
+		1F2F026F143C599000CCF2FC /* simulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simulation.h; sourceTree = "<group>"; };
+		1F2F0270143C599000CCF2FC /* space.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = space.cpp; sourceTree = "<group>"; };
+		1F2F0271143C599000CCF2FC /* space.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = space.h; sourceTree = "<group>"; };
+		1F2F0272143C599000CCF2FC /* spacepartition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spacepartition.cpp; sourceTree = "<group>"; };
+		1F2F0273143C599000CCF2FC /* spacepartition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spacepartition.h; sourceTree = "<group>"; };
+		1F2F0274143C599000CCF2FC /* sprite.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sprite.cpp; sourceTree = "<group>"; };
+		1F2F0275143C599000CCF2FC /* sprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sprite.h; sourceTree = "<group>"; };
+		1F2F0277143C599000CCF2FC /* item.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = item.cpp; sourceTree = "<group>"; };
+		1F2F0278143C599000CCF2FC /* item.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item.h; sourceTree = "<group>"; };
+		1F2F0279143C599000CCF2FC /* tower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tower.cpp; sourceTree = "<group>"; };
+		1F2F027A143C599000CCF2FC /* tower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tower.h; sourceTree = "<group>"; };
+		1F2F028B143C5A2800CCF2FC /* sfml-graphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-graphics.framework"; path = "../../macosx/sfml/sfml-graphics.framework"; sourceTree = "<group>"; };
+		1F2F028C143C5A2800CCF2FC /* sfml-system.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-system.framework"; path = "../../macosx/sfml/sfml-system.framework"; sourceTree = "<group>"; };
+		1F2F028D143C5A2800CCF2FC /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "../../macosx/sfml/sfml-window.framework"; sourceTree = "<group>"; };
+		1F2F028E143C5A2800CCF2FC /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFML.framework; path = ../../macosx/sfml/SFML.framework; sourceTree = "<group>"; };
+		1F2F0293143C5B0D00CCF2FC /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = /usr/local/Cellar/lua/5.1.4/lib/liblua.a; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1F2F0232143C597000CCF2FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F2F0294143C5B0D00CCF2FC /* liblua.a in Frameworks */,
+				1F2F028F143C5A2800CCF2FC /* sfml-graphics.framework in Frameworks */,
+				1F2F0290143C5A2800CCF2FC /* sfml-system.framework in Frameworks */,
+				1F2F0291143C5A2800CCF2FC /* sfml-window.framework in Frameworks */,
+				1F2F0292143C5A2800CCF2FC /* SFML.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1F2F022A143C597000CCF2FC = {
+			isa = PBXGroup;
+			children = (
+				1F2F0256143C599000CCF2FC /* source */,
+				1F2F023F143C597000CCF2FC /* OpenSkyscraper */,
+				1F2F0238143C597000CCF2FC /* Frameworks */,
+				1F2F0236143C597000CCF2FC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1F2F0236143C597000CCF2FC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F0235143C597000CCF2FC /* OpenSkyscraper.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1F2F0238143C597000CCF2FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F0293143C5B0D00CCF2FC /* liblua.a */,
+				1F2F028B143C5A2800CCF2FC /* sfml-graphics.framework */,
+				1F2F028C143C5A2800CCF2FC /* sfml-system.framework */,
+				1F2F028D143C5A2800CCF2FC /* sfml-window.framework */,
+				1F2F028E143C5A2800CCF2FC /* SFML.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		1F2F023F143C597000CCF2FC /* OpenSkyscraper */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F024E143C597000CCF2FC /* MainMenu.xib */,
+				1F2F0240143C597000CCF2FC /* Supporting Files */,
+			);
+			path = OpenSkyscraper;
+			sourceTree = "<group>";
+		};
+		1F2F0240143C597000CCF2FC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F0241143C597000CCF2FC /* OpenSkyscraper-Info.plist */,
+				1F2F0242143C597000CCF2FC /* InfoPlist.strings */,
+				1F2F0247143C597000CCF2FC /* OpenSkyscraper-Prefix.pch */,
+				1F2F0248143C597000CCF2FC /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1F2F0256143C599000CCF2FC /* source */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F0257143C599000CCF2FC /* animation.cpp */,
+				1F2F0258143C599000CCF2FC /* animation.h */,
+				1F2F0259143C599000CCF2FC /* CMakeLists.txt */,
+				1F2F025A143C599000CCF2FC /* engine */,
+				1F2F025B143C599000CCF2FC /* entity.cpp */,
+				1F2F025C143C599000CCF2FC /* entity.h */,
+				1F2F025D143C599000CCF2FC /* game.cpp */,
+				1F2F025E143C599000CCF2FC /* game.h */,
+				1F2F025F143C599000CCF2FC /* main.cpp */,
+				1F2F0260143C599000CCF2FC /* math */,
+				1F2F0267143C599000CCF2FC /* packages */,
+				1F2F026C143C599000CCF2FC /* path.cpp */,
+				1F2F026D143C599000CCF2FC /* path.h */,
+				1F2F026E143C599000CCF2FC /* simulation.cpp */,
+				1F2F026F143C599000CCF2FC /* simulation.h */,
+				1F2F0270143C599000CCF2FC /* space.cpp */,
+				1F2F0271143C599000CCF2FC /* space.h */,
+				1F2F0272143C599000CCF2FC /* spacepartition.cpp */,
+				1F2F0273143C599000CCF2FC /* spacepartition.h */,
+				1F2F0274143C599000CCF2FC /* sprite.cpp */,
+				1F2F0275143C599000CCF2FC /* sprite.h */,
+				1F2F0276143C599000CCF2FC /* tower */,
+			);
+			name = source;
+			path = ../../source;
+			sourceTree = "<group>";
+		};
+		1F2F025A143C599000CCF2FC /* engine */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = engine;
+			sourceTree = "<group>";
+		};
+		1F2F0260143C599000CCF2FC /* math */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F0261143C599000CCF2FC /* clamp.cpp */,
+				1F2F0262143C599000CCF2FC /* clamp.h */,
+				1F2F0263143C599000CCF2FC /* rand.cpp */,
+				1F2F0264143C599000CCF2FC /* rand.h */,
+				1F2F0265143C599000CCF2FC /* rect.h */,
+				1F2F0266143C599000CCF2FC /* vector2D.h */,
+			);
+			path = math;
+			sourceTree = "<group>";
+		};
+		1F2F0267143C599000CCF2FC /* packages */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F0268143C599000CCF2FC /* item.cpp */,
+				1F2F0269143C599000CCF2FC /* item.h */,
+				1F2F026A143C599000CCF2FC /* package.cpp */,
+				1F2F026B143C599000CCF2FC /* package.h */,
+			);
+			path = packages;
+			sourceTree = "<group>";
+		};
+		1F2F0276143C599000CCF2FC /* tower */ = {
+			isa = PBXGroup;
+			children = (
+				1F2F0277143C599000CCF2FC /* item.cpp */,
+				1F2F0278143C599000CCF2FC /* item.h */,
+				1F2F0279143C599000CCF2FC /* tower.cpp */,
+				1F2F027A143C599000CCF2FC /* tower.h */,
+			);
+			path = tower;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1F2F0234143C597000CCF2FC /* OpenSkyscraper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F2F0253143C597000CCF2FC /* Build configuration list for PBXNativeTarget "OpenSkyscraper" */;
+			buildPhases = (
+				1F2F0231143C597000CCF2FC /* Sources */,
+				1F2F0232143C597000CCF2FC /* Frameworks */,
+				1F2F0233143C597000CCF2FC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenSkyscraper;
+			productName = OpenSkyscraper;
+			productReference = 1F2F0235143C597000CCF2FC /* OpenSkyscraper.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1F2F022C143C597000CCF2FC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = Axamblis;
+			};
+			buildConfigurationList = 1F2F022F143C597000CCF2FC /* Build configuration list for PBXProject "OpenSkyscraper" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1F2F022A143C597000CCF2FC;
+			productRefGroup = 1F2F0236143C597000CCF2FC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1F2F0234143C597000CCF2FC /* OpenSkyscraper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1F2F0233143C597000CCF2FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F2F0244143C597000CCF2FC /* InfoPlist.strings in Resources */,
+				1F2F024A143C597000CCF2FC /* Credits.rtf in Resources */,
+				1F2F0250143C597000CCF2FC /* MainMenu.xib in Resources */,
+				1F2F027C143C599000CCF2FC /* CMakeLists.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1F2F0231143C597000CCF2FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F2F027B143C599000CCF2FC /* animation.cpp in Sources */,
+				1F2F027D143C599000CCF2FC /* entity.cpp in Sources */,
+				1F2F027E143C599000CCF2FC /* game.cpp in Sources */,
+				1F2F027F143C599000CCF2FC /* main.cpp in Sources */,
+				1F2F0280143C599000CCF2FC /* clamp.cpp in Sources */,
+				1F2F0281143C599000CCF2FC /* rand.cpp in Sources */,
+				1F2F0282143C599000CCF2FC /* item.cpp in Sources */,
+				1F2F0283143C599000CCF2FC /* package.cpp in Sources */,
+				1F2F0284143C599000CCF2FC /* path.cpp in Sources */,
+				1F2F0285143C599000CCF2FC /* simulation.cpp in Sources */,
+				1F2F0286143C599000CCF2FC /* space.cpp in Sources */,
+				1F2F0287143C599000CCF2FC /* spacepartition.cpp in Sources */,
+				1F2F0288143C599000CCF2FC /* sprite.cpp in Sources */,
+				1F2F0289143C599000CCF2FC /* item.cpp in Sources */,
+				1F2F028A143C599000CCF2FC /* tower.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		1F2F0242143C597000CCF2FC /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1F2F0243143C597000CCF2FC /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1F2F0248143C597000CCF2FC /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1F2F0249143C597000CCF2FC /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		1F2F024E143C597000CCF2FC /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1F2F024F143C597000CCF2FC /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1F2F0251143C597000CCF2FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		1F2F0252143C597000CCF2FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		1F2F0254143C597000CCF2FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../macosx/sfml\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenSkyscraper/OpenSkyscraper-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					"\"$(SRCROOT)/../../thirdparty/objectivelua/include\"",
+				);
+				INFOPLIST_FILE = "OpenSkyscraper/OpenSkyscraper-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/lua/5.1.4/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		1F2F0255143C597000CCF2FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../macosx/sfml\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenSkyscraper/OpenSkyscraper-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					"\"$(SRCROOT)/../../thirdparty/objectivelua/include\"",
+				);
+				INFOPLIST_FILE = "OpenSkyscraper/OpenSkyscraper-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/lua/5.1.4/lib,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1F2F022F143C597000CCF2FC /* Build configuration list for PBXProject "OpenSkyscraper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F2F0251143C597000CCF2FC /* Debug */,
+				1F2F0252143C597000CCF2FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1F2F0253143C597000CCF2FC /* Build configuration list for PBXNativeTarget "OpenSkyscraper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F2F0254143C597000CCF2FC /* Debug */,
+				1F2F0255143C597000CCF2FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1F2F022C143C597000CCF2FC /* Project object */;
+}

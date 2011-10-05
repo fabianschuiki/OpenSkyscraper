@@ -102,6 +102,7 @@ int main()
 					case sf::Key::Right:	app.GetDefaultView().Move( 10, 0); break;
 					case sf::Key::Up:		app.GetDefaultView().Move(0, -10); break;
 					case sf::Key::Down:		app.GetDefaultView().Move(0,  10); break;
+                    default: break;
 				}
 				visibleRectChanged = true;
 			}
