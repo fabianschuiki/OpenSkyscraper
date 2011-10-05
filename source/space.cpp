@@ -86,7 +86,7 @@ void Space::insertVisibleEntity(Entity * s)
 	visibleEntitys.insert(s);
 	
 	//Find the right place to insert this entity through a binary search.
-	int f = 0, l = sortedVisibleEntitys.size(), i = 0;
+	int f = 0, l = (int)sortedVisibleEntitys.size(), i = 0;
 	while (f < l) {
 		i = (f + l) / 2;
 		std::cout << "   trying " << i << "\n";

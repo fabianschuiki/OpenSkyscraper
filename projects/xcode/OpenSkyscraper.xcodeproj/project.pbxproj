@@ -11,7 +11,6 @@
 		1F2F024A143C597000CCF2FC /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1F2F0248143C597000CCF2FC /* Credits.rtf */; };
 		1F2F0250143C597000CCF2FC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F2F024E143C597000CCF2FC /* MainMenu.xib */; };
 		1F2F027B143C599000CCF2FC /* animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0257143C599000CCF2FC /* animation.cpp */; };
-		1F2F027C143C599000CCF2FC /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1F2F0259143C599000CCF2FC /* CMakeLists.txt */; };
 		1F2F027D143C599000CCF2FC /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F025B143C599000CCF2FC /* entity.cpp */; };
 		1F2F027E143C599000CCF2FC /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F025D143C599000CCF2FC /* game.cpp */; };
 		1F2F027F143C599000CCF2FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F025F143C599000CCF2FC /* main.cpp */; };
@@ -24,14 +23,35 @@
 		1F2F0286143C599000CCF2FC /* space.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0270143C599000CCF2FC /* space.cpp */; };
 		1F2F0287143C599000CCF2FC /* spacepartition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0272143C599000CCF2FC /* spacepartition.cpp */; };
 		1F2F0288143C599000CCF2FC /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0274143C599000CCF2FC /* sprite.cpp */; };
-		1F2F0289143C599000CCF2FC /* item.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0277143C599000CCF2FC /* item.cpp */; };
 		1F2F028A143C599000CCF2FC /* tower.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F2F0279143C599000CCF2FC /* tower.cpp */; };
 		1F2F028F143C5A2800CCF2FC /* sfml-graphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028B143C5A2800CCF2FC /* sfml-graphics.framework */; };
 		1F2F0290143C5A2800CCF2FC /* sfml-system.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028C143C5A2800CCF2FC /* sfml-system.framework */; };
 		1F2F0291143C5A2800CCF2FC /* sfml-window.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028D143C5A2800CCF2FC /* sfml-window.framework */; };
 		1F2F0292143C5A2800CCF2FC /* SFML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028E143C5A2800CCF2FC /* SFML.framework */; };
 		1F2F0294143C5B0D00CCF2FC /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F0293143C5B0D00CCF2FC /* liblua.a */; };
+		1F72524B143C9C5700E3722F /* sfml-graphics.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028B143C5A2800CCF2FC /* sfml-graphics.framework */; };
+		1F72524C143C9C5700E3722F /* sfml-system.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028C143C5A2800CCF2FC /* sfml-system.framework */; };
+		1F72524D143C9C5700E3722F /* sfml-window.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028D143C5A2800CCF2FC /* sfml-window.framework */; };
+		1F72524E143C9C6900E3722F /* SFML.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 1F2F028E143C5A2800CCF2FC /* SFML.framework */; };
+		1F725250143C9CB200E3722F /* data in Resources */ = {isa = PBXBuildFile; fileRef = 1F72524F143C9CB200E3722F /* data */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1F72524A143C9C4200E3722F /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1F72524B143C9C5700E3722F /* sfml-graphics.framework in Copy Frameworks */,
+				1F72524C143C9C5700E3722F /* sfml-system.framework in Copy Frameworks */,
+				1F72524D143C9C5700E3722F /* sfml-window.framework in Copy Frameworks */,
+				1F72524E143C9C6900E3722F /* SFML.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1F2F0235143C597000CCF2FC /* OpenSkyscraper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenSkyscraper.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,7 +61,6 @@
 		1F2F024F143C597000CCF2FC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1F2F0257143C599000CCF2FC /* animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = animation.cpp; sourceTree = "<group>"; };
 		1F2F0258143C599000CCF2FC /* animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = animation.h; sourceTree = "<group>"; };
-		1F2F0259143C599000CCF2FC /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
 		1F2F025B143C599000CCF2FC /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity.cpp; sourceTree = "<group>"; };
 		1F2F025C143C599000CCF2FC /* entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity.h; sourceTree = "<group>"; };
 		1F2F025D143C599000CCF2FC /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
@@ -76,6 +95,7 @@
 		1F2F028D143C5A2800CCF2FC /* sfml-window.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "sfml-window.framework"; path = "../../macosx/sfml/sfml-window.framework"; sourceTree = "<group>"; };
 		1F2F028E143C5A2800CCF2FC /* SFML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SFML.framework; path = ../../macosx/sfml/SFML.framework; sourceTree = "<group>"; };
 		1F2F0293143C5B0D00CCF2FC /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = /usr/local/Cellar/lua/5.1.4/lib/liblua.a; sourceTree = "<absolute>"; };
+		1F72524F143C9CB200E3722F /* data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = data; path = ../../data; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +117,7 @@
 		1F2F022A143C597000CCF2FC = {
 			isa = PBXGroup;
 			children = (
+				1F72524F143C9CB200E3722F /* data */,
 				1F2F0256143C599000CCF2FC /* source */,
 				1F2F023F143C597000CCF2FC /* OpenSkyscraper */,
 				1F2F0238143C597000CCF2FC /* Frameworks */,
@@ -148,7 +169,6 @@
 			children = (
 				1F2F0257143C599000CCF2FC /* animation.cpp */,
 				1F2F0258143C599000CCF2FC /* animation.h */,
-				1F2F0259143C599000CCF2FC /* CMakeLists.txt */,
 				1F2F025A143C599000CCF2FC /* engine */,
 				1F2F025B143C599000CCF2FC /* entity.cpp */,
 				1F2F025C143C599000CCF2FC /* entity.h */,
@@ -225,6 +245,7 @@
 				1F2F0231143C597000CCF2FC /* Sources */,
 				1F2F0232143C597000CCF2FC /* Frameworks */,
 				1F2F0233143C597000CCF2FC /* Resources */,
+				1F72524A143C9C4200E3722F /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -268,7 +289,7 @@
 				1F2F0244143C597000CCF2FC /* InfoPlist.strings in Resources */,
 				1F2F024A143C597000CCF2FC /* Credits.rtf in Resources */,
 				1F2F0250143C597000CCF2FC /* MainMenu.xib in Resources */,
-				1F2F027C143C599000CCF2FC /* CMakeLists.txt in Resources */,
+				1F725250143C9CB200E3722F /* data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,7 +313,6 @@
 				1F2F0286143C599000CCF2FC /* space.cpp in Sources */,
 				1F2F0287143C599000CCF2FC /* spacepartition.cpp in Sources */,
 				1F2F0288143C599000CCF2FC /* sprite.cpp in Sources */,
-				1F2F0289143C599000CCF2FC /* item.cpp in Sources */,
 				1F2F028A143C599000CCF2FC /* tower.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

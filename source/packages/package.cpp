@@ -3,7 +3,7 @@
 #include "package.h"
 #include "../game.h"
 
-
+void dumpStack(lua_State * L);
 void dumpStack(lua_State * L)
 {
 	std::cout << "#stack = " << lua_gettop(L) << ", " << lua_typename(L, lua_type(L, -1)) << "\n";
@@ -15,7 +15,7 @@ Package::Package(Game * game) : game(game)
 	lua_State * L = game->lua;
 	
 	//Load and run the package's main Lua file.
-	luaL_dofile(L, "../Resources/debug/package.lua");
+	luaL_dofile(L, "../Resources/data/debug/package.lua");
 	
 	//Move the returned package into the global scope so it is available to the Lua environment.
 	lua_pushvalue(L, -1);
@@ -37,8 +37,8 @@ Package::Package(Game * game) : game(game)
 	//Extract the cell size.
 	lua_pushstring(L, "cell_w"); lua_gettable(L, pkg);
 	lua_pushstring(L, "cell_h"); lua_gettable(L, pkg);
-	if (!lua_isnil(L, -2)) cell.x = lua_tointeger(L, -2); else missing.push_back("cell_w");
-	if (!lua_isnil(L, -1)) cell.y = lua_tointeger(L, -1); else missing.push_back("cell_h");
+	if (!lua_isnil(L, -2)) cell.x = (int)lua_tointeger(L, -2); else missing.push_back("cell_w");
+	if (!lua_isnil(L, -1)) cell.y = (int)lua_tointeger(L, -1); else missing.push_back("cell_h");
 	lua_pop(L, 2);
 	
 	//Get rid of the temporary pkg.
