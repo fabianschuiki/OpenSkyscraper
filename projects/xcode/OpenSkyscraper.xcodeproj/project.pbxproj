@@ -37,7 +37,6 @@
 		1F2F0235143C597000CCF2FC /* OpenSkyscraper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenSkyscraper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F2F0241143C597000CCF2FC /* OpenSkyscraper-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OpenSkyscraper-Info.plist"; sourceTree = "<group>"; };
 		1F2F0243143C597000CCF2FC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		1F2F0247143C597000CCF2FC /* OpenSkyscraper-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OpenSkyscraper-Prefix.pch"; sourceTree = "<group>"; };
 		1F2F0249143C597000CCF2FC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		1F2F024F143C597000CCF2FC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1F2F0257143C599000CCF2FC /* animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = animation.cpp; sourceTree = "<group>"; };
@@ -139,7 +138,6 @@
 			children = (
 				1F2F0241143C597000CCF2FC /* OpenSkyscraper-Info.plist */,
 				1F2F0242143C597000CCF2FC /* InfoPlist.strings */,
-				1F2F0247143C597000CCF2FC /* OpenSkyscraper-Prefix.pch */,
 				1F2F0248143C597000CCF2FC /* Credits.rtf */,
 			);
 			name = "Supporting Files";
@@ -381,8 +379,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../../macosx/sfml\"",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "OpenSkyscraper/OpenSkyscraper-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
 					"\"$(SRCROOT)/../../thirdparty/objectivelua/include\"",
@@ -404,8 +400,6 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../../macosx/sfml\"",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "OpenSkyscraper/OpenSkyscraper-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
 					"\"$(SRCROOT)/../../thirdparty/objectivelua/include\"",
@@ -439,6 +433,7 @@
 				1F2F0255143C597000CCF2FC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
