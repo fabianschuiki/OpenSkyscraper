@@ -1,17 +1,24 @@
 cmake_minimum_required(VERSION 2.6)
 project(OpenSkyscraper)
 
-# Include the ObjectiveLua headers.
-include_directories(../thirdparty/objectivelua/include/)
+set(src_dir  ${PROJECT_SOURCE_DIR})
+set(data_dir ${PROJECT_SOURCE_DIR}/../data)
 
-set(sources
-	main.cpp
-	space.cpp
-	spacepartition.cpp
-	sprite.cpp
-)
 
-include_directories(../macosx/sfml/SFML.framework)
+# Gather all the required files.
+file(GLOB_RECURSE sources RELATIVE ${src_dir} ${src_dir}/*.cpp)
+file(GLOB_RECURSE resources RELATIVE ${src_dir} ${data_dir}/*)
+
+# Make sure the resources are copied to the right location.
+foreach(r ${resources})
+	get_filename_component(r_abs ${r} ABSOLUTE)
+	get_filename_component(r_dir ${r_abs} PATH)
+	get_filename_component(data_dir_abs ${data_dir} ABSOLUTE)
+	file(RELATIVE_PATH r_rel ${data_dir_abs} ${r_dir})
+	set_source_files_properties(${r} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/${r_rel})
+endforeach()
+
+# For Mac OS X, copy the SFML frameworks to the destination.
 set(frameworks
 	../macosx/sfml/sfml-system.framework
 	../macosx/sfml/sfml-window.framework
@@ -21,43 +28,30 @@ set(FRAMEWORKS_DIR ${CMAKE_BINARY_DIR}/OpenSkyscraper.app/Contents/Frameworks)
 install(DIRECTORY ${frameworks} DESTINATION ${FRAMEWORKS_DIR})
 
 
-# Find all data files that need to be copied.
-unset(dataFiles)
-macro(copyFiles srcDir dstDir)
-	message("Copying " ${srcDir})
-	file(GLOB tmpFiles RELATIVE ${srcDir} ${srcDir}/*)
-	foreach(tmpFile ${tmpFiles})
-		set(srcTmpPath ${srcDir}/${tmpFile})
-		set(dstTmpPath ${dstDir}/${tmpFile})
-		if(IS_DIRECTORY ${srcTmpPath})
-			copyFiles(${srcTmpPath} ${dstTmpPath})
-		else()
-			message("Adding data file " ${dstTmpPath})
-			list(APPEND dataFiles ${srcTmpPath})
-			set_source_files_properties(
-				${srcTmpPath}
-				PROPERTIES MACOSX_PACKAGE_LOCATION Resources/${dstDir}
-			)
-        endif(IS_DIRECTORY ${srcTmpPath})
-	endforeach(tmpFile)
-endmacro(copyFiles)
-copyFiles(${CMAKE_SOURCE_DIR}/../data "")
-message("Data Files: " ${dataFiles})
-
-#set_source_files_properties(
-#	../data/fonts/Jura-Regular.ttf
-#	PROPERTIES
-#	MACOSX_PACKAGE_LOCATION Resources/fonts
-#)
-
-
+# OpenSkyscraper executable.
 add_executable(
 	OpenSkyscraper MACOSX_BUNDLE
 	${sources}
-	#../data/fonts/Jura-Regular.ttf
-	${dataFiles}
+	${resources}
 )
 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                                             #
+#  Packages and Libraries                                                     #
+#                                                                             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Include the ObjectiveLua headers.
+include_directories(${PROJECT_SOURCE_DIR}/../thirdparty/objectivelua/include/)
+
+# Lua
+find_package(Lua51 REQUIRED)
+include_directories(${LUA_INCLUDE_DIR})
+target_link_libraries(OpenSkyscraper ${LUA_LIBRARY})
+
+# SFML
+include_directories(../macosx/sfml/SFML.framework)
 target_link_libraries(
 	OpenSkyscraper
 	"-F../macosx/sfml/"

@@ -6,7 +6,7 @@
 #include "game.h"
 #include "path.h"
 #include "sprite.h"
-#include "tower.h"
+#include "tower/tower.h"
 
 int main()
 {
@@ -21,7 +21,7 @@ int main()
 	
 	//Create a string to be drawn.
 	sf::Font jura;
-	jura.LoadFromFile("../Resources/data/fonts/Jura-Regular.ttf", 16);
+	jura.LoadFromFile("../Resources/fonts/Jura-Regular.ttf", 16);
 	
 	sf::String text(L"Welcome to OpenSkyscraper!", jura, 16);
 	text.SetColor(sf::Color(255, 255, 0));
@@ -29,7 +29,7 @@ int main()
 
 	//Load an image to be drawn.
 	sf::Image condo;
-	condo.LoadFromFile("../Resources/data/condo.png");
+	condo.LoadFromFile("../Resources/condo.png");
 	condo.SetSmooth(false);
 	
 	//Create a entity that uses the image.
@@ -58,7 +58,7 @@ int main()
 	Tower tower(&game);
 	
 	//Create a new item an try to simulate it.
-	game.lua.dofile("../Resources/data/debug/condo.lua");
+	game.lua.dofile("../Resources/debug/condo.lua");
 	Item item(&tower, "CondoItem");
 	item.simulate(0.13);
 	

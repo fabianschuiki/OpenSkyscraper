@@ -7,7 +7,7 @@ Item::Item(recti frame, Tower * tower) : frame(frame), tower(tower)
 {
 	state = StateNone;
 	reset();
-	tower->items.insert(this);
+	tower->addItem(this);
 }
 
 void Item::reset()
@@ -17,5 +17,5 @@ void Item::reset()
 	entities.clear();
 	
 	initialized = false;
-	tower->uninitializedItems.insert(this);
+	//tower->uninitializedItems.insert(this);
 }

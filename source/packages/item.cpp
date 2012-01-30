@@ -1,9 +1,9 @@
 #include <cassert>
 #include <iostream>
-#include "game.h"
+#include "../game.h"
 #include "item.h"
-#include "sprite.h"
-#include "tower.h"
+#include "../sprite.h"
+#include "../tower/tower.h"
 
 
 Item::Item(lua_State * L) : LuaExposable<Item>(L)

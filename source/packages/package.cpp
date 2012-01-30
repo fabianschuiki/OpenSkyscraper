@@ -15,7 +15,7 @@ Package::Package(Game * game) : game(game)
 	lua_State * L = game->lua;
 	
 	//Load and run the package's main Lua file.
-	luaL_dofile(L, "../Resources/data/debug/package.lua");
+	luaL_dofile(L, "../Resources/debug/package.lua");
 	
 	//Move the returned package into the global scope so it is available to the Lua environment.
 	lua_pushvalue(L, -1);
