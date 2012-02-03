@@ -1,0 +1,361 @@
+SimTower .TDT SaveGame file format
+
+Prelude notes:
+The entire file format is little-endian (so native encoding), for Windows at
+least. I don't have access to a Mac version to see if the endianness is
+different for mac TDT files, nor do I know for certain if the two files are
+compatible. I also only have access to a single version of SimTower, so other
+versions may produce different results.
+
+This format is prepared mostly by means of a smart binary hex editor (i.e., one
+that could handle variable-width structure data), a resource dump of the binary
+(the STRL files were nice for figuring out the index of tenants), the manual
+(which actually mentions some of how the simulation works... kind of), a lot of
+save files, and some guess-and-check.
+
+In terms of structure data, I will generally use char, WORD, and DWORD to mean
+1 byte, 2 byte, and 4 byte values, respectively. I do not know which values are
+to be treated as signed and which ones are unsigned, but it looks like most
+WORD values are unsigned and most DWORD values are signed. When I have verified
+signedness, I will mention it.
+
+Another thing to mention is that the game does not appear to validate most of
+the data, so you can end up with some wonky simulation values if the data is
+not valid (for example, negative dates yielded a WD 0).
+
+There is unfortunately a large amount of variable-width data, starting with the
+tenant floor map data, so I cannot give precise location data for anything
+except the first block.
+
+Various global constants
+========================
+WORD version
+   This value should be 0x2400 (so laid out on disk as 00 24). If you don't see
+   this value, then you should assume that this document is not correct.
+WORD level
+   1 = 1 star tower, 2 = 2 stars, etc., 6 = TOWER level
+DWORD currentBalance
+DWORD otherIncome
+DWORD constructionCosts
+DWORD lastQuarterMoney
+   These are the amounts as shown in the overview of the finance window. See
+   the General money notes for more information on interpretation.
+WORD frameTime
+   The current time, as measured in frames. See the How time works for more
+   information on interpretation.
+int32_t currentDay
+   The current day, i.e., the number of days elapsed since WD 1, Q 1, Year 1.
+   See "How time works" for more information.
+WORD unknown
+WORD unknown (lobbyHeight ????)
+   This appears to be the height of the first-floor lobby.
+char unknown[8]
+   8 bytes of unknown value. Given context, probably 4 WORD values
+WORD lrPixel
+WORD udPixel
+   These two values are the current screen location, measured in pixels. I don't
+   recall if (0,0) is upper left or lower left corner.
+char unknown[518]
+   518 bytes of unknown data left in the header.
+
+[Note: hex 0x2e may be the number of fast food, etc., places. need verification]
+[Note: hex 0x3a may be the number of named tenants. need verification]
+
+General money notes:
+Money is actually inconsistently handled in the game. Most of the UI displays a
+value 100 times that what is internally stored, with the exception of the
+Finance Window (bizarrely). The manual does mention this complaint, though. The
+save file, naturally, stores what is used for internal calculations, so it's
+better to think of it as the UI just lies to you about most money valuations.
+
+
+How time works:
+0 starts at 7:00 AM and will reset 2600 frames later. These frames are divided
+into 7 periods according to the time of day:
+      Frames      Time (24-hr)              Conversions
+1.    0 -  400 =  7:00 - 12:00  1 frame =  45 sec   30 min =  40 frames
+2.  400 -  800 = 12:00 - 12:30  1 frame = 4.5 sec   30 min = 400 frames
+3.  800 - 1200 = 12:30 - 13:00  1 frame = 4.5 sec   30 min = 400 frames
+4. 1200 - 1600 = 13:00 - 17:00  1 frame =  36 sec   30 min =  50 frames
+5. 1600 - 2000 = 17:00 - 21:00  1 frame =  36 sec   30 min =  50 frames
+6. 2000 - 2400 = 21:00 -  1:00  1 frame =  36 sec   30 min =  50 frames
+7. 2400 - 2600 =  1:00 -  7:00  1 frame = 126 sec   30 min ~= 17 frames
+
+Note that the date value will change at frame 2300 (or, rather, the transition
+from 2299 to 2300), so 2300 with day 0 is midnight of the first day. The periods
+also, not coincidentally, refer to the number of the block in the elevator
+panel, although the 7th period appears to be combined with the 6 period.
+
+Days: the date is stored as a day counter, which is a signed 32 bit integer.
+This means you can have a negative year--the game does not check for overflow.
+The simulation appears to get screwy with negative time...
+Day 0 = WD 1 / Q 1 / Year 1
+Day 1 = WD 2 / Q 1 / Year 1
+Day 2 = WE   / Q 1 / Year 1
+Day 3 = WD 1 / Q 2 / Year 1
+etc.
+
+The day, however, rolls over at the end of Year 1000.
+
+Remember that the initial value for the time is 2300 on day 0 (or maybe later,
+the game starts up in fast mode, so grabbing a save of the initial state is not
+easy).
+
+Floor map
+=========
+The next section is the map of the tenants to the floors. This structure is
+variable-width:
+
+struct floor {
+  uint16_t numTenants
+    The number of tenant entries in the floor.
+  WORD leftEdge
+  WORD rightEdge
+    The leftmost and rightmost edges of any tenant on the floor.
+  struct tenant {
+    WORD leftEdge
+    WORD rightEdge
+      The left and right extents of the current tenant. Note that floors and
+      lobbies are coalesced to be one whole unit.
+    int8_t tenantType
+      The type of the tenant. Negative values refer to tenants under
+      construction.
+    uint8_t status
+      This appears to be the status for some simulation value. Previously, I
+      called this a count of the people inside, but I'm no longer sure.
+      For example, if there are five people currently in the office, this value
+      holds 5.
+    uint8_t perTypeDataIndex
+      This is where to find this type in the appropriate value index (e.g.,
+      retailData structure).
+    uint32_t peopleOffset
+      This is the offset into the people array for the people related to this
+      tenant. This would imply, I guess, that all people must consist in
+      consecutive locations?
+    int8_t indexInFloor
+      This is the 0-based index of the current location in the indexMap array.
+    char unknown[3]
+      3 bytes of unknown data. The entire structure is 18 bytes long.
+    char rentClass
+      This is the rent class of this tenant.
+    char unknown[1]
+      Yet more unknown data
+  } tenants[numTenants];
+  uint16_t indexMap[94]
+    This is a map to account for reordering of tenants within a floor. Most of
+    the time, when a "tenant index" is referred to, it's to an index in this
+    array instead of the index into the tenants array. The contents of this
+    array is an index into the tenants. So getting the floor for a
+    (floor, index) looks as follows:
+    floors[floor].tenants[floors[floor].indexMap[index]]
+} floors[120];
+  There are 120 floors. Values 0-9 are B10, B9, etc., B1. Value 10 is the 1st
+  floor, with value 110 being the 100th floor. There are another 9 extra floors
+  above that, probably to let the screen just occupy the entire floor data map.
+
+Given no underground floors, floor 1 is located at hex value 0x9c4, and floor 2
+will be located at hex value 0xa98 if there is a 1-story lobby built.
+
+Tenant information:
+Each tenant has a distinct ID, which numbers ([*] is not confirmed):
+0 - Floor
+3 - Single Room[*]
+4 - Twin Room[*]
+5 - Hotel Suite[*]
+6 - Restaurant[*]
+7 - Office
+9 - Condo
+10 - Retail[*]
+11 - Parking Space[*]
+12 - Fast Food
+13 - Medical Center[*]
+14 - Security[*]
+15 - Housekeeping[*]
+17 - SECOM [1]
+18 - Movie [2]
+[ 19 - Movie floor 2? There is a gap here, so it makes sense ]
+20 - Recyclying Center[*]
+[ 21 - ? See above ? ]
+24 - Lobby
+29 - Party Hall[*]
+[ 30 - ? See above ? ]
+31 - Metro
+[ 32, 33 - ? See above ?]
+34 - Movie Theater [2]
+[ 35 - ? See above ?]
+36 - Cathedral
+[ 37, 38, 39, 40 - ? See above ? ]
+42 - "structures" [1]
+45 - Parking Ramp[*]
+48 - Burned Area[*]
+
+[1] These values are mentioned in the resource 710.STRL. SECOM in particular
+appears to have broader applicability, so I'm guessing it was a feature pulled
+close to release. It may also account for the security-like-office present in a
+screenshot or two of the manual.
+
+[2] Movie Theater is listed in 710.STRL twice, so I'm not sure which one is
+actually used for real Movie Theaters nor am I sure what happens if you use the
+other one.
+
+Left and right extents are measured in terms of individual floor units, so each
+unit is about 8 pixels, with the left being 0x00 and the right being I don't
+know. The value is half-open, so a range of 0x96-0x9F means the following:
+
+ 9999999999
+ 6789ABCDEF
+ TTTTTTTTT. [T = occupied, . = empty]
+
+The tenants are put into the array in sorted order by their left edge. Notably
+absent from this list are elevators, stairs and escalators, as they do not
+count as tenants (hence why they may overlap real tenant data). Instead, data
+for these structures is listed in later blocks in the file.
+
+People and retail data
+======================
+
+uint32_t numPeople
+struct person {
+  char tenantFloor;
+    The index into the floors array of the tenant for this person.
+  char tenantInFloor;
+    The index into the tenant data for the tenant for this person.
+  WORD numInTenant;
+    The number of this person inside the tenant.
+  char tenantType;
+    The type of the tenant this person is in
+  char status;
+    I think this is some sort of status byte. I see values of 0x20, 0x21, 0x00,
+    0x05, 0x04
+  int8_t currentFloor;
+    The current floor for this person. Negative values probably refer to out of
+    the building or something similar
+  char unknown[5];
+    Unknown data
+  WORD stress;
+    The current amount of stress the person has.
+  WORD eval;
+    The eval of the current person.
+} personData[numPeople];
+  This is the map of the people for each tenant. Each tenant starts off with a
+  certain number of people in this structure (and probably doesn't get more?).
+  Known counts:
+    Condo - 3
+    Office - 6
+    Fast Food - 48
+
+  The first unknown character seems to be a status byte, and it seems that the
+  values of other bytes may change depending on the value of this byte. One of
+  the other ones appears to be a floor sometimes...
+
+struct retail {
+  int8_t floor;
+    This is the floor it is on, but negative values mean that this entry is not
+    a valid retail entry.
+  char unknown[10];
+    Unknown data. The total structure size should be 18 bytes.
+    The second byte in this seems to start out as 03...
+  char type;
+    This is the type of the retail (e.g., English Pub, etc.)
+  char unknown[6];
+    More unknown data
+} retail_data[512];
+
+  This block is the structure of data for fast-food, shops, and restaurants,
+  which I will classify as "retail."
+
+For retail types, the following are the lists I culled from STRL tables:
+Restaurants
+0 - English Pub
+1 - French Restaurant
+2 - Chinese Restaurant
+3 - Sushi Bar
+4 - Steak House
+
+Fast Food
+0 - Japanese Soba
+1 - Chinese Cafe
+2 - Hamburger Stand
+3 - Ice Cream
+4 - Coffee Shop
+
+Shops
+0 - Men's Clothing
+1 - Pet Store
+2 - Flower Shop
+3 - Book Store
+4 - Drug Store
+5 - Boutique
+6 - Electronics
+7 - Bank
+8 - Hair Salon
+9 - Post Office
+10 - Sports Gear
+
+
+Elevators
+=========
+After the hard coded data block, the elevator data structures comes next. I
+don't know much about this, other than it probably involves an array of 24
+variably-sized elements.
+
+More static data
+================
+After the elevators is a block of static data including the population and the
+data for the finance window.
+
+If you have no elevators, this comes 4744 bytes after the end of the retail
+data block. If you have elevators, this distance is somewhat dependent on the
+number of elevators and the number of the floors. I think.
+
+DWORD tenantPopulation[10]
+  The tenant population for the 10 income types in the window.
+DWORD towerPopulation
+  The total tower population.
+DWORD tenantIncome[10]
+  The tenant income for the 10 income types in the window.
+DWORD towerIncome
+  The total income for the tower.
+DWORD tenantMaintenance[10]
+  The tenant maintenance for the 10 maintenance types in the window.
+DWORD towerMaintenance
+  The total maintenance for the tower.
+
+To refresh your memory from the game, the 10 income types are, in order:
+Office, Single Room, Twin Room, Hotel Suite, Shops, Fast Food, Restaurant,
+Party Hall, Theater, and Condo.
+
+The 10 maintenance types are:
+Lobby, Elevator, Exp. Elevator, Ser. Elevator, Escalator, Parking Ramp,
+Recycling Center, Metro Station, Housekeeping, Security.
+
+char unknown[1102]
+
+Stairs
+======
+Somewhat after the elevators is the data map for stairs and escalators. This map
+appears to be fixed-width:
+
+struct stair {
+  char present;
+    If set to 1, this means that this stair is actually in use somewhere in the
+    building.
+  char stairType;
+    If this value is 0, you have an escalator. If it is 1, this is a stair.
+  WORD leftrightpos;
+    This is correlated to left position of the stair, as measured in floor
+    units (not pixels).
+  WORD baseFloor;
+    This is the floor that this is on. Remember that "floor 1" is really 10.
+  char unknown[4];
+    4 bytes of unknown data; struct size should be 10.
+    The last 4 bytes may be the number of people currently on the stairs.
+} stairs[64];
+
+The End
+=======
+Named types seem to be at the end. Each name is a string of 16 bytes, written
+in C-style. Note that the width is 16 bytes, so you may get garbage if the name
+is shorter. This implies that the maximum length for any name is 15.
+
+I have no idea how the names are linked to the tenant or vice versa.

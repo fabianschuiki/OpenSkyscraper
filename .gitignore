@@ -16,5 +16,5 @@
 /resources/SIMTOWER.EXE
 
 # Documentation (for now)
-/doc/*
-!/doc/Doxyfile
+/doc/source/*
+!/doc/source/Doxyfile
