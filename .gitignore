@@ -1,6 +1,6 @@
 # ignore most things in the build folder
 /build/*
-!/build/resources
+!/build/data
 
 # Mac OS X and Xcode stuff
 .DS_Store
