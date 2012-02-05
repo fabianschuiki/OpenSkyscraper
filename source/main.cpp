@@ -1,5 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+
+#include "application.h"
 #include "space.h"
 #include "entity.h"
 #include "packages/item.h"
@@ -7,7 +9,6 @@
 #include "path.h"
 #include "sprite.h"
 #include "tower/tower.h"
-#include "application.h"
 
 int main(int argc, char * argv[])
 {

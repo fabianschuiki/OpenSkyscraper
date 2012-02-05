@@ -6,17 +6,28 @@ namespace OT
 	class Logger
 	{
 	public:
-		Logger();
-		
 		typedef enum {
 			ERROR,
 			IMPORTANT,
 			MAIN,
 			DEBUG
 		} LogLevel;
-		LogLevel level;
+		
+		Logger();
+		
+		LogLevel getLevel() const;
+		void setLevel(LogLevel l);
+		
+		const std::string & getOutputPath() const;
+		void setOutputPath(std::string op);
 		
 		void log(LogLevel level, const char * file, int line, const char * func, const char * fmt, ...);
+		
+	private:
+		LogLevel level;
+		
+		std::string outputPath;
+		FILE * outputFile;
 	};
 }
 
