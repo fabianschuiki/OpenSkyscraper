@@ -13,7 +13,10 @@
 int main(int argc, char * argv[])
 {
 	OT::Application * a = new OT::Application(argc, argv);
-	return 0;
+	int exitCode = a->run();
+	delete a;
+	a = NULL;
+	return exitCode;
 	
 	//Create the main window.
 	sf::RenderWindow app(sf::VideoMode(800, 600, 32), "OpenSkyscraper SFML");

@@ -9,7 +9,7 @@ namespace OT
 		typedef enum {
 			ERROR,
 			IMPORTANT,
-			MAIN,
+			INFO,
 			DEBUG
 		} LogLevel;
 		
