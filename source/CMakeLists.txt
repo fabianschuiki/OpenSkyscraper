@@ -8,6 +8,11 @@ set(EXECUTABLE_NAME OpenSkyscraper)
 set(src_dir  ${PROJECT_SOURCE_DIR})
 set(data_dir ${PROJECT_SOURCE_DIR}/../data)
 
+# Debugging definitions.
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+	add_definitions("-DBUILD_DEBUG")
+endif()
+
 
 # Gather the source files.
 file(GLOB_RECURSE sources RELATIVE ${src_dir} ${src_dir}/*.cpp)
