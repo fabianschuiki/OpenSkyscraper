@@ -36,9 +36,6 @@ if (APPLE)
 		${sources}
 		${resources}
 	)
-	
-	# Special directories in the target.
-	set(FRAMEWORKS_DIR ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
 
 # other systems
 else ()
@@ -64,25 +61,11 @@ include_directories(${LUA_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${LUA_LIBRARY})
 
 # SFML
+find_package(SFML REQUIRED system window graphics)
+include_directories(${SFML_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
+
+# Copy the SFML into the application bundle on Mac OS X.
 if (APPLE)
-	# For Mac OS X, SFML is provided as frameworks.
-	include_directories(../macosx/sfml/SFML.framework)
-	target_link_libraries(
-		${EXECUTABLE_NAME}
-		"-F../macosx/sfml/"
-		"-framework sfml-system"
-		"-framework sfml-window"
-		"-framework sfml-graphics"
-	)
-	
-	# Make sure the SFML frameworks are installed inside the bundle.
-	set(frameworks
-		../macosx/sfml/sfml-system.framework
-		../macosx/sfml/sfml-window.framework
-		../macosx/sfml/sfml-graphics.framework
-	)
-	install(DIRECTORY ${frameworks} DESTINATION ${FRAMEWORKS_DIR})
-else ()
-	find_package(SFML REQUIRED system window graphics)
-	target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
+	install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
 endif ()
