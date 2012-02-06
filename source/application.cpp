@@ -98,10 +98,10 @@ void Application::init()
 	gui.init(&window);
 	
 	//DEBUG: create some CEGUI interface.
-	window.ShowMouseCursor(false);
+	//window.ShowMouseCursor(false);
 	try {
 		CEGUI::WindowManager* WindowMgr = gui.getWindowManager();
-		CEGUI::Window* Dialog = WindowMgr->createWindow("WindowsLook/FrameWindow", "OurDialog");
+		CEGUI::Window* Dialog = WindowMgr->createWindow("SleekSpace/FrameWindow", "OurDialog");
 		Dialog->setMinSize(CEGUI::UVector2(CEGUI::UDim(0.0f, 200),CEGUI::UDim(0.0f, 150)));
 		Dialog->setSize(CEGUI::UVector2(CEGUI::UDim(0.0f, 400),CEGUI::UDim(0.0f, 300)));
 		Dialog->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25f, 0), CEGUI::UDim(0.1f, 0)));

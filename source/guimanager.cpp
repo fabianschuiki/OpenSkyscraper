@@ -42,6 +42,7 @@ bool GUIManager::init(sf::RenderWindow * window)
 		CEGUI::ScriptModule::setDefaultResourceGroup("lua_main");
 		
 		CEGUI::SchemeManager::getSingleton().loadScheme("WindowsLook.scheme");
+		CEGUI::SchemeManager::getSingleton().loadScheme("SleekSpace.scheme");
 		CEGUI::FontManager::getSingleton().createFont("DejaVuSans-10.font");
 		
 		system->setDefaultMouseCursor("WindowsLook", "MouseArrow");
