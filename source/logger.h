@@ -2,7 +2,7 @@
 #include <ostream>
 
 namespace OT
-{	
+{
 	class Logger
 	{
 	public:

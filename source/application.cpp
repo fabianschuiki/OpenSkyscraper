@@ -24,7 +24,7 @@ Application::Application(int argc, char * argv[])
 	logger.setLevel(Logger::DEBUG);
 	char logname[128];
 	snprintf(logname, 128, "debug-%li.log", (long int)time(NULL));
-	logger.setOutputPath(dir.down(logname));
+	logger.setOutputPath(/*dir.down(*/logname/*)*/);
 #endif
 	
 	//Parse command line arguments.
@@ -40,20 +40,30 @@ Application::Application(int argc, char * argv[])
 	
 	LOG(DEBUG,
 		"constructed\n"
-		"    path = %s\n"
-		"    dir  = %s",
-		getPath().str().c_str(), getDir().str().c_str()
+		"    path     = %s\n"
+		"    dataDir  = %s\n"
+		"    prefsDir = %s",
+		path.str().c_str(),
+		dataDir.str().c_str(),
+		prefsDir.str().c_str()
 	);
 	LOG(IMPORTANT, "ready");
 }
 
-Path Application::getPath() const { return path; }
-Path Application::getDir()  const { return dir;  }
+Path Application::getPath()     const { return path;     }
+Path Application::getDataDir()  const { return dataDir;  }
+Path Application::getPrefsDir() const { return prefsDir; }
 
 void Application::setPath(const Path & p)
 {
-	path = p;
-	dir  = p.up();
+#ifdef __APPLE__
+	path     = Path("../MacOS").down(p.name());
+	dataDir  = ".";
+	prefsDir = "~/Library/Preferences";
+#else
+	path     = p;
+	dataDir  = p.up().down("data");
+#endif
 }
 
 /** Runs the application. */
