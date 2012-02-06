@@ -74,3 +74,8 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
 if (APPLE)
 	install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
 endif ()
+
+# CEGUI
+find_package(CEGUI REQUIRED opengl)
+include_directories(${CEGUI_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${CEGUI_LIBRARY})

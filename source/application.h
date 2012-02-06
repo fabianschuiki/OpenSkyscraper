@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
+#include "guimanager.h"
 #include "logger.h"
 #include "path.h"
 
@@ -20,6 +21,8 @@ namespace OT
 		
 		sf::RenderWindow window;
 		sf::VideoMode videoMode;
+		
+		GUIManager gui;
 		
 		int run();
 		

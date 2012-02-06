@@ -94,10 +94,49 @@ void Application::init()
 	videoMode.BitsPerPixel = 32;
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");
+	
+	gui.init(&window);
+	
+	//DEBUG: create some CEGUI interface.
+	window.ShowMouseCursor(false);
+	try {
+		CEGUI::WindowManager* WindowMgr = gui.getWindowManager();
+		CEGUI::Window* Dialog = WindowMgr->createWindow("WindowsLook/FrameWindow", "OurDialog");
+		Dialog->setMinSize(CEGUI::UVector2(CEGUI::UDim(0.0f, 200),CEGUI::UDim(0.0f, 150)));
+		Dialog->setSize(CEGUI::UVector2(CEGUI::UDim(0.0f, 400),CEGUI::UDim(0.0f, 300)));
+		Dialog->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25f, 0), CEGUI::UDim(0.1f, 0)));
+		Dialog->setText("Window");
+		//Dialog->subscribeEvent(FrameWindow::EventCloseClicked, Event::Subscriber(&App::onDialog_Closed, this));
+		CEGUI::Window* EditBox = WindowMgr->createWindow("WindowsLook/Editbox", "OurDialog_Editbox");
+		EditBox->setMinSize(CEGUI::UVector2(CEGUI::UDim(0.0f, 100), CEGUI::UDim(0.0f, 20)));
+		EditBox->setSize(CEGUI::UVector2(CEGUI::UDim(0.5f, 0), CEGUI::UDim(0.1f, 0)));
+		EditBox->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25f, 0), CEGUI::UDim(0.4f, 0)));
+		//EditBox->subscribeEvent(CEGUI::Window::EventTextChanged, Event::Subscriber(&App::onEditbox_TextChanged, this));
+		Dialog->addChildWindow(EditBox);
+		gui.setRootWindow(Dialog);
+	} catch (CEGUI::Exception&  e) {
+		LOG(ERROR, "CEGUI error: %s", e.getMessage().c_str());
+		//return false;
+	}
 }
 
 void Application::loop()
 {
+	while (window.IsOpened()) {
+		sf::Event event;
+		while (window.GetEvent(event)) {
+			if (gui.handleEvent(event))
+				continue;
+			switch (event.Type) {
+			case sf::Event::Closed:
+				window.Close();
+				break;
+			}
+		}
+		window.Clear();
+		gui.draw();
+		window.Display();
+	}
 }
 
 void Application::cleanup()
