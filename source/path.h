@@ -17,7 +17,9 @@ namespace OT
 	
 		void remove(int levels = 1);
 		void append(const std::string & comp);
-	
+		
+		std::string name() const;
+		
 		std::string str() const;
 		inline operator std::string () const { return str(); }
 	

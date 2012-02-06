@@ -71,6 +71,17 @@ void Path::append(const string & comp)
 	path += comp;
 }
 
+/** Returns the last path component. */
+string Path::name() const
+{
+	size_t sep = path.find_last_of(SEPARATOR);
+	if (sep == string::npos)
+		sep = 0;
+	else
+		sep += 1;
+	return path.substr(sep);
+}
+
 /** Returns a string representation of the path. */
 string Path::str() const
 {
