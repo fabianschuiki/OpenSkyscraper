@@ -1,5 +1,5 @@
 #pragma once
-#include <ostream>
+#include <cstdio>
 
 namespace OT
 {
@@ -8,6 +8,7 @@ namespace OT
 	public:
 		typedef enum {
 			ERROR,
+			WARNING,
 			IMPORTANT,
 			INFO,
 			DEBUG

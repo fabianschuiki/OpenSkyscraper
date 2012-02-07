@@ -79,3 +79,8 @@ endif ()
 find_package(CEGUI REQUIRED opengl)
 include_directories(${CEGUI_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${CEGUI_LIBRARY})
+
+# libRocket
+find_package(Rocket REQUIRED core)
+include_Directories(${ROCKET_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})

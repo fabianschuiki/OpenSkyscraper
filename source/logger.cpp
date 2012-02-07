@@ -1,7 +1,7 @@
 #include <cassert>
 #include <cstdarg>
-#include <cstdio>
 #include <cstring>
+#include <string>
 
 #include "logger.h"
 #include "path.h"
@@ -67,10 +67,11 @@ void Logger::log(LogLevel level, const char * file, int line, const char * func,
 	//Write to the console.
 	FILE * f = (level == ERROR ? stderr : stdout);
 	int padding = fprintf(f, "\e[0;32m%s\e[0m.%i, \e[1;34m%s\e[0m: ", filename, line, func) - 2 - 22;
-	if (level == ERROR) fputs("\e[1;31m*** ", f);
+	if (level == ERROR)     fputs("\e[1;31m*** ", f);
+	if (level == WARNING)   fputs("\e[1;33m", f);
 	if (level == IMPORTANT) fputs("\e[1;35m", f);
 	fputs_padded(f, str, padding);
-	if (level == ERROR || level == IMPORTANT) fputs("\e[0m", f);
+	if (level == ERROR || level == WARNING || level == IMPORTANT) fputs("\e[0m", f);
 	fputc('\n', f);
 	
 	//Write to the output file.
