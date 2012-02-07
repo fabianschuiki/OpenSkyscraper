@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-#include "guimanager.h"
+#include "GUIManager.h"
 #include "logger.h"
 #include "path.h"
 

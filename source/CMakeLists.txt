@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.6)
 project(OpenSkyscraper)
 
+# Default to debug build.
+if (NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 # Executable name.
 set(EXECUTABLE_NAME OpenSkyscraper)
 
@@ -70,7 +75,7 @@ find_package(SFML REQUIRED system window graphics)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
 
-# Copy the SFML into the application bundle on Mac OS X.
+# Copy the SFML frameworks into the application bundle on Mac OS X.
 if (APPLE)
 	install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
 endif ()
@@ -81,6 +86,9 @@ include_directories(${CEGUI_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${CEGUI_LIBRARY})
 
 # libRocket
-find_package(Rocket REQUIRED core)
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+	set(rocket_debug "debugger")
+endif()
+find_package(Rocket REQUIRED core ${rocket_debug})
 include_Directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
