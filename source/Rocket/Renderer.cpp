@@ -88,19 +88,15 @@ sf::RenderWindow *RocketRenderer::GetWindow()
 
 void RocketRenderer::Resize()
 {
-	MyWindow->SetActive(true);
+	/*MyWindow->SetActive(true);
 	MyWindow->PreserveOpenGLStates(true);
-
-	static sf::View View;
-	View.SetFromRect(sf::FloatRect(0, (float)MyWindow->GetWidth(), (float)MyWindow->GetHeight(), 0));
-	MyWindow->SetView(View);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, MyWindow->GetWidth(), MyWindow->GetHeight(), 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 
-	glViewport(0, 0, MyWindow->GetWidth(), MyWindow->GetHeight());
+	glViewport(0, 0, MyWindow->GetWidth(), MyWindow->GetHeight());*/
 };
 
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.
@@ -196,7 +192,7 @@ Rocket::Core::CompiledGeometryHandle RocketRenderer::CompileGeometry(Rocket::Cor
 
 	return (Rocket::Core::CompiledGeometryHandle)Geometry;
 #else
-	return NULL;
+	return (Rocket::Core::CompiledGeometryHandle)NULL;
 #endif
 }
 
@@ -290,7 +286,7 @@ bool RocketRenderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Ro
 
 	Rocket::Core::FileInterface* file_interface = Rocket::Core::GetFileInterface();
 	Rocket::Core::FileHandle file_handle = file_interface->Open(source);
-	if (file_handle == NULL)
+	if (file_handle == (Rocket::Core::FileHandle)NULL)
 		return false;
 
 	file_interface->Seek(file_handle, 0, SEEK_END);

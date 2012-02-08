@@ -30,13 +30,17 @@ namespace OT
 		Path path;
 		Path dataDir;
 		Path prefsDir;
+		
 		void setPath(const Path & p);
 		
 		bool running;
 		int exitCode;
+		
 		void init();
 		void loop();
 		void cleanup();
+		
+		sf::Font monoFont;
 	};
 	
 	extern Application * App;

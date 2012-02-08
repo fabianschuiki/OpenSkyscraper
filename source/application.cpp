@@ -72,9 +72,9 @@ int Application::run()
 	running = true;
 	exitCode = 0;
 	
-	init();
-	loop();
-	cleanup();
+	if (exitCode == 0) init();
+	if (exitCode == 0) loop();
+	if (exitCode == 0) cleanup();
 	
 	running = false;
 	
@@ -95,7 +95,15 @@ void Application::init()
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");
 	
-	gui.init(&window);
+	if (!gui.init(&window)) {
+		LOG(ERROR, "unable to initialize gui");
+		exitCode = -1;
+		return;
+	}
+	
+	if (!monoFont.LoadFromFile(dataDir.down("fonts").down("UbuntuMono-Regular.ttf").c_str(), 14)) {
+		LOG(WARNING, "unable to load mono font");
+	}
 	
 	//DEBUG: load some GUI
 	Path rocket = dataDir.down("debug").down("rocket");
@@ -106,7 +114,6 @@ void Application::init()
 	
 	Rocket::Core::ElementDocument * cursor = gui.context->LoadMouseCursor(rocket.down("cursor.rml").c_str());
 	if (cursor) {
-		window.ShowMouseCursor(false);
 		cursor->RemoveReference();
 	}
 	
@@ -119,25 +126,52 @@ void Application::init()
 
 void Application::loop()
 {
-	while (window.IsOpened()) {
+	sf::Clock clock;
+	sf::String rateIndicator("<not available>", monoFont, 14);
+	double rateIndicatorTimer = 0;
+	double rateDamped = 0;
+	double rateDampFactor = 0;
+	
+	while (window.IsOpened() && exitCode == 0) {
+		double dt_real = clock.GetElapsedTime();
+		double dt = std::max<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
+		clock.Reset();
+		
+		//Update the rate indicator.
+		rateDampFactor = (dt_real * 1);
+		rateDamped = (rateDamped + dt_real * rateDampFactor) / (1 + rateDampFactor);
+		if ((rateIndicatorTimer += dt_real) > 0.1) {
+			rateIndicatorTimer -= 0.1;
+			char rate[32];
+			snprintf(rate, 32, "%.1f Hz", 1.0/rateDamped);
+			rateIndicator.SetText(rate);
+		}
+		
 		sf::Event event;
 		while (window.GetEvent(event)) {
+			switch (event.Type) {
+			case sf::Event::Resized:
+				sf::View view;
+				view.SetFromRect(sf::FloatRect(0, (float)window.GetWidth(), 0, (float)window.GetHeight()));
+				//window.SetView(view);
+				break;
+			}
 			if (gui.handleEvent(event))
 				continue;
 			switch (event.Type) {
 			case sf::Event::Closed:
-				window.Close();
 				exitCode = 1;
 				break;
 			}
 		}
 		window.Clear();
 		gui.draw();
+		window.Draw(rateIndicator);
 		window.Display();
 	}
+	window.Close();
 }
 
 void Application::cleanup()
 {
-	
 }
