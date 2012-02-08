@@ -3,7 +3,7 @@
 #include <Rocket/Debugger/Debugger.h>
 #endif
 
-#include "application.h"
+#include "Application.h"
 #include "GUIManager.h"
 
 using namespace OT;

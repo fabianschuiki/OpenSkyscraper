@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-#include "application.h"
+#include "Application.h"
 #include "space.h"
 #include "entity.h"
 #include "packages/item.h"

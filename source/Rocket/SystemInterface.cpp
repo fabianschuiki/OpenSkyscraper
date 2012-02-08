@@ -26,7 +26,7 @@
  */
 #include <Rocket/Core.h>
 
-#include "../application.h"
+#include "../Application.h"
 #include "../logger.h"
 #include "SystemInterface.h"
 
