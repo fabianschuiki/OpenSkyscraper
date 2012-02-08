@@ -94,6 +94,8 @@ void Application::init()
 	videoMode.BitsPerPixel = 32;
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");
+	//guiView    = window.GetView();
+	//cameraView = window.GetView();
 	
 	if (!gui.init(&window)) {
 		LOG(ERROR, "unable to initialize gui");
@@ -132,6 +134,8 @@ void Application::loop()
 	double rateDamped = 0;
 	double rateDampFactor = 0;
 	
+	sf::View guiView = window.GetDefaultView();
+	
 	while (window.IsOpened() && exitCode == 0) {
 		double dt_real = clock.GetElapsedTime();
 		double dt = std::max<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
@@ -152,9 +156,7 @@ void Application::loop()
 			switch (event.Type) {
 			case sf::Event::Resized:
 				LOG(INFO, "resized (%i, %i)", window.GetWidth(), window.GetHeight());
-				sf::View view;
-				view.SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
-				window.SetView(view);
+				guiView.SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
 				break;
 			}
 			if (gui.handleEvent(event))
@@ -166,7 +168,11 @@ void Application::loop()
 			}
 		}
 		window.Clear();
+		window.SetView(guiView);
 		gui.draw();
+		sf::FloatRect r = rateIndicator.GetRect();
+		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right+5, r.Bottom+5, sf::Color::Black);
+		window.Draw(bg);
 		window.Draw(rateIndicator);
 		window.Display();
 	}
