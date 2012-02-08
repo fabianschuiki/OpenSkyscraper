@@ -89,13 +89,11 @@ int Application::run()
 
 void Application::init()
 {
-	videoMode.Width        = 800;
-	videoMode.Height       = 600;
+	videoMode.Width        = 1280;
+	videoMode.Height       = 768;
 	videoMode.BitsPerPixel = 32;
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");
-	//guiView    = window.GetView();
-	//cameraView = window.GetView();
 	
 	if (!gui.init(&window)) {
 		LOG(ERROR, "unable to initialize gui");
@@ -114,10 +112,10 @@ void Application::init()
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Italic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());
 	
-	Rocket::Core::ElementDocument * cursor = gui.context->LoadMouseCursor(rocket.down("cursor.rml").c_str());
+	/*Rocket::Core::ElementDocument * cursor = gui.context->LoadMouseCursor(rocket.down("cursor.rml").c_str());
 	if (cursor) {
 		cursor->RemoveReference();
-	}
+	}*/
 	
 	Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
 	if (document) {
@@ -157,6 +155,11 @@ void Application::loop()
 			case sf::Event::Resized:
 				LOG(INFO, "resized (%i, %i)", window.GetWidth(), window.GetHeight());
 				guiView.SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
+				break;
+			case sf::Event::KeyPressed:
+				if (event.Key.Code == sf::Key::Escape) {
+					exitCode = 1;
+				}
 				break;
 			}
 			if (gui.handleEvent(event))
