@@ -48,17 +48,17 @@ bool GUIManager::handleEvent(sf::Event & event)
 	
 	switch (event.Type) {
 		case sf::Event::Resized:
-			renderer.Resize();
+			this->context->SetDimensions(Rocket::Core::Vector2i(window->GetWidth(), window->GetHeight()));
 			return true;
 		case sf::Event::MouseMoved:
 			context->ProcessMouseMove(event.MouseMove.X, event.MouseMove.Y, system.GetKeyModifiers(window));
-			return false;
+			return true;
 		case sf::Event::MouseButtonPressed:
 			context->ProcessMouseButtonDown(event.MouseButton.Button, system.GetKeyModifiers(window));
-			return false;
+			return true;
 		case sf::Event::MouseButtonReleased:
 			context->ProcessMouseButtonUp(event.MouseButton.Button, system.GetKeyModifiers(window));
-			return false;
+			return true;
 		case sf::Event::MouseWheelMoved:
 			return context->ProcessMouseWheel(event.MouseWheel.Delta, system.GetKeyModifiers(window));
 		case sf::Event::TextEntered:

@@ -77,26 +77,11 @@ RocketRenderer::RocketRenderer()
 void RocketRenderer::SetWindow(sf::RenderWindow *Window)
 {
 	MyWindow = Window;
-
-	Resize();
 };
 
-sf::RenderWindow *RocketRenderer::GetWindow()
+sf::RenderWindow * RocketRenderer::GetWindow()
 {
 	return MyWindow;
-};
-
-void RocketRenderer::Resize()
-{
-	/*MyWindow->SetActive(true);
-	MyWindow->PreserveOpenGLStates(true);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, MyWindow->GetWidth(), MyWindow->GetHeight(), 0, -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-
-	glViewport(0, 0, MyWindow->GetWidth(), MyWindow->GetHeight());*/
 };
 
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.

@@ -151,9 +151,10 @@ void Application::loop()
 		while (window.GetEvent(event)) {
 			switch (event.Type) {
 			case sf::Event::Resized:
+				LOG(INFO, "resized (%i, %i)", window.GetWidth(), window.GetHeight());
 				sf::View view;
-				view.SetFromRect(sf::FloatRect(0, (float)window.GetWidth(), 0, (float)window.GetHeight()));
-				//window.SetView(view);
+				view.SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
+				window.SetView(view);
 				break;
 			}
 			if (gui.handleEvent(event))

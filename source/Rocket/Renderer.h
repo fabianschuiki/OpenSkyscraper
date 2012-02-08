@@ -42,9 +42,6 @@ namespace OT
 		/// Returns the currently assigned window
 		sf::RenderWindow *GetWindow();
 
-		/// Resizes the viewport automatically
-		void Resize();
-
 		/// Called by Rocket when it wants to render geometry that it does not wish to optimise.
 		virtual void RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation);
 
