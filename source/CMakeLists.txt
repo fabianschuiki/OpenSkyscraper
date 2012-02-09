@@ -81,9 +81,9 @@ if (APPLE)
 endif ()
 
 # CEGUI
-find_package(CEGUI REQUIRED opengl)
-include_directories(${CEGUI_INCLUDE_DIR})
-target_link_libraries(${EXECUTABLE_NAME} ${CEGUI_LIBRARY})
+#find_package(CEGUI REQUIRED opengl)
+#include_directories(${CEGUI_INCLUDE_DIR})
+#target_link_libraries(${EXECUTABLE_NAME} ${CEGUI_LIBRARY})
 
 # libRocket
 if (CMAKE_BUILD_TYPE MATCHES Debug)
