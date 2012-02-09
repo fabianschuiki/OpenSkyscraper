@@ -6,7 +6,7 @@
 #include "entity.h"
 #include "packages/item.h"
 #include "game.h"
-#include "path.h"
+#include "Path.h"
 #include "sprite.h"
 #include "tower/tower.h"
 

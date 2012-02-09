@@ -1,11 +1,15 @@
-#include "path.h"
 #include <iostream>
+
+#include "Path.h"
 
 using namespace OT;
 using std::string;
 
-//TODO: Add Windows here.
+#ifdef __WINDOWS__
+const char Path::SEPARATOR = '\\';
+#else
 const char Path::SEPARATOR = '/';
+#endif
 
 
 /** Initializes an empty path. */

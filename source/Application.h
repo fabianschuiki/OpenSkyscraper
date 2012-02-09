@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <stack>
@@ -6,7 +7,7 @@
 #include "DataManager.h"
 #include "GUIManager.h"
 #include "logger.h"
-#include "path.h"
+#include "Path.h"
 #include "State.h"
 
 namespace OT
