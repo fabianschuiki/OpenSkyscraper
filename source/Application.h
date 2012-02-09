@@ -3,6 +3,7 @@
 #include <SFML/Window.hpp>
 #include <stack>
 
+#include "DataManager.h"
 #include "GUIManager.h"
 #include "logger.h"
 #include "path.h"
@@ -24,6 +25,7 @@ namespace OT
 		sf::RenderWindow window;
 		sf::VideoMode videoMode;
 		
+		DataManager data;
 		GUIManager gui;
 		
 		int run();

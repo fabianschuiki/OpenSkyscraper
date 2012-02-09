@@ -14,6 +14,7 @@ using namespace std;
 Application * OT::App = NULL;
 
 Application::Application(int argc, char * argv[])
+:	data(this)
 {
 	assert(App == NULL && "Application initialized multiple times");
 	App = this;
@@ -91,6 +92,8 @@ int Application::run()
 
 void Application::init()
 {
+	data.init();
+	
 	videoMode.Width        = 1280;
 	videoMode.Height       = 768;
 	videoMode.BitsPerPixel = 32;
@@ -217,6 +220,7 @@ void Application::cleanup()
 	window.Close();
 }
 
+/** Pushes the given State ontop of the state stack, causing it to receive events. */
 void Application::pushState(State * state)
 {
 	assert(state != NULL && "pushState() requires non-NULL state");
@@ -228,6 +232,8 @@ void Application::pushState(State * state)
 	state->activate();
 }
 
+/** Pops the topmost State off the state stack, causing the underlying state to regain control.
+ *  The application will terminate once there are no more states on the stack. */
 void Application::popState()
 {
 	assert(!states.empty() && "popState() requires at least one state on the states stack");
