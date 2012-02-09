@@ -1,10 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <stack>
 
 #include "GUIManager.h"
 #include "logger.h"
 #include "path.h"
+#include "State.h"
 
 namespace OT
 {
@@ -41,6 +43,10 @@ namespace OT
 		void cleanup();
 		
 		sf::Font monoFont;
+		
+		std::stack<State *> states;
+		void pushState(State * state);
+		void popState();
 	};
 	
 	extern Application * App;

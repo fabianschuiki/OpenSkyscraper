@@ -1,10 +1,12 @@
-#include "Application.h"
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <iostream>
+
+#include "Application.h"
+#include "Game.h"
 
 using namespace OT;
 using namespace std;
@@ -95,93 +97,144 @@ void Application::init()
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");
 	
-	if (!gui.init(&window)) {
-		LOG(ERROR, "unable to initialize gui");
-		exitCode = -1;
-		return;
-	}
-	
-	if (!monoFont.LoadFromFile(dataDir.down("fonts").down("UbuntuMono-Regular.ttf").c_str(), 14)) {
+	if (!monoFont.LoadFromFile(dataDir.down("fonts").down("UbuntuMono-Regular.ttf").c_str(), 16)) {
 		LOG(WARNING, "unable to load mono font");
 	}
 	
+	Game * game = new Game();
+	pushState(game);
+	
+	/*if (!gui.init(&window)) {
+		LOG(ERROR, "unable to initialize gui");
+		exitCode = -1;
+		return;
+	}*/
+	
 	//DEBUG: load some GUI
-	Path rocket = dataDir.down("debug").down("rocket");
+	/*Path rocket = dataDir.down("debug").down("rocket");
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Bold.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-BoldItalic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Italic.otf").c_str());
-	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());
+	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());*/
 	
 	/*Rocket::Core::ElementDocument * cursor = gui.context->LoadMouseCursor(rocket.down("cursor.rml").c_str());
 	if (cursor) {
 		cursor->RemoveReference();
 	}*/
 	
-	Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
+	/*Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
 	if (document) {
 		document->Show();
 		document->RemoveReference();
-	}
+	}*/
 }
 
 void Application::loop()
 {
 	sf::Clock clock;
-	sf::String rateIndicator("<not available>", monoFont, 14);
+	sf::String rateIndicator("<not available>", monoFont, 16);
 	double rateIndicatorTimer = 0;
 	double rateDamped = 0;
 	double rateDampFactor = 0;
+	double dt_max = 0, dt_min = 0;
+	int dt_maxmin_resetTimer = 0;
 	
-	sf::View guiView = window.GetDefaultView();
-	
-	while (window.IsOpened() && exitCode == 0) {
+	while (window.IsOpened() && exitCode == 0 && !states.empty()) {
 		double dt_real = clock.GetElapsedTime();
+		//dt_max = (dt_max + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
+		//dt_min = (dt_min + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
+		if (dt_real > dt_max) {
+			dt_max = dt_real;
+			dt_maxmin_resetTimer = 0;
+		}
+		if (dt_real < dt_min) {
+			dt_min = dt_real;
+			dt_maxmin_resetTimer = 0;
+		}
 		double dt = std::max<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
 		clock.Reset();
 		
 		//Update the rate indicator.
 		rateDampFactor = (dt_real * 1);
 		rateDamped = (rateDamped + dt_real * rateDampFactor) / (1 + rateDampFactor);
-		if ((rateIndicatorTimer += dt_real) > 0.1) {
-			rateIndicatorTimer -= 0.1;
+		if ((rateIndicatorTimer += dt_real) > 0.5) {
+			rateIndicatorTimer -= 0.5;
 			char rate[32];
-			snprintf(rate, 32, "%.1f Hz", 1.0/rateDamped);
+			snprintf(rate, 32, "%.0f Hz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
 			rateIndicator.SetText(rate);
+			if (++dt_maxmin_resetTimer >= 2*3) {
+				dt_maxmin_resetTimer = 0;
+				dt_max = dt_real;
+				dt_min = dt_real;
+			}
 		}
 		
+		//Handle events.
 		sf::Event event;
 		while (window.GetEvent(event)) {
-			switch (event.Type) {
-			case sf::Event::Resized:
+			if (event.Type == sf::Event::Resized) {
 				LOG(INFO, "resized (%i, %i)", window.GetWidth(), window.GetHeight());
-				guiView.SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
-				break;
-			case sf::Event::KeyPressed:
-				if (event.Key.Code == sf::Key::Escape) {
-					exitCode = 1;
-				}
-				break;
+				window.GetDefaultView().SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
 			}
-			if (gui.handleEvent(event))
-				continue;
-			switch (event.Type) {
-			case sf::Event::Closed:
+			if (event.Type == sf::Event::KeyPressed && event.Key.Code == sf::Key::Escape) {
 				exitCode = 1;
-				break;
+				continue;
+			}
+			if (!states.empty()) {
+				if (states.top()->handleEvent(event))
+					continue;
+			}
+			if (event.Type == sf::Event::Closed) {
+				LOG(WARNING, "current state did not handle sf::Event::Closed");
+				exitCode = 1;
+				continue;
 			}
 		}
-		window.Clear();
-		window.SetView(guiView);
-		gui.draw();
+		
+		//Make the current state do its work.
+		if (!states.empty()) {
+			states.top()->advance(dt);
+		}
+		
+		//Draw the debugging overlays.
+		window.SetView(window.GetDefaultView());
 		sf::FloatRect r = rateIndicator.GetRect();
-		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right+5, r.Bottom+5, sf::Color::Black);
+		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right, r.Bottom, sf::Color::Black);
 		window.Draw(bg);
 		window.Draw(rateIndicator);
+		
+		//Swap buffers.
 		window.Display();
 	}
-	window.Close();
 }
 
 void Application::cleanup()
 {
+	while (!states.empty()) {
+		popState();
+	}
+	
+	window.Close();
+}
+
+void Application::pushState(State * state)
+{
+	assert(state != NULL && "pushState() requires non-NULL state");
+	LOG(INFO, "pushing state %s", typeid(*state).name());
+	if (!states.empty()) {
+		states.top()->deactivate();
+	}
+	states.push(state);
+	state->activate();
+}
+
+void Application::popState()
+{
+	assert(!states.empty() && "popState() requires at least one state on the states stack");
+	LOG(INFO, "popping state %s", typeid(*states.top()).name());
+	states.top()->deactivate();
+	states.pop();
+	if (!states.empty()) {
+		states.top()->activate();
+	}
 }
