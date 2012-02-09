@@ -14,9 +14,11 @@ namespace OT
 	
 		Path up(int levels = 1) const;
 		Path down(const std::string & comp) const;
-	
-		void remove(int levels = 1);
-		void append(const std::string & comp);
+		Path operator + (const std::string & comp) const { return down(comp); }
+		
+		Path & remove(int levels = 1);
+		Path & append(const std::string & comp);
+		Path & operator += (const std::string & comp) { return append(comp); }
 		
 		std::string name() const;
 		

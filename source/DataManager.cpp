@@ -31,13 +31,19 @@ void DataManager::init()
 	
 	for (int i = 0; i < dirs.size(); i++)
 		LOG(DEBUG, "  %s", dirs[i].c_str());
+	
+	//DEBUG
+	LOG(DEBUG, "debug paths:");
+	Paths p = paths("/SIMTOWER.EXE/");
+	for (int i = 0; i < p.size(); i++)
+		LOG(DEBUG, "  %s", p[i].c_str());
 }
 
 /** Returns a list of possible paths to the given resource. */
 DataManager::Paths DataManager::paths(Path resource) const
 {
 	Paths p;
-	for (Paths::iterator d = dirs.begin(); d != dirs.end(); d++)
+	for (Paths::const_iterator d = dirs.begin(); d != dirs.end(); d++)
 		p.push_back(*d + resource);
 	return p;
 }

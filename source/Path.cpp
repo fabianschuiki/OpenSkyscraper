@@ -7,8 +7,15 @@ using std::string;
 
 #ifdef __WINDOWS__
 const char Path::SEPARATOR = '\\';
+void dozefy(string & s)
+{
+	for (string::iterator c = s.begin(); c != s.end(); c++)
+		if (*c == '/')
+			*c = SEPARATOR;
+}
 #else
 const char Path::SEPARATOR = '/';
+#define dozefy(s) 
 #endif
 
 
@@ -16,10 +23,10 @@ const char Path::SEPARATOR = '/';
 Path::Path(){}
 
 /** Initializes a path form the given C string. */
-Path::Path(const char * path) : path(path) {}
+Path::Path(const char * path) : path(path) { dozefy(path); }
 
 /** Initializes a path from the given C++ stirng. */
-Path::Path(const string & path) : path(path) {}
+Path::Path(const string & path) : path(path) { dozefy(path); }
 
 
 /** Returns a path with the given amount of levels cut off. */
@@ -39,7 +46,7 @@ Path Path::down(const string & comp) const
 }
 
 /** Climbs up the path hierarchy by the given amount of levels. */
-void Path::remove(int levels)
+Path & Path::remove(int levels)
 {
 	//Try to cut off as many levels as possible.
 	if (!path.empty()) {
@@ -65,14 +72,17 @@ void Path::remove(int levels)
 		//Cut off stuff.
 		path.erase(it, path.end());
 	}
+	return *this;
 }
 
 /** Appends the given path component. */
-void Path::append(const string & comp)
+Path & Path::append(const string & comp)
 {
-	if (!path.empty() && *(path.end() - 1) != SEPARATOR)
+	dozefy(comp);
+	if (!path.empty() && *(path.end()-1) != SEPARATOR && !comp.empty() && *(comp.end()-1) != SEPARATOR)
 		path += SEPARATOR;
 	path += comp;
+	return *this;
 }
 
 /** Returns the last path component. */
