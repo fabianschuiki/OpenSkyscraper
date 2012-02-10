@@ -1,0 +1,5 @@
+- create `CommmandLineArguments` class which handles interpretation of the command line arguments (e.g. `--dump-simtower <path>`)
+- remove dataDir, prefsDir from Application
+- create `FileSystem` class to do file manipulation (move, copy, mkdir, etc.)
+	- adjust `WindowsNEExecutable::dump`
+- maybe rename `WindowsNEExecutable` to `WindowsNEResources`
