@@ -7,6 +7,7 @@
 
 #include "Application.h"
 #include "Game.h"
+#include "SimTowerResources.h"
 #include "WindowsNEExecutable.h"
 
 using namespace OT;
@@ -103,10 +104,17 @@ void Application::init()
 		success = exe.load(paths[i]);
 	}
 	if (!success) {
-		LOG(WARNING, "unable to load SimTower");
+		LOG(WARNING, "unable to load SimTower executable");
 	}
 	//TODO: make this dependent on a command line switch --dump-simtower <path>.
-	exe.dump("~/SimTower Resources/");
+	exe.dump("~/SimTower Raw");
+	
+	SimTowerResources res;
+	if (!res.load(exe.resources)) {
+		LOG(WARNING, "unable to load SimTower resources");
+	}
+	//TODO: make this dependent on a command line switch
+	res.dump("~/SimTower Resources");
 	exitCode = 1;
 	
 	videoMode.Width        = 1280;

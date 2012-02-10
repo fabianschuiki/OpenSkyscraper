@@ -59,25 +59,25 @@ bool WindowsNEExecutable::load(Path path)
 		LOG(DEBUG, "  type 0x%x: %i resources", type, count);
 		
 		//Read the resources in this list.
-		f.ignore(4);
+		f.seekg(4, ios::cur);
 		for (int i = 0; i < count; i++)
 		{
 			//Read where the resource is located in the file and how long it is.
-			uint16_t offset, length;
-			f.read((char *)&offset, sizeof(offset));
-			f.read((char *)&length, sizeof(length));
+			uint16_t offset_aligned, length_aligned;
+			f.read((char *)&offset_aligned, sizeof(offset_aligned));
+			f.read((char *)&length_aligned, sizeof(length_aligned));
 			
 			//Apply the logical shift alignment read earlier.
-			offset <<= lsa;
-			length <<= lsa;
+			int offset = (int)offset_aligned << lsa;
+			int length = (int)length_aligned << lsa;
 			
 			//Read the resource ID.
 			uint16_t id;
-			f.ignore(2);
+			f.seekg(2, ios::cur);
 			f.read((char *)&id, sizeof(id));
 			
 			//Skip reserved bytes.
-			f.ignore(4);
+			f.seekg(4, ios::cur);
 			
 			//Store the resource.
 			Resource & r = resources[type][id];

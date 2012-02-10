@@ -3,3 +3,4 @@
 - create `FileSystem` class to do file manipulation (move, copy, mkdir, etc.)
 	- adjust `WindowsNEExecutable::dump`
 - maybe rename `WindowsNEExecutable` to `WindowsNEResources`
+- merge `WindowsNEExecutable` and `SimTowerResources` into one class for loading SimTower stuff
