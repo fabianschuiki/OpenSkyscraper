@@ -118,9 +118,9 @@ void WindowsNEExecutable::dump(Path path)
 		}
 	}
 	
-	char temp[8];
+	char temp[16];
 	for (ResourceTable::iterator t = resources.begin(); t != resources.end(); t++) {
-		snprintf(temp, 8, "%x", t->first);
+		snprintf(temp, 16, "%x", t->first);
 		Path dir = path.down(temp);
 		
 		if (stat(dir, &st) != 0) {
@@ -131,7 +131,7 @@ void WindowsNEExecutable::dump(Path path)
 		} 
 		
 		for (Resources::iterator r = t->second.begin(); r != t->second.end(); r++) {
-			snprintf(temp, 8, "%x", r->second.id);
+			snprintf(temp, 16, "%x.bin", r->second.id);
 			Path p = dir.down(temp);
 			
 			ofstream f(p.c_str());

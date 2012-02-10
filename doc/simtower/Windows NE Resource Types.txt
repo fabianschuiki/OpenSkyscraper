@@ -1,0 +1,9 @@
+8001  cursor
+8002  bitmap
+8003  icon
+8004  menu
+8005  dialog box
+8006  string table
+8009  accelerator
+800C  group cursor
+800E  group icon
