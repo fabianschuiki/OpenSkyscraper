@@ -7,6 +7,7 @@
 
 #include "Application.h"
 #include "Game.h"
+#include "WindowsNEExecutable.h"
 
 using namespace OT;
 using namespace std;
@@ -61,6 +62,7 @@ void Application::setPath(const Path & p)
 {
 #ifdef __APPLE__
 	path     = Path("../MacOS").down(p.name());
+	//TODO: data dir is obsolete
 	dataDir  = ".";
 	prefsDir = "~/Library/Preferences";
 #else
@@ -93,6 +95,19 @@ int Application::run()
 void Application::init()
 {
 	data.init();
+	
+	WindowsNEExecutable exe;
+	DataManager::Paths paths = data.paths("SIMTOWER.EXE");
+	bool success;
+	for (int i = 0; i < paths.size() && !success; i++) {
+		success = exe.load(paths[i]);
+	}
+	if (!success) {
+		LOG(WARNING, "unable to load SimTower");
+	}
+	//TODO: make this dependent on a command line switch --dump-simtower <path>.
+	exe.dump("~/SimTower Resources/");
+	exitCode = 1;
 	
 	videoMode.Width        = 1280;
 	videoMode.Height       = 768;
