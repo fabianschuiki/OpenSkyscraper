@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 
 #include "Path.h"
@@ -23,10 +24,10 @@ const char Path::SEPARATOR = '/';
 Path::Path(){}
 
 /** Initializes a path form the given C string. */
-Path::Path(const char * path) : path(path) { dozefy(path); }
+Path::Path(const char * path) : path(path) { dozefy(path); fixup(); }
 
 /** Initializes a path from the given C++ stirng. */
-Path::Path(const string & path) : path(path) { dozefy(path); }
+Path::Path(const string & path) : path(path) { dozefy(path); fixup(); }
 
 
 /** Returns a path with the given amount of levels cut off. */
@@ -82,6 +83,7 @@ Path & Path::append(const string & comp)
 	if (!path.empty() && *(path.end()-1) != SEPARATOR && !comp.empty() && *(comp.end()-1) != SEPARATOR)
 		path += SEPARATOR;
 	path += comp;
+	fixup();
 	return *this;
 }
 
@@ -100,4 +102,25 @@ string Path::name() const
 string Path::str() const
 {
 	return path;
+}
+
+/** Performs various post-processing on the path.
+ *  - replaces ~ by the $HOME environment variable
+ *  - removes trailing /
+ */
+void Path::fixup()
+{
+	if (!path.empty() && path[0] == '~') {
+		string home(getenv("HOME"));
+		rtrim(home);
+		path.replace(0, 1, home);
+	}
+	rtrim(path);
+}
+
+void Path::rtrim(std::string & s)
+{
+	string::iterator lc = s.end(); 
+	if (!s.empty() && *(--lc) == SEPARATOR)
+		s.erase(lc);
 }

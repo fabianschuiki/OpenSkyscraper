@@ -30,5 +30,8 @@ namespace OT
 	
 	private:
 		std::string path;
+		
+		void fixup();
+		static void rtrim(std::string & s);
 	};
 }
