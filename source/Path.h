@@ -27,6 +27,13 @@ namespace OT
 
 		const char * c_str() const { return str().c_str(); }
 		inline operator const char * () const { return c_str(); }
+		
+		bool operator == (const Path & p) const { return path == p.path; }
+		bool operator != (const Path & p) const { return path != p.path; }
+		bool operator > (const Path & p) const { return path > p.path; }
+		bool operator >= (const Path & p) const { return path >= p.path; }
+		bool operator < (const Path & p) const { return path < p.path; }
+		bool operator <= (const Path & p) const { return path <= p.path; }
 	
 	private:
 		std::string path;
