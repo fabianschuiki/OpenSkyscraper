@@ -31,7 +31,12 @@ namespace OT
 	private:
 		void prepareBitmaps(WindowsNEExecutable::Resources & rs);
 		void loadBitmaps();
-		void loadCondo(int id, std::string name);
-		void loadBitmap(int id, std::string name);
+		void loadMerged(char dir, sf::Image & dst, ...);
+		void loadMergedByID(char dir, sf::Image & dst, ...);
+		void loadCondo(int id, sf::Image & img);
+		void loadOffice(int id, sf::Image & img);
+		void loadFood(int id, sf::Image & img);
+		void loadHotel(int id, sf::Image & img);
+		void loadBitmap(int id, sf::Image & img);
 	};
 }
