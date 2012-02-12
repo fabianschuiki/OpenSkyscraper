@@ -184,17 +184,63 @@ void SimTowerResources::loadBitmaps()
 	loadMergedByID('y', stairs[0], 0x8968, 0x89A8, NULL);
 	loadMergedByID('y', stairs[1], 0x8969, 0x89A9, NULL);
 	loadMerged('x', bitmaps["stairs"], &stairs[0], &stairs[1], NULL);
+	bitmaps["stairs"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
 	
 	//Escalator
 	loadMergedByID('y', bitmaps["escalator"], 0x8AA8, 0x8AE8, 0);
-	loadMergedByID('x', bitmaps["parking_ramp"], 0x8EE8, 0x8EE9, 0x8EEA, NULL);
+	bitmaps["escalator"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
+	
+	loadMergedByID('x', bitmaps["parking/ramp"], 0x8EE8, 0x8EE9, 0x8EEA, NULL);
+	loadMergedByID('x', bitmaps["parking/space"], 0x86A8, 0x86A9, NULL);
+	
 	loadMergedByID('y', bitmaps["party_hall"], 0x8B28, 0x8B68, NULL);
+	
+	//Recycling Center
+	sf::Image recycling[2];
+	loadMergedByID('x', recycling[0], 0x88E9, 0x88EA, 0x88EB, 0x88EC, 0x88ED, NULL);
+	loadMergedByID('x', recycling[1], 0x8929, 0x892A, 0x892B, 0x892C, 0x892D, NULL);
+	sf::Image recyclingLoad;
+	loadMerged('y', recyclingLoad, &recycling[0], &recycling[1], NULL);
+	sf::Image recyclingEmpty, recyclingEmptying, recyclingCar;
+	loadBitmap(0x88E8, recyclingEmpty);
+	loadBitmap(0x892E, recyclingCar);
+	recyclingEmptying = recyclingEmpty;
+	recyclingEmptying.Copy(recyclingCar, 0, 24);
+	loadMerged('x', bitmaps["recycling"], &recyclingEmpty, &recyclingLoad, &recyclingEmptying, NULL);
 	
 	//Metro
 	sf::Image metro[3];
 	for (int i = 0; i < 3; i++)
 		loadMergedByID('x', metro[i], i*0x40 + 0x8BA9, i*0x40 + 0x8BA8, NULL);
-	loadMerged('y', bitmaps["metro"], &metro[0], &metro[1], &metro[2], NULL);
+	loadMerged('y', bitmaps["metro/station"], &metro[0], &metro[1], &metro[2], NULL);
+	
+	//Cinema screens
+	sf::Image cinemaScreens[2];
+	for (int i = 0; i < 2; i++)
+		loadMergedByID('y', cinemaScreens[i], 0x8C68+i, 0x8CA8+i, NULL);
+	loadMerged('x', bitmaps["cinema_screens"], &cinemaScreens[0], &cinemaScreens[1], NULL);
+	
+	loadMergedByID('x', bitmaps["fire/large"], 0x8F68, 0x8F69, 0x8F6A, 0x8F6B, NULL);
+	
+	const static struct { int id; Path name; } namedBitmaps[] = {
+		{0x8E28, "construction/grid"},
+		{0x8E29, "construction/solid"},
+		{0x85EA, "construction/worker"},
+		
+		{0x87A8, "housekeeping"},
+		
+		{0x8F6C, "fire/small"},
+		{0x8F6D, "fire/chopper"},
+		
+		{0x8F28, "metro/tracks"},
+		
+		{0x83E9, "deco/entrances"},
+		{0x83EA, "deco/crane"},
+		{0, ""}
+	};
+	for (int i = 0; namedBitmaps[i].id != 0; i++) {
+		loadBitmap(namedBitmaps[i].id, bitmaps[namedBitmaps[i].name]);
+	}
 }
 
 void SimTowerResources::loadMerged(char dir, sf::Image & dst, ...)
