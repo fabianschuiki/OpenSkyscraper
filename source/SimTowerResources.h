@@ -37,6 +37,10 @@ namespace OT
 		void loadOffice(int id, sf::Image & img);
 		void loadFood(int id, sf::Image & img);
 		void loadHotel(int id, sf::Image & img);
+		void loadElevators();
+		void loadElevatorCar(const sf::Image & img, sf::Image & dst);
+		
 		void loadBitmap(int id, sf::Image & img);
+		void loadAnimatedBitmap(int id, sf::Image img[3]);
 	};
 }
