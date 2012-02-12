@@ -272,6 +272,30 @@ void SimTowerResources::loadBitmaps()
 	
 	loadElevators();
 	
+	//Toolbox
+	loadMergedByID('y', bitmaps["ui/toolbox/tools"], 0x825C, 0x825D, 0x825E, NULL);
+	loadMergedByID('y', bitmaps["ui/toolbox/pause"], 0x825A, 0x825B, NULL);
+	loadMergedByID('y', bitmaps["ui/toolbox/items"], 0x812C, 0x812D, 0x812E, NULL);
+	
+	//Time Window
+	loadBitmap(0x8140, bitmaps["ui/time/bg"]);
+	sf::Image stars[2];
+	sf::Image starTower;
+	loadBitmap(0x8142, stars[0]);
+	loadBitmap(0x8143, stars[1]);
+	loadBitmap(0x8147, starTower);
+	sf::Image & rating = bitmaps["ui/time/rating"];
+	rating.Create(108, 22*6, sf::Color(0, 0, 0, 0)); 
+	for (int i = 0; i < 5; i++) {
+		for (int n = 0; n < 5; n++) {
+			int si = (n <= i ? 0 : 1);
+			rating.Copy(stars[si], n*21+1, i*22+1);
+		}
+	}
+	rating.Copy(starTower, 0, 22*5);
+	rating.CreateMaskFromColor(sf::Color(0x99, 0x99, 0x99));
+	rating.CreateMaskFromColor(sf::Color::White);
+	
 	const static struct { int id; Path name; sf::Color alpha; } namedBitmaps[] = {
 		{0x8E28, "construction/grid",   sf::Color::White},
 		{0x8E29, "construction/solid"},
