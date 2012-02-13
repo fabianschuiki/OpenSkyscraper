@@ -7,7 +7,6 @@
 
 #include "Application.h"
 #include "Game.h"
-#include "SimTowerResources.h"
 #include "WindowsNEExecutable.h"
 
 using namespace OT;
@@ -109,13 +108,12 @@ void Application::init()
 	//TODO: make this dependent on a command line switch --dump-simtower <path>.
 	exe.dump("~/SimTower Raw");
 	
-	SimTowerResources res;
-	if (!res.load(exe.resources)) {
+	if (!simtower.load(exe.resources)) {
 		LOG(WARNING, "unable to load SimTower resources");
 	}
 	//TODO: make this dependent on a command line switch
-	res.dump("~/SimTower Resources");
-	exitCode = 1;
+	//simtower.dump("~/SimTower Resources");
+	//exitCode = 1;
 	
 	videoMode.Width        = 1280;
 	videoMode.Height       = 768;
@@ -127,7 +125,7 @@ void Application::init()
 		LOG(WARNING, "unable to load mono font");
 	}
 	
-	Game * game = new Game();
+	Game * game = new Game(*this);
 	pushState(game);
 	
 	/*if (!gui.init(&window)) {

@@ -8,6 +8,7 @@
 #include "GUIManager.h"
 #include "logger.h"
 #include "Path.h"
+#include "SimTowerResources.h"
 #include "State.h"
 
 namespace OT
@@ -26,6 +27,7 @@ namespace OT
 		sf::RenderWindow window;
 		sf::VideoMode videoMode;
 		
+		SimTowerResources simtower;
 		DataManager data;
 		GUIManager gui;
 		

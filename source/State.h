@@ -4,6 +4,8 @@
 
 namespace OT
 {
+	class Application;
+	
 	/// Application uses State classes to draw stuff.
 	class State
 	{
