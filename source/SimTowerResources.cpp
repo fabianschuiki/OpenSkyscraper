@@ -598,6 +598,7 @@ void SimTowerResources::loadSky(int id, sf::Image & img)
 		}
 		img.Copy(tmp, i*32, 0);
 	}
+	rawBitmaps.erase(id);
 }
 
 void SimTowerResources::loadBitmap(int id, sf::Image & img)
