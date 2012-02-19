@@ -13,7 +13,7 @@ namespace OT
 			int length;
 			char * data;
 			Resource() { data = NULL; }
-			~Resource() { if (data) delete data; }
+			~Resource() { if (data) delete data; data = NULL; }
 		};
 		typedef std::map<int, Resource> Resources;
 		typedef std::map<int, Resources> ResourceTable;

@@ -108,12 +108,13 @@ void Application::init()
 	//TODO: make this dependent on a command line switch --dump-simtower <path>.
 	exe.dump("~/SimTower Raw");
 	
+	SimTowerResources simtower;
 	if (!simtower.load(exe.resources)) {
 		LOG(WARNING, "unable to load SimTower resources");
 	}
 	//TODO: make this dependent on a command line switch
-	//simtower.dump("~/SimTower Resources");
-	//exitCode = 1;
+	simtower.dump("~/SimTower Resources");
+	exitCode = 1;
 	
 	videoMode.Width        = 1280;
 	videoMode.Height       = 768;

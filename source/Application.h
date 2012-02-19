@@ -27,7 +27,6 @@ namespace OT
 		sf::RenderWindow window;
 		sf::VideoMode videoMode;
 		
-		SimTowerResources simtower;
 		DataManager data;
 		GUIManager gui;
 		

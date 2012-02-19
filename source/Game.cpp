@@ -9,7 +9,7 @@ Game::Game(Application & app)
 	zoom = 1;
 	
 	Sprite * s = new Sprite;
-	s->SetImage(app.simtower.bitmaps["security"]);
+	//s->SetImage(app.simtower.bitmaps["security"]);
 	s->Resize(384, 24);
 	s->SetCenter(0, 0);
 	sprites.insert(s);

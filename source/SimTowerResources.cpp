@@ -43,7 +43,8 @@ bool SimTowerResources::load(WindowsNEExecutable::ResourceTable & rt)
 {
 	LOG(DEBUG, "loading SimTower resources");
 	
-	prepareBitmaps(rt[0x8002]);
+	prepareBitmaps (rt[0x8002]);
+	preparePalettes(rt[0xFF03]);
 	
 	loadBitmaps();
 	
@@ -57,7 +58,7 @@ void SimTowerResources::prepareBitmaps(WindowsNEExecutable::Resources & rs)
 	for (r = rs.begin(); r != rs.end(); r++)
 	{
 		//Create a new bitmap entry.
-		Bitmap & bmp = rawBitmaps[r->first];
+		Blob & bmp = rawBitmaps[r->first];
 		bmp.length = r->second.length + 14;
 		
 		//Store the resource data prefixed with the appropriate BMP header.
@@ -69,6 +70,18 @@ void SimTowerResources::prepareBitmaps(WindowsNEExecutable::Resources & rs)
 		bmp.data[10] = 0x36;
 		bmp.data[11] = 0x4;
 		memcpy(bmp.data + 14, r->second.data, r->second.length);
+	}
+}
+
+void SimTowerResources::preparePalettes(WindowsNEExecutable::Resources & rs)
+{
+	WindowsNEExecutable::Resources::iterator r;
+	for (r = rs.begin(); r != rs.end(); r++)
+	{
+		Blob & pal = rawPalettes[r->first];
+		pal.length = r->second.length;
+		pal.data = new char [pal.length];
+		memcpy(pal.data, r->second.data, r->second.length);
 	}
 }
 
@@ -296,6 +309,17 @@ void SimTowerResources::loadBitmaps()
 	rating.CreateMaskFromColor(sf::Color(0x99, 0x99, 0x99));
 	rating.CreateMaskFromColor(sf::Color::White);
 	
+	sf::Image skies[11];
+	for (int i = 0; i < 11; i++) {
+		loadSky(0x8351+i, skies[i]);
+	}
+	loadMerged('x', bitmaps["sky"],
+		&skies[0], &skies[1], &skies[2],
+		&skies[3], &skies[4], &skies[5],
+		&skies[6], &skies[7], &skies[8],
+		&skies[9], &skies[10], NULL
+	);
+	
 	const static struct { int id; Path name; sf::Color alpha; } namedBitmaps[] = {
 		{0x8E28, "construction/grid",   sf::Color::White},
 		{0x8E29, "construction/solid"},
@@ -309,10 +333,10 @@ void SimTowerResources::loadBitmaps()
 		
 		{0x8F28, "metro/tracks"},
 		
-		{0x8384, "sky/cloud/0", sf::Color::White},
-		{0x8385, "sky/cloud/1", sf::Color::White},
-		{0x8386, "sky/cloud/2", sf::Color::White},
-		{0x8387, "sky/cloud/3", sf::Color::White},
+		{0x8384, "deco/cloud/0", sf::Color::White},
+		{0x8385, "deco/cloud/1", sf::Color::White},
+		{0x8386, "deco/cloud/2", sf::Color::White},
+		{0x8387, "deco/cloud/3", sf::Color::White},
 		
 		{0x8388, "deco/santa",      sf::Color::White},
 		{0x8389, "deco/skyline",    sf::Color(0x8A, 0xD4, 0xFF)},
@@ -513,9 +537,60 @@ void SimTowerResources::loadElevatorCar(const sf::Image & img, sf::Image & dst)
 	}
 }
 
+void SimTowerResources::loadSky(int id, sf::Image & img)
+{
+	Blob & raw = rawBitmaps[id];
+	
+	char * psky    = (raw.data + 0x36 + 4*188);
+	char * pdark   = (raw.data + 0x36 + 4*207);
+	char * pbright = (raw.data + 0x36 + 4*213);
+	
+	char cdark[24];   memcpy(cdark,   pdark,   24);
+	char cbright[24]; memcpy(cbright, pbright, 24);
+	
+	img.Create(32*6, 360);
+	for (int i = 0; i < 6; i++) {
+		Blob * rct = NULL;
+		if (i == 1) rct = &rawPalettes[0x83E9];
+		if (i == 2) rct = &rawPalettes[0x83EA];
+		if (i == 3) rct = &rawPalettes[0x83EB];
+		if (rct) {
+			for (int n = 0; n < 256; n++) {
+				unsigned int ridx = n;
+				if (ridx >= 184)
+					ridx++;
+				ridx = ridx % 256;
+				for (int t = 0; t < 4; t++) {
+					raw.data[0x36 + n*4 + 3 - t] = rct->data[ridx*8 + t*2];
+				}
+			}
+		}
+		
+		if (i < 4) {
+			memcpy(pdark,   psky, 24);
+			memcpy(pbright, psky, 24);
+		}
+		if (i == 4) {
+			memcpy(pdark,   cbright, 24);
+		}
+		if (i == 5) {
+			memcpy(pdark,   psky,    24);
+			memcpy(pbright, cbright, 24);
+		}
+		
+		sf::Image tmp;
+		if (!tmp.LoadFromMemory(raw.data, raw.length)) {
+			LOG(ERROR, "unable to load bitmap 0x%x from memory", id);
+			return;
+		}
+		
+		img.Copy(tmp, i*32, 0);
+	}
+}
+
 void SimTowerResources::loadBitmap(int id, sf::Image & img)
 {
-	Bitmap & bmp = rawBitmaps[id];
+	Blob & bmp = rawBitmaps[id];
 	if (!img.LoadFromMemory(bmp.data, bmp.length)) {
 		LOG(ERROR, "unable to load bitmap 0x%x from memory", id);
 		return;
@@ -529,7 +604,7 @@ void SimTowerResources::loadBitmap(int id, sf::Image & img)
  *  - 201, 202, 203 */
 void SimTowerResources::loadAnimatedBitmap(int id, sf::Image img[3])
 {
-	Bitmap & bmp = rawBitmaps[id];
+	Blob & bmp = rawBitmaps[id];
 	for (int i = 0; i < 3; i++) {
 		for (int n = 0; n < 4; n++) {
 			size_t o = 0x36 + 4 * 197 + n;
