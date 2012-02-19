@@ -541,35 +541,47 @@ void SimTowerResources::loadSky(int id, sf::Image & img)
 {
 	Blob & raw = rawBitmaps[id];
 	
+	//Locate the sky colors responsible for raindrops and sky background.
 	char * psky    = (raw.data + 0x36 + 4*188);
 	char * pdark   = (raw.data + 0x36 + 4*207);
 	char * pbright = (raw.data + 0x36 + 4*213);
 	
+	//Make a backup copy of the raindrops as they will be overwritten.
 	char cdark[24];   memcpy(cdark,   pdark,   24);
 	char cbright[24]; memcpy(cbright, pbright, 24);
 	
+	//Assemble the image.
 	img.Create(32*6, 360);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 6; i++)
+	{
+		//Choose a replacement palette which yields twilight, night and overcast colorings.
 		Blob * rct = NULL;
 		if (i == 1) rct = &rawPalettes[0x83E9];
 		if (i == 2) rct = &rawPalettes[0x83EA];
 		if (i == 3) rct = &rawPalettes[0x83EB];
+		
+		//Apply replacement palette if one was picked. 
 		if (rct) {
 			for (int n = 0; n < 256; n++) {
+				//For some reason index 184 exists twice in the color palette, so we skip that color.
+				//No idea why this is there though.
 				unsigned int ridx = n;
-				if (ridx >= 184)
-					ridx++;
+				if (ridx >= 184) ridx++;
 				ridx = ridx % 256;
+				
 				for (int t = 0; t < 4; t++) {
 					raw.data[0x36 + n*4 + 3 - t] = rct->data[ridx*8 + t*2];
 				}
 			}
 		}
 		
+		//Make the raindrops have the same color as the sky for the first 4 bitmaps, which are day, twilight, night and overcast without rain states.
 		if (i < 4) {
 			memcpy(pdark,   psky, 24);
 			memcpy(pbright, psky, 24);
 		}
+		
+		//There are two sets of raindrops, which are highlighted in turns. This gives the ugly SimTower rain animation where there are two raindrop sprites which are drawn in turns.
 		if (i == 4) {
 			memcpy(pdark,   cbright, 24);
 		}
@@ -578,12 +590,12 @@ void SimTowerResources::loadSky(int id, sf::Image & img)
 			memcpy(pbright, cbright, 24);
 		}
 		
+		//Copy the modified sky bitmap onto the final bitmap.
 		sf::Image tmp;
 		if (!tmp.LoadFromMemory(raw.data, raw.length)) {
 			LOG(ERROR, "unable to load bitmap 0x%x from memory", id);
 			return;
 		}
-		
 		img.Copy(tmp, i*32, 0);
 	}
 }
