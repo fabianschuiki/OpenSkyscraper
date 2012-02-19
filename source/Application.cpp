@@ -184,9 +184,6 @@ void Application::loop()
 		rateDamped = (rateDamped + dt_real * rateDampFactor) / (1 + rateDampFactor);
 		if ((rateIndicatorTimer += dt_real) > 0.5) {
 			rateIndicatorTimer -= 0.5;
-			char rate[32];
-			snprintf(rate, 32, "%.0f Hz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
-			rateIndicator.SetText(rate);
 			if (++dt_maxmin_resetTimer >= 2*3) {
 				dt_maxmin_resetTimer = 0;
 				dt_max = dt_real;
@@ -222,6 +219,14 @@ void Application::loop()
 		}
 		
 		//Draw the debugging overlays.
+		char dbg[1024];
+		snprintf(dbg, 32, "%.0f Hz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
+		if (!states.empty()) {
+			strcat(dbg, "\n");
+			strcat(dbg, states.top()->debugString);
+		}
+		rateIndicator.SetText(dbg);
+		
 		window.SetView(window.GetDefaultView());
 		sf::FloatRect r = rateIndicator.GetRect();
 		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right, r.Bottom, sf::Color::Black);

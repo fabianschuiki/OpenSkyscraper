@@ -8,6 +8,7 @@
 #include "GUIManager.h"
 #include "logger.h"
 #include "Path.h"
+#include "ResourceManager.h"
 #include "SimTowerResources.h"
 #include "State.h"
 
@@ -29,6 +30,9 @@ namespace OT
 		
 		DataManager data;
 		GUIManager gui;
+		ResourceManager<sf::Image> bitmaps;
+		
+		sf::Font monoFont;
 		
 		int run();
 		
@@ -45,8 +49,6 @@ namespace OT
 		void init();
 		void loop();
 		void cleanup();
-		
-		sf::Font monoFont;
 		
 		std::stack<State *> states;
 		void pushState(State * state);

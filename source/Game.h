@@ -14,6 +14,8 @@ namespace OT
 		typedef std::set<Sprite *> Sprites;
 		Sprites sprites;
 		
+		unsigned int drawnSprites;
+		
 		void activate();
 		void deactivate();
 		
@@ -23,5 +25,9 @@ namespace OT
 	private:
 		double zoom;
 		sf::Vector2f poi;
+		
+		double skyFade;
+		int    skyState;
+		void drawBackground(const sf::FloatRect & rect);
 	};
 }

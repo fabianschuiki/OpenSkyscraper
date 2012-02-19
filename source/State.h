@@ -10,6 +10,8 @@ namespace OT
 	class State
 	{
 	public:
+		char debugString[512];
+		
 		/// Called when the State becomes active, i.e. is the topmost State.
 		virtual void activate() {}
 		

@@ -7,21 +7,21 @@ namespace OT {
 	class ResourceManager
 	{
 	public:
-		T & get(std::string name) {
+		T & get(Path name) {
 			if (!resources.count(name)) {
 				load(name, resources[name]);
 			}
-			return &resources[name];
+			return resources[name];
 		}
 		
-		T & operator [] (std::string name) {
+		T & operator [] (Path name) {
 			return get(name);
 		}
 		
 	protected:
-		virtual bool load(std::string name, T & dst) { return true; }
+		virtual bool load(Path name, T & dst) { return true; }
 		
 	private:
-		std::map<std::string, T> resources;
+		std::map<Path, T> resources;
 	};
 }

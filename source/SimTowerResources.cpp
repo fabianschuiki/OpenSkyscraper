@@ -48,6 +48,11 @@ bool SimTowerResources::load(WindowsNEExecutable::ResourceTable & rt)
 	
 	loadBitmaps();
 	
+	for (Images::iterator i = bitmaps.begin(); i != bitmaps.end(); i++) {
+		i->second.SetSmooth(false);
+		App->bitmaps[i->first] = i->second;
+	}
+	
 	return true;
 }
 
