@@ -2,5 +2,7 @@
 - remove dataDir, prefsDir from Application
 - create `FileSystem` class to do file manipulation (move, copy, mkdir, etc.)
 	- adjust `WindowsNEExecutable::dump`
-- maybe rename `WindowsNEExecutable` to `WindowsNEResources`
+- create resource managers
 - merge `WindowsNEExecutable` and `SimTowerResources` into one class for loading SimTower stuff
+- then rename `SimTowerResources` to `SimTowerLoader`
+- make `SimTowerLoader` load the bitmaps into the bitmap resource manager and destruct itself afterwards

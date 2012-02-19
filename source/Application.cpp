@@ -113,8 +113,8 @@ void Application::init()
 		LOG(WARNING, "unable to load SimTower resources");
 	}
 	//TODO: make this dependent on a command line switch
-	simtower.dump("~/SimTower Resources");
-	exitCode = 1;
+	//simtower.dump("~/SimTower Resources");
+	//exitCode = 1;
 	
 	videoMode.Width        = 1280;
 	videoMode.Height       = 768;
