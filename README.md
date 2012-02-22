@@ -19,7 +19,7 @@ Currently we're performing the following experiments and tests:
   
 Why such heavy scripting?
 -------------------------
-Writing code in a scripting language is generally faster and more convenient than in C++, as rigorous typesafety and non-introspectivity usually gets in the your way in the latter. Some may argue that writing time-critical code in a scripting language is a bad idea. Yet modern game engines usually encourage the AI to be written in a scripting language. Furthermore, Lua is pretty fast (when used at a low level, e.g. through ObjectiveLua) and there are games that are written entirely in Lua (CorsixTH).
+Writing code in a scripting language is generally faster and more convenient than in C++, as rigorous typesafety and non-introspectivity usually gets in your way in the latter. Some may argue that writing time-critical code in a scripting language is a bad idea. Yet modern game engines usually encourage the AI to be written in a scripting language. Furthermore, Lua is pretty fast (when used at a low level, e.g. through ObjectiveLua) and there are games that are written entirely in Lua (CorsixTH).
 
 
 Coding Style
