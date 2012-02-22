@@ -9,10 +9,6 @@ endif()
 # Executable name.
 set(EXECUTABLE_NAME OpenSkyscraper)
 
-# Important project directories.
-set(src_dir  ${PROJECT_SOURCE_DIR})
-set(data_dir ${PROJECT_SOURCE_DIR}/../data)
-
 # Debugging definitions.
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions("-DBUILD_DEBUG")
@@ -20,7 +16,7 @@ endif()
 
 
 # Gather the source files.
-file(GLOB_RECURSE sources RELATIVE ${src_dir} ${src_dir}/*.cpp)
+file(GLOB_RECURSE sources RELATIVE ${PROJECT_SOURCE_DIR} source/*.cpp)
 
 
 ###  PLATFORM-SPECIFIC STUFF
@@ -29,14 +25,13 @@ file(GLOB_RECURSE sources RELATIVE ${src_dir} ${src_dir}/*.cpp)
 # Mac OS X
 if (APPLE)
 	# Find the paths of all resources.
-	file(GLOB_RECURSE resources RELATIVE ${src_dir} ${data_dir}/*)
+	file(GLOB_RECURSE resources RELATIVE ${PROJECT_SOURCE_DIR} data/*)
 
 	# Make sure the resources are copied to the right bundle.
 	foreach(r ${resources})
 		get_filename_component(r_abs ${r} ABSOLUTE)
 		get_filename_component(r_dir ${r_abs} PATH)
-		get_filename_component(data_dir_abs ${data_dir} ABSOLUTE)
-		file(RELATIVE_PATH r_rel ${data_dir_abs} ${r_dir})
+		file(RELATIVE_PATH r_rel${PROJECT_SOURCE_DIR}/data ${r_dir})
 		set_source_files_properties(${r} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/${r_rel})
 	endforeach()
 
@@ -60,10 +55,10 @@ endif ()
 ###  ======================
 
 # Tell CMake to also search the thirdparty directory for modules.
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../thirdparty" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/thirdparty" ${CMAKE_MODULE_PATH})
 
 # Include the ObjectiveLua headers.
-include_directories(${PROJECT_SOURCE_DIR}/../thirdparty/objectivelua/include/)
+include_directories(thirdparty/objectivelua/include/)
 
 # Lua
 find_package(Lua51 REQUIRED)
