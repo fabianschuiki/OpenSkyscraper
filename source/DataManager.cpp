@@ -17,7 +17,7 @@ void DataManager::init()
 	LOG(INFO, "initializing data dirs");
 	
 	Path path = app->getPath();
-	string name = path.name();
+	string name = /*path.name()*/"OpenSkyscraper";
 #ifdef BUILD_DEBUG
 	dirs.push_back(path.up(2).down("data"));
 #endif

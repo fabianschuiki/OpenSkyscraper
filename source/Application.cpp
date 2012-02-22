@@ -46,30 +46,20 @@ Application::Application(int argc, char * argv[])
 	
 	LOG(DEBUG,
 		"constructed\n"
-		"    path     = %s\n"
-		"    dataDir  = %s\n"
-		"    prefsDir = %s",
-		path.str().c_str(),
-		dataDir.str().c_str(),
-		prefsDir.str().c_str()
+		"    path     = %s",
+		path.str().c_str()
 	);
 	LOG(IMPORTANT, "ready");
 }
 
-Path Application::getPath()     const { return path;     }
-Path Application::getDataDir()  const { return dataDir;  }
-Path Application::getPrefsDir() const { return prefsDir; }
+Path Application::getPath()     const { return path; }
 
 void Application::setPath(const Path & p)
 {
 #ifdef __APPLE__
 	path     = Path("../MacOS").down(p.name());
-	//TODO: data dir is obsolete
-	dataDir  = ".";
-	prefsDir = "~/Library/Preferences";
 #else
 	path     = p;
-	dataDir  = p.up().down("data");
 #endif
 }
 

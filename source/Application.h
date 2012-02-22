@@ -20,8 +20,6 @@ namespace OT
 		Application(int argc, char * argv[]);
 		
 		Path getPath() const;
-		Path getDataDir() const;
-		Path getPrefsDir() const;
 		
 		Logger logger;
 		
@@ -37,9 +35,6 @@ namespace OT
 		
 	private:
 		Path path;
-		Path dataDir;
-		Path prefsDir;
-		
 		void setPath(const Path & p);
 		
 		bool running;
