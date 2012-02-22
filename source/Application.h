@@ -4,6 +4,7 @@
 #include <SFML/Window.hpp>
 #include <stack>
 
+#include "BitmapManager.h"
 #include "DataManager.h"
 #include "FontManager.h"
 #include "GUIManager.h"
@@ -31,8 +32,8 @@ namespace OT
 		
 		DataManager data;
 		GUIManager gui;
-		ResourceManager<sf::Image> bitmaps;
-		FontManager fonts;
+		BitmapManager bitmaps;
+		FontManager   fonts;
 		
 		int run();
 		

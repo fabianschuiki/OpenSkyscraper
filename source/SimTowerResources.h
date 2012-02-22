@@ -9,9 +9,13 @@
 
 namespace OT
 {
+	class Application;
 	class SimTowerResources
 	{
 	public:
+		Application * const app;
+		SimTowerResources(Application * app) : app(app) {}
+		
 		struct Blob {
 			char * data;
 			int length;
@@ -24,14 +28,15 @@ namespace OT
 		
 		Bitmaps rawBitmaps;
 		Blobs rawPalettes;
-		Images bitmaps;
 		
-		bool load(WindowsNEExecutable::ResourceTable & rt);
+		bool load();
 		void dump(Path path);
 		
 	private:
-		void prepareBitmaps (WindowsNEExecutable::Resources & rs);
-		void preparePalettes(WindowsNEExecutable::Resources & rs);
+		WindowsNEExecutable exe;
+		
+		void prepareBitmaps();
+		void preparePalettes();
 		void loadBitmaps();
 		
 		void loadMerged(char dir, sf::Image & dst, ...);

@@ -98,7 +98,7 @@ void Application::init()
 {
 	data.init();
 	
-	WindowsNEExecutable exe;
+	/*WindowsNEExecutable exe;
 	DataManager::Paths paths = data.paths("SIMTOWER.EXE");
 	bool success;
 	for (int i = 0; i < paths.size() && !success; i++) {
@@ -108,10 +108,10 @@ void Application::init()
 		LOG(WARNING, "unable to load SimTower executable");
 	}
 	//TODO: make this dependent on a command line switch --dump-simtower <path>.
-	exe.dump("~/SimTower Raw");
+	exe.dump("~/SimTower Raw");*/
 	
-	SimTowerResources simtower;
-	if (!simtower.load(exe.resources)) {
+	SimTowerResources simtower(this);
+	if (!simtower.load()) {
 		LOG(WARNING, "unable to load SimTower resources");
 	}
 	//TODO: make this dependent on a command line switch
