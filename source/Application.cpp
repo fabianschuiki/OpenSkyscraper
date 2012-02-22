@@ -15,7 +15,9 @@ using namespace std;
 Application * OT::App = NULL;
 
 Application::Application(int argc, char * argv[])
-:	data(this)
+:	data(this),
+	fonts(this),
+	bitmaps(this)
 {
 	assert(App == NULL && "Application initialized multiple times");
 	App = this;
@@ -122,10 +124,6 @@ void Application::init()
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");
 	
-	if (!monoFont.LoadFromFile(dataDir.down("fonts").down("UbuntuMono-Regular.ttf").c_str(), 16)) {
-		LOG(WARNING, "unable to load mono font");
-	}
-	
 	Game * game = new Game(*this);
 	pushState(game);
 	
@@ -157,7 +155,7 @@ void Application::init()
 void Application::loop()
 {
 	sf::Clock clock;
-	sf::String rateIndicator("<not available>", monoFont, 16);
+	sf::String rateIndicator("<not available>", fonts["UbuntuMono-Regular.ttf"], 16);
 	double rateIndicatorTimer = 0;
 	double rateDamped = 0;
 	double rateDampFactor = 0;

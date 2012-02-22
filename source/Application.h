@@ -5,6 +5,7 @@
 #include <stack>
 
 #include "DataManager.h"
+#include "FontManager.h"
 #include "GUIManager.h"
 #include "logger.h"
 #include "Path.h"
@@ -31,8 +32,7 @@ namespace OT
 		DataManager data;
 		GUIManager gui;
 		ResourceManager<sf::Image> bitmaps;
-		
-		sf::Font monoFont;
+		FontManager fonts;
 		
 		int run();
 		
