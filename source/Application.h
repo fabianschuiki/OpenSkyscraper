@@ -7,7 +7,7 @@
 #include "DataManager.h"
 #include "FontManager.h"
 #include "GUIManager.h"
-#include "logger.h"
+#include "Logger.h"
 #include "Path.h"
 #include "ResourceManager.h"
 #include "SimTowerResources.h"

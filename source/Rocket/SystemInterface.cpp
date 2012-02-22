@@ -27,7 +27,7 @@
 #include <Rocket/Core.h>
 
 #include "../Application.h"
-#include "../logger.h"
+#include "../Logger.h"
 #include "SystemInterface.h"
 
 using namespace OT;

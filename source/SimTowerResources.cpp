@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 
 #include "Application.h"
-#include "logger.h"
+#include "Logger.h"
 #include "SimTowerResources.h"
 
 using namespace OT;

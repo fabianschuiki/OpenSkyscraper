@@ -3,7 +3,7 @@
 #include <cstring>
 #include <string>
 
-#include "logger.h"
+#include "Logger.h"
 #include "Path.h"
 
 using namespace OT;

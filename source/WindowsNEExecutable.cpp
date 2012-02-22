@@ -2,7 +2,7 @@
 #include <sys/stat.h>
 
 #include "Application.h"
-#include "logger.h"
+#include "Logger.h"
 #include "WindowsNEExecutable.h"
 
 using namespace OT;
