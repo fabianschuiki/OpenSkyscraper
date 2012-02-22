@@ -28,8 +28,8 @@ namespace OT
 		sf::RenderWindow window;
 		sf::VideoMode videoMode;
 		
-		DataManager data;
-		GUIManager gui;
+		DataManager   data;
+		GUIManager    gui;
 		BitmapManager bitmaps;
 		FontManager   fonts;
 		
