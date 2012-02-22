@@ -10,11 +10,11 @@
 namespace OT
 {
 	class Application;
-	class SimTowerResources
+	class SimTowerLoader
 	{
 	public:
 		Application * const app;
-		SimTowerResources(Application * app) : app(app) {}
+		SimTowerLoader(Application * app) : app(app) {}
 		
 		struct Blob {
 			char * data;

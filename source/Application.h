@@ -10,8 +10,6 @@
 #include "GUIManager.h"
 #include "Logger.h"
 #include "Path.h"
-#include "ResourceManager.h"
-#include "SimTowerResources.h"
 #include "State.h"
 
 namespace OT

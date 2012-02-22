@@ -10,7 +10,7 @@
 
 #include "Application.h"
 #include "Logger.h"
-#include "SimTowerResources.h"
+#include "SimTowerLoader.h"
 
 using namespace OT;
 using std::ofstream;
@@ -39,7 +39,7 @@ bool makeDirectory(Path dir)
 	return true;
 }
 
-bool SimTowerResources::load()
+bool SimTowerLoader::load()
 {
 	LOG(DEBUG, "loading SimTower resources");
 	
@@ -74,7 +74,7 @@ bool SimTowerResources::load()
 }
 
 /** Prepares the given list of bitmap resources by adding a proper BMP header to each one and storing each in the bitmaps map. */
-void SimTowerResources::prepareBitmaps()
+void SimTowerLoader::prepareBitmaps()
 {
 	WindowsNEExecutable::Resources & rs = exe.resources[0x8002];
 	WindowsNEExecutable::Resources::iterator r;
@@ -96,7 +96,7 @@ void SimTowerResources::prepareBitmaps()
 	}
 }
 
-void SimTowerResources::preparePalettes()
+void SimTowerLoader::preparePalettes()
 {
 	WindowsNEExecutable::Resources & rs = exe.resources[0xFF03];
 	WindowsNEExecutable::Resources::iterator r;
@@ -109,7 +109,7 @@ void SimTowerResources::preparePalettes()
 	}
 }
 
-void SimTowerResources::dump(Path path)
+void SimTowerLoader::dump(Path path)
 {
 	LOG(INFO, "dumping to %s", (const char *)path);
 	
@@ -160,7 +160,7 @@ void SimTowerResources::dump(Path path)
 }
 
 /** Processes the raw bitmaps and turns them into useable bitmaps. */
-void SimTowerResources::loadBitmaps()
+void SimTowerLoader::loadBitmaps()
 {
 	//Condos
 	sf::Image & condos = app->bitmaps["condo"];
@@ -387,7 +387,7 @@ void SimTowerResources::loadBitmaps()
 	}
 }
 
-void SimTowerResources::loadMerged(char dir, sf::Image & dst, ...)
+void SimTowerLoader::loadMerged(char dir, sf::Image & dst, ...)
 {
 	va_list args;
 	
@@ -424,7 +424,7 @@ void SimTowerResources::loadMerged(char dir, sf::Image & dst, ...)
 	va_end(args);
 }
 
-void SimTowerResources::loadMergedByID(char dir, sf::Image & dst, ...)
+void SimTowerLoader::loadMergedByID(char dir, sf::Image & dst, ...)
 {
 	va_list args;
 	
@@ -458,7 +458,7 @@ void SimTowerResources::loadMergedByID(char dir, sf::Image & dst, ...)
 	}
 }
 
-void SimTowerResources::loadCondo(int id, sf::Image & img)
+void SimTowerLoader::loadCondo(int id, sf::Image & img)
 {
 	img.Create(5*128, 24);
 	for (int i = 0; i < 5; i++) {
@@ -470,7 +470,7 @@ void SimTowerResources::loadCondo(int id, sf::Image & img)
 	}
 }
 
-void SimTowerResources::loadOffice(int id, sf::Image & img)
+void SimTowerLoader::loadOffice(int id, sf::Image & img)
 {
 	sf::Image office;
 	loadBitmap(id, office);
@@ -483,7 +483,7 @@ void SimTowerResources::loadOffice(int id, sf::Image & img)
 	}
 }
 
-void SimTowerResources::loadFood(int id, sf::Image & img)
+void SimTowerLoader::loadFood(int id, sf::Image & img)
 {
 	for (int i = 0; i < 2; i++) {
 		sf::Image food;
@@ -495,7 +495,7 @@ void SimTowerResources::loadFood(int id, sf::Image & img)
 	}
 }
 
-void SimTowerResources::loadHotel(int id, sf::Image & img)
+void SimTowerLoader::loadHotel(int id, sf::Image & img)
 {
 	sf::Image first, second;
 	loadBitmap(id, first);
@@ -507,7 +507,7 @@ void SimTowerResources::loadHotel(int id, sf::Image & img)
 	img.CreateMaskFromColor(sf::Color(0x4A, 0xB4, 0xFF));
 }
 
-void SimTowerResources::loadElevators()
+void SimTowerLoader::loadElevators()
 {
 	sf::Image standard_car, standard_combined_raw[3], service, express_combined[3];
 	loadBitmap(0x8428, standard_car);
@@ -551,7 +551,7 @@ void SimTowerResources::loadElevators()
 	shaft_wide.Copy(shaft, 32, 0, sf::IntRect(16, 0, 32, 36));
 }
 
-void SimTowerResources::loadElevatorCar(const sf::Image & img, sf::Image & dst)
+void SimTowerLoader::loadElevatorCar(const sf::Image & img, sf::Image & dst)
 {
 	unsigned int w = img.GetWidth() / 5;
 	unsigned int h = img.GetHeight();
@@ -563,7 +563,7 @@ void SimTowerResources::loadElevatorCar(const sf::Image & img, sf::Image & dst)
 	}
 }
 
-void SimTowerResources::loadSky(int id, sf::Image & img)
+void SimTowerLoader::loadSky(int id, sf::Image & img)
 {
 	Blob & raw = rawBitmaps[id];
 	
@@ -627,7 +627,7 @@ void SimTowerResources::loadSky(int id, sf::Image & img)
 	rawBitmaps.erase(id);
 }
 
-void SimTowerResources::loadBitmap(int id, sf::Image & img)
+void SimTowerLoader::loadBitmap(int id, sf::Image & img)
 {
 	Blob & bmp = rawBitmaps[id];
 	if (!img.LoadFromMemory(bmp.data, bmp.length)) {
@@ -641,7 +641,7 @@ void SimTowerResources::loadBitmap(int id, sf::Image & img)
  *  - 197, 198
  *  - 199, 200
  *  - 201, 202, 203 */
-void SimTowerResources::loadAnimatedBitmap(int id, sf::Image img[3])
+void SimTowerLoader::loadAnimatedBitmap(int id, sf::Image img[3])
 {
 	Blob & bmp = rawBitmaps[id];
 	for (int i = 0; i < 3; i++) {
