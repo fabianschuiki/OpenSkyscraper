@@ -18,6 +18,9 @@ void DataManager::init()
 	
 	Path path = app->getPath();
 	string name = path.name();
+#ifdef BUILD_DEBUG
+	dirs.push_back("../data");
+#endif
 #ifdef __APPLE__
 	dirs.push_back(Path("~/Library/Application Support").down(name));
 	dirs.push_back(Path("/Library/Application Support").down(name));
