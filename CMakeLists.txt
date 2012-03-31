@@ -87,3 +87,7 @@ endif()
 find_package(Rocket REQUIRED core ${rocket_debug})
 include_Directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
+
+# OpenGL (Needed by Rocket)
+find_package(OpenGL REQUIRED)
+target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_gl_LIBRARY})
