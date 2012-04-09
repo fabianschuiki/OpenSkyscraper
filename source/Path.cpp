@@ -72,6 +72,12 @@ Path & Path::remove(int levels)
 		
 		//Cut off stuff.
 		path.erase(it, path.end());
+		
+		//Append stuff.
+		for (int i = 0; i < levels; i++) {
+			if (!path.empty() && *(path.end()-1) != SEPARATOR) path += SEPARATOR;
+			path += "..";
+		}
 	}
 	return *this;
 }
