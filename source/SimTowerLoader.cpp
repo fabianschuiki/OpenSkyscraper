@@ -5,6 +5,7 @@
  *    - the item's states (lit, dark, awake, asleep, etc.) are lined up horizontally
  *    - the item's variants (pub, burger, etc.) are lined up vertically
  */
+#include <cassert>
 #include <fstream>
 #include <sys/stat.h>
 
@@ -134,13 +135,14 @@ void SimTowerLoader::dump(Path path)
 	}
 	
 	//TODO: don't perform the resource dump here, but rather in Application or alike, triggered by a command line argument.
-	/*for (Images::iterator i = app->bitmaps.begin(); i != app->bitmaps.end(); i++) {
-		Path p = bitmapsDir.down(i->first);
+	const BitmapManager::Resources & res = app->bitmaps.getResources();
+	for (BitmapManager::Resources::const_iterator i = res.begin(); i != res.end(); i++) {
+		Path p = bitmapsDir.down(i->first.str().substr(9));
 		Path d = p.up();
 		if (!makeDirectory(d))
 			continue;
 		i->second.SaveToFile(p.str() + ".png");
-	}*/
+	}
 	
 	Path unhandledBitmapsDir = bitmapsDir.down("unhandled");
 	if (stat(unhandledBitmapsDir, &st) != 0) {
@@ -163,7 +165,7 @@ void SimTowerLoader::dump(Path path)
 void SimTowerLoader::loadBitmaps()
 {
 	//Condos
-	sf::Image & condos = app->bitmaps["condo"];
+	sf::Image & condos = app->bitmaps["simtower/condo"];
 	condos.Create(5*128, 3*24);
 	for (int i = 0; i < 3; i++) {
 		sf::Image condo;
@@ -172,7 +174,7 @@ void SimTowerLoader::loadBitmaps()
 	}
 	
 	//Offices
-	sf::Image & offices = app->bitmaps["office"];
+	sf::Image & offices = app->bitmaps["simtower/office"];
 	offices.Create(144, 7*24);
 	unsigned int y = 0;
 	for (int i = 0; i < 4; i++) {
@@ -183,7 +185,7 @@ void SimTowerLoader::loadBitmaps()
 	}
 	
 	//Fast Foods
-	sf::Image & fastfoods   = app->bitmaps["fastfood"];
+	sf::Image & fastfoods   = app->bitmaps["simtower/fastfood"];
 	fastfoods.Create(4*128, 5*24);
 	for (int i = 0; i < 5; i++) {
 		sf::Image fastfood;
@@ -192,7 +194,7 @@ void SimTowerLoader::loadBitmaps()
 	}
 	
 	//Restaurants
-	sf::Image & restaurants = app->bitmaps["restaurant"];
+	sf::Image & restaurants = app->bitmaps["simtower/restaurant"];
 	restaurants.Create(4*192, 4*24);
 	for (int i = 0; i < 5; i++) {
 		sf::Image restaurant;
@@ -201,7 +203,7 @@ void SimTowerLoader::loadBitmaps()
 	}
 	
 	//Single hotel rooms
-	sf::Image & singleRooms = app->bitmaps["single"];
+	sf::Image & singleRooms = app->bitmaps["simtower/single"];
 	singleRooms.Create(9*32, 2*24);
 	for (int i = 0; i < 2; i++) {
 		sf::Image hotel;
@@ -210,7 +212,7 @@ void SimTowerLoader::loadBitmaps()
 	}
 	
 	//Double hotel rooms
-	sf::Image & doubleRooms = app->bitmaps["double"];
+	sf::Image & doubleRooms = app->bitmaps["simtower/double"];
 	doubleRooms.Create(9*48, 4*24);
 	for (int i = 0; i < 4; i++) {
 		sf::Image hotel;
@@ -222,23 +224,23 @@ void SimTowerLoader::loadBitmaps()
 	sf::Image suiteRooms[2];
 	loadMergedByID('x', suiteRooms[0], 0x8528, 0x8529, NULL);
 	loadMergedByID('x', suiteRooms[1], 0x852A, 0x852B, NULL);
-	loadMerged('y', app->bitmaps["suite"], &suiteRooms[0], &suiteRooms[1], NULL);
+	loadMerged('y', app->bitmaps["simtower/suite"], &suiteRooms[0], &suiteRooms[1], NULL);
 	
 	//Stairs
 	sf::Image stairs[2];
 	loadMergedByID('y', stairs[0], 0x8968, 0x89A8, NULL);
 	loadMergedByID('y', stairs[1], 0x8969, 0x89A9, NULL);
-	loadMerged('x', app->bitmaps["stairs"], &stairs[0], &stairs[1], NULL);
-	app->bitmaps["stairs"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
+	loadMerged('x', app->bitmaps["simtower/stairs"], &stairs[0], &stairs[1], NULL);
+	app->bitmaps["simtower/stairs"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
 	
 	//Escalator
-	loadMergedByID('y', app->bitmaps["escalator"], 0x8AA8, 0x8AE8, 0);
-	app->bitmaps["escalator"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
+	loadMergedByID('y', app->bitmaps["simtower/escalator"], 0x8AA8, 0x8AE8, 0);
+	app->bitmaps["simtower/escalator"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
 	
-	loadMergedByID('x', app->bitmaps["parking/ramp"], 0x8EE8, 0x8EE9, 0x8EEA, NULL);
-	loadMergedByID('x', app->bitmaps["parking/space"], 0x86A8, 0x86A9, NULL);
+	loadMergedByID('x', app->bitmaps["simtower/parking/ramp"], 0x8EE8, 0x8EE9, 0x8EEA, NULL);
+	loadMergedByID('x', app->bitmaps["simtower/parking/space"], 0x86A8, 0x86A9, NULL);
 	
-	loadMergedByID('y', app->bitmaps["party_hall"], 0x8B28, 0x8B68, NULL);
+	loadMergedByID('y', app->bitmaps["simtower/party_hall"], 0x8B28, 0x8B68, NULL);
 	
 	//Recycling Center
 	sf::Image recycling[2];
@@ -251,46 +253,46 @@ void SimTowerLoader::loadBitmaps()
 	loadBitmap(0x892E, recyclingCar);
 	recyclingEmptying = recyclingEmpty;
 	recyclingEmptying.Copy(recyclingCar, 0, 24);
-	loadMerged('x', app->bitmaps["recycling"], &recyclingEmpty, &recyclingLoad, &recyclingEmptying, NULL);
+	loadMerged('x', app->bitmaps["simtower/recycling"], &recyclingEmpty, &recyclingLoad, &recyclingEmptying, NULL);
 	
 	//Metro
 	sf::Image metro[3];
 	for (int i = 0; i < 3; i++)
 		loadMergedByID('x', metro[i], i*0x40 + 0x8BA9, i*0x40 + 0x8BA8, NULL);
-	loadMerged('y', app->bitmaps["metro/station"], &metro[0], &metro[1], &metro[2], NULL);
+	loadMerged('y', app->bitmaps["simtower/metro/station"], &metro[0], &metro[1], &metro[2], NULL);
 	
 	//Cinema
 	sf::Image cinemaScreens[2];
 	for (int i = 0; i < 2; i++)
 		loadMergedByID('y', cinemaScreens[i], 0x8C68+i, 0x8CA8+i, NULL);
-	loadMerged('x', app->bitmaps["cinema/screens"], &cinemaScreens[0], &cinemaScreens[1], NULL);
+	loadMerged('x', app->bitmaps["simtower/cinema/screens"], &cinemaScreens[0], &cinemaScreens[1], NULL);
 	
 	sf::Image cinemaUpper[3];
 	sf::Image cinemaLower;
 	loadAnimatedBitmap(0x8868, cinemaUpper);
 	loadBitmap(0x88A8, cinemaLower);
-	sf::Image & cinema = app->bitmaps["cinema/hall"];
+	sf::Image & cinema = app->bitmaps["simtower/cinema/hall"];
 	cinema.Create(182*5, 60);
 	cinema.Copy(cinemaUpper[1], 192, 0);
 	cinema.Copy(cinemaUpper[0], 0, 0);
 	cinema.Copy(cinemaLower, 192, 24);
 	cinema.Copy(cinemaLower, 0, 24);
 	
-	loadMergedByID('x', app->bitmaps["fire/large"], 0x8F68, 0x8F69, 0x8F6A, 0x8F6B, NULL);
+	loadMergedByID('x', app->bitmaps["simtower/fire/large"], 0x8F68, 0x8F69, 0x8F6A, 0x8F6B, NULL);
 	
 	//Load the security offices. They are, among a few other items, special in so far that they are animated by cycling color indices 198, 199 and 200.
 	sf::Image security[3];
 	loadAnimatedBitmap(0x8768, security);
-	loadMerged('x', app->bitmaps["security"], &security[0], &security[1], &security[2], NULL);
+	loadMerged('x', app->bitmaps["simtower/security"], &security[0], &security[1], &security[2], NULL);
 	
 	//Shops
 	sf::Image shops[2];
 	loadMergedByID('x', shops[0], 0x8673, 0x8674, NULL);
 	loadMergedByID('y', shops[1], 0x8668, 0x8669, 0x866A, 0x866B, 0x866C, 0x866D, 0x866E, 0x866F, 0x8670, 0x8671, 0x8672, NULL);
-	loadMerged('y', app->bitmaps["shops"], &shops[0], &shops[1], NULL);
+	loadMerged('y', app->bitmaps["simtower/shops"], &shops[0], &shops[1], NULL);
 	
 	//Medical Center
-	loadMergedByID('x', app->bitmaps["medicalcenter"], 0x8728, 0x8729, 0x872A, NULL);
+	loadMergedByID('x', app->bitmaps["simtower/medicalcenter"], 0x8728, 0x8729, 0x872A, NULL);
 	
 	//People
 	sf::Image people[5];
@@ -307,23 +309,50 @@ void SimTowerLoader::loadBitmaps()
 			}
 		}
 	}
-	loadMerged('y', app->bitmaps["people"], &people[0], &people[1], &people[2], &people[3], &people[4], NULL);
+	loadMerged('y', app->bitmaps["simtower/people"], &people[0], &people[1], &people[2], &people[3], &people[4], NULL);
 	
 	loadElevators();
 	
 	//Toolbox
-	loadMergedByID('y', app->bitmaps["ui/toolbox/tools"], 0x825C, 0x825D, 0x825E, NULL);
-	loadMergedByID('y', app->bitmaps["ui/toolbox/pause"], 0x825A, 0x825B, NULL);
-	loadMergedByID('y', app->bitmaps["ui/toolbox/items"], 0x812C, 0x812D, 0x812E, NULL);
+	loadMergedByID('y', app->bitmaps["simtower/ui/toolbox/tools"], 0x825C, 0x825D, 0x825E, NULL);
+	loadMergedByID('y', app->bitmaps["simtower/ui/toolbox/pause"], 0x825A, 0x825B, NULL);
+	loadMergedByID('y', app->bitmaps["simtower/ui/toolbox/items"], 0x812C, 0x812D, 0x812E, NULL);
+	
+	//Map
+	Blob & mapRaw = rawBitmaps[0x8160];
+	sf::Image & mapSky = app->bitmaps["simtower/ui/map/sky"];
+	mapSky.Create(200*4, 264);
+	for (int i = 0; i < 4; i++)
+	{
+		int rct = 0;
+		if (i == 1) rct = 0x83E9;
+		if (i == 2) rct = 0x83EA;
+		if (i == 3) rct = 0x83EB;
+		applyReplacementPalette(rct, mapRaw);
+		
+		sf::Image tmp;
+		if (!tmp.LoadFromMemory(mapRaw.data, mapRaw.length)) {
+			LOG(ERROR, "unable to load map sky bitmap from memory");
+			return;
+		}
+		mapSky.Copy(tmp, i*200, 0);
+	}
+	sf::Image map;
+	loadBitmap(0x8160, map);
+	sf::Image & mapGround = app->bitmaps["simtower/ui/map/ground"];
+	mapGround.Create(200, 24, sf::Color(0, 0, 0, 0));
+	mapGround.Copy(map, 0, 0, sf::IntRect(0, 264, 200, 24));
+	loadMergedByID('y', app->bitmaps["simtower/ui/map/buttons"], 0x8138, 0x8136, 0x8137, NULL);
+	loadMergedByID('y', app->bitmaps["simtower/ui/map/overlays"], 0x8139, 0x813a, 0x813b, NULL);
 	
 	//Time Window
-	loadBitmap(0x8140, app->bitmaps["ui/time/bg"]);
+	loadBitmap(0x8140, app->bitmaps["simtower/ui/time/bg"]);
 	sf::Image stars[2];
 	sf::Image starTower;
 	loadBitmap(0x8142, stars[0]);
 	loadBitmap(0x8143, stars[1]);
 	loadBitmap(0x8147, starTower);
-	sf::Image & rating = app->bitmaps["ui/time/rating"];
+	sf::Image & rating = app->bitmaps["simtower/ui/time/rating"];
 	rating.Create(108, 22*6, sf::Color(0, 0, 0, 0)); 
 	for (int i = 0; i < 5; i++) {
 		for (int n = 0; n < 5; n++) {
@@ -339,7 +368,7 @@ void SimTowerLoader::loadBitmaps()
 	for (int i = 0; i < 11; i++) {
 		loadSky(0x8351+i, skies[i]);
 	}
-	loadMerged('x', app->bitmaps["sky"],
+	loadMerged('x', app->bitmaps["simtower/sky"],
 		&skies[0], &skies[1], &skies[2],
 		&skies[3], &skies[4], &skies[5],
 		&skies[6], &skies[7], &skies[8],
@@ -379,7 +408,7 @@ void SimTowerLoader::loadBitmaps()
 		{0, ""}
 	};
 	for (int i = 0; namedBitmaps[i].id != 0; i++) {
-		sf::Image & bmp = app->bitmaps[namedBitmaps[i].name];
+		sf::Image & bmp = app->bitmaps[Path("simtower/") + namedBitmaps[i].name];
 		loadBitmap(namedBitmaps[i].id, bmp);
 		if (namedBitmaps[i].alpha != sf::Color()) {
 			bmp.CreateMaskFromColor(namedBitmaps[i].alpha);
@@ -528,13 +557,13 @@ void SimTowerLoader::loadElevators()
 	express. Copy(express_combined[0], 0, 0);
 	
 	//Cut out the cars from their surrounding shaft for animation.
-	loadElevatorCar(standard, app->bitmaps["elevator/standard"]);
-	loadElevatorCar(service,  app->bitmaps["elevator/service"]);
-	loadElevatorCar(express,  app->bitmaps["elevator/express"]);
+	loadElevatorCar(standard, app->bitmaps["simtower/elevator/standard"]);
+	loadElevatorCar(service,  app->bitmaps["simtower/elevator/service"]);
+	loadElevatorCar(express,  app->bitmaps["simtower/elevator/express"]);
 	
 	//Render the engines.
-	sf::Image & shaft_narrow = app->bitmaps["elevator/narrow"]; 
-	sf::Image & shaft_wide   = app->bitmaps["elevator/wide"];
+	sf::Image & shaft_narrow = app->bitmaps["simtower/elevator/narrow"]; 
+	sf::Image & shaft_wide   = app->bitmaps["simtower/elevator/wide"];
 	shaft_narrow.Create(32*7, 36);
 	shaft_wide.  Create(48*7, 36);
 	for (int i = 0; i < 3; i++) {
@@ -563,6 +592,25 @@ void SimTowerLoader::loadElevatorCar(const sf::Image & img, sf::Image & dst)
 	}
 }
 
+void SimTowerLoader::applyReplacementPalette(int palette, Blob & raw)
+{
+	if (palette <= 0) return;
+	Blob * rct = &rawPalettes[palette];
+	assert(rct && "rawPalette does not exist");
+	
+	for (int n = 0; n < 256; n++) {
+		//For some reason index 184 exists twice in the color palette, so we skip that color.
+		//No idea why this is there though.
+		unsigned int ridx = n;
+		if (ridx >= 184) ridx++;
+		ridx = ridx % 256;
+		
+		for (int t = 0; t < 4; t++) {
+			raw.data[0x36 + n*4 + 3 - t] = rct->data[ridx*8 + t*2];
+		}
+	}
+}
+
 void SimTowerLoader::loadSky(int id, sf::Image & img)
 {
 	Blob & raw = rawBitmaps[id];
@@ -581,7 +629,7 @@ void SimTowerLoader::loadSky(int id, sf::Image & img)
 	for (int i = 0; i < 6; i++)
 	{
 		//Choose a replacement palette which yields twilight, night and overcast colorings.
-		Blob * rct = NULL;
+		/*Blob * rct = NULL;
 		if (i == 1) rct = &rawPalettes[0x83E9];
 		if (i == 2) rct = &rawPalettes[0x83EA];
 		if (i == 3) rct = &rawPalettes[0x83EB];
@@ -599,7 +647,12 @@ void SimTowerLoader::loadSky(int id, sf::Image & img)
 					raw.data[0x36 + n*4 + 3 - t] = rct->data[ridx*8 + t*2];
 				}
 			}
-		}
+		}*/
+		int rct = 0;
+		if (i == 1) rct = 0x83E9;
+		if (i == 2) rct = 0x83EA;
+		if (i == 3) rct = 0x83EB;
+		applyReplacementPalette(rct, raw);
 		
 		//Make the raindrops have the same color as the sky for the first 4 bitmaps, which are day, twilight, night and overcast without rain states.
 		if (i < 4) {

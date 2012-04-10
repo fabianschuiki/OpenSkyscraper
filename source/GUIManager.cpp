@@ -1,4 +1,5 @@
 #include <cassert>
+#include <Rocket/Controls.h>
 
 #include "Application.h"
 #include "GUIManager.h"
@@ -29,6 +30,7 @@ bool GUIManager::init(sf::RenderWindow * window)
 		LOG(ERROR, "unable to initialize Rocket::Core");
 		return false;
 	}
+	Rocket::Controls::Initialise();
 	
 	return true;
 }

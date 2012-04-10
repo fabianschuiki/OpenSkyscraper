@@ -84,7 +84,7 @@ endif ()
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	set(rocket_debug "debugger")
 endif()
-find_package(Rocket REQUIRED core ${rocket_debug})
+find_package(Rocket REQUIRED core controls ${rocket_debug})
 include_Directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
 

@@ -29,6 +29,7 @@
 #include <GL/gl.h>
 
 #include "Renderer.h"
+#include "../Application.h"
 
 using namespace OT;
 
@@ -268,8 +269,10 @@ void RocketRenderer::SetScissorRegion(int x, int y, int width, int height)
 bool RocketRenderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
 {
 	MyWindow->SetActive();
-
-	Rocket::Core::FileInterface* file_interface = Rocket::Core::GetFileInterface();
+	
+	printf("-> LOADING TEXTURE %s\n", source.CString());
+	
+	/*Rocket::Core::FileInterface* file_interface = Rocket::Core::GetFileInterface();
 	Rocket::Core::FileHandle file_handle = file_interface->Open(source);
 	if (file_handle == (Rocket::Core::FileHandle)NULL)
 		return false;
@@ -291,7 +294,8 @@ bool RocketRenderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Ro
 
 		return false;
 	};
-	delete buffer;
+	delete buffer;*/
+	sf::Image * image = &App->bitmaps[source.CString()];
 
 	texture_handle = (Rocket::Core::TextureHandle) image;
 	texture_dimensions = Rocket::Core::Vector2i(image->GetWidth(), image->GetHeight());

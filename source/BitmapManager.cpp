@@ -7,8 +7,26 @@ using namespace OT;
 
 bool BitmapManager::load(Path name, sf::Image & dst)
 {
-	//At the moment we only disable image smoothing to get pixel-accurate rendering.
-	//TODO: move the SimTower bitmaps into a "simtower" subdirectory. This way non-SimTower bitmaps can be loaded like fonts.
-	dst.SetSmooth(false);
-	return true;
+	if (name.str().find("simtower/") == 0) {
+		dst.SetSmooth(false);
+		return true;
+	} else {
+		//Fetch the possible locations for this font.
+		DataManager::Paths paths = app->data.paths(Path("bitmaps") + name);
+		paths.push_back(name);
+		
+		//Try to load the font.
+		bool success = false;
+		for (int i = 0; i < paths.size() && !success; i++) {
+			success = dst.LoadFromFile(paths[i].c_str());
+		}
+		
+		//Return success.
+		if (success) {
+			LOG(DEBUG,   "loaded bitmap '%s'", name.c_str());
+		} else {
+			LOG(WARNING, "unable to find bitmap '%s'", name.c_str());
+		}
+		return success;
+	}
 }

@@ -48,6 +48,7 @@ namespace OT
 		void loadHotel(int id, sf::Image & img);
 		void loadElevators();
 		void loadElevatorCar(const sf::Image & img, sf::Image & dst);
+		void applyReplacementPalette(int palette, Blob & raw);
 		void loadSky(int id, sf::Image & img);
 		
 		void loadBitmap(int id, sf::Image & img);

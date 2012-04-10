@@ -97,7 +97,7 @@ void Application::init()
 		LOG(WARNING, "unable to load SimTower resources");
 	}
 	//TODO: make this dependent on a command line switch
-	//simtower->dump("~/SimTower Resources");
+	simtower->dump("~/SimTower Resources");
 	delete simtower; simtower = NULL;
 	//exitCode = 1;
 	
@@ -112,6 +112,14 @@ void Application::init()
 		exitCode = -1;
 		return;
 	}
+	
+	//Load GUI fonts.
+	fonts.loadIntoRocket("Jura-Regular.ttf");
+	fonts.loadIntoRocket("Jura-Medium.ttf");
+	fonts.loadIntoRocket("Jura-Light.ttf");
+	fonts.loadIntoRocket("Jura-DemiBold.ttf");
+	fonts.loadIntoRocket("Play-Regular.ttf");
+	fonts.loadIntoRocket("Play-Bold.ttf");
 	
 	//DEBUG: load some GUI
 	Path rocket = data.paths("debug/rocket").front();

@@ -17,7 +17,7 @@ Game::Game(Application & app)
 	skyState = 0;
 	
 	Sprite * s = new Sprite;
-	s->SetImage(app.bitmaps["security"]);
+	s->SetImage(app.bitmaps["simtower/security"]);
 	s->Resize(384, 24);
 	s->SetCenter(0, 24);
 	s->SetPosition(0, 0);
@@ -88,7 +88,7 @@ void Game::drawBackground(const sf::FloatRect & rect)
 	int sky_upper = std::min<int>(ceil (-rect.Top    / 360), 11);
 	
 	sf::Sprite sky;
-	sky.SetImage(app.bitmaps["sky"]);
+	sky.SetImage(app.bitmaps["simtower/sky"]);
 	for (int y = sky_lower; y <= sky_upper; y++) {
 		int index = (std::min<int>(y + 1, 9) * 6 + skyState);
 		sky.SetSubRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
@@ -105,7 +105,7 @@ void Game::drawBackground(const sf::FloatRect & rect)
 	//Draw the skyline, if in view.
 	if (-rect.Bottom <= 96 && -rect.Top >= 0) {
 		sf::Sprite city;
-		city.SetImage(app.bitmaps["deco/skyline"]);
+		city.SetImage(app.bitmaps["simtower/deco/skyline"]);
 		city.SetCenter(0, 55);
 		for (int x = floor(rect.Left / 96); x < ceil(rect.Right / 96); x++) {
 			city.SetPosition(x * 96, 0);

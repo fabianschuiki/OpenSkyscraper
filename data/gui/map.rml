@@ -1,2 +1,58 @@
 <rml>
+	<head>
+		<style>
+			body {
+				font-family: Play;
+				color: black;
+				
+				width: 200px;
+				
+				top:  0px;
+				left: 0px;
+			}
+			
+			div#map {
+				display: block;
+				width:   200px;
+				height:  288px;
+				
+				background-decorator: image;
+				background-image:   /simtower/ui/map/sky;
+				background-image-s: 0px 200px;
+			}
+			div#ground {
+				display: block;
+				width:   200px;
+				height:  24px;
+				
+				background-decorator: image;
+				background-image:     /simtower/ui/map/ground;
+			}
+			
+			button {
+				display: inline-block;
+				width:   50px;
+				height:  18px;
+				background-decorator: image;
+				background-image: /simtower/ui/map/buttons 0px 0px 50px 18px;
+			}
+			button:active {
+				background-image-t: 36px 54px;
+			}
+			
+			button.edit    { background-image-s: 0px   50px; }
+			button.eval    { background-image-s: 50px  100px; }
+			button.pricing { background-image-s: 100px 150px; }
+			button.hotel   { background-image-s: 150px 200px; }
+		</style>
+	</head>
+
+	<body>
+		<button class="edit"></button>
+		<button class="eval"></button>
+		<button class="pricing"></button>
+		<button class="hotel"></button>
+		<div id="map"></div>
+		<div id="ground"></div>
+	</body>
 </rml>

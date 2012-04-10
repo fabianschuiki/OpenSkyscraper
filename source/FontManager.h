@@ -11,5 +11,6 @@ namespace OT
 	public:
 		FontManager(Application * app) : ResourceManager<sf::Font>(app) {}
 		bool load(Path name, sf::Font & dst);
+		bool loadIntoRocket(Path name);
 	};
 }

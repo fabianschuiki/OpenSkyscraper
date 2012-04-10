@@ -25,10 +25,13 @@ namespace OT
 			return get(name);
 		}
 		
+		typedef std::map<Path, T> Resources;
+		Resources & getResources() { return resources; }
+		
 	protected:
 		virtual bool load(Path name, T & dst) { return true; }
 		
 	private:
-		std::map<Path, T> resources;
+		Resources resources;
 	};
 }
