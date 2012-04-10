@@ -19,7 +19,7 @@ namespace OT
 	public:
 		Application(int argc, char * argv[]);
 		
-		Path getPath() const;
+		Path getPath() const { return path; }
 		
 		Logger logger;
 		

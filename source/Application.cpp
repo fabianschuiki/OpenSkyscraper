@@ -23,7 +23,10 @@ Application::Application(int argc, char * argv[])
 	App = this;
 	
 	assert(argc >= 1 && "argv[0] is required");
-	setPath(argv[0]);
+	path = Path(argv[0]);
+#ifdef __APPLE__
+	path = Path("../MacOS").down(path.name());
+#endif
 	
 	//Special debug defaults.
 #ifdef BUILD_DEBUG
@@ -50,17 +53,6 @@ Application::Application(int argc, char * argv[])
 		path.str().c_str()
 	);
 	LOG(IMPORTANT, "ready");
-}
-
-Path Application::getPath()     const { return path; }
-
-void Application::setPath(const Path & p)
-{
-#ifdef __APPLE__
-	path     = Path("../MacOS").down(p.name());
-#else
-	path     = p;
-#endif
 }
 
 /** Runs the application. */
