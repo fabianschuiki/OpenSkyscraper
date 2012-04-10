@@ -8,23 +8,25 @@
 
 namespace OT
 {
+	class GUI;
+	
 	class GUIManager
 	{
-	public:
-		Rocket::Core::Context * context;
+		friend class GUI;
 		
+	public:
 		GUIManager();
 		~GUIManager();
 		
 		bool init(sf::RenderWindow * window);
-		bool handleEvent(sf::Event & event);
-		void draw();
 		
-		Rocket::Core::ElementDocument * loadDocument(Path path);
+		Rocket::Core::Input::KeyIdentifier translateKey(sf::Key::Code key);
+		int getKeyModifiers();
 		
-	private:
+	protected:
 		sf::RenderWindow * window;
 		
+	private:
 		RocketRenderer renderer;
 		RocketSystemInterface system;
 	};

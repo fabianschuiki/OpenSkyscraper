@@ -187,26 +187,25 @@ void Application::loop()
 			if (!states.empty()) {
 				if (states.top()->handleEvent(event))
 					continue;
+				if (states.top()->gui.handleEvent(event))
+					continue;
 			}
 			if (event.Type == sf::Event::Closed) {
 				LOG(WARNING, "current state did not handle sf::Event::Closed");
 				exitCode = 1;
 				continue;
 			}
-			gui.handleEvent(event);
 		}
 		
 		//Make the current state do its work.
 		if (!states.empty()) {
 			states.top()->advance(dt);
+			states.top()->gui.draw();
 		}
-		
-		//Draw the GUI.
-		gui.draw();
 		
 		//Draw the debugging overlays.
 		char dbg[1024];
-		snprintf(dbg, 32, "%.0f Hz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
+		snprintf(dbg, 32, "%.0fHz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
 		if (!states.empty()) {
 			strcat(dbg, "\n");
 			strcat(dbg, states.top()->debugString);

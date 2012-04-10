@@ -4,8 +4,13 @@
 using namespace OT;
 
 Game::Game(Application & app)
-:	app(app)
+:	State(),
+	app(app)
 {
+	timeWindow    = NULL;
+	toolboxWindow = NULL;
+	mapWindow     = NULL;
+	
 	zoom = 1;
 	poi.y = 200;
 	
@@ -112,5 +117,24 @@ void Game::drawBackground(const sf::FloatRect & rect)
 
 void Game::reloadGUI()
 {
-	setGUI(App->gui.loadDocument("demo.rml"));
+	if (timeWindow) {
+		timeWindow->RemoveReference();
+		timeWindow->Close();
+	}
+	if (toolboxWindow) {
+		toolboxWindow->RemoveReference();
+		toolboxWindow->Close();
+	}
+	if (mapWindow) {
+		mapWindow->RemoveReference();
+		mapWindow->Close();
+	}
+	
+	timeWindow    = gui.loadDocument("time.rml");
+	toolboxWindow = gui.loadDocument("toolbox.rml");
+	mapWindow     = gui.loadDocument("map.rml");
+	
+	if (timeWindow)    timeWindow   ->Show();
+	if (toolboxWindow) toolboxWindow->Show();
+	if (mapWindow)     mapWindow    ->Show();
 }

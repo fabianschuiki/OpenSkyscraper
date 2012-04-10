@@ -30,6 +30,10 @@ namespace OT
 		int    skyState;
 		void drawBackground(const sf::FloatRect & rect);
 		
+		Rocket::Core::ElementDocument * timeWindow;
+		Rocket::Core::ElementDocument * toolboxWindow;
+		Rocket::Core::ElementDocument * mapWindow;
+		
 		void reloadGUI();
 	};
 }
