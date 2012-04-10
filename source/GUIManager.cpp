@@ -80,6 +80,19 @@ bool GUIManager::handleEvent(sf::Event & event)
 
 void GUIManager::draw()
 {
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, window->GetWidth(), window->GetHeight(), 0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	
 	context->Update();
 	context->Render();
+	
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
 }

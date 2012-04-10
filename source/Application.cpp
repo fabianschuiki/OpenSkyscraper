@@ -110,29 +110,30 @@ void Application::init()
 	Game * game = new Game(*this);
 	pushState(game);
 	
-	/*if (!gui.init(&window)) {
+	if (!gui.init(&window)) {
 		LOG(ERROR, "unable to initialize gui");
 		exitCode = -1;
 		return;
-	}*/
+	}
 	
 	//DEBUG: load some GUI
-	/*Path rocket = dataDir.down("debug").down("rocket");
+	Path rocket = data.paths("debug/rocket").front();
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Bold.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-BoldItalic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Italic.otf").c_str());
-	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());*/
+	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());
 	
 	/*Rocket::Core::ElementDocument * cursor = gui.context->LoadMouseCursor(rocket.down("cursor.rml").c_str());
 	if (cursor) {
 		cursor->RemoveReference();
 	}*/
 	
-	/*Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
+	Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
 	if (document) {
+		LOG(DEBUG, "loaded demo.rml");
 		document->Show();
 		document->RemoveReference();
-	}*/
+	}
 }
 
 void Application::loop()
@@ -192,12 +193,16 @@ void Application::loop()
 				exitCode = 1;
 				continue;
 			}
+			gui.handleEvent(event);
 		}
 		
 		//Make the current state do its work.
 		if (!states.empty()) {
 			states.top()->advance(dt);
 		}
+		
+		//Draw the GUI.
+		gui.draw();
 		
 		//Draw the debugging overlays.
 		char dbg[1024];
