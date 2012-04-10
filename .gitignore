@@ -2,15 +2,10 @@
 .*
 *~
 
-*.pbxuser
-*.perspective
-*.perspectivev3
-
-*.mode1v3
-*.mode2v3
-
+# Project Files
 *.kdev4
+*.anjuta
 
-# Documentation (for now)
+# Documentation
 /doc/source/*
 !/doc/source/Doxyfile
