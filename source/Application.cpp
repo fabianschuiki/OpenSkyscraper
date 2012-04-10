@@ -215,7 +215,7 @@ void Application::loop()
 		
 		window.SetView(window.GetDefaultView());
 		sf::FloatRect r = rateIndicator.GetRect();
-		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right, r.Bottom, sf::Color::Black);
+		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right, r.Bottom, sf::Color(0, 0, 0, 0.25*255));
 		window.Draw(bg);
 		window.Draw(rateIndicator);
 		
