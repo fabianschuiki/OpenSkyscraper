@@ -5,7 +5,8 @@ using namespace OT;
 
 Game::Game(Application & app)
 :	State(),
-	app(app)
+	app(app),
+	itemFactory(this)
 {
 	timeWindow    = NULL;
 	toolboxWindow = NULL;
@@ -15,6 +16,8 @@ Game::Game(Application & app)
 	poi.y = 200;
 	
 	skyState = 0;
+	
+	itemFactory.loadPrototypes();
 	
 	Sprite * s = new Sprite;
 	s->SetImage(app.bitmaps["simtower/security"]);

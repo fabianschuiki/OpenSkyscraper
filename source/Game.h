@@ -1,10 +1,10 @@
 #pragma once
 
+#include "Item/Factory.h"
 #include "Sprite.h"
 #include "State.h"
 
-namespace OT
-{
+namespace OT {
 	class Game : public State
 	{
 	public:
@@ -21,6 +21,8 @@ namespace OT
 		
 		bool handleEvent(sf::Event & event);
 		void advance(double dt);
+		
+		Item::Factory itemFactory;
 		
 	private:
 		double zoom;
