@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Item/Factory.h"
+#include "Item/Item.h"
 #include "Sprite.h"
 #include "State.h"
 
@@ -23,6 +24,11 @@ namespace OT {
 		void advance(double dt);
 		
 		Item::Factory itemFactory;
+		
+		typedef std::set<Item::Item *> ItemSet;
+		ItemSet items;
+		void addItem(Item::Item * item);
+		void removeItem(Item::Item * item);
 		
 	private:
 		double zoom;

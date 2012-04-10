@@ -6,15 +6,15 @@ namespace OT {
 		class FastFood : public Item
 		{
 		public:
-			static AbstractPrototype * makePrototype() {
-				AbstractPrototype * p = new Prototype<FastFood>;
+			OT_ITEM_CONSTRUCTOR(FastFood);
+			OT_ITEM_PROTOTYPE(FastFood) {
 				p->name  = "Fast Food";
 				p->price = 100000;
 				p->size  = int2(16,1);
 				p->icon  = int2(3,1);
-				return p;
 			}
-			OT_ITEM_CONSTRUCTOR(FastFood) {}
+			
+			virtual void init();
 		};
 	}
 }

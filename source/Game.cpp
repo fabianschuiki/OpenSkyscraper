@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Application.h"
 #include "Game.h"
 
@@ -19,12 +20,17 @@ Game::Game(Application & app)
 	
 	itemFactory.loadPrototypes();
 	
-	Sprite * s = new Sprite;
+	Item::Item * i = itemFactory.prototypes.front()->make(this);
+	addItem(i);
+	i = itemFactory.prototypes.front()->make(this);
+	i->SetX(200);
+	addItem(i);
+	/*Sprite * s = new Sprite;
 	s->SetImage(app.bitmaps["simtower/security"]);
 	s->Resize(384, 24);
 	s->SetCenter(0, 24);
 	s->SetPosition(0, 0);
-	sprites.insert(s);
+	sprites.insert(s);*/
 	
 	reloadGUI();
 }
@@ -71,12 +77,30 @@ void Game::advance(double dt)
 	drawBackground(view);
 	
 	//Draw the sprites that are in view.
-	for (Sprites::iterator s = sprites.begin(); s != sprites.end(); s++) {
+	/*for (Sprites::iterator s = sprites.begin(); s != sprites.end(); s++) {
 		const sf::Vector2f & vp = (*s)->GetPosition();
 		const sf::Vector2f & vs = (*s)->GetSize();
 		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {
 			win.Draw(**s);
 			drawnSprites++;
+		}
+	}*/
+	
+	//Draw the items that are in view.
+	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+		/*for (Item::Item::SpriteSet::iterator s = (*i)->sprites.begin(); s != (*i)->sprites.end(); s++) {
+			const sf::Vector2f & vp = (*s)->GetPosition();
+			const sf::Vector2f & vs = (*s)->GetSize();
+			if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {
+				win.Draw(**s);
+				drawnSprites++;
+			}
+		}*/
+		const sf::Vector2f & vp = (*i)->GetPosition();
+		const sf::Vector2f & vs = (*i)->GetSize();
+		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {
+			win.Draw(**i);
+			//drawnSprites++;
 		}
 	}
 	
@@ -140,4 +164,16 @@ void Game::reloadGUI()
 	if (timeWindow)    timeWindow   ->Show();
 	if (toolboxWindow) toolboxWindow->Show();
 	if (mapWindow)     mapWindow    ->Show();
+}
+
+void Game::addItem(Item::Item * item)
+{
+	assert(item);
+	items.insert(item);
+}
+
+void Game::removeItem(Item::Item * item)
+{
+	assert(item);
+	items.erase(item);
 }
