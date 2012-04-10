@@ -16,6 +16,8 @@ namespace OT
 {
 	class Application
 	{
+		friend class State;
+		
 	public:
 		Application(int argc, char * argv[]);
 		

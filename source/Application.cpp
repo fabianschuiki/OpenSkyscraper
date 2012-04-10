@@ -107,9 +107,6 @@ void Application::init()
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");
 	
-	Game * game = new Game(*this);
-	pushState(game);
-	
 	if (!gui.init(&window)) {
 		LOG(ERROR, "unable to initialize gui");
 		exitCode = -1;
@@ -123,17 +120,20 @@ void Application::init()
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Italic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());
 	
+	Game * game = new Game(*this);
+	pushState(game);
+	
 	/*Rocket::Core::ElementDocument * cursor = gui.context->LoadMouseCursor(rocket.down("cursor.rml").c_str());
 	if (cursor) {
 		cursor->RemoveReference();
 	}*/
 	
-	Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
+	/*Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
 	if (document) {
 		LOG(DEBUG, "loaded demo.rml");
 		document->Show();
 		document->RemoveReference();
-	}
+	}*/
 }
 
 void Application::loop()

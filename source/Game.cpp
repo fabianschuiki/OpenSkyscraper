@@ -17,16 +17,18 @@ Game::Game(Application & app)
 	s->SetCenter(0, 24);
 	s->SetPosition(0, 0);
 	sprites.insert(s);
+	
+	reloadGUI();
 }
 
 void Game::activate()
 {
-	
+	State::activate();
 }
 
 void Game::deactivate()
 {
-	
+	State::deactivate();
 }
 
 bool Game::handleEvent(sf::Event & event)
@@ -38,6 +40,7 @@ bool Game::handleEvent(sf::Event & event)
 				case sf::Key::Right: poi.x += 20; break;
 				case sf::Key::Up:    poi.y += 20; break;
 				case sf::Key::Down:  poi.y -= 20; break;
+				case sf::Key::F1:    reloadGUI(); break;
 			}
 		} break;
 	}
@@ -105,4 +108,9 @@ void Game::drawBackground(const sf::FloatRect & rect)
 			drawnSprites++;
 		}
 	}
+}
+
+void Game::reloadGUI()
+{
+	setGUI(App->gui.loadDocument("demo.rml"));
 }

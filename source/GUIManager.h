@@ -20,6 +20,8 @@ namespace OT
 		bool handleEvent(sf::Event & event);
 		void draw();
 		
+		Rocket::Core::ElementDocument * loadDocument(Path path);
+		
 	private:
 		sf::RenderWindow * window;
 		

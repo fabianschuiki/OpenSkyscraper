@@ -29,5 +29,7 @@ namespace OT
 		double skyFade;
 		int    skyState;
 		void drawBackground(const sf::FloatRect & rect);
+		
+		void reloadGUI();
 	};
 }

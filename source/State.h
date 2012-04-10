@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Window.hpp>
+#include <Rocket/Core/ElementDocument.h>
 
 namespace OT
 {
@@ -11,17 +12,20 @@ namespace OT
 	{
 	public:
 		char debugString[512];
+		State();
 		
-		/// Called when the State becomes active, i.e. is the topmost State.
-		virtual void activate() {}
-		
-		/// Called by the Application if an SFML event needs to be handled. Return true if the event was handled, false otherwise.
+		virtual void activate();
 		virtual bool handleEvent(sf::Event & event) { return false; }
-		
-		/// All the gameloop work should be handled here. Simulate stuff, update state, draw things.
 		virtual void advance(double dt) {}
+		virtual void deactivate();
 		
-		/// Called when the State becomes inactive, i.e. is not the topmost State anymore.
-		virtual void deactivate() {}
+		bool isActive() { return active; }
+		
+		Rocket::Core::ElementDocument * getGUI() { return gui; }
+		void setGUI(Rocket::Core::ElementDocument * gui);
+		
+	private:
+		bool active;
+		Rocket::Core::ElementDocument * gui;
 	};
 }

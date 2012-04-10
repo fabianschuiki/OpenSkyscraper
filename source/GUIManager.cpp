@@ -96,3 +96,17 @@ void GUIManager::draw()
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 }
+
+Rocket::Core::ElementDocument * GUIManager::loadDocument(Path path)
+{
+	DataManager::Paths paths = App->data.paths(Path("debug/rocket").down(path));
+	for (DataManager::Paths::iterator p = paths.begin(); p != paths.end(); p++) {
+		Rocket::Core::ElementDocument * document = context->LoadDocument((*p).c_str());
+		if (document) {
+			LOG(DEBUG, "loaded GUI document '%s'", path.c_str());
+			return document;
+		}
+	}
+	LOG(ERROR, "unable to load GUI document '%s'", path.c_str());
+	return NULL;
+}
