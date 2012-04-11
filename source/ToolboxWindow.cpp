@@ -8,7 +8,9 @@ using namespace OT;
 
 void ToolboxWindow::close()
 {
+	speedButton = NULL;
 	buttons.clear();
+	
 	if (window) {
 		window->RemoveReference();
 		window->Close();
@@ -23,6 +25,16 @@ void ToolboxWindow::reload()
 	window = game->gui.loadDocument("toolbox.rml");
 	assert(window);
 	window->Show();
+	
+	speedButton = window->GetElementById("speed");
+	assert(speedButton);
+	
+	Rocket::Core::ElementList tmp;
+	window->GetElementsByTagName(tmp, "button");
+	for (int i = 0; i < tmp.size(); i++) {
+		tmp[i]->AddEventListener("click", this);
+		if (tmp[i]->IsClassSet("tool")) buttons.insert(tmp[i]);
+	}
 	
 	//Add the item buttons.
 	for (int i = 0; i < game->itemFactory.prototypes.size(); i++) {
@@ -47,8 +59,48 @@ void ToolboxWindow::reload()
 		Rocket::Core::Element * button = Rocket::Core::Factory::InstanceElement(NULL, "button", "button", attributes);
 		assert(button && "unable to instantiate button");
 		
+		button->AddEventListener("click", this);
 		window->AppendChild(button);
+		buttons.insert(button);
+		
 		button->RemoveReference();
-		buttons.push_back(button);
+	}
+	
+	selectedTool = "";
+	selectTool("inspector");
+	
+	paused = true;
+	setPaused(false);
+}
+
+void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
+{
+	LOG(DEBUG, "%s received", event.GetType().CString());
+	Rocket::Core::Element * element = event.GetCurrentElement();
+	if (buttons.count(element)) {
+		selectTool(element->GetId().CString());
+		event.StopPropagation();
+	} else if (element == speedButton) {
+		setPaused(!paused);
+		event.StopPropagation();
+	}
+}
+
+void ToolboxWindow::selectTool(std::string tool)
+{
+	if (selectedTool != tool) {
+		selectedTool = tool;
+		for (ElementSet::iterator b = buttons.begin(); b != buttons.end(); b++) {
+			(*b)->SetClass("selected", (*b)->GetId() == tool.c_str());
+		}
+	}
+}
+
+void ToolboxWindow::setPaused(bool paused)
+{
+	if (this->paused != paused) {
+		this->paused = paused;
+		speedButton->SetClass("play", !paused);
+		speedButton->SetClass("pause", paused);
 	}
 }

@@ -18,8 +18,8 @@
 				background-image-t: 0 0.5;
 			}
 			button#speed:active { background-image-t: 0.5 1; }
-			button#speed.play  { background-image-s: 0 0.5; }
-			button#speed.pause { background-image-s: 0.5 1; }
+			button#speed.pause { background-image-s: 0 0.5; }
+			button#speed.play  { background-image-s: 0.5 1; }
 			
 			button.tool {
 				display: inline-block;
