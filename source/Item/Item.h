@@ -6,6 +6,7 @@
 
 #include "../GameObject.h"
 #include "../Math/Rect.h"
+#include "../Sprite.h"
 #include "Prototype.h"
 
 namespace OT {
@@ -15,13 +16,14 @@ namespace OT {
 		{
 		public:
 			AbstractPrototype * const prototype;
-			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype), size(prototype->size.x*8, prototype->size.y*32) {}
+			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype), size(prototype->size.x*8, prototype->size.y*36) {}
+			virtual ~Item();
 			virtual void init() {}
 			
-			typedef std::set<sf::Sprite *> SpriteSet;
+			typedef std::set<Sprite *> SpriteSet;
 			SpriteSet sprites;
-			void addSprite(sf::Sprite * sprite);
-			void removeSprite(sf::Sprite * sprite);
+			void addSprite(Sprite * sprite);
+			void removeSprite(Sprite * sprite);
 			
 			int2 position;
 			const int2 size;
@@ -33,6 +35,9 @@ namespace OT {
 			
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
+			
+			Sprite ceiling;
+			void defaultCeiling();
 		};
 	}
 }

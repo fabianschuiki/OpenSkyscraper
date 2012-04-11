@@ -387,6 +387,14 @@ void SimTowerLoader::loadBitmaps()
 		&skies[9], &skies[10], NULL
 	);
 	
+	sf::Image floorTmp;
+	loadBitmap(0x83e8, floorTmp);
+	sf::Image & floor = app->bitmaps["simtower/floor"];
+	floor.Create(8, 36);
+	for (int i = 0; i < 8; i += 2) {
+		floor.Copy(floorTmp, i, 0, sf::IntRect(16, 0, 2, 36));
+	}
+	
 	const static struct { int id; Path name; sf::Color alpha; } namedBitmaps[] = {
 		{0x8E28, "construction/grid",   sf::Color::White},
 		{0x8E29, "construction/solid"},

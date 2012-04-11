@@ -17,7 +17,7 @@ Game::Game(Application & app)
 	rating = 0;
 	
 	zoom = 1;
-	poi.y = 200;
+	poi.y = 0;
 	
 	skyState = 0;
 	
@@ -69,8 +69,8 @@ bool Game::handleEvent(sf::Event & event)
 					encodeXML(xml);
 					fclose(f);
 				} break;
-				case sf::Key::PageUp:   zoom *= 2; break;
-				case sf::Key::PageDown: zoom /= 2; break;
+				case sf::Key::PageUp:   zoom /= 2; break;
+				case sf::Key::PageDown: zoom *= 2; break;
 			}
 		} break;
 	}
@@ -83,11 +83,10 @@ void Game::advance(double dt)
 	drawnSprites = 0;
 	
 	//Adust the camera.
-	sf::Vector2f poi_inv = poi;
-	poi_inv.y = -poi_inv.y;
-	sf::View cameraView(poi_inv, sf::Vector2f(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom));
+	sf::View cameraView(sf::Vector2f(poi.x, -poi.y), sf::Vector2f(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom));
 	win.SetView(cameraView);
 	sf::FloatRect view = cameraView.GetRect();
+	win.SetView(sf::View(view));
 	
 	//Draw the background.
 	drawBackground(view);
@@ -112,12 +111,12 @@ void Game::advance(double dt)
 				drawnSprites++;
 			}
 		}*/
-		const sf::Vector2f & vp = (*i)->GetPosition();
+		/*const sf::Vector2f & vp = (*i)->GetPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
-		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {
+		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {*/
 			win.Draw(**i);
 			//drawnSprites++;
-		}
+		//}
 	}
 	
 	//Draw the debug string.
@@ -130,7 +129,7 @@ void Game::drawBackground(const sf::FloatRect & rect)
 	int sky_lower = std::max<int>(floor(-rect.Bottom / 360), -1);
 	int sky_upper = std::min<int>(ceil (-rect.Top    / 360), 11);
 	
-	sf::Sprite sky;
+	Sprite sky;
 	sky.SetImage(app.bitmaps["simtower/sky"]);
 	for (int y = sky_lower; y <= sky_upper; y++) {
 		int index = (std::min<int>(y + 1, 9) * 6 + skyState);
@@ -147,7 +146,7 @@ void Game::drawBackground(const sf::FloatRect & rect)
 	
 	//Draw the skyline, if in view.
 	if (-rect.Bottom <= 96 && -rect.Top >= 0) {
-		sf::Sprite city;
+		Sprite city;
 		city.SetImage(app.bitmaps["simtower/deco/skyline"]);
 		city.SetCenter(0, 55);
 		for (int x = floor(rect.Left / 96); x < ceil(rect.Right / 96); x++) {

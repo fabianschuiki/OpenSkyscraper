@@ -45,7 +45,7 @@ namespace OT {
 		
 	private:
 		double zoom;
-		sf::Vector2f poi;
+		double2 poi;
 		
 		double skyFade;
 		int    skyState;

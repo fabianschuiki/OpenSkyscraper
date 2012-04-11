@@ -6,21 +6,26 @@ using namespace OT::Item;
 using std::string;
 
 
+Item::~Item()
+{
+	sprites.clear();
+}
+
 void Item::setPosition(int2 p)
 {
 	if (position != p) {
 		position = p;
-		SetPosition(p.x*8, -p.y*32);
+		SetPosition(p.x*8, -p.y*36);
 	}
 }
 
-void Item::addSprite(sf::Sprite * sprite)
+void Item::addSprite(Sprite * sprite)
 {
 	assert(sprite);
 	sprites.insert(sprite);
 }
 
-void Item::removeSprite(sf::Sprite * sprite)
+void Item::removeSprite(Sprite * sprite)
 {
 	assert(sprite);
 	sprites.erase(sprite);
@@ -43,4 +48,14 @@ void Item::encodeXML(tinyxml2::XMLPrinter & xml)
 void Item::decodeXML(tinyxml2::XMLElement & xml)
 {
 	setPosition(int2(xml.IntAttribute("x"), xml.IntAttribute("y")));
+}
+
+void Item::defaultCeiling()
+{
+	ceiling.SetImage(App->bitmaps["simtower/floor"]);
+	ceiling.SetSubRect(sf::IntRect(0, 0, 8, 12));
+	ceiling.Resize(size.x, 12);
+	//ceiling.SetCenter(0.375, 0.375);
+	ceiling.SetPosition(sf::Vector2f(0, -size.y));
+	addSprite(&ceiling);
 }

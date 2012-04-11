@@ -13,6 +13,8 @@ void FastFood::init()
 	sprite.SetCenter(0, 24);
 	addSprite(&sprite);
 	
+	defaultCeiling();
+	
 	updateSprite();
 }
 

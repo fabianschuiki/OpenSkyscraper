@@ -1,5 +1,6 @@
 #pragma once
 #include "Item.h"
+#include "../Sprite.h"
 
 namespace OT {
 	namespace Item {
@@ -22,7 +23,7 @@ namespace OT {
 			
 			int variant;
 			
-			sf::Sprite sprite;
+			Sprite sprite;
 			void updateSprite();
 		};
 	}
