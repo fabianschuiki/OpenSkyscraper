@@ -3,6 +3,21 @@ This is the experimental `restart` branch of OpenSkyscraper.
 **You are welcome to join in the experiments, put forward suggestions or supply your own experimental code!**
 
 
+How to try stuff
+----------------
+After you've cloned the repository, run `git submodule update --init .` inside your cloned
+repository so the submodules are loaded appopriately.
+
+To build the game, create a directory `build` and run `$ cmake ..` from within. Check that you have
+all the necessary dependencies installed by looking at the CMake output warnings/errors. Once your
+system checks out, run `$ make` to build, and `$ ./OpenSkyscraper` to launch the game. Observe the
+game's output carefully as it may contain some hints why stuff isn't working.
+
+At the moment, you need a `SIMTOWER.EXE` installed somewhere on your system. The game searches a
+number of locations for this file. Check the `WindowsNEExecutable.cpp.15, load: from .../SIMTOWER.EXE`
+lines of output for a list of locations.
+
+
 What is being tested?
 ---------------------
 Currently we're performing the following experiments and tests:
@@ -10,16 +25,6 @@ Currently we're performing the following experiments and tests:
 - **SFML** as platform API (instead of SDL)
   - loads bitmaps, fonts and sounds directly from memory
   - modern C++ interface simplifies code
-
-- **Lua** as scripting language for
-  - game logic
-  - animation
-  - drawing
-
-  
-Why such heavy scripting?
--------------------------
-Writing code in a scripting language is generally faster and more convenient than in C++, as rigorous typesafety and non-introspectivity usually gets in your way in the latter. Some may argue that writing time-critical code in a scripting language is a bad idea. Yet modern game engines usually encourage the AI to be written in a scripting language. Furthermore, Lua is pretty fast (when used at a low level, e.g. through ObjectiveLua) and there are games that are written entirely in Lua (CorsixTH).
 
 
 Coding Style

@@ -18,6 +18,10 @@ endif()
 # Gather the source files.
 file(GLOB_RECURSE sources RELATIVE ${PROJECT_SOURCE_DIR} source/*.cpp)
 
+# TinyXML2
+include_directories(thirdparty/tinyxml2)
+list(APPEND sources thirdparty/tinyxml2/tinyxml2.cpp)
+
 
 ###  PLATFORM-SPECIFIC STUFF
 ###  =======================
@@ -58,7 +62,7 @@ endif ()
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/thirdparty" ${CMAKE_MODULE_PATH})
 
 # Include the ObjectiveLua headers.
-include_directories(thirdparty/objectivelua/include/)
+include_directories(thirdparty/objectivelua/include)
 
 # Lua
 find_package(Lua51 REQUIRED)
@@ -85,7 +89,7 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
 	set(rocket_debug "debugger")
 endif()
 find_package(Rocket REQUIRED core controls ${rocket_debug})
-include_Directories(${ROCKET_INCLUDE_DIR})
+include_directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
 
 # OpenGL (Needed by Rocket)

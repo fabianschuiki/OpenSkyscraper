@@ -1,3 +1,6 @@
 [submodule "thirdparty/objectivelua"]
 	path = thirdparty/objectivelua
 	url = git@github.com:fabianschuiki/objectivelua.git
+[submodule "thirdparty/tinyxml2"]
+	path = thirdparty/tinyxml2
+	url = https://github.com/leethomason/tinyxml2.git
