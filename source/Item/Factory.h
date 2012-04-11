@@ -1,4 +1,7 @@
 #pragma once
+#include <map>
+#include <string>
+#include <tinyxml2.h>
 #include <vector>
 #include "../GameObject.h"
 #include "Prototype.h"
@@ -13,7 +16,12 @@ namespace OT {
 			~Factory();
 			
 			std::vector<AbstractPrototype *> prototypes;
+			std::map<std::string, AbstractPrototype *> prototypesById;
 			void loadPrototypes();
+			
+			Item * make(AbstractPrototype * prototype);
+			Item * make(std::string prototypeID);
+			Item * make(tinyxml2::XMLElement & xml);
 		};
 	}
 }

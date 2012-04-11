@@ -13,6 +13,7 @@ Factory::~Factory()
 		delete prototypes[i];
 	}
 	prototypes.clear();
+	prototypesById.clear();
 }
 
 void Factory::loadPrototypes()
@@ -21,10 +22,27 @@ void Factory::loadPrototypes()
 	
 	prototypes.push_back(FastFood::makePrototype());
 	
-	std::stringstream str;
-	str << "loaded prototypes:";
 	for (int i = 0; i < prototypes.size(); i++) {
-		str << "\n" << prototypes[i]->desc();
+		prototypesById[prototypes[i]->id] = prototypes[i];
 	}
-	LOG(DEBUG, str.str().c_str());
+}
+
+Item * Factory::make(AbstractPrototype * prototype)
+{
+	assert(prototype);
+	return prototype->make(game);
+}
+
+Item * Factory::make(std::string prototypeID)
+{
+	AbstractPrototype * prototype = prototypesById[prototypeID];
+	return make(prototype);
+}
+
+Item * Factory::make(tinyxml2::XMLElement & xml)
+{
+	Item * item = make(xml.Attribute("type"));
+	assert(item);
+	item->decodeXML(xml);
+	return item;
 }

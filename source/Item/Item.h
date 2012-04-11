@@ -2,6 +2,7 @@
 
 #include <set>
 #include <SFML/Graphics.hpp>
+#include <tinyxml2.h>
 
 #include "../GameObject.h"
 #include "../Math/Rect.h"
@@ -29,6 +30,9 @@ namespace OT {
 			
 			virtual void Render(sf::RenderTarget & target) const;
 			sf::Vector2f GetSize() const { return sf::Vector2f(size.x, size.y); }
+			
+			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
+			virtual void decodeXML(tinyxml2::XMLElement & xml);
 		};
 	}
 }

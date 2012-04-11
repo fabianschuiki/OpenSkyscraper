@@ -23,11 +23,11 @@ Game::Game(Application & app)
 	
 	itemFactory.loadPrototypes();
 	
-	Item::Item * i = itemFactory.prototypes.front()->make(this);
+	/*Item::Item * i = itemFactory.prototypes.front()->make(this);
 	addItem(i);
 	i = itemFactory.prototypes.front()->make(this);
 	i->setPosition(int2(20, 0));
-	addItem(i);
+	addItem(i);*/
 	/*Sprite * s = new Sprite;
 	s->SetImage(app.bitmaps["simtower/security"]);
 	s->Resize(384, 24);
@@ -188,6 +188,13 @@ void Game::encodeXML(tinyxml2::XMLPrinter & xml)
 	xml.OpenElement("tower");
 	xml.PushAttribute("funds", funds);
 	xml.PushAttribute("rating", rating);
+	
+	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+		xml.OpenElement("item");
+		(*i)->encodeXML(xml);
+		xml.CloseElement();
+	}
+	
 	xml.CloseElement();
 }
 
@@ -198,6 +205,13 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	
 	setFunds(root->IntAttribute("funds"));
 	setRating(root->IntAttribute("rating"));
+	
+	tinyxml2::XMLElement * e = root->FirstChildElement("item");
+	while (e) {
+		Item::Item * item = itemFactory.make(*e);
+		addItem(item);
+		e = e->NextSiblingElement("item");
+	}
 }
 
 void Game::transferFunds(int f)

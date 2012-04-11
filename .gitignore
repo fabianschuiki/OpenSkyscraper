@@ -1,6 +1,9 @@
 /build/*
+!/build/default.tower
 .*
 *~
+!.gitignore
+!.gitmodules
 
 # Project Files
 *.kdev4
