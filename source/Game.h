@@ -1,9 +1,12 @@
 #pragma once
 
+#include <tinyxml2.h>
+
 #include "Item/Factory.h"
 #include "Item/Item.h"
 #include "Sprite.h"
 #include "State.h"
+#include "TimeWindow.h"
 #include "ToolboxWindow.h"
 
 namespace OT {
@@ -31,7 +34,14 @@ namespace OT {
 		void addItem(Item::Item * item);
 		void removeItem(Item::Item * item);
 		
+		int funds;
+		int rating;
+		void transferFunds(int f);
+		void setFunds(int f);
+		void setRating(int r);
+		
 		ToolboxWindow toolboxWindow;
+		TimeWindow    timeWindow;
 		
 	private:
 		double zoom;
@@ -41,10 +51,11 @@ namespace OT {
 		int    skyState;
 		void drawBackground(const sf::FloatRect & rect);
 		
-		Rocket::Core::ElementDocument * timeWindow;
-		//Rocket::Core::ElementDocument * toolboxWindow;
 		Rocket::Core::ElementDocument * mapWindow;
 		
 		void reloadGUI();
+		
+		void encodeXML(tinyxml2::XMLPrinter & xml);
+		void decodeXML(tinyxml2::XMLDocument & xml);
 	};
 }

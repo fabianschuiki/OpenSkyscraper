@@ -8,11 +8,13 @@ Game::Game(Application & app)
 :	State(),
 	app(app),
 	itemFactory(this),
-	toolboxWindow(this)
+	toolboxWindow(this),
+	timeWindow(this)
 {
-	timeWindow    = NULL;
-	//toolboxWindow = NULL;
 	mapWindow     = NULL;
+	
+	funds  = 4000000;
+	rating = 0;
 	
 	zoom = 1;
 	poi.y = 200;
@@ -34,6 +36,11 @@ Game::Game(Application & app)
 	sprites.insert(s);*/
 	
 	reloadGUI();
+	
+	//DEBUG: load from disk.
+	tinyxml2::XMLDocument xml;
+	xml.LoadFile("default.tower");
+	decodeXML(xml);
 }
 
 void Game::activate()
@@ -56,6 +63,12 @@ bool Game::handleEvent(sf::Event & event)
 				case sf::Key::Up:    poi.y += 20; break;
 				case sf::Key::Down:  poi.y -= 20; break;
 				case sf::Key::F1:    reloadGUI(); break;
+				case sf::Key::F2: {
+					FILE * f = fopen("default.tower", "w");
+					tinyxml2::XMLPrinter xml(f);
+					encodeXML(xml);
+					fclose(f);
+				} break;
 			}
 		} break;
 	}
@@ -145,28 +158,17 @@ void Game::drawBackground(const sf::FloatRect & rect)
 
 void Game::reloadGUI()
 {
-	if (timeWindow) {
-		timeWindow->RemoveReference();
-		timeWindow->Close();
-	}
-	/*if (toolboxWindow) {
-		toolboxWindow->RemoveReference();
-		toolboxWindow->Close();
-	}*/
 	if (mapWindow) {
 		mapWindow->RemoveReference();
 		mapWindow->Close();
 	}
 	
-	timeWindow    = gui.loadDocument("time.rml");
-	//toolboxWindow = gui.loadDocument("toolbox.rml");
 	mapWindow     = gui.loadDocument("map.rml");
 	
-	if (timeWindow)    timeWindow   ->Show();
-	//if (toolboxWindow) toolboxWindow->Show();
 	if (mapWindow)     mapWindow    ->Show();
 	
 	toolboxWindow.reload();
+	timeWindow.reload();
 }
 
 void Game::addItem(Item::Item * item)
@@ -179,4 +181,48 @@ void Game::removeItem(Item::Item * item)
 {
 	assert(item);
 	items.erase(item);
+}
+
+void Game::encodeXML(tinyxml2::XMLPrinter & xml)
+{
+	xml.OpenElement("tower");
+	xml.PushAttribute("funds", funds);
+	xml.PushAttribute("rating", rating);
+	xml.CloseElement();
+}
+
+void Game::decodeXML(tinyxml2::XMLDocument & xml)
+{
+	tinyxml2::XMLElement * root = xml.RootElement();
+	assert(root);
+	
+	setFunds(root->IntAttribute("funds"));
+	setRating(root->IntAttribute("rating"));
+}
+
+void Game::transferFunds(int f)
+{
+	setFunds(funds + f);
+	LOG(DEBUG, "%i", f);
+}
+
+void Game::setFunds(int f)
+{
+	if (funds != f) {
+		funds = f;
+		timeWindow.updateFunds();
+	}
+}
+
+void Game::setRating(int r)
+{
+	if (rating != r) {
+		bool improved = (r > rating);
+		rating = r;
+		if (improved) {
+			//TODO: show window
+			LOG(IMPORTANT, "rating increased to %i", rating);
+		}
+		timeWindow.updateRating();
+	}
 }

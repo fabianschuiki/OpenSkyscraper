@@ -28,7 +28,7 @@
 				height: 22px;
 				
 				background-decorator: image;
-				background-image: /simtower/ui/time/rating 0 0px 1 22px;
+				background-image: /simtower/ui/time/rating;
 			}
 			
 			div.stats {
@@ -85,6 +85,6 @@
 			Year
 		</div>
 		<div id="message">Income from fast food.</div>
-		<div id="rating"></div>
+		<div id="rating" class="r0"></div>
 	</body>
 </rml>
