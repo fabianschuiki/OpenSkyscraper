@@ -16,6 +16,14 @@ namespace OT {
 			}
 			
 			virtual void init();
+			
+			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
+			virtual void decodeXML(tinyxml2::XMLElement & xml);
+			
+			int variant;
+			
+			sf::Sprite sprite;
+			void updateSprite();
 		};
 	}
 }

@@ -69,6 +69,8 @@ bool Game::handleEvent(sf::Event & event)
 					encodeXML(xml);
 					fclose(f);
 				} break;
+				case sf::Key::PageUp:   zoom *= 2; break;
+				case sf::Key::PageDown: zoom /= 2; break;
 			}
 		} break;
 	}

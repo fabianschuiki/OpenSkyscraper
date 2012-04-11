@@ -10,7 +10,7 @@ void Item::setPosition(int2 p)
 {
 	if (position != p) {
 		position = p;
-		SetPosition(p.x*8, p.y*32);
+		SetPosition(p.x*8, -p.y*32);
 	}
 }
 

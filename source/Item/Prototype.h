@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <string>
 #include "../Math/Vector2D.h"
+#include <tinyxml2.h>
 
 namespace OT {
 	class Game;

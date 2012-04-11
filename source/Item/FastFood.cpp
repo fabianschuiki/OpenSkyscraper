@@ -7,11 +7,30 @@ void FastFood::init()
 {
 	Item::init();
 	
-	LOG(DEBUG, "initializing fast food");
-	sf::Sprite * s = new sf::Sprite;
-	s->SetImage(App->bitmaps["simtower/fastfood"]);
-	s->SetSubRect(sf::IntRect(128*2, 24*0, 128*3, 24*1));
-	s->Resize(128, 24);
-	s->SetCenter(0, 24);
-	addSprite(s);
+	variant = rand() % 5;
+	
+	sprite.SetImage(App->bitmaps["simtower/fastfood"]);
+	sprite.SetCenter(0, 24);
+	addSprite(&sprite);
+	
+	updateSprite();
+}
+
+void FastFood::encodeXML(tinyxml2::XMLPrinter & xml)
+{
+	Item::encodeXML(xml);
+	xml.PushAttribute("variant", variant);
+}
+
+void FastFood::decodeXML(tinyxml2::XMLElement & xml)
+{
+	Item::decodeXML(xml);
+	variant = xml.IntAttribute("variant");
+	updateSprite();
+}
+
+void FastFood::updateSprite()
+{
+	sprite.SetSubRect(sf::IntRect(128*2, variant*24, 128*3, (variant+1)*24));
+	sprite.Resize(128, 24);
 }
