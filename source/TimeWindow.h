@@ -24,6 +24,7 @@ namespace OT {
 		Rocket::Core::Element * fundsDiv;
 		Rocket::Core::Element * populationDiv;
 		
+		void updateTime();
 		void updateRating();
 		void updateFunds();
 	};

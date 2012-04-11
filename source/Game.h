@@ -6,6 +6,7 @@
 #include "Item/Item.h"
 #include "Sprite.h"
 #include "State.h"
+#include "Time.h"
 #include "TimeWindow.h"
 #include "ToolboxWindow.h"
 
@@ -42,6 +43,11 @@ namespace OT {
 		
 		ToolboxWindow toolboxWindow;
 		TimeWindow    timeWindow;
+		
+		Time time;
+		
+		bool paused;
+		void setPaused(bool p);
 		
 	private:
 		double zoom;

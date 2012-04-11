@@ -47,6 +47,32 @@ void TimeWindow::reload()
 	updateFunds();
 }
 
+void TimeWindow::updateTime()
+{
+	Time & t = game->time;
+	
+	Rocket::Core::Element * weekday = window->GetElementById("date-weekday");
+	Rocket::Core::Element * weekend = window->GetElementById("date-weekend");
+	weekday->SetInnerRML(t.day == 0 ? "1st WD" : "2nd WD");
+	weekday->SetProperty("display", (t.day == 2 ? "none" : "inline"));
+	weekend->SetProperty("display", (t.day != 2 ? "none" : "inline"));
+	
+	char c[128];
+	snprintf(c, 128, "%iQ", t.quarter);
+	window->GetElementById("date-quarter")->SetInnerRML(c);
+	
+	const char * suffix = "th";
+	int yl = (t.year % 10);
+	if (yl == 1) suffix = "st";
+	if (yl == 2) suffix = "nd";
+	if (yl == 3) suffix = "rd";
+	snprintf(c, 128, "%i%s", t.year, suffix);
+	window->GetElementById("date-year")->SetInnerRML(c);
+	
+	snprintf(c, 128, "%.1f", t.absolute);
+	populationDiv->SetInnerRML(c);
+}
+
 void TimeWindow::updateRating()
 {
 	for (int i = 0; i < 6; i++) {

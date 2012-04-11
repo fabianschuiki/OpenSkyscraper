@@ -16,6 +16,9 @@ Game::Game(Application & app)
 	funds  = 4000000;
 	rating = 0;
 	
+	time.set(5);
+	paused = false;
+	
 	zoom = 1;
 	poi.y = 0;
 	
@@ -81,6 +84,9 @@ void Game::advance(double dt)
 {
 	sf::RenderWindow & win = app.window;
 	drawnSprites = 0;
+	
+	time.advance(dt);
+	timeWindow.updateTime();
 	
 	//Adust the camera.
 	sf::View cameraView(sf::Vector2f(poi.x, -poi.y), sf::Vector2f(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom));
@@ -239,5 +245,13 @@ void Game::setRating(int r)
 			LOG(IMPORTANT, "rating increased to %i", rating);
 		}
 		timeWindow.updateRating();
+	}
+}
+
+void Game::setPaused(bool p)
+{
+	if (paused != p) {
+		paused = p;
+		
 	}
 }

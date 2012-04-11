@@ -1,5 +1,6 @@
 #include <cassert>
 #include <string>
+#include "../Game.h"
 #include "Item.h"
 
 using namespace OT::Item;
@@ -34,6 +35,7 @@ void Item::removeSprite(Sprite * sprite)
 void Item::Render(sf::RenderTarget & target) const
 {
 	for (SpriteSet::iterator s = sprites.begin(); s != sprites.end(); s++) {
+		game->drawnSprites++;
 		target.Draw(**s);
 	}
 }
