@@ -315,8 +315,20 @@ void SimTowerLoader::loadBitmaps()
 	
 	//Toolbox
 	loadMergedByID('y', app->bitmaps["simtower/ui/toolbox/tools"], 0x825C, 0x825D, 0x825E, NULL);
-	loadMergedByID('y', app->bitmaps["simtower/ui/toolbox/pause"], 0x825A, 0x825B, NULL);
-	loadMergedByID('y', app->bitmaps["simtower/ui/toolbox/items"], 0x812C, 0x812D, 0x812E, NULL);
+	sf::Image speed[2];
+	loadMergedByID('y', speed[0], 0x8258, 0x8259, NULL);
+	loadMergedByID('y', speed[1], 0x825A, 0x825B, NULL);
+	loadMerged('x', app->bitmaps["simtower/ui/toolbox/speed"], &speed[0], &speed[1], NULL);
+	
+	sf::Image items[3];
+	for (int i = 0; i < 3; i++) {
+		sf::Image tmp;
+		loadBitmap(0x812C+i, tmp);
+		items[i].Create(32*26, 32);
+		for (int n = 0; n < 4; n++)
+			items[i].Copy(tmp, n*256, 0, sf::IntRect(0, n*32, 256, n*32+32));
+	}
+	loadMerged('y', app->bitmaps["simtower/ui/toolbox/items"], &items[0], &items[1], &items[2], NULL);
 	
 	//Map
 	Blob & mapRaw = rawBitmaps[0x8160];
