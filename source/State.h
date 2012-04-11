@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Window.hpp>
+#include <string>
 
 #include "GUI.h"
 
@@ -13,7 +14,7 @@ namespace OT
 	{
 	public:
 		char debugString[512];
-		State();
+		State(std::string name);
 		
 		GUI gui;
 		

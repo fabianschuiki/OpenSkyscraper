@@ -1,4 +1,6 @@
 <tower funds="2000000" rating="0">
+    <item type="fastfood" x="-32" y="0"/>
+    <item type="fastfood" x="-16" y="0"/>
     <item type="fastfood" x="0" y="0"/>
-    <item type="fastfood" x="20" y="0"/>
+    <item type="fastfood" x="16" y="0"/>
 </tower>

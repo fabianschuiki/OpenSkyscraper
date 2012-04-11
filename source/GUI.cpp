@@ -10,22 +10,19 @@
 using namespace OT;
 
 
-GUI::GUI(GUIManager * manager)
+GUI::GUI(std::string name, GUIManager * manager)
 {
 	assert(manager && "GUI requires a GUIManager");
 	
 	this->manager = manager;
-	this->context = Rocket::Core::CreateContext("default", Rocket::Core::Vector2i(manager->window->GetWidth(), manager->window->GetHeight()));
-	assert(this->context && "unable to initialize context");
-	
-#ifdef BUILD_DEBUG
-	Rocket::Debugger::Initialise(context);
-#endif
+	context = Rocket::Core::CreateContext(name.c_str(), Rocket::Core::Vector2i(manager->window->GetWidth(), manager->window->GetHeight()));
+	assert(context && "unable to initialize context");
 }
 
 GUI::~GUI()
 {
-	//TODO: cleanup context here.
+	context->RemoveReference();
+	context = NULL;
 }
 
 bool GUI::handleEvent(sf::Event & event)
@@ -48,13 +45,6 @@ bool GUI::handleEvent(sf::Event & event)
 		case sf::Event::TextEntered:
 			return context->ProcessTextInput(event.Text.Unicode);
 		case sf::Event::KeyPressed:
-#ifdef BUILD_DEBUG
-			if (event.Key.Code == sf::Key::F8) {
-				bool visible = !Rocket::Debugger::IsVisible();
-				LOG(DEBUG, "Rocket::Debugger %s", (visible ? "on" : "off"));
-				Rocket::Debugger::SetVisible(visible);
-			}
-#endif
 			return context->ProcessKeyDown(manager->translateKey(event.Key.Code), manager->getKeyModifiers());
 		case sf::Event::KeyReleased:
 			return context->ProcessKeyUp(manager->translateKey(event.Key.Code), manager->getKeyModifiers());

@@ -1,5 +1,6 @@
 #include <cassert>
 #include <Rocket/Controls.h>
+#include <Rocket/Debugger.h>
 
 #include "Application.h"
 #include "GUIManager.h"

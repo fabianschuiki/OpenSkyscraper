@@ -1,10 +1,11 @@
+#include <Rocket/Debugger.h>
 #include "State.h"
 #include "Application.h"
 
 using namespace OT;
 
 
-State::State() : gui(&App->gui)
+State::State(std::string name) : gui(name, &App->gui)
 {
 	active = false;
 }
@@ -12,6 +13,9 @@ State::State() : gui(&App->gui)
 void State::activate()
 {
 	active = true;
+#ifdef BUILD_DEBUG
+	Rocket::Debugger::SetContext(gui.context);
+#endif
 }
 
 void State::deactivate()

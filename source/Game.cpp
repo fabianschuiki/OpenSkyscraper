@@ -5,7 +5,7 @@
 using namespace OT;
 
 Game::Game(Application & app)
-:	State(),
+:	State("game"),
 	app(app),
 	itemFactory(this),
 	toolboxWindow(this),

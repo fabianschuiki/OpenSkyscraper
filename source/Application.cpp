@@ -4,6 +4,7 @@
 #include <cstring>
 #include <ctime>
 #include <iostream>
+#include <Rocket/Debugger.h>
 
 #include "Application.h"
 #include "Game.h"
@@ -112,6 +113,10 @@ void Application::init()
 		exitCode = -1;
 		return;
 	}
+	rootGUI = new GUI("root", &gui);
+#ifdef BUILD_DEBUG
+	Rocket::Debugger::Initialise(rootGUI->context);
+#endif
 	
 	//Load GUI fonts.
 	fonts.loadIntoRocket("Jura-Regular.ttf");
@@ -122,26 +127,14 @@ void Application::init()
 	fonts.loadIntoRocket("Play-Bold.ttf");
 	
 	//DEBUG: load some GUI
-	Path rocket = data.paths("debug/rocket").front();
+	/*Path rocket = data.paths("debug/rocket").front();
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Bold.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-BoldItalic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Italic.otf").c_str());
-	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());
+	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());*/
 	
 	Game * game = new Game(*this);
 	pushState(game);
-	
-	/*Rocket::Core::ElementDocument * cursor = gui.context->LoadMouseCursor(rocket.down("cursor.rml").c_str());
-	if (cursor) {
-		cursor->RemoveReference();
-	}*/
-	
-	/*Rocket::Core::ElementDocument * document = gui.context->LoadDocument(rocket.down("demo.rml").c_str());
-	if (document) {
-		LOG(DEBUG, "loaded demo.rml");
-		document->Show();
-		document->RemoveReference();
-	}*/
 }
 
 void Application::loop()
@@ -188,10 +181,29 @@ void Application::loop()
 				LOG(INFO, "resized (%i, %i)", window.GetWidth(), window.GetHeight());
 				window.GetDefaultView().SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
 			}
-			if (event.Type == sf::Event::KeyPressed && event.Key.Code == sf::Key::Escape) {
-				exitCode = 1;
-				continue;
+			if (event.Type == sf::Event::KeyPressed) {
+				if (event.Key.Code == sf::Key::Escape) {
+					exitCode = 1;
+					continue;
+				}
+				if (event.Key.Code == sf::Key::R && event.Key.Control) {
+					LOG(IMPORTANT, "reinitializing game");
+					Game * old = (Game *)states.top();
+					popState();
+					delete old;
+					Game * game = new Game(*this);
+					pushState(game);
+					continue;
+				}
+#ifdef BUILD_DEBUG
+				if (event.Key.Code == sf::Key::F8) {
+					bool visible = !Rocket::Debugger::IsVisible();
+					LOG(DEBUG, "Rocket::Debugger %s", (visible ? "on" : "off"));
+					Rocket::Debugger::SetVisible(visible);
+				}
+#endif
 			}
+			rootGUI->handleEvent(event);
 			if (!states.empty()) {
 				if (states.top()->handleEvent(event))
 					continue;
@@ -210,6 +222,7 @@ void Application::loop()
 			states.top()->advance(dt);
 			states.top()->gui.draw();
 		}
+		rootGUI->draw();
 		
 		//Draw the debugging overlays.
 		char dbg[1024];

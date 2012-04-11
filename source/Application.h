@@ -30,6 +30,7 @@ namespace OT
 		
 		DataManager   data;
 		GUIManager    gui;
+		GUI *         rootGUI;
 		BitmapManager bitmaps;
 		FontManager   fonts;
 		

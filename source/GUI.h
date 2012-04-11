@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Path.h"
-
 #include <Rocket/Core.h>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <string>
+
+#include "Path.h"
 
 namespace OT
 {
@@ -15,7 +16,7 @@ namespace OT
 		GUIManager * manager;
 		Rocket::Core::Context * context;
 		
-		GUI(GUIManager * manager);
+		GUI(std::string name, GUIManager * manager);
 		~GUI();
 		
 		bool handleEvent(sf::Event & event);
