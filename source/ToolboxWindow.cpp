@@ -69,8 +69,7 @@ void ToolboxWindow::reload()
 	selectedTool = "";
 	selectTool("inspector");
 	
-	paused = true;
-	setPaused(false);
+	updateSpeed();
 }
 
 void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
@@ -81,7 +80,7 @@ void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
 		selectTool(element->GetId().CString());
 		event.StopPropagation();
 	} else if (element == speedButton) {
-		setPaused(!paused);
+		game->setPaused(!game->paused);
 		event.StopPropagation();
 	}
 }
@@ -96,11 +95,8 @@ void ToolboxWindow::selectTool(std::string tool)
 	}
 }
 
-void ToolboxWindow::setPaused(bool paused)
+void ToolboxWindow::updateSpeed()
 {
-	if (this->paused != paused) {
-		this->paused = paused;
-		speedButton->SetClass("play", !paused);
-		speedButton->SetClass("pause", paused);
-	}
+	speedButton->SetClass("play", !game->paused);
+	speedButton->SetClass("pause", game->paused);
 }

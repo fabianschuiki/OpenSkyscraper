@@ -17,6 +17,16 @@
 				background-right-image:  /simtower/ui/time/bg 300px 0px 431px 41px;
 			}
 			
+			div#watch {
+				position: absolute;
+				left: 6px;
+				top:  6px;
+				width:  29px;
+				height: 29px;
+				
+				background-decorator: watch;
+			}
+			
 			div#rating {
 				display: block;
 				
@@ -73,6 +83,7 @@
 	</head>
 	
 	<body>
+		<div id="watch"></div>
 		<div id="funds" class="stats">$54'324'000</div>
 		<div id="population" class="stats">16106</div>
 		<div class="date">

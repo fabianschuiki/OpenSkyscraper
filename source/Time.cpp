@@ -19,34 +19,18 @@ void Time::advance(double dt)
 {
 	//According to jcranmer's investigations on the time subject, we know that the original game
 	//used to measure the day in frames which accorded to seconds on a different basis depending on
-	//the time of day. So for a basic scaling of speeds, we assume that the original game used to
-	//run at 15 Hz in order to convert the seconds/frame into gamehours/second.
+	//the time of day.
 	
-	//Define a scaling value which we will multiply the seconds/frame by in order to get the unit we
-	//want for our game engine.
-	const double c = 15.0 / 3600;
-	double f;
+	//Define the basic speed of the game. This is the speed at which time will pass at lunch.
+	double speed = 1.0/60; //game hours per second
 	
-	//7:00 to 12:00, 45s/frame
-	if (hour >= 7 && hour < 12) {
-		f = 45 * c;
-	}
-	
-	//12:00 to 13:00, 4.5s/frame
-	else if (hour >= 12 && hour < 13) {
-		f = 4.5 * c;
-	}
-		
-	//13:00 to 1:00, 36s/frame
-	else if (hour >= 13 || hour < 1) {
-		f = 36 * c;
-	}
-	
-	//1:00 to 7:00, 126s/frame
-	else {
-		f = 126 * c;
-	}
+	//Apply a multiplication factor derived from the original game (which measured this in
+	//seconds/frame).
+	if      (hour >= 7  && hour < 12) speed *= 10; //7:00  to 12:00, 45s/frame
+	else if (hour >= 12 && hour < 13) speed *= 1;  //12:00 to 13:00, 4.5s/frame
+	else if (hour >= 13 || hour < 1)  speed *= 8;  //13:00 to 1:00,  36s/frame
+	else 	                          speed *= 28; //1:00 to 7:00, 126s/frame
 	
 	//Advance the time.
-	set(absolute + dt*f*10);
+	set(absolute + dt*speed);
 }

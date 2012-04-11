@@ -9,7 +9,6 @@ namespace OT {
 	{
 	public:
 		ToolboxWindow(Game * game) : GameObject(game) {
-			paused          = false;
 			window          = NULL;
 			speedButton     = NULL;
 		}
@@ -25,8 +24,7 @@ namespace OT {
 		
 		void ProcessEvent(Rocket::Core::Event & event);
 		
-		bool paused;
-		void setPaused(bool paused);
+		void updateSpeed();
 		
 		std::string selectedTool;
 		void selectTool(std::string tool);

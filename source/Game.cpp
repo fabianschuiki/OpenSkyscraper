@@ -85,6 +85,7 @@ void Game::advance(double dt)
 	sf::RenderWindow & win = app.window;
 	drawnSprites = 0;
 	
+	if (paused) dt = 0;
 	time.advance(dt);
 	timeWindow.updateTime();
 	
@@ -109,20 +110,11 @@ void Game::advance(double dt)
 	
 	//Draw the items that are in view.
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
-		/*for (Item::Item::SpriteSet::iterator s = (*i)->sprites.begin(); s != (*i)->sprites.end(); s++) {
-			const sf::Vector2f & vp = (*s)->GetPosition();
-			const sf::Vector2f & vs = (*s)->GetSize();
-			if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {
-				win.Draw(**s);
-				drawnSprites++;
-			}
-		}*/
-		/*const sf::Vector2f & vp = (*i)->GetPosition();
+		const sf::Vector2f & vp = (*i)->GetPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
-		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {*/
+		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
 			win.Draw(**i);
-			//drawnSprites++;
-		//}
+		}
 	}
 	
 	//Draw the debug string.
@@ -252,6 +244,6 @@ void Game::setPaused(bool p)
 {
 	if (paused != p) {
 		paused = p;
-		
+		toolboxWindow.updateSpeed();
 	}
 }

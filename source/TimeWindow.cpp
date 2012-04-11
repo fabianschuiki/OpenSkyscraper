@@ -51,6 +51,8 @@ void TimeWindow::updateTime()
 {
 	Time & t = game->time;
 	
+	window->GetElementById("watch")->SetAttribute<float>("time", t.hour);
+	
 	Rocket::Core::Element * weekday = window->GetElementById("date-weekday");
 	Rocket::Core::Element * weekend = window->GetElementById("date-weekend");
 	weekday->SetInnerRML(t.day == 0 ? "1st WD" : "2nd WD");

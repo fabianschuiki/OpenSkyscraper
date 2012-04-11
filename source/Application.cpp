@@ -9,6 +9,7 @@
 #include "Application.h"
 #include "Game.h"
 #include "SimTowerLoader.h"
+#include "TimeWindowWatch.h"
 
 using namespace OT;
 using namespace std;
@@ -118,6 +119,11 @@ void Application::init()
 	Rocket::Debugger::Initialise(rootGUI->context);
 #endif
 	
+	//Additional GUI stuff.
+	Rocket::Core::DecoratorInstancer * instancer = new TimeWindowWatchInstancer;
+	Rocket::Core::Factory::RegisterDecoratorInstancer("watch", instancer);
+	instancer->RemoveReference();
+	
 	//Load GUI fonts.
 	fonts.loadIntoRocket("Jura-Regular.ttf");
 	fonts.loadIntoRocket("Jura-Medium.ttf");
@@ -159,7 +165,7 @@ void Application::loop()
 			dt_min = dt_real;
 			dt_maxmin_resetTimer = 0;
 		}
-		double dt = std::max<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
+		double dt = std::min<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
 		clock.Reset();
 		
 		//Update the rate indicator.
