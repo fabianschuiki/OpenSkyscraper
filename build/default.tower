@@ -1,3 +1,8 @@
 <tower funds="2000000" rating="0">
-    <item type="fastfood" x="-8" y="0" variant="0"/>
+    <item type="fastfood" x="-24" y="1" variant="3"/>
+    <item type="fastfood" x="-8" y="1" variant="4"/>
+    <item type="fastfood" x="8" y="1" variant="0"/>
+    <item type="fastfood" x="-24" y="0" variant="0"/>
+    <item type="fastfood" x="-8" y="0" variant="1"/>
+    <item type="fastfood" x="8" y="0" variant="2"/>
 </tower>
