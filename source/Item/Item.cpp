@@ -4,6 +4,14 @@
 using namespace OT::Item;
 
 
+void Item::setPosition(int2 p)
+{
+	if (position != p) {
+		position = p;
+		SetPosition(p.x*8, p.y*32);
+	}
+}
+
 void Item::addSprite(sf::Sprite * sprite)
 {
 	assert(sprite);

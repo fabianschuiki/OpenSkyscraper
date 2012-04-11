@@ -24,7 +24,7 @@ Game::Game(Application & app)
 	Item::Item * i = itemFactory.prototypes.front()->make(this);
 	addItem(i);
 	i = itemFactory.prototypes.front()->make(this);
-	i->SetX(200);
+	i->setPosition(int2(20, 0));
 	addItem(i);
 	/*Sprite * s = new Sprite;
 	s->SetImage(app.bitmaps["simtower/security"]);
