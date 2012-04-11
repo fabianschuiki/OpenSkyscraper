@@ -7,10 +7,11 @@ using namespace OT;
 Game::Game(Application & app)
 :	State(),
 	app(app),
-	itemFactory(this)
+	itemFactory(this),
+	toolboxWindow(this)
 {
 	timeWindow    = NULL;
-	toolboxWindow = NULL;
+	//toolboxWindow = NULL;
 	mapWindow     = NULL;
 	
 	zoom = 1;
@@ -148,22 +149,24 @@ void Game::reloadGUI()
 		timeWindow->RemoveReference();
 		timeWindow->Close();
 	}
-	if (toolboxWindow) {
+	/*if (toolboxWindow) {
 		toolboxWindow->RemoveReference();
 		toolboxWindow->Close();
-	}
+	}*/
 	if (mapWindow) {
 		mapWindow->RemoveReference();
 		mapWindow->Close();
 	}
 	
 	timeWindow    = gui.loadDocument("time.rml");
-	toolboxWindow = gui.loadDocument("toolbox.rml");
+	//toolboxWindow = gui.loadDocument("toolbox.rml");
 	mapWindow     = gui.loadDocument("map.rml");
 	
 	if (timeWindow)    timeWindow   ->Show();
-	if (toolboxWindow) toolboxWindow->Show();
+	//if (toolboxWindow) toolboxWindow->Show();
 	if (mapWindow)     mapWindow    ->Show();
+	
+	toolboxWindow.reload();
 }
 
 void Game::addItem(Item::Item * item)

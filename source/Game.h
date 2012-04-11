@@ -4,6 +4,7 @@
 #include "Item/Item.h"
 #include "Sprite.h"
 #include "State.h"
+#include "ToolboxWindow.h"
 
 namespace OT {
 	class Game : public State
@@ -30,6 +31,8 @@ namespace OT {
 		void addItem(Item::Item * item);
 		void removeItem(Item::Item * item);
 		
+		ToolboxWindow toolboxWindow;
+		
 	private:
 		double zoom;
 		sf::Vector2f poi;
@@ -39,7 +42,7 @@ namespace OT {
 		void drawBackground(const sf::FloatRect & rect);
 		
 		Rocket::Core::ElementDocument * timeWindow;
-		Rocket::Core::ElementDocument * toolboxWindow;
+		//Rocket::Core::ElementDocument * toolboxWindow;
 		Rocket::Core::ElementDocument * mapWindow;
 		
 		void reloadGUI();

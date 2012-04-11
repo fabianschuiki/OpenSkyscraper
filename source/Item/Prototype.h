@@ -12,16 +12,17 @@ namespace OT {
 		class AbstractPrototype
 		{
 		public:
+			std::string id;
 			std::string name;
 			int price;
 			int2 size;
-			int2 icon;
+			int icon;
 			
 			virtual Item * make(Game * game) = 0;
 			
 			std::string desc() {
 				char c[512];
-				snprintf(c, 512, "Prototype '%s' $%i %s", this->name.c_str(), this->price, this->size.desc().c_str());
+				snprintf(c, 512, "Prototype '%s' $%i %s", this->id.c_str(), this->price, this->size.desc().c_str());
 				return c;
 			}
 		};

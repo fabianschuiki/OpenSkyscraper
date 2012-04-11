@@ -8,10 +8,11 @@ namespace OT {
 		public:
 			OT_ITEM_CONSTRUCTOR(FastFood);
 			OT_ITEM_PROTOTYPE(FastFood) {
+				p->id    = "fastfood";
 				p->name  = "Fast Food";
 				p->price = 100000;
 				p->size  = int2(16,1);
-				p->icon  = int2(3,1);
+				p->icon  = 11;
 			}
 			
 			virtual void init();
