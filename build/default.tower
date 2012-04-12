@@ -8,4 +8,7 @@
     <item type="fastfood" x="-24" y="1" variant="3"/>
     <item type="fastfood" x="-8" y="2" variant="0"/>
     <item type="fastfood" x="-24" y="2" variant="4"/>
+    
+    <item type="stairs" x="-12" y="0"/>
+    <item type="escalator" x="0" y="0"/>
 </tower>

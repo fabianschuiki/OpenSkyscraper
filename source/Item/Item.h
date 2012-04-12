@@ -6,6 +6,7 @@
 
 #include "../GameObject.h"
 #include "../Math/Rect.h"
+#include "../Person.h"
 #include "../Sprite.h"
 #include "Prototype.h"
 
@@ -15,8 +16,9 @@ namespace OT {
 		class Item : public GameObject, public sf::Drawable
 		{
 		public:
+			int layer;
 			AbstractPrototype * const prototype;
-			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype) {}
+			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype) { layer = 0; }
 			virtual ~Item();
 			virtual void init() {}
 			
@@ -43,6 +45,13 @@ namespace OT {
 				snprintf(c, 512, "%s floor %i", prototype->id.c_str(), position.y);
 				return c;
 			}
+			
+			virtual void advance(double dt) {}
+			
+			typedef std::set<Person *> People;
+			People people;
+			void addPerson(Person * p);
+			void removePerson(Person * p);
 		};
 	}
 }
@@ -55,6 +64,6 @@ namespace OT {
 	}\
 	static void initPrototype(AbstractPrototype * p)
 
-#define OT_ITEM_CONSTRUCTOR(cls) cls(Game * game, AbstractPrototype * prototype) : Item(game, prototype) { init(); }
+#define OT_ITEM_CONSTRUCTOR(cls) cls(Game * game, AbstractPrototype * prototype) : Item(game, prototype) {}
 
 #include "../Application.h"
