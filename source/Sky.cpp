@@ -1,3 +1,4 @@
+#include <cassert>
 #include "Application.h"
 #include "Game.h"
 #include "Sky.h"
@@ -98,4 +99,49 @@ void Sky::Render(sf::RenderTarget & target) const
 			game->drawnSprites++;
 		}
 	}
+	
+	//Draw the clouds.
+	Sprite cloud;
+	int2 cloudGrid(250, 100);
+	int2 cmin(floor(rect.Left / cloudGrid.x)-1, floor(-rect.Bottom / cloudGrid.y)-1);
+	int2 cmax(ceil(rect.Right / cloudGrid.x)+1, ceil(-rect.Top / cloudGrid.y)+1);
+	if (cmin.y < 2) cmin.y = 2;
+	for (int x = cmin.x; x <= cmax.x; x++) {
+		for (int y = cmin.y; y <= cmax.y; y++) {
+			int2 position(x*cloudGrid.x, -y*cloudGrid.y);
+			
+			//Decide whether this location should have a cloud, based on the cloud noise
+			//function.
+			if (cloudNoise(position*45) < 0.3) continue;
+			
+			//Decide what cloud variant to use. Multiplying the position with some arbitrary
+			//large number introduces a higher noise frequency so the clouds look more random.
+			//(...+1)*2 converts the noise range [-1,1] to [0,3].
+			int variant = (cloudNoise(position * 4672) + 1) * 2;
+			assert(variant >= 0 && variant <= 3);
+			
+			//Introduce some jitter so the clouds don't look like they're on a grid.
+			double2 offset(cloudNoise(position * 941), cloudNoise(position * 786));
+			position += offset * 50;
+			
+			char c[128];
+			snprintf(c, 128, "simtower/deco/cloud/%i", abs(variant)%4);
+			cloud.SetImage(app->bitmaps[c]);
+			cloud.SetSubRect(sf::IntRect(0, 0, cloud.GetImage()->GetWidth(), cloud.GetImage()->GetHeight()));
+			
+			cloud.SetCenter(cloud.GetSize().x/2, cloud.GetSize().y/2);
+			cloud.SetX(position.x);
+			cloud.SetY(position.y);
+			target.Draw(cloud);
+			game->drawnSprites++;
+		}
+	}
+}
+
+double Sky::cloudNoise(double2 p)
+{
+	int n=(int)p.x+(int)p.y*57;
+	n=(n<<13)^n;
+	int nn=(n*(n*n*60493+19990303)+1376312589)&0x7fffffff;
+	return 1.0-((double)nn/1073741824.0);
 }

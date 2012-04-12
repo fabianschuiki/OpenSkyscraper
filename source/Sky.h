@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/Drawable.hpp>
+#include "Math/Vector2D.h"
 #include "GameObject.h"
 
 namespace OT {
@@ -24,5 +25,7 @@ namespace OT {
 		
 		void advance(double dt);
 		virtual void Render(sf::RenderTarget & target) const;
+		
+		static double cloudNoise(double2 p);
 	};
 }
