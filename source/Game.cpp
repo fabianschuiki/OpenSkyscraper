@@ -19,6 +19,7 @@ Game::Game(Application & app)
 	
 	time.set(5);
 	paused = false;
+	selectedTool = "inspector";
 	
 	zoom = 1;
 	poi.y = 200;
@@ -152,6 +153,7 @@ void Game::encodeXML(tinyxml2::XMLPrinter & xml)
 	xml.PushAttribute("time", time.absolute);
 	xml.PushAttribute("paused", paused);
 	xml.PushAttribute("rainy", sky.rainyDay);
+	xml.PushAttribute("tool", selectedTool.c_str());
 	
 	xml.PushAttribute("x", (int)poi.x);
 	xml.PushAttribute("y", (int)poi.y);
@@ -175,6 +177,7 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	time.set(root->DoubleAttribute("time"));
 	setPaused(root->BoolAttribute("paused"));
 	sky.rainyDay = root->BoolAttribute("rainy");
+	selectTool(root->Attribute("tool"));
 	
 	poi.x = root->IntAttribute("x");
 	poi.y = root->IntAttribute("y");
@@ -219,5 +222,14 @@ void Game::setPaused(bool p)
 	if (paused != p) {
 		paused = p;
 		toolboxWindow.updateSpeed();
+	}
+}
+
+void Game::selectTool(const char * tool)
+{
+	if (!tool) return;
+	if (selectedTool != tool) {
+		selectedTool = tool;
+		toolboxWindow.updateTool();
 	}
 }

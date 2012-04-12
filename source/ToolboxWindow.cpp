@@ -66,10 +66,8 @@ void ToolboxWindow::reload()
 		button->RemoveReference();
 	}
 	
-	selectedTool = "";
-	selectTool("inspector");
-	
 	updateSpeed();
+	updateTool();
 }
 
 void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
@@ -77,7 +75,7 @@ void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
 	LOG(DEBUG, "%s received", event.GetType().CString());
 	Rocket::Core::Element * element = event.GetCurrentElement();
 	if (buttons.count(element)) {
-		selectTool(element->GetId().CString());
+		game->selectTool(element->GetId().CString());
 		event.StopPropagation();
 	} else if (element == speedButton) {
 		game->setPaused(!game->paused);
@@ -85,18 +83,15 @@ void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
 	}
 }
 
-void ToolboxWindow::selectTool(std::string tool)
-{
-	if (selectedTool != tool) {
-		selectedTool = tool;
-		for (ElementSet::iterator b = buttons.begin(); b != buttons.end(); b++) {
-			(*b)->SetClass("selected", (*b)->GetId() == tool.c_str());
-		}
-	}
-}
-
 void ToolboxWindow::updateSpeed()
 {
 	speedButton->SetClass("play", !game->paused);
 	speedButton->SetClass("pause", game->paused);
+}
+
+void ToolboxWindow::updateTool()
+{
+	for (ElementSet::iterator b = buttons.begin(); b != buttons.end(); b++) {
+		(*b)->SetClass("selected", (*b)->GetId() == game->selectedTool.c_str());
+	}
 }

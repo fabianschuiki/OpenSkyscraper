@@ -25,8 +25,6 @@ namespace OT {
 		void ProcessEvent(Rocket::Core::Event & event);
 		
 		void updateSpeed();
-		
-		std::string selectedTool;
-		void selectTool(std::string tool);
+		void updateTool();
 	};
 }

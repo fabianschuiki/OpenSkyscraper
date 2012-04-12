@@ -50,6 +50,9 @@ namespace OT {
 		bool paused;
 		void setPaused(bool p);
 		
+		std::string selectedTool;
+		void selectTool(const char * tool);
+		
 		Sky sky;
 		
 	private:
