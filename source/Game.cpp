@@ -136,7 +136,7 @@ void Game::advance(double dt)
 	Item::AbstractPrototype * previousPrototype = toolPrototype;
 	if (selectedTool.find("item-") == 0) {
 		toolPrototype = itemFactory.prototypesById[selectedTool.substr(5)];
-		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2), floor(-mp.y/36+toolPrototype->size.y/2));
+		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2.0), round(-mp.y/36-toolPrototype->size.y/2.0));
 	} else {
 		toolPrototype = NULL;
 		toolPosition = int2(floor(mp.x/8), floor(-mp.y/36));
