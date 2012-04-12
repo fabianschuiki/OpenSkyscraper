@@ -10,6 +10,8 @@ using std::string;
 Item::~Item()
 {
 	sprites.clear();
+	for (People::iterator p = people.begin(); p != people.end(); p++)
+		removePerson(*p);
 }
 
 void Item::setPosition(int2 p)
@@ -60,4 +62,18 @@ void Item::defaultCeiling()
 	//ceiling.SetCenter(0.375, 0.375);
 	ceiling.SetPosition(sf::Vector2f(0, -size.y));
 	addSprite(&ceiling);
+}
+
+void Item::addPerson(Person * p)
+{
+	assert(p);
+	assert(!p->at);
+	people.insert(p);
+}
+
+void Item::removePerson(Person * p)
+{
+	assert(p);
+	assert(p->at == this);
+	people.erase(p);;
 }

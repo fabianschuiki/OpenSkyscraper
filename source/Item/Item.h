@@ -6,6 +6,7 @@
 
 #include "../GameObject.h"
 #include "../Math/Rect.h"
+#include "../Person.h"
 #include "../Sprite.h"
 #include "Prototype.h"
 
@@ -41,6 +42,11 @@ namespace OT {
 			void defaultCeiling();
 			
 			virtual void advance(double dt) {}
+			
+			typedef std::set<Person *> People;
+			People people;
+			void addPerson(Person * p);
+			void removePerson(Person * p);
 		};
 	}
 }

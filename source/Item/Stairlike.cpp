@@ -20,11 +20,19 @@ void Stairlike::advance(double dt)
 {
 	Item::advance(dt);
 	
-	animation = fmod(animation + dt*1.5, 1);
-	int newFrame = floor(animation * (frameCount-1))+1;
-	if (frame != newFrame) {
-		frame = newFrame;
-		updateSprite();
+	if (!people.empty()) {
+		animation = fmod(animation + dt*1.5, 1);
+		int newFrame = floor(animation * (frameCount-1))+1;
+		if (frame != newFrame) {
+			frame = newFrame;
+			updateSprite();
+		}
+	} else {
+		animation = 0;
+		if (frame != 0) {
+			frame = 0;
+			updateSprite();
+		}
 	}
 }
 
