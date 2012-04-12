@@ -156,7 +156,7 @@ void Game::advance(double dt)
 			const sf::Vector2f & vs = (*i)->GetSize();
 			if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
 				win.Draw(**i);
-				if (!itemBelowCursor && (*i)->getRect().containsPoint(toolPosition)) itemBelowCursor = *i;
+				if ((*i)->getRect().containsPoint(toolPosition)) itemBelowCursor = *i;
 			}
 		}
 	}
