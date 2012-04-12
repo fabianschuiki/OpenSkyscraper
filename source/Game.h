@@ -56,10 +56,6 @@ namespace OT {
 		double zoom;
 		double2 poi;
 		
-		double skyFade;
-		int    skyState;
-		void drawBackground(const sf::FloatRect & rect);
-		
 		Rocket::Core::ElementDocument * mapWindow;
 		
 		void reloadGUI();

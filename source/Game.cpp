@@ -23,8 +23,6 @@ Game::Game(Application & app)
 	zoom = 1;
 	poi.y = 200;
 	
-	skyState = 0;
-	
 	itemFactory.loadPrototypes();
 	
 	/*Item::Item * i = itemFactory.prototypes.front()->make(this);
@@ -106,9 +104,6 @@ void Game::advance(double dt)
 	
 	win.Draw(sky);
 	
-	//Draw the background.
-	//drawBackground(view);
-	
 	//Draw the items that are in view.
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		const sf::Vector2f & vp = (*i)->GetPosition();
@@ -120,40 +115,6 @@ void Game::advance(double dt)
 	
 	//Draw the debug string.
 	snprintf(debugString, 512, "%i sprites", drawnSprites);
-}
-
-void Game::drawBackground(const sf::FloatRect & rect)
-{
-	//Draw the sky color.
-	int sky_lower = std::max<int>(floor(-rect.Bottom / 360), -1);
-	int sky_upper = std::min<int>(ceil (-rect.Top    / 360), 11);
-	
-	Sprite sky;
-	sky.SetImage(app.bitmaps["simtower/sky"]);
-	for (int y = sky_lower; y <= sky_upper; y++) {
-		int index = (std::min<int>(y + 1, 9) * 6 + skyState);
-		sky.SetSubRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
-		sky.Resize(32, 360);
-		sky.SetCenter(0, 360);
-		
-		for (int x = floor(rect.Left / 32); x < ceil(rect.Right / 32); x++) {
-			sky.SetPosition(x * 32, -y * 360);
-			app.window.Draw(sky);
-			drawnSprites++;
-		}
-	}
-	
-	//Draw the skyline, if in view.
-	if (-rect.Bottom <= 96 && -rect.Top >= 0) {
-		Sprite city;
-		city.SetImage(app.bitmaps["simtower/deco/skyline"]);
-		city.SetCenter(0, 55);
-		for (int x = floor(rect.Left / 96); x < ceil(rect.Right / 96); x++) {
-			city.SetPosition(x * 96, 0);
-			app.window.Draw(city);
-			drawnSprites++;
-		}
-	}
 }
 
 void Game::reloadGUI()
