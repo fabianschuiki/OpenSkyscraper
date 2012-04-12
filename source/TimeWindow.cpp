@@ -92,3 +92,21 @@ void TimeWindow::updateFunds()
 	for (int i = (int)fmt.length() - 3; i > 1; i -= 3) fmt.insert(i, "'");
 	fundsDiv->SetInnerRML(fmt.c_str());
 }
+
+void TimeWindow::showMessage(std::string msg)
+{
+	LOG(IMPORTANT, msg.c_str());
+	window->GetElementById("message")->SetInnerRML(msg.c_str());
+	messageTimer = 5;
+}
+
+void TimeWindow::advance(double dt)
+{
+	if (messageTimer > 0) {
+		messageTimer -= dt;
+		if (messageTimer <= 0) {
+			window->GetElementById("message")->SetInnerRML("");
+			messageTimer = 0;
+		}
+	}
+}

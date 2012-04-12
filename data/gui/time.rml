@@ -95,7 +95,7 @@
 			<span id="date-year">83rd</span>
 			Year
 		</div>
-		<div id="message">Income from fast food.</div>
+		<div id="message"></div>
 		<div id="rating" class="r0"></div>
 	</body>
 </rml>

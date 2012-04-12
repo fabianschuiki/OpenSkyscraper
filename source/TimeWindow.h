@@ -13,6 +13,7 @@ namespace OT {
 			ratingDiv     = NULL;
 			fundsDiv      = NULL;
 			populationDiv = NULL;
+			messageTimer  = 0;
 		}
 		~TimeWindow() { close(); }
 		
@@ -27,5 +28,10 @@ namespace OT {
 		void updateTime();
 		void updateRating();
 		void updateFunds();
+		
+		double messageTimer;
+		void showMessage(std::string msg);
+		
+		void advance(double dt);
 	};
 }
