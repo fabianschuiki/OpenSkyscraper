@@ -4,6 +4,7 @@
 
 #include "Item/Factory.h"
 #include "Item/Item.h"
+#include "Sky.h"
 #include "Sprite.h"
 #include "State.h"
 #include "Time.h"
@@ -48,6 +49,8 @@ namespace OT {
 		
 		bool paused;
 		void setPaused(bool p);
+		
+		Sky sky;
 		
 	private:
 		double zoom;

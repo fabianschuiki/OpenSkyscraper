@@ -9,7 +9,8 @@ Game::Game(Application & app)
 	app(app),
 	itemFactory(this),
 	toolboxWindow(this),
-	timeWindow(this)
+	timeWindow(this),
+	sky(this)
 {
 	mapWindow     = NULL;
 	
@@ -85,9 +86,13 @@ void Game::advance(double dt)
 	sf::RenderWindow & win = app.window;
 	drawnSprites = 0;
 	
+	//Advance time.
 	if (paused) dt = 0;
 	time.advance(dt);
 	timeWindow.updateTime();
+	
+	timeWindow.advance(dt);
+	sky.advance(dt);
 	
 	//Adust the camera.
 	sf::View cameraView(sf::Vector2f(poi.x, -poi.y), sf::Vector2f(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom));
@@ -95,18 +100,10 @@ void Game::advance(double dt)
 	sf::FloatRect view = cameraView.GetRect();
 	win.SetView(sf::View(view));
 	
-	//Draw the background.
-	drawBackground(view);
+	win.Draw(sky);
 	
-	//Draw the sprites that are in view.
-	/*for (Sprites::iterator s = sprites.begin(); s != sprites.end(); s++) {
-		const sf::Vector2f & vp = (*s)->GetPosition();
-		const sf::Vector2f & vs = (*s)->GetSize();
-		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y+vs.y >= view.Top && vp.y <= view.Bottom) {
-			win.Draw(**s);
-			drawnSprites++;
-		}
-	}*/
+	//Draw the background.
+	//drawBackground(view);
 	
 	//Draw the items that are in view.
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
