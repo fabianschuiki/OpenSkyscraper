@@ -70,15 +70,20 @@ void Sky::Render(sf::RenderTarget & target) const
 	Sprite sky;
 	sky.SetImage(app->bitmaps["simtower/sky"]);
 	for (int y = sky_lower; y <= sky_upper; y++) {
-		int index = (std::min<int>(y + 1, 9) * 6 + from);
-		sky.SetSubRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
-		sky.Resize(32, 360);
-		sky.SetCenter(0, 360);
-		
-		for (int x = floor(rect.Left / 32); x < ceil(rect.Right / 32); x++) {
-			sky.SetPosition(x * 32, -y * 360);
-			target.Draw(sky);
-			game->drawnSprites++;
+		for (int i = 0; i < 2; i++) {
+			if ((i == 0 && progress == 1) || (i == 1 && progress == 0)) continue;
+			
+			int index = (std::min<int>(y + 1, 9) * 6 + (i == 0 ? from : to));
+			sky.SetSubRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
+			sky.Resize(32, 360);
+			sky.SetCenter(0, 360);
+			sky.SetColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
+			
+			for (int x = floor(rect.Left / 32); x < ceil(rect.Right / 32); x++) {
+				sky.SetPosition(x * 32, -y * 360);
+				target.Draw(sky);
+				game->drawnSprites++;
+			}
 		}
 	}
 	
