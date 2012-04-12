@@ -12,6 +12,8 @@
 #include "ToolboxWindow.h"
 
 namespace OT {
+	namespace Item { class AbstractPrototype; }
+	
 	class Game : public State
 	{
 	public:
@@ -51,6 +53,9 @@ namespace OT {
 		void setPaused(bool p);
 		
 		std::string selectedTool;
+		int2 toolPosition;
+		Item::AbstractPrototype * toolPrototype;
+		Item::Item * itemBelowCursor;
 		void selectTool(const char * tool);
 		
 		Sky sky;

@@ -20,6 +20,7 @@ Game::Game(Application & app)
 	time.set(5);
 	paused = false;
 	selectedTool = "inspector";
+	itemBelowCursor = NULL;
 	
 	zoom = 1;
 	poi.y = 200;
@@ -76,6 +77,25 @@ bool Game::handleEvent(sf::Event & event)
 				case sf::Key::PageDown: zoom *= 2; break;
 			}
 		} break;
+		
+		case sf::Event::MouseButtonPressed: {
+			if (toolPrototype) {
+				LOG(DEBUG, "construct %s at %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y);
+				
+			}
+			else if (itemBelowCursor) {
+				if (selectedTool == "bulldozer") {
+					LOG(DEBUG, "destroy %s", itemBelowCursor->desc().c_str());
+					removeItem(itemBelowCursor);
+				}
+				else if (selectedTool == "finger") {
+					LOG(DEBUG, "move %s", itemBelowCursor->desc().c_str());
+				}
+				else if (selectedTool == "inspector") {
+					LOG(DEBUG, "inspect %s", itemBelowCursor->desc().c_str());
+				}
+			}
+		} break;
 	}
 	return false;
 }
@@ -101,17 +121,61 @@ void Game::advance(double dt)
 	sf::View cameraView(sf::Vector2f(poi.x, -poi.y), sf::Vector2f(halfsize.x, halfsize.y));
 	win.SetView(cameraView);
 	sf::FloatRect view = cameraView.GetRect();
-	win.SetView(sf::View(view));
+	//win.SetView(sf::View(view));
 	
+	//Prepare the current tool.
+	const sf::Input & input = win.GetInput();
+	sf::Vector2f mp = win.ConvertCoords(input.GetMouseX(), input.GetMouseY());
+	if (selectedTool.find("item-") == 0) {
+		toolPrototype = itemFactory.prototypesById[selectedTool.substr(5)];
+		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2), floor(-mp.y/36+toolPrototype->size.y/2));
+	} else {
+		toolPrototype = NULL;
+		toolPosition = int2(floor(mp.x/8), floor(-mp.y/36));
+	}
+	
+	//Draw the sky.
 	win.Draw(sky);
 	
 	//Draw the items that are in view.
+	Item::Item * previousItemBelowCursor = itemBelowCursor;
+	itemBelowCursor = NULL;
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		const sf::Vector2f & vp = (*i)->GetPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
 		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
 			win.Draw(**i);
+			if (!itemBelowCursor && (*i)->getRect().containsPoint(toolPosition)) itemBelowCursor = *i;
 		}
+	}
+	
+	//Highlight the item below the cursor.
+	if (!toolPrototype && itemBelowCursor) {
+		sf::Sprite s;
+		s.Resize(itemBelowCursor->GetSize().x, itemBelowCursor->GetSize().y-12);
+		s.SetCenter(0, 1);
+		s.SetPosition(itemBelowCursor->GetPosition());
+		s.SetColor(sf::Color(255, 255, 255, 255*0.5));
+		win.Draw(s);
+		drawnSprites++;
+		if (previousItemBelowCursor != itemBelowCursor) {
+			timeWindow.showMessage(itemBelowCursor->prototype->name);
+		}
+	}
+	
+	//Draw construction template.
+	if (toolPrototype) {
+		rectf r(toolPosition.x * 8, -(toolPosition.y+toolPrototype->size.y) * 36, toolPrototype->size.x*8, toolPrototype->size.y*36);
+		r.inset(float2(0.5, 0.5));
+		glColor3f(1, 1, 1);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBegin(GL_LINE_STRIP);
+		glVertex2f(r.minX(), r.minY());
+		glVertex2f(r.maxX(), r.minY());
+		glVertex2f(r.maxX(), r.maxY());
+		glVertex2f(r.minX(), r.maxY());
+		glVertex2f(r.minX(), r.minY());
+		glEnd();
 	}
 	
 	//Draw the debug string.
@@ -143,6 +207,7 @@ void Game::removeItem(Item::Item * item)
 {
 	assert(item);
 	items.erase(item);
+	if (item == itemBelowCursor) itemBelowCursor = NULL;
 }
 
 void Game::encodeXML(tinyxml2::XMLPrinter & xml)

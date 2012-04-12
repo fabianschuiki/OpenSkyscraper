@@ -16,7 +16,7 @@ namespace OT {
 		{
 		public:
 			AbstractPrototype * const prototype;
-			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype), size(prototype->size.x*8, prototype->size.y*36) {}
+			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype) {}
 			virtual ~Item();
 			virtual void init() {}
 			
@@ -26,18 +26,23 @@ namespace OT {
 			void removeSprite(Sprite * sprite);
 			
 			int2 position;
-			const int2 size;
 			void setPosition(int2 p);
-			recti getRect() { return recti(position, size); }
+			recti getRect() { return recti(position, prototype->size); }
 			
 			virtual void Render(sf::RenderTarget & target) const;
-			sf::Vector2f GetSize() const { return sf::Vector2f(size.x, size.y); }
+			sf::Vector2f GetSize() const { return sf::Vector2f(prototype->size.x*8, prototype->size.y*36); }
 			
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
 			
 			Sprite ceiling;
 			void defaultCeiling();
+			
+			std::string desc() {
+				char c[512];
+				snprintf(c, 512, "%s floor %i", prototype->id.c_str(), position.y);
+				return c;
+			}
 		};
 	}
 }

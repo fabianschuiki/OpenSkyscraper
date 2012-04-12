@@ -1,4 +1,4 @@
-<tower funds="2000000" rating="0" time="9.635148" paused="0" rainy="1" tool="item-fastfood" x="60" y="164">
+<tower funds="2000000" rating="0" time="9.635148" paused="0" rainy="0" tool="item-fastfood" x="60" y="164">
     <item type="fastfood" x="-8" y="0" variant="1"/>
     <item type="fastfood" x="8" y="0" variant="2"/>
     <item type="fastfood" x="-24" y="1" variant="3"/>

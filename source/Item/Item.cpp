@@ -56,8 +56,8 @@ void Item::defaultCeiling()
 {
 	ceiling.SetImage(App->bitmaps["simtower/floor"]);
 	ceiling.SetSubRect(sf::IntRect(0, 0, 8, 12));
-	ceiling.Resize(size.x, 12);
+	ceiling.Resize(GetSize().x, 12);
 	//ceiling.SetCenter(0.375, 0.375);
-	ceiling.SetPosition(sf::Vector2f(0, -size.y));
+	ceiling.SetPosition(sf::Vector2f(0, -GetSize().y));
 	addSprite(&ceiling);
 }
