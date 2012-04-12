@@ -15,8 +15,9 @@ namespace OT {
 		class Item : public GameObject, public sf::Drawable
 		{
 		public:
+			int layer;
 			AbstractPrototype * const prototype;
-			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype), size(prototype->size.x*8, prototype->size.y*36) {}
+			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype), size(prototype->size.x*8, prototype->size.y*36) { layer = 0; }
 			virtual ~Item();
 			virtual void init() {}
 			
@@ -38,6 +39,8 @@ namespace OT {
 			
 			Sprite ceiling;
 			void defaultCeiling();
+			
+			virtual void advance(double dt) {}
 		};
 	}
 }
@@ -50,6 +53,6 @@ namespace OT {
 	}\
 	static void initPrototype(AbstractPrototype * p)
 
-#define OT_ITEM_CONSTRUCTOR(cls) cls(Game * game, AbstractPrototype * prototype) : Item(game, prototype) { init(); }
+#define OT_ITEM_CONSTRUCTOR(cls) cls(Game * game, AbstractPrototype * prototype) : Item(game, prototype) {}
 
 #include "../Application.h"

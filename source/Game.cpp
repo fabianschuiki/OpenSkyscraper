@@ -92,6 +92,10 @@ void Game::advance(double dt)
 	timeWindow.advance(dt);
 	sky.advance(dt);
 	
+	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+		(*i)->advance(dt);
+	}
+	
 	//Constrain the POI.
 	double2 halfsize(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom);
 	poi.y = std::max<double>(std::min<double>(poi.y, 360*12 - halfsize.y), -360 + halfsize.y);
@@ -105,11 +109,14 @@ void Game::advance(double dt)
 	win.Draw(sky);
 	
 	//Draw the items that are in view.
-	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
-		const sf::Vector2f & vp = (*i)->GetPosition();
-		const sf::Vector2f & vs = (*i)->GetSize();
-		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
-			win.Draw(**i);
+	for (int layer = 0; layer < 2; layer++) {
+		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+			if ((*i)->layer != layer) continue;
+			const sf::Vector2f & vp = (*i)->GetPosition();
+			const sf::Vector2f & vs = (*i)->GetSize();
+			if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
+				win.Draw(**i);
+			}
 		}
 	}
 	

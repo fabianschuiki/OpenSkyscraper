@@ -8,6 +8,7 @@ namespace OT {
 	class Game;
 	
 	namespace Item {
+		class Factory;
 		class Item;
 		
 		class AbstractPrototype
@@ -31,7 +32,8 @@ namespace OT {
 		template <typename T>
 		class Prototype : public AbstractPrototype
 		{
-		public:
+			friend class Factory;
+		protected:
 			Item * make(Game * game) { return new T(game, this); }
 		};
 	}
