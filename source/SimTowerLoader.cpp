@@ -395,6 +395,35 @@ void SimTowerLoader::loadBitmaps()
 		floor.Copy(floorTmp, i, 0, sf::IntRect(16, 0, 2, 36));
 	}
 	
+	for (int n = 0; n < 4; n++) {
+		char name[128];
+		snprintf(name, 128, "simtower/deco/cloud/%i", n);
+		
+		sf::Image & cloud = app->bitmaps[name];
+		Blob & cloudRaw = rawBitmaps[0x8384+n];
+		bool init = false;
+		for (int i = 0; i < 4; i++)
+		{
+			int rct = 0;
+			if (i == 1) rct = 0x83E9;
+			if (i == 2) rct = 0x83EA;
+			if (i == 3) rct = 0x83EB;
+			applyReplacementPalette(rct, cloudRaw);
+			
+			sf::Image tmp;
+			if (!tmp.LoadFromMemory(cloudRaw.data, cloudRaw.length)) {
+				LOG(ERROR, "unable to load cloud bitmap from memory");
+				return;
+			}
+			if (!init) {
+				cloud.Create(tmp.GetWidth(), tmp.GetHeight()*4);
+				init = true;
+			}
+			cloud.Copy(tmp, 0, i*tmp.GetHeight());
+		}
+		cloud.CreateMaskFromColor(sf::Color::White);
+	}
+	
 	const static struct { int id; Path name; sf::Color alpha; } namedBitmaps[] = {
 		{0x8E28, "construction/grid",   sf::Color::White},
 		{0x8E29, "construction/solid"},
@@ -407,11 +436,6 @@ void SimTowerLoader::loadBitmaps()
 		{0x8FA8, "fire/destroyed"},
 		
 		{0x8F28, "metro/tracks"},
-		
-		{0x8384, "deco/cloud/0", sf::Color::White},
-		{0x8385, "deco/cloud/1", sf::Color::White},
-		{0x8386, "deco/cloud/2", sf::Color::White},
-		{0x8387, "deco/cloud/3", sf::Color::White},
 		
 		{0x8388, "deco/santa",      sf::Color::White},
 		{0x8389, "deco/skyline",    sf::Color(0x8A, 0xD4, 0xFF)},

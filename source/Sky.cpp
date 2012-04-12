@@ -127,13 +127,22 @@ void Sky::Render(sf::RenderTarget & target) const
 			char c[128];
 			snprintf(c, 128, "simtower/deco/cloud/%i", abs(variant)%4);
 			cloud.SetImage(app->bitmaps[c]);
-			cloud.SetSubRect(sf::IntRect(0, 0, cloud.GetImage()->GetWidth(), cloud.GetImage()->GetHeight()));
+			int w = cloud.GetImage()->GetWidth();
+			int h = cloud.GetImage()->GetHeight() / 4;
 			
-			cloud.SetCenter(cloud.GetSize().x/2, cloud.GetSize().y/2);
-			cloud.SetX(position.x);
-			cloud.SetY(position.y);
-			target.Draw(cloud);
-			game->drawnSprites++;
+			for (int i = 0; i < 2; i++) {
+				if ((i == 0 && progress == 1) || (i == 1 && progress == 0)) continue;
+				int state = std::min<int>(3, i == 0 ? from : to);
+				
+				cloud.SetSubRect(sf::IntRect(0, state*h, w, (state+1)*h));
+				cloud.Resize(w, h);
+				cloud.SetCenter(w/2, h/2);
+				cloud.SetColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
+				cloud.SetX(position.x);
+				cloud.SetY(position.y);
+				target.Draw(cloud);
+				game->drawnSprites++;
+			}
 		}
 	}
 }

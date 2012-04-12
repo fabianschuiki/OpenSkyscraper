@@ -38,7 +38,7 @@ void Time::advance(double dt)
 	else 	                          speed *= 28; //1:00 to 7:00, 126s/frame
 	
 	//Advance the time.
-	set(absolute + dt*speed*10);
+	set(absolute + dt*speed);
 }
 
 /** Returns true if the time has just passed said hour. E.g. if the time advanced from 9.98 to 10.1
