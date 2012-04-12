@@ -21,7 +21,7 @@ Game::Game(Application & app)
 	paused = false;
 	
 	zoom = 1;
-	poi.y = 0;
+	poi.y = 200;
 	
 	skyState = 0;
 	
@@ -94,8 +94,12 @@ void Game::advance(double dt)
 	timeWindow.advance(dt);
 	sky.advance(dt);
 	
+	//Constrain the POI.
+	double2 halfsize(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom);
+	poi.y = std::max<double>(std::min<double>(poi.y, 360*12 - halfsize.y), -360 + halfsize.y);
+	
 	//Adust the camera.
-	sf::View cameraView(sf::Vector2f(poi.x, -poi.y), sf::Vector2f(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom));
+	sf::View cameraView(sf::Vector2f(poi.x, -poi.y), sf::Vector2f(halfsize.x, halfsize.y));
 	win.SetView(cameraView);
 	sf::FloatRect view = cameraView.GetRect();
 	win.SetView(sf::View(view));
