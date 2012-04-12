@@ -149,6 +149,12 @@ void Game::encodeXML(tinyxml2::XMLPrinter & xml)
 	xml.OpenElement("tower");
 	xml.PushAttribute("funds", funds);
 	xml.PushAttribute("rating", rating);
+	xml.PushAttribute("time", time.absolute);
+	xml.PushAttribute("paused", paused);
+	xml.PushAttribute("rainy", sky.rainyDay);
+	
+	xml.PushAttribute("x", (int)poi.x);
+	xml.PushAttribute("y", (int)poi.y);
 	
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		xml.OpenElement("item");
@@ -166,6 +172,12 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	
 	setFunds(root->IntAttribute("funds"));
 	setRating(root->IntAttribute("rating"));
+	time.set(root->DoubleAttribute("time"));
+	setPaused(root->BoolAttribute("paused"));
+	sky.rainyDay = root->BoolAttribute("rainy");
+	
+	poi.x = root->IntAttribute("x");
+	poi.y = root->IntAttribute("y");
 	
 	tinyxml2::XMLElement * e = root->FirstChildElement("item");
 	while (e) {
