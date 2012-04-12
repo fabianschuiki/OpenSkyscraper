@@ -1,6 +1,6 @@
 #include <cassert>
 #include <Rocket/Core/Element.h>
-#include <string>
+#include <sstream>
 #include "Game.h"
 #include "TimeWindow.h"
 
@@ -86,18 +86,35 @@ void TimeWindow::updateRating()
 
 void TimeWindow::updateFunds()
 {
-	char c[32];
-	snprintf(c, 32, "$%i", game->funds);
-	string fmt(c);
-	for (int i = (int)fmt.length() - 3; i > 1; i -= 3) fmt.insert(i, "'");
-	fundsDiv->SetInnerRML(fmt.c_str());
+	fundsDiv->SetInnerRML(formatMoney(game->funds).c_str());
+}
+
+void TimeWindow::updateTooltip()
+{
+	std::stringstream str;
+	if (game->toolPrototype) {
+		str << "Construct ";
+		str << game->toolPrototype->name;
+		str << " ";
+		str << formatMoney(game->toolPrototype->price);
+	} else {
+		if (game->selectedTool == "bulldozer") str << "Bulldoze";
+		if (game->selectedTool == "finger") str << "Resize elevator shaft";
+		if (game->selectedTool == "inspector") str << "Inspect";
+	}
+	if (!message.empty()) {
+		if (!str.str().empty()) str << "  |  ";
+		str << message;
+	}
+	window->GetElementById("message")->SetInnerRML(str.str().c_str());
 }
 
 void TimeWindow::showMessage(std::string msg)
 {
 	LOG(IMPORTANT, msg.c_str());
-	window->GetElementById("message")->SetInnerRML(msg.c_str());
-	messageTimer = 5;
+	message = msg;
+	messageTimer = 3;
+	updateTooltip();
 }
 
 void TimeWindow::advance(double dt)
@@ -105,8 +122,18 @@ void TimeWindow::advance(double dt)
 	if (messageTimer > 0) {
 		messageTimer -= dt;
 		if (messageTimer <= 0) {
-			window->GetElementById("message")->SetInnerRML("");
+			message.clear();
 			messageTimer = 0;
+			updateTooltip();
 		}
 	}
+}
+
+std::string TimeWindow::formatMoney(int amount)
+{
+	char c[32];
+	snprintf(c, 32, "$%i", amount);
+	string fmt(c);
+	for (int i = (int)fmt.length() - 3; i > 1; i -= 3) fmt.insert(i, "'");
+	return fmt;
 }

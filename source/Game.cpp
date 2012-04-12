@@ -81,7 +81,9 @@ bool Game::handleEvent(sf::Event & event)
 		case sf::Event::MouseButtonPressed: {
 			if (toolPrototype) {
 				LOG(DEBUG, "construct %s at %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y);
-				
+				Item::Item * item = itemFactory.make(toolPrototype);
+				item->setPosition(toolPosition);
+				addItem(item);
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
@@ -126,6 +128,7 @@ void Game::advance(double dt)
 	//Prepare the current tool.
 	const sf::Input & input = win.GetInput();
 	sf::Vector2f mp = win.ConvertCoords(input.GetMouseX(), input.GetMouseY());
+	Item::AbstractPrototype * previousPrototype = toolPrototype;
 	if (selectedTool.find("item-") == 0) {
 		toolPrototype = itemFactory.prototypesById[selectedTool.substr(5)];
 		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2), floor(-mp.y/36+toolPrototype->size.y/2));
@@ -133,6 +136,7 @@ void Game::advance(double dt)
 		toolPrototype = NULL;
 		toolPosition = int2(floor(mp.x/8), floor(-mp.y/36));
 	}
+	if (previousPrototype != toolPrototype) timeWindow.updateTooltip();
 	
 	//Draw the sky.
 	win.Draw(sky);
@@ -296,5 +300,6 @@ void Game::selectTool(const char * tool)
 	if (selectedTool != tool) {
 		selectedTool = tool;
 		toolboxWindow.updateTool();
+		timeWindow.updateTooltip();
 	}
 }
