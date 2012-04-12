@@ -84,6 +84,7 @@ bool Game::handleEvent(sf::Event & event)
 				Item::Item * item = itemFactory.make(toolPrototype);
 				item->setPosition(toolPosition);
 				addItem(item);
+				transferFunds(-toolPrototype->price);
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
