@@ -7,6 +7,12 @@ using namespace OT;
 void Time::set(double t)
 {
 	if (absolute != t) {
+		prev_absolute = absolute;
+		prev_hour = hour;
+		prev_day = day;
+		prev_quarter = quarter;
+		prev_year = year;
+		
 		absolute = t;
 		hour = fmod(t, 24);
 		day = (int)floor(t/24) % 3;
@@ -32,5 +38,12 @@ void Time::advance(double dt)
 	else 	                          speed *= 28; //1:00 to 7:00, 126s/frame
 	
 	//Advance the time.
-	set(absolute + dt*speed);
+	set(absolute + dt*speed*10);
+}
+
+/** Returns true if the time has just passed said hour. E.g. if the time advanced from 9.98 to 10.1
+ * checkHour(10) would return true. */
+bool Time::checkHour(double t)
+{
+	return (prev_hour < t && hour >= t);
 }
