@@ -24,9 +24,11 @@ find_path(
 	PATHS ${FIND_ROCKET_PATHS}
 	
 )
+if (ROCKET_INCLUDE_DIR)
+	set(ROCKET_FOUND TRUE)
+endif()
 
 # find the components
-set(ROCKET_FOUND TRUE)
 foreach (component ${Rocket_FIND_COMPONENTS})
 	# convert the component name to lowercase and capitalized versions
 	string(TOUPPER ${component} component_upper)
@@ -48,7 +50,7 @@ foreach (component ${Rocket_FIND_COMPONENTS})
 	if (ROCKET_${component_upper}_LIBRARY)
 		set(ROCKET_${component_upper}_FOUND TRUE)
 	else()
-		set(ROCKET_FOUND FALSE)
+		set(ROCKET_FOUND FALSE)
 		set(ROCKET_${component_upper}_FOUND FALSE)
 		set(ROCKET_${component_upper}_LIBRARY "")
 		set(FIND_ROCKET_MISSING "${FIND_ROCKET_MISSING} ROCKET_${component_upper}_LIBRARY")
