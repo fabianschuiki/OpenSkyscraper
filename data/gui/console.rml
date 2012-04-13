@@ -1,0 +1,20 @@
+<rml>
+	<head>
+		<style>
+			body {
+				background-color: black;
+				padding: 5px;
+				bottom: 0;
+			}
+			input {
+				font-family: Play;
+				color: white;
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<input type="text" id="command"/>
+	</body>
+</rml>

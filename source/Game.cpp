@@ -13,6 +13,7 @@ Game::Game(Application & app)
 	sky(this)
 {
 	mapWindow     = NULL;
+	consoleWindow = NULL;
 	
 	funds  = 4000000;
 	rating = 0;
@@ -77,6 +78,14 @@ bool Game::handleEvent(sf::Event & event)
 				} break;
 				case sf::Key::PageUp:   zoom /= 2; break;
 				case sf::Key::PageDown: zoom *= 2; break;
+				case sf::Key::C: {
+					if (event.Key.Control && event.Key.Shift) {
+						if (consoleWindow->IsVisible())
+							consoleWindow->Hide();
+						else
+							consoleWindow->Show();
+					}
+				} break;
 			}
 		} break;
 		
@@ -211,7 +220,14 @@ void Game::reloadGUI()
 		mapWindow->Close();
 	}
 	
+	if (consoleWindow) {
+		consoleWindow->RemoveReference();
+		consoleWindow->Close();
+	}
+	
 	mapWindow     = gui.loadDocument("map.rml");
+	consoleWindow = gui.loadDocument("console.rml");
+	
 	
 	if (mapWindow)     mapWindow    ->Show();
 	

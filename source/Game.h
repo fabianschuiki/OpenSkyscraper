@@ -69,6 +69,7 @@ namespace OT {
 		double2 poi;
 		
 		Rocket::Core::ElementDocument * mapWindow;
+		Rocket::Core::ElementDocument * consoleWindow;
 		
 		void reloadGUI();
 		
