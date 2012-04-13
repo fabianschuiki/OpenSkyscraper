@@ -40,9 +40,13 @@ namespace OT {
 		
 		int funds;
 		int rating;
+		int population;
+		bool populationNeedsUpdate;
 		void transferFunds(int f);
 		void setFunds(int f);
 		void setRating(int r);
+		void setPopulation(int p);
+		void ratingMayIncrease();
 		
 		ToolboxWindow toolboxWindow;
 		TimeWindow    timeWindow;

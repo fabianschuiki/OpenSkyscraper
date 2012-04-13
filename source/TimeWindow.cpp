@@ -11,8 +11,6 @@ using std::string;
 void TimeWindow::close()
 {
 	ratingDiv     = NULL;
-	fundsDiv      = NULL;
-	populationDiv = NULL;
 	
 	if (window) {
 		window->RemoveReference();
@@ -30,9 +28,7 @@ void TimeWindow::reload()
 	window->Show();
 	
 	ratingDiv     = window->GetElementById("rating");
-	fundsDiv      = window->GetElementById("funds");
-	populationDiv = window->GetElementById("population");
-	assert(ratingDiv && fundsDiv && populationDiv);
+	assert(ratingDiv);
 	
 	std::string style;
 	for (int i = 0; i < 6; i++) {
@@ -45,6 +41,7 @@ void TimeWindow::reload()
 	
 	updateRating();
 	updateFunds();
+	updatePopulation();
 }
 
 void TimeWindow::updateTime()
@@ -70,9 +67,6 @@ void TimeWindow::updateTime()
 	if (yl == 3) suffix = "rd";
 	snprintf(c, 128, "%i%s", t.year, suffix);
 	window->GetElementById("date-year")->SetInnerRML(c);
-	
-	snprintf(c, 128, "%.1f", t.absolute);
-	populationDiv->SetInnerRML(c);
 }
 
 void TimeWindow::updateRating()
@@ -86,7 +80,19 @@ void TimeWindow::updateRating()
 
 void TimeWindow::updateFunds()
 {
-	fundsDiv->SetInnerRML(formatMoney(game->funds).c_str());
+	Rocket::Core::Element * e = window->GetElementById("funds");
+	assert(e);
+	e->SetInnerRML(formatMoney(game->funds).c_str());
+}
+
+void TimeWindow::updatePopulation()
+{
+	char c[32];
+	snprintf(c, 32, "%i", game->population);
+	
+	Rocket::Core::Element * e = window->GetElementById("population");
+	assert(e);
+	e->SetInnerRML(c);
 }
 
 void TimeWindow::updateTooltip()

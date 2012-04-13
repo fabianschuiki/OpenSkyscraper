@@ -12,8 +12,6 @@ namespace OT {
 		TimeWindow(Game * game) : GameObject(game) {
 			window        = NULL;
 			ratingDiv     = NULL;
-			fundsDiv      = NULL;
-			populationDiv = NULL;
 			messageTimer  = 0;
 		}
 		~TimeWindow() { close(); }
@@ -23,12 +21,11 @@ namespace OT {
 		
 		Rocket::Core::ElementDocument * window;
 		Rocket::Core::Element * ratingDiv;
-		Rocket::Core::Element * fundsDiv;
-		Rocket::Core::Element * populationDiv;
 		
 		void updateTime();
 		void updateRating();
 		void updateFunds();
+		void updatePopulation();
 		void updateTooltip();
 		
 		double messageTimer;

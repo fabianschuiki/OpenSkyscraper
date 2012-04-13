@@ -16,6 +16,8 @@ Game::Game(Application & app)
 	
 	funds  = 4000000;
 	rating = 0;
+	population = 0;
+	populationNeedsUpdate = false;
 	
 	time.set(5);
 	paused = false;
@@ -118,6 +120,14 @@ void Game::advance(double dt)
 	
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		(*i)->advance(dt);
+	}
+	
+	if (populationNeedsUpdate) {
+		int p = 0;
+		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+			p += (*i)->population;
+		}
+		setPopulation(p);
 	}
 	
 	//Constrain the POI.
@@ -291,6 +301,30 @@ void Game::setRating(int r)
 			LOG(IMPORTANT, "rating increased to %i", rating);
 		}
 		timeWindow.updateRating();
+	}
+}
+
+void Game::setPopulation(int p)
+{
+	if (population != p) {
+		population = p;
+		ratingMayIncrease();
+		timeWindow.updatePopulation();
+	}
+}
+
+void Game::ratingMayIncrease()
+{
+	switch (rating) {
+		case 0: {
+			if (population >= 300) setRating(1);
+		} break;
+		case 1: {
+			if (population >= 1000) {
+				//TODO: check for security center presence.
+				timeWindow.showMessage("Your tower needs security.");
+			}
+		} break;
 	}
 }
 

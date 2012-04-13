@@ -18,7 +18,7 @@ namespace OT {
 		public:
 			int layer;
 			AbstractPrototype * const prototype;
-			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype) { layer = 0; }
+			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype) { layer = 0; population = 0; }
 			virtual ~Item();
 			virtual void init() {}
 			
@@ -52,6 +52,8 @@ namespace OT {
 			People people;
 			void addPerson(Person * p);
 			void removePerson(Person * p);
+			
+			int population;
 		};
 	}
 }

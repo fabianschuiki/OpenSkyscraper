@@ -22,9 +22,13 @@ namespace OT {
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
 			
 			int variant;
+			bool open;
+			int customersToday;
 			
 			Sprite sprite;
 			void updateSprite();
+			
+			virtual void advance(double dt);
 		};
 	}
 }
