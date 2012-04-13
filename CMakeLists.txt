@@ -35,7 +35,7 @@ if (APPLE)
 	foreach(r ${resources})
 		get_filename_component(r_abs ${r} ABSOLUTE)
 		get_filename_component(r_dir ${r_abs} PATH)
-		file(RELATIVE_PATH r_rel${PROJECT_SOURCE_DIR}/data ${r_dir})
+		file(RELATIVE_PATH r_rel ${PROJECT_SOURCE_DIR}/data ${r_dir})
 		set_source_files_properties(${r} PROPERTIES MACOSX_PACKAGE_LOCATION Resources/${r_rel})
 	endforeach()
 
