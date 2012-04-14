@@ -2,6 +2,7 @@
 
 #include <tinyxml2.h>
 
+#include "Item/Elevator.h"
 #include "Item/Factory.h"
 #include "Item/Item.h"
 #include "Sky.h"
@@ -63,6 +64,9 @@ namespace OT {
 		void selectTool(const char * tool);
 		
 		Sky sky;
+		
+		Item::Elevator * draggingElevator;
+		int draggingMotor;
 		
 	private:
 		double zoom;

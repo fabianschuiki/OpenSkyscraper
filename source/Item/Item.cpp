@@ -5,6 +5,7 @@
 
 using namespace OT::Item;
 using std::string;
+using OT::rectd;
 
 
 Item::~Item()
@@ -78,4 +79,11 @@ void Item::removePerson(Person * p)
 	assert(p->at == this);
 	p->at = NULL;
 	people.erase(p);
+}
+
+rectd Item::getMouseRegion()
+{
+	sf::Vector2f p = GetPosition();
+	sf::Vector2f s = GetSize();
+	return rectd(p.x, p.y - s.y + 12, s.x, s.y - 12);
 }

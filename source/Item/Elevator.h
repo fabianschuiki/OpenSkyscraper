@@ -27,6 +27,10 @@ namespace OT {
 			
 			virtual void encodeXML(tinyxml2::XMLPrinter& xml);
 			virtual void decodeXML(tinyxml2::XMLElement& xml);
+			
+			virtual rectd getMouseRegion();
+			void repositionMotor(int motor, int y);
+			std::set<int> unservicedFloors;
 		};
 	}
 }

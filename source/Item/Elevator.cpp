@@ -1,7 +1,9 @@
+#include <cassert>
 #include "../Sprite.h"
 #include "Elevator.h"
 
 using namespace OT::Item;
+using OT::rectd;
 
 
 void Elevator::init()
@@ -54,8 +56,11 @@ void Elevator::Render(sf::RenderTarget & target) const
 		d.SetY(-y*36 - 3);
 		target.Draw(s);
 		
+		int flr = position.y + y;
+		if (unservicedFloors.count(flr)) continue;
+		
 		char c[8];
-		int len = snprintf(c, 8, "%i", position.y + y);
+		int len = snprintf(c, 8, "%i", flr);
 		int x = 11 - (len - 1) * 6;
 		for (int i = 0; i < len; i++) {
 			int p = 10;
@@ -91,11 +96,54 @@ void Elevator::encodeXML(tinyxml2::XMLPrinter & xml)
 {
 	Item::encodeXML(xml);
 	xml.PushAttribute("height", size.y);
+	for (std::set<int>::iterator i = unservicedFloors.begin(); i != unservicedFloors.end(); i++) {
+		xml.OpenElement("unserviced");
+		xml.PushAttribute("floor", *i);
+		xml.CloseElement();
+	}
 }
 
 void Elevator::decodeXML(tinyxml2::XMLElement & xml)
 {
 	Item::decodeXML(xml);
 	size.y = xml.IntAttribute("height");
+	tinyxml2::XMLElement * e = xml.FirstChildElement("unserviced");
+	while (e) {
+		unservicedFloors.insert(e->IntAttribute("floor"));
+		e = e->NextSiblingElement("unserviced");
+	}
 	updateSprite();
+}
+
+rectd Elevator::getMouseRegion()
+{
+	sf::Vector2f p = GetPosition();
+	sf::Vector2f s = GetSize();
+	return rectd(p.x, p.y - s.y - 36, s.x, s.y + 2*36);
+}
+
+void Elevator::repositionMotor(int motor, int y)
+{
+	assert(motor == -1 || motor == 1);
+	int height;
+	int newy;
+	if (motor == -1) {
+		newy = y + 1;
+		height = (size.y + position.y - newy);
+	} else {
+		newy = position.y;
+		height = (y - position.y);
+	}
+	if (height < 1)  height = 1;
+	if (height > 30+1) height = 30+1;
+	if (motor == -1) {
+		newy = (size.y + position.y - height);
+	}
+	if (newy != position.y || height != size.y) {
+		LOG(DEBUG, "relocate elevator: %i, %i", newy, height);
+		setPosition(int2(position.x, newy));
+		size.y = height;
+		//TODO: constrain cars to stay within elevator bounds.
+		updateSprite();
+	}
 }

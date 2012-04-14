@@ -28,6 +28,9 @@ Game::Game(Application & app)
 	zoom = 1;
 	poi.y = 200;
 	
+	draggingElevator = NULL;
+	draggingMotor = 0;
+	
 	itemFactory.loadPrototypes();
 	
 	/*Item::Item * i = itemFactory.prototypes.front()->make(this);
@@ -95,12 +98,37 @@ bool Game::handleEvent(sf::Event & event)
 					removeItem(itemBelowCursor);
 				}
 				else if (selectedTool == "finger") {
-					LOG(DEBUG, "move %s", itemBelowCursor->desc().c_str());
+					if (itemBelowCursor->prototype->id.find("elevator") == 0) {
+						Item::Elevator * e = (Item::Elevator *)itemBelowCursor;
+						
+						draggingMotor = 0;
+						if (toolPosition.y < itemBelowCursor->position.y) draggingMotor = -1;
+						if (toolPosition.y >= itemBelowCursor->position.y + itemBelowCursor->size.y) draggingMotor = 1;
+						
+						if (draggingMotor != 0) {
+							LOG(DEBUG, "drag elevator %s motor %i", itemBelowCursor->desc().c_str(), draggingMotor);
+							draggingElevator = e;
+						} else {
+							LOG(DEBUG, "clicked elevator %s on floor %i", itemBelowCursor->desc().c_str(), toolPosition.y);
+							if (!e->unservicedFloors.erase(toolPosition.y))
+								e->unservicedFloors.insert(toolPosition.y);
+						}
+					}
 				}
 				else if (selectedTool == "inspector") {
 					LOG(DEBUG, "inspect %s", itemBelowCursor->desc().c_str());
 				}
 			}
+		} break;
+		
+		case sf::Event::MouseMoved: {
+			if (draggingElevator) {
+				draggingElevator->repositionMotor(draggingMotor, toolPosition.y);
+			}
+		} break;
+		
+		case sf::Event::MouseButtonReleased: {
+			draggingElevator = NULL;
 		} break;
 	}
 	return false;
@@ -168,7 +196,7 @@ void Game::advance(double dt)
 			const sf::Vector2f & vs = (*i)->GetSize();
 			if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
 				win.Draw(**i);
-				if ((*i)->getRect().containsPoint(toolPosition)) itemBelowCursor = *i;
+				if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 			}
 		}
 	}

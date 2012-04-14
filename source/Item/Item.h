@@ -35,6 +35,8 @@ namespace OT {
 			virtual void Render(sf::RenderTarget & target) const;
 			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8, size.y*36); }
 			
+			virtual rectd getMouseRegion(); //in world pixel
+			
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
 			
