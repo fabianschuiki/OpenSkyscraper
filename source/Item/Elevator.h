@@ -3,16 +3,19 @@
 
 namespace OT {
 	namespace Item {
+		class ElevatorCar;
 		
 		class Elevator : public Item
 		{
 		public:
 			Elevator(Game * game, OT::Item::AbstractPrototype * prototype) : Item(game, prototype) {}
+			virtual ~Elevator();
 			
 			virtual void init();
 			
 			std::string shaftBitmap;
 			std::string carBitmap;
+			int maxPassengers;
 			
 			double animation;
 			int frame;
@@ -31,6 +34,11 @@ namespace OT {
 			virtual rectd getMouseRegion();
 			void repositionMotor(int motor, int y);
 			std::set<int> unservicedFloors;
+			
+			typedef std::set<ElevatorCar *> Cars;
+			Cars cars;
+			void clearCars();
+			void addCar(int floor);
 		};
 	}
 }

@@ -2,6 +2,7 @@
     <item type="fastfood" x="8" y="1" variant="0" open="1"/>
     <item type="elevator-standard" x="10" y="0" height="3">
         <unserviced floor="1"/>
+        <car altitude="0"/>
     </item>
     <item type="fastfood" x="-8" y="1" variant="4" open="1"/>
     <item type="fastfood" x="-24" y="0" variant="0" open="1"/>

@@ -97,6 +97,7 @@ bool Game::handleEvent(sf::Event & event)
 					for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 						if ((*i)->prototype == toolPrototype && (*i)->getRect().containsPoint(toolPosition)) {
 							LOG(DEBUG, "add car on floor %i to elevator %s", toolPosition.y, (*i)->desc().c_str());
+							((Item::Elevator *)*i)->addCar(toolPosition.y);
 							transferFunds(-80000);
 							handled = true;
 							break;

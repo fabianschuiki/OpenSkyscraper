@@ -1,10 +1,16 @@
 #include <cassert>
 #include "../Sprite.h"
 #include "Elevator.h"
+#include "ElevatorCar.h"
 
 using namespace OT::Item;
 using OT::rectd;
 
+
+Elevator::~Elevator()
+{
+	clearCars();
+}
 
 void Elevator::init()
 {
@@ -26,6 +32,8 @@ void Elevator::init()
 	addSprite(&bottomMotor);
 	
 	updateSprite();
+	
+	addCar(position.y);
 }
 
 void Elevator::updateSprite()
@@ -71,6 +79,10 @@ void Elevator::Render(sf::RenderTarget & target) const
 			x += 12;
 		}
 	}
+	
+	for (Cars::iterator c = cars.begin(); c != cars.end(); c++) {
+		target.Draw(**c);
+	}
 }
 
 void Elevator::advance(double dt)
@@ -101,16 +113,25 @@ void Elevator::encodeXML(tinyxml2::XMLPrinter & xml)
 		xml.PushAttribute("floor", *i);
 		xml.CloseElement();
 	}
+	for (Cars::iterator c = cars.begin(); c != cars.end(); c++) {
+		xml.OpenElement("car");
+		(*c)->encodeXML(xml);
+		xml.CloseElement();
+	}
 }
 
 void Elevator::decodeXML(tinyxml2::XMLElement & xml)
 {
+	clearCars();
 	Item::decodeXML(xml);
 	size.y = xml.IntAttribute("height");
-	tinyxml2::XMLElement * e = xml.FirstChildElement("unserviced");
-	while (e) {
+	for (tinyxml2::XMLElement * e = xml.FirstChildElement("unserviced"); e; e = e->NextSiblingElement("unserviced")) {
 		unservicedFloors.insert(e->IntAttribute("floor"));
-		e = e->NextSiblingElement("unserviced");
+	}
+	for (tinyxml2::XMLElement * e = xml.FirstChildElement("car"); e; e = e->NextSiblingElement("car")) {
+		ElevatorCar * car = new ElevatorCar(this);
+		car->decodeXML(*e);
+		cars.insert(car);
 	}
 	updateSprite();
 }
@@ -144,6 +165,20 @@ void Elevator::repositionMotor(int motor, int y)
 		setPosition(int2(position.x, newy));
 		size.y = height;
 		//TODO: constrain cars to stay within elevator bounds.
+		for (Cars::iterator c = cars.begin(); c != cars.end(); c++) (*c)->reposition();
 		updateSprite();
 	}
+}
+
+void Elevator::clearCars()
+{
+	for (Cars::iterator c = cars.begin(); c != cars.end(); c++) delete *c;
+	cars.clear();
+}
+
+void Elevator::addCar(int floor)
+{
+	ElevatorCar * car = new ElevatorCar(this);
+	car->setAltitude(floor);
+	cars.insert(car);
 }
