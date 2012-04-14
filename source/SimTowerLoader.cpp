@@ -624,6 +624,27 @@ void SimTowerLoader::loadElevators()
 	shaft_wide.Copy(shaft, 8,  0, sf::IntRect(0,  0, 32, 36));
 	shaft_wide.Copy(extension, 0, 0, sf::IntRect(0, 0, 8, 36));
 	shaft_wide.Copy(extension, 40, 0, sf::IntRect(8, 0, 16, 36));
+	
+	//Render the shaft digits.
+	sf::Image rawDigits[2];
+	loadBitmap(0x87e9, rawDigits[0]);
+	loadBitmap(0x87ec, rawDigits[1]);
+	sf::Image & digits = app->bitmaps["simtower/elevator/digits"];
+	digits.Create(11*12, 2*17);
+	for (int i = 0; i < 10; i++) {
+		for (int n = 0; n < 2; n++) {
+			digits.Copy(rawDigits[n], i*11, n*17, sf::IntRect(1+16*i, 16, 1+16*i+11, 33));
+		}
+	}
+	
+	sf::Image rawFirstDigits[2];
+	loadBitmap(0x87ea, rawFirstDigits[0]);
+	loadBitmap(0x87ed, rawFirstDigits[1]);
+	for (int n = 0; n < 2; n++) {
+		digits.Copy(rawFirstDigits[n], 110, n*17, sf::IntRect(36, 16, 47, 33));
+	}
+	
+	digits.CreateMaskFromColor(sf::Color(25, 25, 25));
 }
 
 void SimTowerLoader::loadElevatorCar(const sf::Image & img, sf::Image & dst)

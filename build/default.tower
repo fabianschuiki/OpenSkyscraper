@@ -1,5 +1,5 @@
 <tower funds="1100000" rating="0" time="9" paused="0" rainy="0" tool="finger" x="60" y="164">
-    <item type="elevator-standard" x="10" y="0" height="2"/>
+    <item type="elevator-standard" x="10" y="-2" height="40"/>
     <item type="fastfood" x="8" y="1" variant="0" open="0"/>
     <item type="fastfood" x="-8" y="1" variant="4" open="0"/>
     <item type="fastfood" x="-24" y="0" variant="0" open="0"/>
