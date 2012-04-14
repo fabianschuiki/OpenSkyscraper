@@ -15,6 +15,7 @@ Sky::Sky(Game * game) : GameObject(game) {
 	rainyDay = false;
 	rainAnimation = 0;
 	soundCountdown = 0;
+	thunderOverlay = 0;
 	
 	rainSound.SetBuffer(app->sounds["simtower/rain"]);
 	rainSound.SetLoop(true);
@@ -81,12 +82,18 @@ void Sky::advance(double dt)
 		if (game->time.checkHour(16)) rainSound.Stop();
 	}
 	
+	if (thunderOverlay > 0) {
+		thunderOverlay *= exp(-dt * 7);
+		if (thunderOverlay < 1e-3) thunderOverlay = 0;
+	}
+	
 	//Sounds.
 	soundCountdown -= dt;
 	if (soundCountdown < 0) {
 		double duration = 0;
 		if (rainyDay && time >= 8 && time < 16) {
 			thunderSound.Play();
+			thunderOverlay = 1;
 			duration = thunderSound.GetBuffer()->GetDuration();
 		} else if (time>= 8 && time< 17) {
 			birdsSound.Play();
@@ -125,18 +132,6 @@ void Sky::Render(sf::RenderTarget & target) const
 				target.Draw(sky);
 				game->drawnSprites++;
 			}
-		}
-	}
-	
-	//Draw the skyline, if in view.
-	if (-rect.Bottom <= 96 && -rect.Top >= 0) {
-		Sprite city;
-		city.SetImage(app->bitmaps["simtower/deco/skyline"]);
-		city.SetCenter(0, 55);
-		for (int x = floor(rect.Left / 96); x < ceil(rect.Right / 96); x++) {
-			city.SetPosition(x * 96, 0);
-			target.Draw(city);
-			game->drawnSprites++;
 		}
 	}
 	
@@ -183,6 +178,28 @@ void Sky::Render(sf::RenderTarget & target) const
 				target.Draw(cloud);
 				game->drawnSprites++;
 			}
+		}
+	}
+	
+	//Draw the thunder overlay.
+	if (thunderOverlay > 0) {
+		Sprite s;
+		s.SetSubRect(sf::IntRect(rect.Left, rect.Top, rect.Right, -std::max<int>(sky_lower, 0)*360));
+		s.SetColor(sf::Color(255, 255, 255, 255*thunderOverlay));
+		s.SetPosition(rect.Left, rect.Top);
+		target.Draw(s);
+		game->drawnSprites++;
+	}
+	
+	//Draw the skyline, if in view.
+	if (-rect.Bottom <= 96 && -rect.Top >= 0) {
+		Sprite city;
+		city.SetImage(app->bitmaps["simtower/deco/skyline"]);
+		city.SetCenter(0, 55);
+		for (int x = floor(rect.Left / 96); x < ceil(rect.Right / 96); x++) {
+			city.SetPosition(x * 96, 0);
+			target.Draw(city);
+			game->drawnSprites++;
 		}
 	}
 }

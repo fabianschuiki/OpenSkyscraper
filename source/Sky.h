@@ -17,6 +17,7 @@ namespace OT {
 		
 		bool rainyDay;
 		double rainAnimation;
+		double thunderOverlay;
 		
 		void advance(double dt);
 		virtual void Render(sf::RenderTarget & target) const;
