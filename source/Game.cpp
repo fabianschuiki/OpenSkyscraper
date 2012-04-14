@@ -78,6 +78,7 @@ bool Game::handleEvent(sf::Event & event)
 				case sf::Key::Up:    poi.y += 20; break;
 				case sf::Key::Down:  poi.y -= 20; break;
 				case sf::Key::F1:    reloadGUI(); break;
+				case sf::Key::F3:    setRating(1); break;
 				case sf::Key::F2: {
 					FILE * f = fopen("default.tower", "w");
 					tinyxml2::XMLPrinter xml(f);
@@ -108,12 +109,14 @@ bool Game::handleEvent(sf::Event & event)
 					item->setPosition(toolPosition);
 					addItem(item);
 					transferFunds(-toolPrototype->price);
+					playOnce("simtower/construction/normal");
 				}
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
 					LOG(DEBUG, "destroy %s", itemBelowCursor->desc().c_str());
 					removeItem(itemBelowCursor);
+					playOnce("simtower/bulldozer");
 				}
 				else if (selectedTool == "finger") {
 					if (itemBelowCursor->prototype->id.find("elevator") == 0) {
@@ -255,6 +258,14 @@ void Game::advance(double dt)
 		glEnd();
 	}
 	
+	//Autorelease sounds.
+	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end(); s++) {
+		if ((*s)->GetStatus() == sf::Sound::Stopped) {
+			delete *s;
+			autoreleaseSounds.erase(s);
+		}
+	}
+	
 	//Draw the debug string.
 	snprintf(debugString, 512, "%i sprites", drawnSprites);
 }
@@ -335,6 +346,7 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 void Game::transferFunds(int f)
 {
 	setFunds(funds + f);
+	playOnce("simtower/cash");
 	LOG(DEBUG, "%i", f);
 }
 
@@ -354,6 +366,7 @@ void Game::setRating(int r)
 		if (improved) {
 			//TODO: show window
 			LOG(IMPORTANT, "rating increased to %i", rating);
+			playOnce("simtower/rating/increased");
 		}
 		timeWindow.updateRating();
 	}
@@ -399,4 +412,12 @@ void Game::selectTool(const char * tool)
 		toolboxWindow.updateTool();
 		timeWindow.updateTooltip();
 	}
+}
+
+void Game::playOnce(Path sound)
+{
+	sf::Sound * snd = new sf::Sound;
+	snd->SetBuffer(app.sounds[sound]);
+	snd->Play();
+	autoreleaseSounds.insert(snd);
 }

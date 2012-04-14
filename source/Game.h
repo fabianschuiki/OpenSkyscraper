@@ -74,7 +74,9 @@ namespace OT {
 		sf::Sound bellsSound;
 		sf::Sound eveningSound;
 		
-		sf::Sound ratingIncreasedSound;
+		typedef std::set<sf::Sound *> SoundSet;
+		SoundSet autoreleaseSounds;
+		void playOnce(Path sound);
 		
 	private:
 		double zoom;
