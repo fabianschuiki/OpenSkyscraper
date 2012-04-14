@@ -22,6 +22,7 @@ namespace OT {
 			Sprite bottomMotor;
 			
 			void updateSprite();
+			virtual void Render(sf::RenderTarget & target) const;
 			virtual void advance(double dt);
 			
 			virtual void encodeXML(tinyxml2::XMLPrinter& xml);

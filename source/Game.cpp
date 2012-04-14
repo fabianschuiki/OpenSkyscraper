@@ -23,6 +23,7 @@ Game::Game(Application & app)
 	paused = false;
 	selectedTool = "inspector";
 	itemBelowCursor = NULL;
+	toolPrototype = NULL;
 	
 	zoom = 1;
 	poi.y = 200;
