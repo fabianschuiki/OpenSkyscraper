@@ -50,7 +50,6 @@ Item * Factory::make(std::string prototypeID)
 
 Item * Factory::make(tinyxml2::XMLElement & xml)
 {
-	LOG(DEBUG, "making %s", xml.Attribute("type"));
 	Item * item = make(xml.Attribute("type"));
 	assert(item);
 	item->decodeXML(xml);

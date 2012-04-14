@@ -5,10 +5,12 @@ using namespace OT::Item;
 
 void Elevator::init()
 {
-	animation = 0;
-	frame = 0;
+	layer = 1;
 	
 	Item::init();
+	
+	animation = 0;
+	frame = 0;
 	
 	shaft.SetImage(app->bitmaps[shaftBitmap]);
 	topMotor.SetImage(*shaft.GetImage());
@@ -53,4 +55,15 @@ void Elevator::advance(double dt)
 			updateSprite();
 		}
 	}
+}
+
+void Elevator::encodeXML(tinyxml2::XMLPrinter & xml)
+{
+	Item::encodeXML(xml);
+}
+
+void Elevator::decodeXML(tinyxml2::XMLElement & xml)
+{
+	Item::decodeXML(xml);
+	updateSprite();
 }

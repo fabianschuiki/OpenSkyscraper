@@ -23,6 +23,9 @@ namespace OT {
 			
 			void updateSprite();
 			virtual void advance(double dt);
+			
+			virtual void encodeXML(tinyxml2::XMLPrinter& xml);
+			virtual void decodeXML(tinyxml2::XMLElement& xml);
 		};
 	}
 }

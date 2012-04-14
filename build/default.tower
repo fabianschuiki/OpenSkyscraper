@@ -11,4 +11,5 @@
     
     <item type="stairs" x="-12" y="0"/>
     <item type="escalator" x="0" y="0"/>
+    <item type="elevator-standard" x="10" y="0"/>
 </tower>
