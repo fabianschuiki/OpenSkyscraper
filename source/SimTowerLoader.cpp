@@ -617,11 +617,13 @@ void SimTowerLoader::loadElevators()
 	
 	//Render the shafts. The wide shaft requires some copy-pasting of the narrow shaft.
 	sf::Image shaft;
+	sf::Image extension;
 	loadBitmap(0x87E8, shaft);
+	loadBitmap(0x842c, extension);
 	shaft_narrow.Copy(shaft, 0, 0, sf::IntRect(0, 0, 32, 36));
-	shaft_wide.Copy(shaft, 0,  0, sf::IntRect(0,  0, 32, 36));
-	shaft_wide.Copy(shaft, 24, 0, sf::IntRect(16, 0, 32, 36));
-	shaft_wide.Copy(shaft, 32, 0, sf::IntRect(16, 0, 32, 36));
+	shaft_wide.Copy(shaft, 8,  0, sf::IntRect(0,  0, 32, 36));
+	shaft_wide.Copy(extension, 0, 0, sf::IntRect(0, 0, 8, 36));
+	shaft_wide.Copy(extension, 40, 0, sf::IntRect(8, 0, 16, 36));
 }
 
 void SimTowerLoader::loadElevatorCar(const sf::Image & img, sf::Image & dst)
