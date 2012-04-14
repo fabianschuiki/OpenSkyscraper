@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tinyxml2.h>
+#include <SFML/Audio/Sound.hpp>
 
 #include "Item/Elevator.h"
 #include "Item/Factory.h"
@@ -67,6 +68,13 @@ namespace OT {
 		
 		Item::Elevator * draggingElevator;
 		int draggingMotor;
+		
+		sf::Sound cockSound;
+		sf::Sound morningSound;
+		sf::Sound bellsSound;
+		sf::Sound eveningSound;
+		
+		sf::Sound ratingIncreasedSound;
 		
 	private:
 		double zoom;

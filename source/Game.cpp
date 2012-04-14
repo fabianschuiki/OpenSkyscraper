@@ -47,6 +47,11 @@ Game::Game(Application & app)
 	
 	reloadGUI();
 	
+	cockSound.SetBuffer(app.sounds["simtower/cock"]);
+	morningSound.SetBuffer(app.sounds["simtower/birds/morning"]);
+	bellsSound.SetBuffer(app.sounds["simtower/bells"]);
+	eveningSound.SetBuffer(app.sounds["simtower/birds/evening"]);
+	
 	//DEBUG: load from disk.
 	tinyxml2::XMLDocument xml;
 	xml.LoadFile("default.tower");
@@ -172,6 +177,13 @@ void Game::advance(double dt)
 		}
 		setPopulation(p);
 	}
+	
+	//Play sounds.
+	if (time.checkHour(5)) cockSound.Play();
+	if (time.checkHour(6))   morningSound.Play();
+	if (time.checkHour(9))   bellsSound.Play();
+	if (time.checkHour(18))  eveningSound.Play();
+	morningSound.SetLoop(time.hour < 8);
 	
 	//Constrain the POI.
 	double2 halfsize(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom);

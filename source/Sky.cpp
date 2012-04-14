@@ -1,11 +1,27 @@
 #include <cassert>
 #include "Application.h"
 #include "Game.h"
+#include "Math/Rand.h"
 #include "Sky.h"
 #include "Sprite.h"
 
 using namespace OT;
 
+
+Sky::Sky(Game * game) : GameObject(game) {
+	from     = 0;
+	to       = 0;
+	progress = 0;
+	rainyDay = false;
+	rainAnimation = 0;
+	soundCountdown = 0;
+	
+	rainSound.SetBuffer(app->sounds["simtower/rain"]);
+	rainSound.SetLoop(true);
+	thunderSound.SetBuffer(app->sounds["simtower/thunder"]);
+	birdsSound.SetBuffer(app->sounds["simtower/birds/day"]);
+	cricketsSound.SetBuffer(app->sounds["simtower/crickets"]);
+}
 
 void Sky::advance(double dt)
 {
@@ -57,6 +73,30 @@ void Sky::advance(double dt)
 	else {
 		rainAnimation += dt;
 		from = to = 4+floor(fmod(rainAnimation, 1) * 2); progress = 0;
+	}
+	
+	//Rain sounds.
+	if (rainyDay) {
+		if (game->time.checkHour(8))  rainSound.Play();
+		if (game->time.checkHour(16)) rainSound.Stop();
+	}
+	
+	//Sounds.
+	soundCountdown -= dt;
+	if (soundCountdown < 0) {
+		double duration = 0;
+		if (rainyDay && time >= 8 && time < 16) {
+			thunderSound.Play();
+			duration = thunderSound.GetBuffer()->GetDuration();
+		} else if (time>= 8 && time< 17) {
+			birdsSound.Play();
+			duration = birdsSound.GetBuffer()->GetDuration();
+		} else if (time>= 20 || time< 1.5) {
+			cricketsSound.Play();
+			duration = cricketsSound.GetBuffer()->GetDuration();
+		}
+		soundCountdown += Math::randd(duration + 0.5, duration + 10);
+		LOG(DEBUG, "next sky sound in %fs", soundCountdown);
 	}
 }
 

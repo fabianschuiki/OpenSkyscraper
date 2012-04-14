@@ -2,19 +2,14 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include "Math/Vector2D.h"
 #include "GameObject.h"
+#include <SFML/Audio/Sound.hpp>
 
 namespace OT {
 	
 	class Sky : public GameObject, public sf::Drawable
 	{
 	public:
-		Sky(Game * game) : GameObject(game) {
-			from     = 0;
-			to       = 0;
-			progress = 0;
-			rainyDay = false;
-			rainAnimation = 0;
-		}
+		Sky(Game * game);
 		
 		int from;
 		int to;
@@ -27,5 +22,11 @@ namespace OT {
 		virtual void Render(sf::RenderTarget & target) const;
 		
 		static double cloudNoise(double2 p);
+		
+		sf::Sound rainSound;
+		sf::Sound thunderSound;
+		sf::Sound birdsSound;
+		sf::Sound cricketsSound;
+		double soundCountdown;
 	};
 }
