@@ -70,7 +70,7 @@ include_directories(${LUA_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${LUA_LIBRARY})
 
 # SFML
-find_package(SFML REQUIRED system window graphics)
+find_package(SFML REQUIRED system window graphics audio)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
 

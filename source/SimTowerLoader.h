@@ -22,12 +22,12 @@ namespace OT
 			Blob() { data = NULL; length = 0; }
 			~Blob() { if (data) delete data; data = NULL; }
 		};
-		typedef std::map<int, Blob> Bitmaps;
 		typedef std::map<int, Blob> Blobs;
 		typedef std::map<Path, sf::Image> Images;
 		
-		Bitmaps rawBitmaps;
+		Blobs rawBitmaps;
 		Blobs rawPalettes;
+		Blobs rawSounds;
 		
 		bool load();
 		void dump(Path path);
@@ -53,5 +53,8 @@ namespace OT
 		
 		void loadBitmap(int id, sf::Image & img);
 		void loadAnimatedBitmap(int id, sf::Image img[3]);
+		
+		void loadSounds();
+		void loadSound(int id, sf::SoundBuffer & snd);
 	};
 }

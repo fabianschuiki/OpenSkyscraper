@@ -11,6 +11,7 @@
 #include "Logger.h"
 #include "Path.h"
 #include "State.h"
+#include "SoundManager.h"
 
 namespace OT
 {
@@ -33,6 +34,7 @@ namespace OT
 		GUI *         rootGUI;
 		BitmapManager bitmaps;
 		FontManager   fonts;
+		SoundManager  sounds;
 		
 		int run();
 		

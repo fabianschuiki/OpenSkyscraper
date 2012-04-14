@@ -19,7 +19,8 @@ Application * OT::App = NULL;
 Application::Application(int argc, char * argv[])
 :	data(this),
 	fonts(this),
-	bitmaps(this)
+	bitmaps(this),
+	sounds(this)
 {
 	assert(App == NULL && "Application initialized multiple times");
 	App = this;

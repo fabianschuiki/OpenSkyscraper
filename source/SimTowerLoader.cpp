@@ -65,13 +65,97 @@ bool SimTowerLoader::load()
 	preparePalettes();
 	
 	loadBitmaps();
-	
-	/*for (Images::iterator i = bitmaps.begin(); i != bitmaps.end(); i++) {
-		i->second.SetSmooth(false);
-		App->i->first] = i->second;
-	}*/
+	loadSounds();
 	
 	return true;
+}
+
+void SimTowerLoader::dump(Path path)
+{
+	LOG(INFO, "dumping to %s", (const char *)path);
+	
+	//TODO: same issues as for SimTowerResources
+	struct stat st;
+	char temp[16];
+	
+	if (stat(path, &st) != 0) {
+		LOG(DEBUG, "  creating directory");
+		if (mkdir(path, 0777) != 0) {
+			LOG(ERROR, "unable to make directory %s", (const char *)path);
+			return;
+		}
+	}
+	
+	
+	Path bitmapsDir = path.down("bitmaps");
+	if (stat(bitmapsDir, &st) != 0) {
+		if (mkdir(bitmapsDir, 0777) != 0) {
+			LOG(ERROR, "unable to make directory %s", (const char *)bitmapsDir);
+			return;
+		}
+	}
+	
+	//TODO: don't perform the resource dump here, but rather in Application or alike, triggered by a command line argument.
+	const BitmapManager::Resources & res = app->bitmaps.getResources();
+	for (BitmapManager::Resources::const_iterator i = res.begin(); i != res.end(); i++) {
+		Path p = bitmapsDir.down(i->first.str().substr(9));
+		Path d = p.up();
+		if (!makeDirectory(d))
+			continue;
+		i->second.SaveToFile(p.str() + ".png");
+	}
+	
+	Path unhandledBitmapsDir = bitmapsDir.down("unhandled");
+	if (stat(unhandledBitmapsDir, &st) != 0) {
+		if (mkdir(unhandledBitmapsDir, 0777) != 0) {
+			LOG(ERROR, "unable to make directory %s", (const char *)unhandledBitmapsDir);
+			return;
+		}
+	} 
+	for (Blobs::iterator b = rawBitmaps.begin(); b != rawBitmaps.end(); b++) {
+		snprintf(temp, 16, "%x.bmp", b->first);
+		Path p = unhandledBitmapsDir.down(temp);
+		
+		ofstream f(p.c_str());
+		f.write(b->second.data, b->second.length);
+		f.close();
+	}
+	
+	
+	Path soundsDir = path.down("sounds");
+	if (stat(soundsDir, &st) != 0) {
+		if (mkdir(soundsDir, 0777) != 0) {
+			LOG(ERROR, "unable to make directory %s", (const char *)soundsDir);
+			return;
+		}
+	}
+	
+	//TODO: don't perform the resource dump here, but rather in Application or alike, triggered by a command line argument.
+	const SoundManager::Resources & sndres = app->sounds.getResources();
+	for (SoundManager::Resources::const_iterator i = sndres.begin(); i != sndres.end(); i++) {
+		Path p = soundsDir.down(i->first.str().substr(9));
+		Path d = p.up();
+		if (!makeDirectory(d))
+			continue;
+		i->second.SaveToFile(p.str() + ".wav");
+	}
+	
+	Path unhandledSoundsDir = soundsDir.down("unhandled");
+	if (stat(unhandledSoundsDir, &st) != 0) {
+		if (mkdir(unhandledSoundsDir, 0777) != 0) {
+			LOG(ERROR, "unable to make directory %s", (const char *)unhandledSoundsDir);
+			return;
+		}
+	}
+	WindowsNEExecutable::Resources & rawSounds = exe.resources[0xFF0A];
+	for (WindowsNEExecutable::Resources::iterator b = rawSounds.begin(); b != rawSounds.end(); b++) {
+		snprintf(temp, 16, "%x.wav", b->first);
+		Path p = unhandledSoundsDir.down(temp);
+		
+		ofstream f(p.c_str());
+		f.write(b->second.data, b->second.length);
+		f.close();
+	}
 }
 
 /** Prepares the given list of bitmap resources by adding a proper BMP header to each one and storing each in the bitmaps map. */
@@ -107,57 +191,6 @@ void SimTowerLoader::preparePalettes()
 		pal.length = r->second.length;
 		pal.data = new char [pal.length];
 		memcpy(pal.data, r->second.data, r->second.length);
-	}
-}
-
-void SimTowerLoader::dump(Path path)
-{
-	LOG(INFO, "dumping to %s", (const char *)path);
-	
-	//TODO: same issues as for SimTowerResources
-	struct stat st;
-	char temp[16];
-	
-	if (stat(path, &st) != 0) {
-		LOG(DEBUG, "  creating directory");
-		if (mkdir(path, 0777) != 0) {
-			LOG(ERROR, "unable to make directory %s", (const char *)path);
-			return;
-		}
-	}
-	
-	Path bitmapsDir = path.down("bitmaps");
-	if (stat(bitmapsDir, &st) != 0) {
-		if (mkdir(bitmapsDir, 0777) != 0) {
-			LOG(ERROR, "unable to make directory %s", (const char *)bitmapsDir);
-			return;
-		}
-	}
-	
-	//TODO: don't perform the resource dump here, but rather in Application or alike, triggered by a command line argument.
-	const BitmapManager::Resources & res = app->bitmaps.getResources();
-	for (BitmapManager::Resources::const_iterator i = res.begin(); i != res.end(); i++) {
-		Path p = bitmapsDir.down(i->first.str().substr(9));
-		Path d = p.up();
-		if (!makeDirectory(d))
-			continue;
-		i->second.SaveToFile(p.str() + ".png");
-	}
-	
-	Path unhandledBitmapsDir = bitmapsDir.down("unhandled");
-	if (stat(unhandledBitmapsDir, &st) != 0) {
-		if (mkdir(unhandledBitmapsDir, 0777) != 0) {
-			LOG(ERROR, "unable to make directory %s", (const char *)unhandledBitmapsDir);
-			return;
-		}
-	} 
-	for (Bitmaps::iterator b = rawBitmaps.begin(); b != rawBitmaps.end(); b++) {
-		snprintf(temp, 16, "%x.bmp", b->first);
-		Path p = unhandledBitmapsDir.down(temp);
-		
-		ofstream f(p.c_str());
-		f.write(b->second.data, b->second.length);
-		f.close();
 	}
 }
 
@@ -788,4 +821,50 @@ void SimTowerLoader::loadAnimatedBitmap(int id, sf::Image img[3])
 		}
 	}
 	rawBitmaps.erase(id);
+}
+
+
+void SimTowerLoader::loadSounds()
+{
+	const static struct { int id; Path name; } namedSounds[] = {
+		{0x9b58, "construction/normal"},		//sound for placing facilities and transport
+		{0x9b59, "construction/flexible"},		//sound for flexible stuff like lobbies and floors
+		{0x9b5a, "construction/impossible"},	//annoying "click" :)
+		{0x9b5b, "bulldozer"},
+		
+		{0x8b28, "partyhall"},
+		
+		{0x9388, "birds/morning"},
+		{0x9389, "cock"},
+		{0x938a, "birds/evening"}, //it is probably a nightingale, but my ornithological knowledge is quite sparse.
+		{0x938b, "rain"},
+		{0x938c, "bells"},
+		{0x938d, "thunder"},
+		{0xa71b, "crickets"},
+		{0xa71c, "birds/day"},
+		
+		{0xa710, "rating/increased"},
+		{0xa718, "rating/tower"},
+		{0xa711, "applause"},
+		{0xa712, "santa"},
+		{0xa71d, "cash"},
+		
+		{0x9771, "elevator/arriving"},
+		{0x9772, "elevator/departing"},
+		{0, ""}
+	};
+	for (int i = 0; namedSounds[i].id != 0; i++) {
+		sf::SoundBuffer & snd= app->sounds[Path("simtower/") + namedSounds[i].name];
+		loadSound(namedSounds[i].id, snd);
+	}
+}
+
+void SimTowerLoader::loadSound(int id, sf::SoundBuffer & snd)
+{
+	WindowsNEExecutable::Resource & data = exe.resources[0xFF0A][id];
+	if (!snd.LoadFromMemory(data.data, data.length)) {
+		LOG(ERROR, "unable to load sound 0x%x from memory", id);
+		return;
+	}
+	exe.resources[0xFF0A].erase(id);
 }
