@@ -5,6 +5,7 @@
 #include "Factory.h"
 #include "FastFood.h"
 #include "Stairs.h"
+#include "StandardElevator.h"
 
 using namespace OT::Item;
 
@@ -23,9 +24,10 @@ void Factory::loadPrototypes()
 	assert(prototypes.empty() && "prototypes mustn't be loaded multiple times");
 	
 	#define register_item(cls) prototypes.push_back(cls::makePrototype());
-	register_item(FastFood);
 	register_item(Stairs);
 	register_item(Escalator);
+	register_item(StandardElevator);
+	register_item(FastFood);
 	
 	for (int i = 0; i < prototypes.size(); i++) {
 		prototypesById[prototypes[i]->id] = prototypes[i];

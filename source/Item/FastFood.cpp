@@ -59,14 +59,13 @@ void FastFood::advance(double dt)
 		open = true;
 		spriteNeedsUpdate = true;
 		
+		//Create new customers for today.
 		int today = 10;
 		clearCustomers();
 		for (int i = 0; i < today; i++) {
 			Customer * c = new Customer(this);
-			LOG(DEBUG, "customer %p created", c);
 			c->arrivalTime = Math::randd(10, 21);
 			customers.insert(c);
-			LOG(DEBUG, "customer will start at %f", c->arrivalTime);
 		}
 	}
 	

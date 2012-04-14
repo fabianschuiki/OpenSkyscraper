@@ -18,7 +18,7 @@ namespace OT {
 		public:
 			int layer;
 			AbstractPrototype * const prototype;
-			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype) { layer = 0; population = 0; }
+			Item(Game * game, AbstractPrototype * prototype) : GameObject(game), sf::Drawable(), prototype(prototype), size(prototype->size) { layer = 0; population = 0; }
 			virtual ~Item();
 			virtual void init() {}
 			
@@ -28,11 +28,12 @@ namespace OT {
 			void removeSprite(Sprite * sprite);
 			
 			int2 position;
+			int2 size;
 			void setPosition(int2 p);
-			recti getRect() { return recti(position, prototype->size); }
+			recti getRect() { return recti(position, size); }
 			
 			virtual void Render(sf::RenderTarget & target) const;
-			sf::Vector2f GetSize() const { return sf::Vector2f(prototype->size.x*8, prototype->size.y*36); }
+			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8, size.y*36); }
 			
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
