@@ -103,7 +103,6 @@ void Sky::advance(double dt)
 			duration = cricketsSound.GetBuffer()->GetDuration();
 		}
 		soundCountdown += Math::randd(duration + 0.5, duration + 10);
-		LOG(DEBUG, "next sky sound in %fs", soundCountdown);
 	}
 }
 
