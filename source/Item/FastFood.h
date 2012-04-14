@@ -1,6 +1,6 @@
 #pragma once
-#include "Item.h"
 #include "../Sprite.h"
+#include "Item.h"
 
 namespace OT {
 	namespace Item {
@@ -15,6 +15,7 @@ namespace OT {
 				p->size  = int2(16,1);
 				p->icon  = 11;
 			}
+			virtual ~FastFood();
 			
 			virtual void init();
 			
@@ -23,12 +24,31 @@ namespace OT {
 			
 			int variant;
 			bool open;
-			int customersToday;
+			
+			class Customer : public Person {
+			public:
+				Customer(FastFood * item) : Person(item->game) { arrivalTime = 0; }
+				virtual ~Customer()	{ LOG(DEBUG, "fastfood customer %p killed", this); }
+				double arrivalTime; //when the customer arrives at the lobby of the tower
+			};
+			typedef std::set<Customer *> Customers;
+			Customers customers;
+			void clearCustomers();
+			
+			struct CustomerMetadata {
+				double arrivalTime; //when the customer arrived at the fast food
+			};
+			typedef std::map<Person *, CustomerMetadata> CustomerMetadataMap;
+			CustomerMetadataMap customerMetadata;
 			
 			Sprite sprite;
+			bool spriteNeedsUpdate;
 			void updateSprite();
 			
 			virtual void advance(double dt);
+			
+			virtual void addPerson(Person * p);
+			virtual void removePerson(Person * p);
 		};
 	}
 }

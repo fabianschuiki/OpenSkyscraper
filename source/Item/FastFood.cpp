@@ -1,8 +1,15 @@
 #include "../Game.h"
+#include "../Math/Rand.h"
 #include "FastFood.h"
 
+using namespace OT;
 using namespace OT::Item;
 
+
+FastFood::~FastFood()
+{
+	clearCustomers();
+}
 
 void FastFood::init()
 {
@@ -14,6 +21,7 @@ void FastFood::init()
 	sprite.SetImage(App->bitmaps["simtower/fastfood"]);
 	sprite.SetCenter(0, 24);
 	addSprite(&sprite);
+	spriteNeedsUpdate = false;
 	
 	defaultCeiling();
 	
@@ -24,17 +32,20 @@ void FastFood::encodeXML(tinyxml2::XMLPrinter & xml)
 {
 	Item::encodeXML(xml);
 	xml.PushAttribute("variant", variant);
+	xml.PushAttribute("open", open);
 }
 
 void FastFood::decodeXML(tinyxml2::XMLElement & xml)
 {
 	Item::decodeXML(xml);
 	variant = xml.IntAttribute("variant");
+	open    = xml.BoolAttribute("open");
 	updateSprite();
 }
 
 void FastFood::updateSprite()
 {
+	spriteNeedsUpdate = false;
 	int index = 3;
 	if (open) index = std::min<int>(ceil(people.size() / 5.0), 2);
 	sprite.SetSubRect(sf::IntRect(index*128, variant*24, (index+1)*128, (variant+1)*24));
@@ -43,15 +54,68 @@ void FastFood::updateSprite()
 
 void FastFood::advance(double dt)
 {
+	//Open
 	if (game->time.checkHour(10)) {
 		open = true;
-		customersToday = 0;
-		updateSprite();
+		spriteNeedsUpdate = true;
+		
+		int today = 10;
+		clearCustomers();
+		for (int i = 0; i < today; i++) {
+			Customer * c = new Customer(this);
+			LOG(DEBUG, "customer %p created", c);
+			c->arrivalTime = Math::randd(10, 21);
+			customers.insert(c);
+			LOG(DEBUG, "customer will start at %f", c->arrivalTime);
+		}
 	}
+	
+	//Close
 	if (game->time.checkHour(21) && open) {
 		open = false;
-		population = customersToday;
+		population = customers.size();
 		game->populationNeedsUpdate = true;
-		updateSprite();
+		spriteNeedsUpdate = true;
 	}
+	
+	//Make customers arrive.
+	for (Customers::iterator i = customers.begin(); i != customers.end(); i++) {
+		Customer * c = *i;
+		if (game->time.checkHour(c->arrivalTime)) {
+			//TODO: actually send the customer on his journey.
+			addPerson(c);
+		}
+	}
+	
+	//Make customers leave once they're done.
+	for (CustomerMetadataMap::iterator i = customerMetadata.begin(); i != customerMetadata.end(); i++) {
+		if (i->second.arrivalTime + 0.6 <= game->time.absolute) {
+			//TODO: actually make the person journey away.
+			removePerson(i->first);
+		}
+	}
+	
+	if (spriteNeedsUpdate) updateSprite();
+}
+
+void FastFood::addPerson(Person * p)
+{
+	Item::addPerson(p);
+	CustomerMetadata & m = customerMetadata[p];
+	m.arrivalTime = game->time.absolute;
+	spriteNeedsUpdate = true;
+}
+
+void FastFood::removePerson(Person * p)
+{
+	customerMetadata.erase(p);
+	Item::removePerson(p);
+	spriteNeedsUpdate = true;
+}
+
+void FastFood::clearCustomers()
+{
+	for (Customers::iterator c = customers.begin(); c != customers.end(); c++)
+		delete *c;
+	customers.clear();
 }

@@ -123,6 +123,7 @@ void Game::advance(double dt)
 	}
 	
 	if (populationNeedsUpdate) {
+		populationNeedsUpdate = false;
 		int p = 0;
 		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 			p += (*i)->population;

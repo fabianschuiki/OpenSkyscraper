@@ -68,6 +68,7 @@ void Item::addPerson(Person * p)
 {
 	assert(p);
 	assert(!p->at);
+	p->at = this;
 	people.insert(p);
 }
 
@@ -75,5 +76,6 @@ void Item::removePerson(Person * p)
 {
 	assert(p);
 	assert(p->at == this);
-	people.erase(p);;
+	p->at = NULL;
+	people.erase(p);
 }

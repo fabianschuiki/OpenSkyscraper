@@ -7,7 +7,7 @@ namespace OT {
 	class Person : public GameObject
 	{
 	public:
-		Person(Game * game) : GameObject(game) {}
+		Person(Game * game) : GameObject(game) { at = NULL; }
 		
 		Item::Item * at;
 	};

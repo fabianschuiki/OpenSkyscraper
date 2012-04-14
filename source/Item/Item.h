@@ -50,8 +50,8 @@ namespace OT {
 			
 			typedef std::set<Person *> People;
 			People people;
-			void addPerson(Person * p);
-			void removePerson(Person * p);
+			virtual void addPerson(Person * p);
+			virtual void removePerson(Person * p);
 			
 			int population;
 		};
