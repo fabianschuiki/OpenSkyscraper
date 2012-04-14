@@ -86,11 +86,24 @@ bool Game::handleEvent(sf::Event & event)
 		
 		case sf::Event::MouseButtonPressed: {
 			if (toolPrototype) {
-				LOG(DEBUG, "construct %s at %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y);
-				Item::Item * item = itemFactory.make(toolPrototype);
-				item->setPosition(toolPosition);
-				addItem(item);
-				transferFunds(-toolPrototype->price);
+				bool handled = false;
+				if (toolPrototype->id.find("elevator") == 0) {
+					for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+						if ((*i)->prototype == toolPrototype && (*i)->getRect().containsPoint(toolPosition)) {
+							LOG(DEBUG, "add car on floor %i to elevator %s", toolPosition.y, (*i)->desc().c_str());
+							transferFunds(-80000);
+							handled = true;
+							break;
+						}
+					}
+				}
+				if (!handled) {
+					LOG(DEBUG, "construct %s at %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y);
+					Item::Item * item = itemFactory.make(toolPrototype);
+					item->setPosition(toolPosition);
+					addItem(item);
+					transferFunds(-toolPrototype->price);
+				}
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
