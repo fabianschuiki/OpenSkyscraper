@@ -18,6 +18,8 @@ namespace OT {
 			
 			void updateSprite();
 			virtual void advance(double dt);
+			
+			virtual bool canHaulPeople() { return true; }
 		};
 	}
 }

@@ -39,6 +39,14 @@ namespace OT {
 			Cars cars;
 			void clearCars();
 			void addCar(int floor);
+			
+			typedef enum {
+				kUp   = 1,
+				kNone = 0,
+				kDown = -1
+			} Direction;
+			
+			virtual bool canHaulPeople() { return true; }
 		};
 	}
 }

@@ -58,6 +58,12 @@ Game::Game(Application & app)
 	decodeXML(xml);
 }
 
+Game::~Game()
+{
+	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) delete *i;
+	items.clear();
+}
+
 void Game::activate()
 {
 	State::activate();
@@ -110,6 +116,7 @@ bool Game::handleEvent(sf::Event & event)
 					item->setPosition(toolPosition);
 					addItem(item);
 					transferFunds(-toolPrototype->price);
+					updateRoutes();
 					playOnce("simtower/construction/normal");
 				}
 			}
@@ -117,6 +124,7 @@ bool Game::handleEvent(sf::Event & event)
 				if (selectedTool == "bulldozer") {
 					LOG(DEBUG, "destroy %s", itemBelowCursor->desc().c_str());
 					removeItem(itemBelowCursor);
+					updateRoutes();
 					playOnce("simtower/bulldozer");
 				}
 				else if (selectedTool == "finger") {
@@ -382,6 +390,8 @@ void Game::setPopulation(int p)
 	}
 }
 
+/** Called whenever an event occurs that might allow the rating to increase, e.g. a change in
+ *  population, or an item constructed. */
 void Game::ratingMayIncrease()
 {
 	switch (rating) {
@@ -415,10 +425,40 @@ void Game::selectTool(const char * tool)
 	}
 }
 
+/** Starts playing the given sound resource once. Releasing the sf::Sound after playback is done
+ *  internally. */
 void Game::playOnce(Path sound)
 {
 	sf::Sound * snd = new sf::Sound;
 	snd->SetBuffer(app.sounds[sound]);
 	snd->Play();
 	autoreleaseSounds.insert(snd);
+}
+
+/** Called whenever the transportation layout of the tower changes. Items and people should update
+ *  their calculated routes here, so they may find new ways of accessing things. */
+void Game::updateRoutes()
+{
+	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+		(*i)->updateRoutes();
+	}
+}
+
+Route Game::findRoute(Item::Item * start, Item::Item * destination)
+{
+	findRoute(Route(), start, destination);
+}
+
+Route Game::findRoute(Route route, Item::Item * start, Item::Item * destination)
+{
+	route.add(start);
+	if (start == destination) return route;
+	
+	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+		if (!(*i)->canHaulPeople() || route.usesItem(*i)) continue;
+		Route r = findRoute(route, *i, destination);
+		if (!r.empty()) return r;
+	}
+	
+	return Route();
 }

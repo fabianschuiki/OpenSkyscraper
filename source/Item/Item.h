@@ -7,6 +7,7 @@
 #include "../GameObject.h"
 #include "../Math/Rect.h"
 #include "../Person.h"
+#include "../Route.h"
 #include "../Sprite.h"
 #include "Prototype.h"
 
@@ -57,6 +58,12 @@ namespace OT {
 			virtual void removePerson(Person * p);
 			
 			int population;
+			
+			Route lobbyRoute;
+			Route metroRoute;
+			virtual void updateRoutes();
+			
+			virtual bool canHaulPeople() { return false; }
 		};
 	}
 }

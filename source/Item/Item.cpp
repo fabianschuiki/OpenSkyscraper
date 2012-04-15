@@ -87,3 +87,12 @@ rectd Item::getMouseRegion()
 	sf::Vector2f s = GetSize();
 	return rectd(p.x, p.y - s.y + 12, s.x, s.y - 12);
 }
+
+void Item::updateRoutes()
+{
+	if (game->mainLobby) {
+		lobbyRoute = game->findRoute(this, game->mainLobby);
+	} else {
+		lobbyRoute.clear();
+	}
+}

@@ -21,6 +21,7 @@ namespace OT {
 	public:
 		Application & app;
 		Game(Application & app);
+		virtual ~Game();
 		
 		typedef std::set<Sprite *> Sprites;
 		Sprites sprites;
@@ -37,6 +38,7 @@ namespace OT {
 		
 		typedef std::set<Item::Item *> ItemSet;
 		ItemSet items;
+		Item::Item * mainLobby;
 		void addItem(Item::Item * item);
 		void removeItem(Item::Item * item);
 		
@@ -77,6 +79,10 @@ namespace OT {
 		typedef std::set<sf::Sound *> SoundSet;
 		SoundSet autoreleaseSounds;
 		void playOnce(Path sound);
+		
+		void updateRoutes();
+		Route findRoute(Item::Item * start, Item::Item * destination);
+		Route findRoute(Route route, Item::Item * start, Item::Item * destination);
 		
 	private:
 		double zoom;
