@@ -36,6 +36,7 @@ namespace OT
 		WindowsNEExecutable exe;
 		
 		void prepareBitmaps();
+		void prepareBMPHeader(char * data);
 		void preparePalettes();
 		void loadBitmaps();
 		
@@ -50,6 +51,7 @@ namespace OT
 		void loadElevatorCar(const sf::Image & img, sf::Image & dst);
 		void applyReplacementPalette(int palette, Blob & raw);
 		void loadSky(int id, sf::Image & img);
+		void loadLobbies();
 		
 		void loadBitmap(int id, sf::Image & img);
 		void loadAnimatedBitmap(int id, sf::Image img[3]);

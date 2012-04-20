@@ -61,8 +61,8 @@ bool SimTowerLoader::load()
 	//TODO: dump the exe if the user requested this through a command line argument.
 	
 	//Prepare the bitmaps. This prefixes bitmap resources with a BMP header.
-	prepareBitmaps();
 	preparePalettes();
+	prepareBitmaps();
 	
 	loadBitmaps();
 	loadSounds();
@@ -161,24 +161,94 @@ void SimTowerLoader::dump(Path path)
 /** Prepares the given list of bitmap resources by adding a proper BMP header to each one and storing each in the bitmaps map. */
 void SimTowerLoader::prepareBitmaps()
 {
-	WindowsNEExecutable::Resources & rs = exe.resources[0x8002];
 	WindowsNEExecutable::Resources::iterator r;
-	for (r = rs.begin(); r != rs.end(); r++)
+	WindowsNEExecutable::Resources & bmps = exe.resources[0x8002];
+	for (r = bmps.begin(); r != bmps.end(); r++)
 	{
 		//Create a new bitmap entry.
 		Blob & bmp = rawBitmaps[r->first];
 		bmp.length = r->second.length + 14;
-		
-		//Store the resource data prefixed with the appropriate BMP header.
 		bmp.data = new char [bmp.length];
-		for (int i = 0; i < 14; i++)
-			bmp.data[i] = 0;
-		bmp.data[0]  = 0x42;
-		bmp.data[1]  = 0x4D;
-		bmp.data[10] = 0x36;
-		bmp.data[11] = 0x4;
+		
+		//Create the BMP.
+		prepareBMPHeader(bmp.data);
+		
+		//Copy the bitmap.
 		memcpy(bmp.data + 14, r->second.data, r->second.length);
 	}
+	
+	WindowsNEExecutable::Resources & pcs = exe.resources[0xFF02];
+	for (r = pcs.begin(); r != pcs.end(); r++)
+	{
+		//Create a new bitmap entry.
+		Blob & bmp = rawBitmaps[r->first];
+		bmp.length = r->second.length + 0x436;
+		bmp.data = new char [bmp.length];
+		
+		//Create the BMP.
+		prepareBMPHeader(bmp.data);
+		
+		//Calculate the image dimensions.
+		const unsigned int cellPixels = 36 * 8;
+		unsigned int cellsInResource = r->second.length / cellPixels;
+		
+		//Create the DIB header.
+		struct {
+			uint32_t size;
+			uint32_t width;
+			uint32_t height;
+			uint16_t numPlanes;
+			uint16_t bitsPerPixel;
+			uint32_t compression;
+			uint32_t imageSize;
+			uint32_t hDPI;
+			uint32_t vDPI;
+			uint32_t numColors;
+			uint32_t numImportantColors;
+		} __attribute__((__packed__)) dib = {
+			40,
+			(cellsInResource * 8), 36,
+			1, 8,
+			0,
+			(cellsInResource * cellPixels),
+			0, 0, 256, 256
+		};
+		memcpy(bmp.data + 14, &dib, sizeof(dib));
+		
+		//Assemble the palette
+		Blob & palette = rawPalettes[0x83e8];
+		char * dst = (bmp.data + 14 + 40);
+		for (int i = 0; i < palette.length; i++) {
+			(*dst++) = palette.data[i * 8 + 6];
+			(*dst++) = palette.data[i * 8 + 4];
+			(*dst++) = palette.data[i * 8 + 2];
+			(*dst++) = 0;
+		}
+		
+		//Since the actualy pixel data is only 8 pixels wide, with the individual cells
+		//stacked vertically, we re-organize the buffer by flipping the image vertically and
+		//lining up the cells horizontally to simplify postprocessing.
+		char * src = r->second.data;
+		dst = bmp.data + 0x436;
+		for (unsigned int i = 0; i < dib.imageSize; i++) {
+			unsigned int srcx = (i % 8);
+			unsigned int srcy = (i / 8);
+			unsigned int dstx = srcx + (srcy / 36) * 8;
+			unsigned int dsty = 36 - 1 - (srcy % 36);
+			unsigned int dstidx = (dstx + dsty * dib.width);
+			dst[dstidx] = src[i];
+		}
+	}
+}
+
+void SimTowerLoader::prepareBMPHeader(char * data)
+{
+	for (int i = 0; i < 14; i++)
+		data[i] = 0;
+	data[0]  = 0x42;
+	data[1]  = 0x4D;
+	data[10] = 0x36;
+	data[11] = 0x4;
 }
 
 void SimTowerLoader::preparePalettes()
@@ -456,6 +526,8 @@ void SimTowerLoader::loadBitmaps()
 		}
 		cloud.CreateMaskFromColor(sf::Color::White);
 	}
+	
+	loadLobbies();
 	
 	const static struct { int id; Path name; sf::Color alpha; } namedBitmaps[] = {
 		{0x8E28, "construction/grid",   sf::Color::White},
@@ -778,6 +850,41 @@ void SimTowerLoader::loadSky(int id, sf::Image & img)
 		img.Copy(tmp, i*32, 0);
 	}
 	rawBitmaps.erase(id);
+}
+
+void SimTowerLoader::loadLobbies()
+{
+	sf::Image & normal = app->bitmaps["simtower/lobby/normal"];
+	sf::Image & sky    = app->bitmaps["simtower/lobby/sky"];
+	sf::Image & high   = app->bitmaps["simtower/lobby/high"];
+	normal.Create(312, 3*36);
+	sky   .Create(312, 3*36);
+	high  .Create(312, 3*108);
+	
+	sf::Image * segments[] = {&normal, &sky, &high};
+	
+	for (int i = 0; i < 3; i++) {
+		sf::Image raw;
+		loadBitmap(0x89e8 + i, raw);
+		for (int n = 0; n < 3; n++) {
+			int dsty = (n < 2 ? i*36 : i*108+72);
+			segments[n]->Copy(raw, 7*8, dsty, sf::IntRect(n*328, 0, (n+1)*328-9*8, 36));
+			segments[n]->Copy(raw, 0,   dsty, sf::IntRect((n+1)*328-7*8, 0, (n+1)*328, 36));
+		}
+	}
+	sky.CreateMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
+	
+	for (int i = 0; i < 3; i++) {
+		sf::Image middle, top;
+		loadBitmap(0x8a28 + i, middle);
+		loadBitmap(0x8a68 + i, top);
+		sf::Image * vsegments[] = {&top, &middle};
+		for (int n = 0; n < 2; n++) {
+			int xoff = (n == 1 ? 328 : 0);
+			high.Copy(*vsegments[n], 7*8, i*108 + n*36, sf::IntRect(xoff, 0, xoff + 328-9*8, 36));
+			high.Copy(*vsegments[n], 0, i*108 + n*36, sf::IntRect(xoff + 328-7*8, 0, xoff + 328, 36));
+		}
+	}
 }
 
 void SimTowerLoader::loadBitmap(int id, sf::Image & img)
