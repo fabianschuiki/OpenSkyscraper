@@ -52,10 +52,11 @@ void Route::updateScore()
 	Node prev;
 	for (std::vector<Node>::iterator nit = nodes.begin(); nit != nodes.end(); nit++) {
 		Node & n = *nit;
-		if (!prev.item) {
-			prev = n;
-		} else {
-			cached_score += 10 + abs(n.toFloor - prev.toFloor);
+		if (prev.item) {
+			if (n.item->canHaulPeople()) cached_score += 10;
+			cached_score += abs(n.toFloor - prev.toFloor) * 10;
+			cached_score += n.item->getRect().distanceX(prev.item->getRect());
 		}
+		prev = n;
 	}
 }

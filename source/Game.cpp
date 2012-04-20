@@ -143,11 +143,16 @@ bool Game::handleEvent(sf::Event & event)
 							LOG(DEBUG, "clicked elevator %s on floor %i", itemBelowCursor->desc().c_str(), toolPosition.y);
 							if (!e->unservicedFloors.erase(toolPosition.y))
 								e->unservicedFloors.insert(toolPosition.y);
+							updateRoutes();
 						}
 					}
 				}
 				else if (selectedTool == "inspector") {
 					LOG(DEBUG, "inspect %s", itemBelowCursor->desc().c_str());
+					visualizeRoute = itemBelowCursor->lobbyRoute;
+					char c[128];
+					snprintf(c, 128, "route score = %i", visualizeRoute.score());
+					timeWindow.showMessage(c);
 				}
 			}
 		} break;
@@ -155,6 +160,7 @@ bool Game::handleEvent(sf::Event & event)
 		case sf::Event::MouseMoved: {
 			if (draggingElevator) {
 				draggingElevator->repositionMotor(draggingMotor, toolPosition.y);
+				updateRoutes();
 			}
 		} break;
 		
@@ -254,11 +260,11 @@ void Game::advance(double dt)
 	}
 	
 	//Draw construction template.
+	glBindTexture(GL_TEXTURE_2D, 0);
 	if (toolPrototype) {
 		rectf r(toolPosition.x * 8, -(toolPosition.y+toolPrototype->size.y) * 36, toolPrototype->size.x*8, toolPrototype->size.y*36);
 		r.inset(float2(0.5, 0.5));
 		glColor3f(1, 1, 1);
-		glBindTexture(GL_TEXTURE_2D, 0);
 		glBegin(GL_LINE_STRIP);
 		glVertex2f(r.minX(), r.minY());
 		glVertex2f(r.maxX(), r.minY());
@@ -267,6 +273,22 @@ void Game::advance(double dt)
 		glVertex2f(r.minX(), r.minY());
 		glEnd();
 	}
+	
+	//Visualize route.
+	glColor3f(0, 1, 0);
+	glBegin(GL_LINE_STRIP);
+	int prevFloor = 0;
+	if (!visualizeRoute.nodes.empty()) prevFloor = visualizeRoute.nodes[0].item->position.y;
+	for (std::vector<Route::Node>::iterator nit = visualizeRoute.nodes.begin(); nit != visualizeRoute.nodes.end(); nit++) {
+		Route::Node & n = *nit;
+		rectf r = n.item->getRect();
+		if (n.item != mainLobby) {
+			glVertex2f(r.midX()*8, -prevFloor * 36 - 5);
+			glVertex2f(r.midX()*8, -n.toFloor * 36 - 5);
+		}
+		prevFloor = n.toFloor;
+	}
+	glEnd();
 	
 	//Autorelease sounds.
 	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end(); s++) {
@@ -441,6 +463,8 @@ void Game::playOnce(Path sound)
  *  their calculated routes here, so they may find new ways of accessing things. */
 void Game::updateRoutes()
 {
+	LOG(DEBUG, "updating routes");
+	visualizeRoute.clear();
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		(*i)->updateRoutes();
 	}
@@ -459,8 +483,6 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 		return route;
 	}
 	
-	LOG(DEBUG, "finding route from %i", floor);
-	
 	Route best;
 	for (ItemSet::iterator it = items.begin(); it != items.end(); it++) {
 		Item::Item * i = *it;
@@ -468,8 +490,6 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 		
 		//Check whether this item connects to the floor we're currently at.
 		if (!i->connectsFloor(floor)) continue;
-		
-		LOG(DEBUG, "- trying %s", i->desc().c_str());
 		
 		//If this item connects to our destination floor, use it.
 		Route r;
@@ -482,7 +502,6 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 		//Otherwise check lobbies for elevators.
 		else if (i->isElevator()) {
 			for (int f = i->position.y % 15; f < i->size.y; f += 15) {
-				LOG(DEBUG, "try change elevator at %i", f + i->position.y);
 				Route sr = findRoute(route, f + i->position.y, i, destination);
 				if (r.empty() || sr.score() < r.score()) r = sr;
 			}
@@ -492,7 +511,6 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 		else if (i->isStairlike()) {
 			int f = i->position.y;
 			if (f == floor) f += i->size.y-1;
-			LOG(DEBUG, "try change stairlike at %i", f);
 			r = findRoute(route, f, i, destination);
 		}
 		

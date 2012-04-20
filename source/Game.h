@@ -84,6 +84,8 @@ namespace OT {
 		Route findRoute(Item::Item * start, Item::Item * destination);
 		Route findRoute(Route route, int floor, Item::Item * current, Item::Item * destination);
 		
+		Route visualizeRoute;
+		
 	private:
 		double zoom;
 		double2 poi;
