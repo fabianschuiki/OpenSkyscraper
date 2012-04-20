@@ -82,7 +82,7 @@ namespace OT {
 		
 		void updateRoutes();
 		Route findRoute(Item::Item * start, Item::Item * destination);
-		Route findRoute(Route route, Item::Item * start, Item::Item * destination);
+		Route findRoute(Route route, Item::Item * current, Item::Item * destination);
 		
 	private:
 		double zoom;

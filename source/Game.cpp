@@ -449,10 +449,10 @@ Route Game::findRoute(Item::Item * start, Item::Item * destination)
 	findRoute(Route(), start, destination);
 }
 
-Route Game::findRoute(Route route, Item::Item * start, Item::Item * destination)
+Route Game::findRoute(Route route, Item::Item * current, Item::Item * destination)
 {
-	route.add(start);
-	if (start == destination) return route;
+	route.add(current);
+	if (current == destination) return route;
 	
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		if (!(*i)->canHaulPeople() || route.usesItem(*i)) continue;
