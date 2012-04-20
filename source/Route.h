@@ -23,14 +23,14 @@ namespace OT {
 		std::vector<Node> nodes;
 		
 		void clear();
-		bool empty();
+		bool empty() const;
 		
 		void add(Item::Item * item);
 		void add(Item::Item * item, int floor);
 		
-		bool usesItem(Item::Item * item);
+		bool usesItem(Item::Item * item) const;
 		
-		int score();
+		int score() const;
 		void updateScore();
 		
 	private:

@@ -183,7 +183,7 @@ void Elevator::addCar(int floor)
 	cars.insert(car);
 }
 
-bool Elevator::connectsFloor(int floor)
+bool Elevator::connectsFloor(int floor) const
 {
 	if (floor < position.y || floor > position.y + size.y) return false;
 	return !unservicedFloors.count(floor);

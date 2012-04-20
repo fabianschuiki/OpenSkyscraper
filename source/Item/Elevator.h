@@ -46,9 +46,9 @@ namespace OT {
 				kDown = -1
 			} Direction;
 			
-			virtual bool canHaulPeople() { return true; }
-			virtual bool connectsFloor(int floor);
-			virtual bool isElevator() { return true; }
+			virtual bool canHaulPeople() const { return true; }
+			virtual bool connectsFloor(int floor) const;
+			virtual bool isElevator() const { return true; }
 		};
 	}
 }

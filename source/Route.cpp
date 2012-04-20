@@ -16,7 +16,7 @@ void Route::clear()
 	cached_score = 0;
 }
 
-bool Route::empty()
+bool Route::empty() const
 {
 	return nodes.empty();
 }
@@ -36,12 +36,12 @@ void Route::add(Item::Item * item, int floor)
 	updateScore();
 }
 
-bool Route::usesItem(Item::Item * item)
+bool Route::usesItem(Item::Item * item) const
 {
 	return usedItems.count(item);
 }
 
-int Route::score()
+int Route::score() const
 {
 	return cached_score;
 }

@@ -41,6 +41,16 @@ void Item::Render(sf::RenderTarget & target) const
 		game->drawnSprites++;
 		target.Draw(**s);
 	}
+	
+	if (!canHaulPeople() && game->mainLobby != this && lobbyRoute.empty()) {
+		Sprite noroute;
+		noroute.SetImage(app->bitmaps["noroute.png"]);
+		sf::Vector2f size = noroute.GetSize();
+		noroute.SetCenter(size.x/2, size.y/2);
+		size = GetSize();
+		noroute.SetPosition(size.x/2, -size.y/2);
+		target.Draw(noroute);
+	}
 }
 
 void Item::encodeXML(tinyxml2::XMLPrinter & xml)
@@ -89,7 +99,7 @@ rectd Item::getMouseRegion()
 
 void Item::updateRoutes()
 {
-	if (game->mainLobby && game->mainLobby != this) {
+	if (!canHaulPeople() && game->mainLobby && game->mainLobby != this) {
 		lobbyRoute = game->findRoute(game->mainLobby, this);
 	} else {
 		lobbyRoute.clear();

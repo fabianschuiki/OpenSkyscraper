@@ -46,7 +46,7 @@ void Stairlike::updateSprite()
 	sprite.Resize(w, h);
 }
 
-bool Stairlike::connectsFloor(int floor)
+bool Stairlike::connectsFloor(int floor) const
 {
 	return position.y == floor || position.y+size.y-1 == floor;
 }

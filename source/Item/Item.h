@@ -63,10 +63,10 @@ namespace OT {
 			Route metroRoute;
 			virtual void updateRoutes();
 			
-			virtual bool canHaulPeople() { return false; }
-			virtual bool connectsFloor(int floor) { return false; }
-			virtual bool isStairlike() { return false; }
-			virtual bool isElevator()  { return false; }
+			virtual bool canHaulPeople() const { return false; }
+			virtual bool connectsFloor(int floor) const { return false; }
+			virtual bool isStairlike() const { return false; }
+			virtual bool isElevator()  const { return false; }
 		};
 	}
 }

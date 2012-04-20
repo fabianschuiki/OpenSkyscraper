@@ -19,9 +19,9 @@ namespace OT {
 			void updateSprite();
 			virtual void advance(double dt);
 			
-			virtual bool canHaulPeople() { return true; }
-			virtual bool connectsFloor(int floor);
-			virtual bool isStairlike() { return true; }
+			virtual bool canHaulPeople() const { return true; }
+			virtual bool connectsFloor(int floor) const;
+			virtual bool isStairlike() const { return true; }
 		};
 	}
 }
