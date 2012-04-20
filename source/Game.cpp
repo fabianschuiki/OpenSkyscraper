@@ -351,6 +351,7 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 		addItem(item);
 		e = e->NextSiblingElement("item");
 	}
+	updateRoutes();
 }
 
 void Game::transferFunds(int f)

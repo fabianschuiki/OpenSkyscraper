@@ -89,8 +89,8 @@ rectd Item::getMouseRegion()
 
 void Item::updateRoutes()
 {
-	if (game->mainLobby) {
-		//lobbyRoute = game->findRoute(this, game->mainLobby);
+	if (game->mainLobby && game->mainLobby != this) {
+		lobbyRoute = game->findRoute(this, game->mainLobby);
 	} else {
 		lobbyRoute.clear();
 	}
