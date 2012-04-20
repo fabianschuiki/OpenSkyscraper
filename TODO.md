@@ -1,6 +1,10 @@
-- create `CommmandLineArguments` class which handles interpretation of the command line arguments (e.g. `--dump-simtower <path>`)
+- create `CommmandLineArguments` class which handles interpretation of the command line arguments
+  (e.g. `--dump-simtower <path>`)
 - create `FileSystem` class to do file manipulation (move, copy, mkdir, etc.)
 	- adjust `WindowsNEExecutable::dump`
+- In `Route`, keep track of how many stairs and elevators were used. Then make the pathfinder limit
+  the amount of stairs and elevators that are used per route. Otherwise algorithm complexity will
+  explode.
 
 Game
 ----
