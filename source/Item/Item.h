@@ -64,6 +64,9 @@ namespace OT {
 			virtual void updateRoutes();
 			
 			virtual bool canHaulPeople() { return false; }
+			virtual bool connectsFloor(int floor) { return false; }
+			virtual bool isStairlike() { return false; }
+			virtual bool isElevator()  { return false; }
 		};
 	}
 }

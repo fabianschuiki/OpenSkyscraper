@@ -182,3 +182,9 @@ void Elevator::addCar(int floor)
 	car->setAltitude(floor);
 	cars.insert(car);
 }
+
+bool Elevator::connectsFloor(int floor)
+{
+	if (floor < position.y || floor > position.y + size.y) return false;
+	return !unservicedFloors.count(floor);
+}

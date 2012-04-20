@@ -47,6 +47,8 @@ namespace OT {
 			} Direction;
 			
 			virtual bool canHaulPeople() { return true; }
+			virtual bool connectsFloor(int floor);
+			virtual bool isElevator() { return true; }
 		};
 	}
 }

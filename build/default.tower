@@ -1,8 +1,12 @@
 <tower funds="1100000" rating="0" time="4" paused="0" rainy="0" tool="finger" x="0" y="200">
     <item type="fastfood" x="8" y="2" variant="0" open="1"/>
-    <item type="elevator-standard" x="10" y="0" height="4">
+    <item type="elevator-standard" x="10" y="0" height="16">
         <car altitude="0"/>
     </item>
+    <item type="elevator-standard" x="-12" y="15" height="10">
+        <car altitude="0"/>
+    </item>
+    <item type="fastfood" x="-8" y="24" variant="4" open="1"/>
     <item type="fastfood" x="-8" y="2" variant="4" open="1"/>
     <item type="fastfood" x="-24" y="1" variant="0" open="1"/>
     <item type="fastfood" x="8" y="3" variant="2" open="1"/>

@@ -448,19 +448,56 @@ void Game::updateRoutes()
 
 Route Game::findRoute(Item::Item * start, Item::Item * destination)
 {
-	findRoute(Route(), start, destination);
+	return findRoute(Route(), start->position.y, start, destination);
 }
 
-Route Game::findRoute(Route route, Item::Item * current, Item::Item * destination)
+Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item * destination)
 {
-	route.add(current);
-	if (current == destination) return route;
-	
-	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
-		if (!(*i)->canHaulPeople() || route.usesItem(*i)) continue;
-		Route r = findRoute(route, *i, destination);
-		if (!r.empty()) return r;
+	route.add(current, floor);
+	if (floor == destination->position.y) {
+		route.add(destination);
+		return route;
 	}
 	
-	return Route();
+	LOG(DEBUG, "finding route from %i", floor);
+	
+	Route best;
+	for (ItemSet::iterator it = items.begin(); it != items.end(); it++) {
+		Item::Item * i = *it;
+		if (!i->canHaulPeople() || route.usesItem(i)) continue;
+		
+		//Check whether this item connects to the floor we're currently at.
+		if (!i->connectsFloor(floor)) continue;
+		
+		LOG(DEBUG, "- trying %s", i->desc().c_str());
+		
+		//If this item connects to our destination floor, use it.
+		Route r;
+		if (i->connectsFloor(destination->position.y)) {
+			r = route;
+			r.add(i, destination->position.y);
+			r.add(destination);
+		}
+		
+		//Otherwise check lobbies for elevators.
+		else if (i->isElevator()) {
+			for (int f = i->position.y % 15; f < i->size.y; f += 15) {
+				LOG(DEBUG, "try change elevator at %i", f + i->position.y);
+				Route sr = findRoute(route, f + i->position.y, i, destination);
+				if (r.empty() || sr.score() < r.score()) r = sr;
+			}
+		}
+		
+		//Or the floor above/below for stairs.
+		else if (i->isStairlike()) {
+			int f = i->position.y;
+			if (f == floor) f += i->size.y-1;
+			LOG(DEBUG, "try change stairlike at %i", f);
+			r = findRoute(route, f, i, destination);
+		}
+		
+		if (!r.empty() && (best.empty() || r.score() < best.score())) best = r;
+	}
+	
+	return best;
 }

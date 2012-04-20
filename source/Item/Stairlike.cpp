@@ -45,3 +45,8 @@ void Stairlike::updateSprite()
 	sprite.SetSubRect(sf::IntRect(w*frame, 0, w*(frame+1), h));
 	sprite.Resize(w, h);
 }
+
+bool Stairlike::connectsFloor(int floor)
+{
+	return position.y == floor || position.y+size.y-1 == floor;
+}

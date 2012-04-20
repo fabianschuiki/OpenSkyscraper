@@ -20,6 +20,8 @@ namespace OT {
 			virtual void advance(double dt);
 			
 			virtual bool canHaulPeople() { return true; }
+			virtual bool connectsFloor(int floor);
+			virtual bool isStairlike() { return true; }
 		};
 	}
 }
