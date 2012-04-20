@@ -95,4 +95,5 @@ void Lobby::Render(sf::RenderTarget & target) const
 	sr.Right = std::min<int>(sr.Right, GetSize().x - 16);
 	o.SetSubRect(sr);
 	target.Draw(o);
+	game->drawnSprites++;
 }
