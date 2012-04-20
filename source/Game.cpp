@@ -31,6 +31,8 @@ Game::Game(Application & app)
 	draggingElevator = NULL;
 	draggingMotor = 0;
 	
+	mainLobby = NULL;
+	
 	itemFactory.loadPrototypes();
 	
 	/*Item::Item * i = itemFactory.prototypes.front()->make(this);

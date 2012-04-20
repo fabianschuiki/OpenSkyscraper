@@ -4,6 +4,7 @@
 #include "Escalator.h"
 #include "Factory.h"
 #include "FastFood.h"
+#include "Lobby.h"
 #include "Stairs.h"
 #include "StandardElevator.h"
 
@@ -24,6 +25,7 @@ void Factory::loadPrototypes()
 	assert(prototypes.empty() && "prototypes mustn't be loaded multiple times");
 	
 	#define register_item(cls) prototypes.push_back(cls::makePrototype());
+	register_item(Lobby);
 	register_item(Stairs);
 	register_item(Escalator);
 	register_item(StandardElevator);
