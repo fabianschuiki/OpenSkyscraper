@@ -114,8 +114,7 @@ bool Game::handleEvent(sf::Event & event)
 				}
 				if (!handled) {
 					LOG(DEBUG, "construct %s at %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y);
-					Item::Item * item = itemFactory.make(toolPrototype);
-					item->setPosition(toolPosition);
+					Item::Item * item = itemFactory.make(toolPrototype, toolPosition);
 					addItem(item);
 					transferFunds(-toolPrototype->price);
 					updateRoutes();

@@ -52,7 +52,6 @@ void Item::encodeXML(tinyxml2::XMLPrinter & xml)
 
 void Item::decodeXML(tinyxml2::XMLElement & xml)
 {
-	setPosition(int2(xml.IntAttribute("x"), xml.IntAttribute("y")));
 }
 
 void Item::defaultCeiling()
@@ -91,7 +90,7 @@ rectd Item::getMouseRegion()
 void Item::updateRoutes()
 {
 	if (game->mainLobby) {
-		lobbyRoute = game->findRoute(this, game->mainLobby);
+		//lobbyRoute = game->findRoute(this, game->mainLobby);
 	} else {
 		lobbyRoute.clear();
 	}

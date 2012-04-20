@@ -31,7 +31,7 @@ namespace OT {
 			int2 position;
 			int2 size;
 			void setPosition(int2 p);
-			recti getRect() { return recti(position, size); }
+			recti getRect() const { return recti(position, size); }
 			
 			virtual void Render(sf::RenderTarget & target) const;
 			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8, size.y*36); }

@@ -8,7 +8,8 @@
 #include "Stairs.h"
 #include "StandardElevator.h"
 
-using namespace OT::Item;
+using namespace OT;
+using namespace Item;
 
 
 Factory::~Factory()
@@ -36,23 +37,25 @@ void Factory::loadPrototypes()
 	}
 }
 
-Item * Factory::make(AbstractPrototype * prototype)
+Item::Item * Factory::make(AbstractPrototype * prototype, int2 position)
 {
 	assert(prototype);
 	Item * item = prototype->make(game);
+	item->setPosition(position);
 	item->init();
 	return item;
 }
 
-Item * Factory::make(std::string prototypeID)
+Item::Item * Factory::make(std::string prototypeID, int2 position)
 {
 	AbstractPrototype * prototype = prototypesById[prototypeID];
-	return make(prototype);
+	return make(prototype, position);
 }
 
-Item * Factory::make(tinyxml2::XMLElement & xml)
+Item::Item * Factory::make(tinyxml2::XMLElement & xml)
 {
-	Item * item = make(xml.Attribute("type"));
+	int2 position(xml.IntAttribute("x"), xml.IntAttribute("y"));
+	Item * item = make(xml.Attribute("type"), position);
 	assert(item);
 	item->decodeXML(xml);
 	return item;

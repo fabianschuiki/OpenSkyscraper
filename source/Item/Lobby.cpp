@@ -70,12 +70,29 @@ void Lobby::updateSprite()
 void Lobby::Render(sf::RenderTarget & target) const
 {
 	Item::Render(target);
+	sf::FloatRect view = target.GetView().GetRect();
+	recti rect = getRect();
+	
+	int minx = std::max<int>(floor(view.Left / 256), floor(rect.minX() / 32.0));
+	int maxx = std::min<int>(ceil(view.Right / 256), ceil (rect.maxX() / 32.0));
+	Sprite b = background;
+	for (int x = minx; x < maxx; x++) {
+		int offl = std::max<int>(0, rect.minX() - x*32) * 8;
+		int offr = std::max<int>(0, (x+1)*32 - rect.maxX()) * 8;
+		sf::IntRect sr = background.GetSubRect();
+		sr.Left  += offl;
+		sr.Right -= offr;
+		b.SetSubRect(sr);
+		
+		b.SetX((x * 32 - rect.minX()) * 8 + offl);
+		target.Draw(b);
+		
+		game->drawnSprites++;
+	}
 	
 	Sprite o = overlay;
+	sf::IntRect sr = o.GetSubRect();
+	sr.Right = std::min<int>(sr.Right, GetSize().x - 16);
+	o.SetSubRect(sr);
 	target.Draw(o);
-	
-	/*for (SpriteSet::iterator s = sprites.begin(); s != sprites.end(); s++) {
-		game->drawnSprites++;
-		target.Draw(**s);
-	}*/
 }

@@ -19,8 +19,8 @@ namespace OT {
 			std::map<std::string, AbstractPrototype *> prototypesById;
 			void loadPrototypes();
 			
-			Item * make(AbstractPrototype * prototype);
-			Item * make(std::string prototypeID);
+			Item * make(AbstractPrototype * prototype, int2 position = int2());
+			Item * make(std::string prototypeID, int2 position = int2());
 			Item * make(tinyxml2::XMLElement & xml);
 		};
 	}
