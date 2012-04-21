@@ -29,7 +29,16 @@ void Time::set(double t)
 		quarter = (int)floor(t/3) % 4 + 1;
 		year = (int)floor(t/3/4) + 1;
 		
-		hour = fmod(t*24, 24);
+		//jcranmer did some research on how time progresses in SimTower (doc/simtower/TDT_format.txt).
+		//We scale the time up to the 2600 frames/day he proposed, and derive the hour by applying
+		//different hours/frame scaling factors according to the frame.
+		double stage = fmod(t*2600, 2600); //"frame" in TDT_format.txt
+		if      (stage < 100)  hour = 0  + (stage-   0)/100 *1;
+		else if (stage < 300)  hour = 1  + (stage- 100)/200 *6;
+		else if (stage < 700)  hour = 7  + (stage- 300)/400 *5;
+		else if (stage < 1500) hour = 12 + (stage- 700)/800 *1;
+		else if (stage < 2600) hour = 13 + (stage-1500)/1100*11;
+		assert(hour >= 0 && hour < 24);
 	}
 }
 
@@ -46,23 +55,6 @@ void Time::advance(double dt)
 	
 	//Advance the absolute time.
 	set(absolute + dt * kBaseSpeed * speed_animated);
-	
-	//According to jcranmer's investigations on the time subject, we know that the original game
-	//used to measure the day in frames which accorded to seconds on a different basis depending on
-	//the time of day.
-	
-	//Define the basic speed of the game. This is the speed at which time will pass at lunch.
-	double speed = 1.0/60; //game hours per second
-	
-	//Apply a multiplication factor derived from the original game (which measured this in
-	//seconds/frame).
-	if      (hour >= 7  && hour < 12) speed *= 10; //7:00  to 12:00, 45s/frame
-	else if (hour >= 12 && hour < 13) speed *= 1;  //12:00 to 13:00, 4.5s/frame
-	else if (hour >= 13 || hour < 1)  speed *= 8;  //13:00 to 1:00,  36s/frame
-	else 	                          speed *= 28; //1:00 to 7:00, 126s/frame
-	
-	//Advance the time.
-	//set(absolute + dt*speed);
 }
 
 /** Returns true if the time has just passed said hour. E.g. if the time advanced from 9.98 to 10.1
