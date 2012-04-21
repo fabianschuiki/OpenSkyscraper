@@ -80,11 +80,7 @@ void FastFood::advance(double dt)
 	//Make customers arrive.
 	for (Customers::iterator i = customers.begin(); i != customers.end(); i++) {
 		Customer * c = *i;
-		if (game->time.checkHour(c->arrivalTime)) {
-			//TODO: actually send the customer on his journey.
-			c->journey.set(lobbyRoute);
-			//addPerson(c);
-		}
+		if (game->time.checkHour(c->arrivalTime)) c->journey.set(lobbyRoute);
 	}
 	
 	//Make customers leave once they're done.
