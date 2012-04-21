@@ -25,10 +25,11 @@ void Time::set(double t)
 		prev_year = year;
 		
 		absolute = t;
-		hour = fmod(t, 24);
-		day = (int)floor(t/24) % 3;
-		quarter = (int)floor(t/24/3) % 4 + 1;
-		year = (int)floor(t/24/3/4) + 1;
+		day = (int)floor(t) % 3;
+		quarter = (int)floor(t/3) % 4 + 1;
+		year = (int)floor(t/3/4) + 1;
+		
+		hour = fmod(t*24, 24);
 	}
 }
 
@@ -38,7 +39,7 @@ void Time::advance(double dt)
 		if (speed < 1) {
 			speed_animated = speed;
 		} else {
-			speed_animated = (speed * dt + speed_animated) / (dt + 1);
+			speed_animated = (speed * dt + speed_animated * 0.1) / (dt + 0.1);
 			if (fabs(speed_animated - speed) < 1e-2) speed_animated = speed;
 		}
 	}
