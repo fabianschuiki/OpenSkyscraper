@@ -81,21 +81,30 @@ bool Game::handleEvent(sf::Event & event)
 	switch (event.Type) {
 		case sf::Event::KeyPressed: {
 			switch (event.Key.Code) {
-				case sf::Key::Left:  poi.x -= 20; break;
-				case sf::Key::Right: poi.x += 20; break;
-				case sf::Key::Up:    poi.y += 20; break;
-				case sf::Key::Down:  poi.y -= 20; break;
-				case sf::Key::F1:    reloadGUI(); break;
-				case sf::Key::F3:    setRating(1); break;
+				case sf::Key::Left:  poi.x -= 20; return true;
+				case sf::Key::Right: poi.x += 20; return true;
+				case sf::Key::Up:    poi.y += 20; return true;
+				case sf::Key::Down:  poi.y -= 20; return true;
+				case sf::Key::F1:    reloadGUI(); return true;
+				case sf::Key::F3:    setRating(1); return true;
 				case sf::Key::F2: {
 					FILE * f = fopen("default.tower", "w");
 					tinyxml2::XMLPrinter xml(f);
 					encodeXML(xml);
 					fclose(f);
-				} break;
-				case sf::Key::PageUp:   zoom /= 2; break;
-				case sf::Key::PageDown: zoom *= 2; break;
+				} return true;
+				case sf::Key::PageUp:   zoom /= 2; return true;
+				case sf::Key::PageDown: zoom *= 2; return true;
 			}
+		} break;
+		
+		case sf::Event::TextEntered: {
+			switch (event.Text.Unicode) {
+				case '0': time.setSpeedMode(0); return true;
+				case '1': time.setSpeedMode(1); return true;
+				case '2': time.setSpeedMode(2); return true;
+				case '3': time.setSpeedMode(3); return true;
+			} break;
 		} break;
 		
 		case sf::Event::MouseButtonPressed: {
@@ -120,6 +129,7 @@ bool Game::handleEvent(sf::Event & event)
 					updateRoutes();
 					playOnce("simtower/construction/normal");
 				}
+				return true;
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
@@ -127,6 +137,7 @@ bool Game::handleEvent(sf::Event & event)
 					removeItem(itemBelowCursor);
 					updateRoutes();
 					playOnce("simtower/bulldozer");
+					return true;
 				}
 				else if (selectedTool == "finger") {
 					if (itemBelowCursor->prototype->id.find("elevator") == 0) {
@@ -145,6 +156,7 @@ bool Game::handleEvent(sf::Event & event)
 								e->unservicedFloors.insert(toolPosition.y);
 							updateRoutes();
 						}
+						return true;
 					}
 				}
 				else if (selectedTool == "inspector") {
@@ -153,6 +165,7 @@ bool Game::handleEvent(sf::Event & event)
 					char c[128];
 					snprintf(c, 128, "route score = %i", visualizeRoute.score());
 					timeWindow.showMessage(c);
+					return true;
 				}
 			}
 		} break;
@@ -161,11 +174,13 @@ bool Game::handleEvent(sf::Event & event)
 			if (draggingElevator) {
 				draggingElevator->repositionMotor(draggingMotor, toolPosition.y);
 				updateRoutes();
+				return true;
 			}
 		} break;
 		
 		case sf::Event::MouseButtonReleased: {
 			draggingElevator = NULL;
+			return true;
 		} break;
 	}
 	return false;
