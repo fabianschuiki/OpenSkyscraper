@@ -49,6 +49,9 @@ namespace OT {
 			virtual bool canHaulPeople() const { return true; }
 			virtual bool connectsFloor(int floor) const;
 			virtual bool isElevator() const { return true; }
+			
+			virtual void addPerson(Person * p);
+			virtual void removePerson(Person * p);
 		};
 	}
 }

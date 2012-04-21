@@ -188,3 +188,15 @@ bool Elevator::connectsFloor(int floor) const
 	if (floor < position.y || floor > position.y + size.y) return false;
 	return !unservicedFloors.count(floor);
 }
+
+void Elevator::addPerson(Person * p)
+{
+	Item::addPerson(p);
+	LOG(DEBUG, "%p queued up at %s", p, desc().c_str());
+}
+
+void Elevator::removePerson(Person * p)
+{
+	LOG(DEBUG, "%p leaving %s", p, desc().c_str());
+	Item::removePerson(p);
+}
