@@ -42,6 +42,7 @@ namespace OT {
 			void addCar(int floor);
 			
 			typedef enum {
+				kNone = -1,
 				kUp   = 0,
 				kDown = 1
 			} Direction;

@@ -25,6 +25,8 @@ namespace OT {
 			
 			virtual void encodeXML(tinyxml2::XMLPrinter& xml);
 			virtual void decodeXML(tinyxml2::XMLElement& xml);
+			
+			virtual void advance(double dt);
 		};
 	}
 }

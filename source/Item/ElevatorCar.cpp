@@ -52,3 +52,7 @@ void ElevatorCar::decodeXML(tinyxml2::XMLElement& xml)
 {
 	setAltitude(xml.DoubleAttribute("altitude"));
 }
+
+void ElevatorCar::advance(double dt)
+{
+}

@@ -87,7 +87,12 @@ void Elevator::Render(sf::RenderTarget & target) const
 
 void Elevator::advance(double dt)
 {
-	bool carsMoving = true; //TODO: actually check for moving cars.
+	bool carsMoving = false;
+	for (Cars::iterator ic = cars.begin(); ic != cars.end(); ic++) {
+		(*ic)->advance(dt);
+		//if ((*ic)->moving) carsMoving = true;
+	}
+	
 	if (carsMoving) {
 		animation = fmod(animation + dt, 1);
 		int newFrame = floor(animation * 3);
