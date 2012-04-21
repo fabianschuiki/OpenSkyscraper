@@ -7,6 +7,7 @@
 #include "Item/Factory.h"
 #include "Item/Item.h"
 #include "Sky.h"
+#include "Sound.h"
 #include "Sprite.h"
 #include "State.h"
 #include "Time.h"
@@ -70,13 +71,14 @@ namespace OT {
 		Item::Elevator * draggingElevator;
 		int draggingMotor;
 		
-		sf::Sound cockSound;
-		sf::Sound morningSound;
-		sf::Sound bellsSound;
-		sf::Sound eveningSound;
+		Sound cockSound;
+		Sound morningSound;
+		Sound bellsSound;
+		Sound eveningSound;
 		
-		typedef std::set<sf::Sound *> SoundSet;
+		typedef std::set<Sound *> SoundSet;
 		SoundSet autoreleaseSounds;
+		SoundSet playingSounds;
 		void playOnce(Path sound);
 		
 		void updateRoutes();

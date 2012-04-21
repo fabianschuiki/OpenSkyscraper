@@ -206,10 +206,10 @@ void Game::advance(double dt)
 	}
 	
 	//Play sounds.
-	if (time.checkHour(5)) cockSound.Play();
-	if (time.checkHour(6))   morningSound.Play();
-	if (time.checkHour(9))   bellsSound.Play();
-	if (time.checkHour(18))  eveningSound.Play();
+	if (time.checkHour(5))  cockSound.Play(this);
+	if (time.checkHour(6))  morningSound.Play(this);
+	if (time.checkHour(9))  bellsSound.Play(this);
+	if (time.checkHour(18)) eveningSound.Play(this);
 	morningSound.SetLoop(time.hour < 8);
 	
 	//Constrain the POI.
@@ -297,6 +297,15 @@ void Game::advance(double dt)
 		prevFloor = n.toFloor;
 	}
 	glEnd();
+	
+	//Adjust pitch of playing sounds.
+	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end(); s++) {
+		if ((*s)->GetStatus() == sf::Sound::Stopped) {
+			playingSounds.erase(s);
+		} else {
+			(*s)->SetPitch(1 + (time.speed_animated-1) * 0.2);
+		}
+	}
 	
 	//Autorelease sounds.
 	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end(); s++) {
@@ -470,9 +479,9 @@ void Game::selectTool(const char * tool)
  *  internally. */
 void Game::playOnce(Path sound)
 {
-	sf::Sound * snd = new sf::Sound;
+	Sound * snd = new Sound;
 	snd->SetBuffer(app.sounds[sound]);
-	snd->Play();
+	snd->Play(this);
 	autoreleaseSounds.insert(snd);
 }
 

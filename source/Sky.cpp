@@ -79,7 +79,7 @@ void Sky::advance(double dt)
 	
 	//Rain sounds.
 	if (rainyDay) {
-		if (game->time.checkHour(8))  rainSound.Play();
+		if (game->time.checkHour(8))  rainSound.Play(game);
 		if (game->time.checkHour(16)) rainSound.Stop();
 	}
 	
@@ -93,14 +93,14 @@ void Sky::advance(double dt)
 	if (soundCountdown < 0) {
 		double duration = 0;
 		if (rainyDay && time >= 8 && time < 16) {
-			thunderSound.Play();
+			thunderSound.Play(game);
 			thunderOverlay = 1;
 			duration = thunderSound.GetBuffer()->GetDuration();
 		} else if (time >= 8 && time < 17) {
-			birdsSound.Play();
+			birdsSound.Play(game);
 			duration = birdsSound.GetBuffer()->GetDuration();
 		} else if (time >= 20 || time < 1.5) {
-			cricketsSound.Play();
+			cricketsSound.Play(game);
 			duration = cricketsSound.GetBuffer()->GetDuration();
 		}
 		soundCountdown += Math::randd(duration + 0.5, duration + 10);
