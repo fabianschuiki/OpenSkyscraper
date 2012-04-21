@@ -9,11 +9,12 @@ namespace OT {
 		friend class Game;
 		
 	public:
+		const static double kBaseSpeed;
+		
 		Time();
 		
-		int speedMode;
-		
 		double absolute;
+		double dta;
 		double hour;
 		int day;
 		int quarter;
@@ -24,8 +25,6 @@ namespace OT {
 	protected:
 		void set(double t);
 		void advance(double dt);
-		
-		void setSpeedMode(int sm);
 		
 		double prev_absolute;
 		double prev_hour;

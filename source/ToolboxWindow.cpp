@@ -78,15 +78,15 @@ void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
 		game->selectTool(element->GetId().CString());
 		event.StopPropagation();
 	} else if (element == speedButton) {
-		game->setPaused(!game->paused);
+		game->setSpeedMode(game->speedMode > 0 ? 0 : 1);
 		event.StopPropagation();
 	}
 }
 
 void ToolboxWindow::updateSpeed()
 {
-	speedButton->SetClass("play", !game->paused);
-	speedButton->SetClass("pause", game->paused);
+	speedButton->SetClass("play", game->speedMode > 0);
+	speedButton->SetClass("pause", game->speedMode == 0);
 }
 
 void ToolboxWindow::updateTool()

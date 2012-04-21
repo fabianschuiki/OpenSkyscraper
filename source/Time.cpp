@@ -5,14 +5,13 @@
 using namespace OT;
 
 const static double kDayDuration = 3.2; // minutes / game day
-const static double kBaseSpeed   = 1.0 / 60 / kDayDuration; // game days / second
+const double Time::kBaseSpeed    = 1.0 / 60 / kDayDuration; // game days / second
 
 
 Time::Time()
 {
 	speed = 1;
 	speed_animated = speed;
-	speedMode = 1;
 }
 
 void Time::set(double t)
@@ -25,6 +24,7 @@ void Time::set(double t)
 		prev_year = year;
 		
 		absolute = t;
+		dta = absolute - prev_absolute;
 		day = (int)floor(t) % 3;
 		quarter = (int)floor(t/3) % 4 + 1;
 		year = (int)floor(t/3/4) + 1;
@@ -63,20 +63,6 @@ void Time::advance(double dt)
 	
 	//Advance the time.
 	//set(absolute + dt*speed);
-}
-
-void Time::setSpeedMode(int sm)
-{
-	assert(sm >= 0 && sm <= 3);
-	if (speedMode != sm) {
-		speedMode = sm;
-		switch (speedMode) {
-			case 0: speed = 0; break;
-			case 1: speed = 1; break;
-			case 2: speed = 2; break;
-			case 3: speed = 4; break;
-		}
-	}
 }
 
 /** Returns true if the time has just passed said hour. E.g. if the time advanced from 9.98 to 10.1

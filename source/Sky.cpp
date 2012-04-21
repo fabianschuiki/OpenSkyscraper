@@ -37,6 +37,7 @@ void Sky::advance(double dt)
 	 * interpolate between the sky texture offsets 'from' and 'to'. So to get a transition
 	 * from day to dusk, from = 0, to = 1 and progress is anywhere between 0..1. */
 	double time = game->time.hour;
+	double dta = game->time.dta / Time::kBaseSpeed;
 	
 	//Night
 	if (time < 5 || time >= 19) {
@@ -72,7 +73,7 @@ void Sky::advance(double dt)
 		from = 3; to = 0; progress = (time-16);
 	}
 	else {
-		rainAnimation += dt;
+		rainAnimation += dta;
 		from = to = 4+floor(fmod(rainAnimation, 1) * 2); progress = 0;
 	}
 	
@@ -83,22 +84,22 @@ void Sky::advance(double dt)
 	}
 	
 	if (thunderOverlay > 0) {
-		thunderOverlay *= exp(-dt * 7);
+		thunderOverlay *= exp(-dta * 7);
 		if (thunderOverlay < 1e-3) thunderOverlay = 0;
 	}
 	
 	//Sounds.
-	soundCountdown -= dt;
+	soundCountdown -= dta;
 	if (soundCountdown < 0) {
 		double duration = 0;
 		if (rainyDay && time >= 8 && time < 16) {
 			thunderSound.Play();
 			thunderOverlay = 1;
 			duration = thunderSound.GetBuffer()->GetDuration();
-		} else if (time>= 8 && time< 17) {
+		} else if (time >= 8 && time < 17) {
 			birdsSound.Play();
 			duration = birdsSound.GetBuffer()->GetDuration();
-		} else if (time>= 20 || time< 1.5) {
+		} else if (time >= 20 || time < 1.5) {
 			cricketsSound.Play();
 			duration = cricketsSound.GetBuffer()->GetDuration();
 		}

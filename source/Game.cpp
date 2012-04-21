@@ -20,7 +20,7 @@ Game::Game(Application & app)
 	populationNeedsUpdate = false;
 	
 	time.set(5);
-	paused = false;
+	speedMode = 1;
 	selectedTool = "inspector";
 	itemBelowCursor = NULL;
 	toolPrototype = NULL;
@@ -100,10 +100,10 @@ bool Game::handleEvent(sf::Event & event)
 		
 		case sf::Event::TextEntered: {
 			switch (event.Text.Unicode) {
-				case '0': time.setSpeedMode(0); return true;
-				case '1': time.setSpeedMode(1); return true;
-				case '2': time.setSpeedMode(2); return true;
-				case '3': time.setSpeedMode(3); return true;
+				case '0': setSpeedMode(0); return true;
+				case '1': setSpeedMode(1); return true;
+				case '2': setSpeedMode(2); return true;
+				case '3': setSpeedMode(3); return true;
 			} break;
 		} break;
 		
@@ -129,7 +129,6 @@ bool Game::handleEvent(sf::Event & event)
 					updateRoutes();
 					playOnce("simtower/construction/normal");
 				}
-				return true;
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
@@ -137,7 +136,6 @@ bool Game::handleEvent(sf::Event & event)
 					removeItem(itemBelowCursor);
 					updateRoutes();
 					playOnce("simtower/bulldozer");
-					return true;
 				}
 				else if (selectedTool == "finger") {
 					if (itemBelowCursor->prototype->id.find("elevator") == 0) {
@@ -156,7 +154,6 @@ bool Game::handleEvent(sf::Event & event)
 								e->unservicedFloors.insert(toolPosition.y);
 							updateRoutes();
 						}
-						return true;
 					}
 				}
 				else if (selectedTool == "inspector") {
@@ -165,7 +162,6 @@ bool Game::handleEvent(sf::Event & event)
 					char c[128];
 					snprintf(c, 128, "route score = %i", visualizeRoute.score());
 					timeWindow.showMessage(c);
-					return true;
 				}
 			}
 		} break;
@@ -174,13 +170,11 @@ bool Game::handleEvent(sf::Event & event)
 			if (draggingElevator) {
 				draggingElevator->repositionMotor(draggingMotor, toolPosition.y);
 				updateRoutes();
-				return true;
 			}
 		} break;
 		
 		case sf::Event::MouseButtonReleased: {
 			draggingElevator = NULL;
-			return true;
 		} break;
 	}
 	return false;
@@ -192,7 +186,6 @@ void Game::advance(double dt)
 	drawnSprites = 0;
 	
 	//Advance time.
-	if (paused) dt = 0;
 	time.advance(dt);
 	timeWindow.updateTime();
 	
@@ -351,7 +344,7 @@ void Game::encodeXML(tinyxml2::XMLPrinter & xml)
 	xml.PushAttribute("funds", funds);
 	xml.PushAttribute("rating", rating);
 	xml.PushAttribute("time", time.absolute);
-	xml.PushAttribute("paused", paused);
+	xml.PushAttribute("speed", speedMode);
 	xml.PushAttribute("rainy", sky.rainyDay);
 	xml.PushAttribute("tool", selectedTool.c_str());
 	
@@ -375,7 +368,7 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	setFunds(root->IntAttribute("funds"));
 	setRating(root->IntAttribute("rating"));
 	time.set(root->DoubleAttribute("time"));
-	setPaused(root->BoolAttribute("paused"));
+	setSpeedMode(root->IntAttribute("speed"));
 	sky.rainyDay = root->BoolAttribute("rainy");
 	selectTool(root->Attribute("tool"));
 	
@@ -446,10 +439,19 @@ void Game::ratingMayIncrease()
 	}
 }
 
-void Game::setPaused(bool p)
+void Game::setSpeedMode(int sm)
 {
-	if (paused != p) {
-		paused = p;
+	assert(sm >= 0 && sm <= 3);
+	if (speedMode != sm) {
+		speedMode = sm;
+		double speed = 0;
+		switch (speedMode) {
+			case 0: speed = 0; break;
+			case 1: speed = 1; break;
+			case 2: speed = 2; break;
+			case 3: speed = 4; break;
+		}
+		time.speed = speed;
 		toolboxWindow.updateSpeed();
 	}
 }

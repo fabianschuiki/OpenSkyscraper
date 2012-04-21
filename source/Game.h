@@ -56,9 +56,8 @@ namespace OT {
 		TimeWindow    timeWindow;
 		
 		Time time;
-		
-		bool paused;
-		void setPaused(bool p);
+		int speedMode;
+		void setSpeedMode(int sm);
 		
 		std::string selectedTool;
 		int2 toolPosition;
