@@ -82,7 +82,8 @@ void FastFood::advance(double dt)
 		Customer * c = *i;
 		if (game->time.checkHour(c->arrivalTime)) {
 			//TODO: actually send the customer on his journey.
-			addPerson(c);
+			c->journey.set(lobbyRoute);
+			//addPerson(c);
 		}
 	}
 	

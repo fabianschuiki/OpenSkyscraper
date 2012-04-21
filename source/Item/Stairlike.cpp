@@ -1,6 +1,7 @@
 #include "Stairlike.h"
 
-using namespace OT::Item;
+using namespace OT;
+using namespace Item;
 
 
 void Stairlike::init()
@@ -19,6 +20,11 @@ void Stairlike::init()
 void Stairlike::advance(double dt)
 {
 	Item::advance(dt);
+	
+	for (People::iterator ip = people.begin(); ip != people.end(); ip++) {
+		//LOG(DEBUG, "person %p has been using the %s for %f", *ip, prototype->name.c_str(), transitionTimes[*ip]);
+		if ((transitionTimes[*ip] += dt) >= 2.0) (*ip)->journey.next();
+	}
 	
 	if (!people.empty()) {
 		animation = fmod(animation + dt*1.5, 1);
@@ -49,4 +55,16 @@ void Stairlike::updateSprite()
 bool Stairlike::connectsFloor(int floor) const
 {
 	return position.y == floor || position.y+size.y-1 == floor;
+}
+
+void Stairlike::addPerson(Person * p)
+{
+	Item::addPerson(p);
+	transitionTimes[p] = 0;
+}
+
+void Stairlike::removePerson(Person * p)
+{
+	transitionTimes.erase(p);
+	Item::removePerson(p);
 }

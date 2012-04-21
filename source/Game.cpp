@@ -470,6 +470,9 @@ void Game::updateRoutes()
 	}
 }
 
+/** Finds a route from start to destination through the tower. The returned route contains start as
+ *  the first and destination as the last node, with transportation in between. If the returned
+ *  route is empty(), no path was found through the tower. */
 Route Game::findRoute(Item::Item * start, Item::Item * destination)
 {
 	return findRoute(Route(), start->position.y, start, destination);
