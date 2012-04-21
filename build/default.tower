@@ -1,10 +1,14 @@
-<tower funds="1100000" rating="0" time="4" paused="0" rainy="0" tool="finger" x="0" y="200">
+<tower funds="-25000" rating="0" time="36.291745" paused="0" rainy="0" tool="finger" x="-20" y="220">
     <item type="fastfood" x="8" y="2" variant="0" open="1"/>
     <item type="elevator-standard" x="10" y="0" height="16">
-        <car altitude="0"/>
+        <unserviced floor="1"/>
+        <unserviced floor="2"/>
+        <unserviced floor="3"/>
+        <unserviced floor="4"/>
+        <car altitude="0.000000"/>
     </item>
-    <item type="elevator-standard" x="-12" y="15" height="10">
-        <car altitude="0"/>
+    <item type="elevator-standard" x="-12" y="15" height="18">
+        <car altitude="0.000000"/>
     </item>
     <item type="fastfood" x="-8" y="24" variant="4" open="1"/>
     <item type="fastfood" x="-8" y="2" variant="4" open="1"/>
@@ -18,4 +22,10 @@
     <item type="stairs" x="-12" y="0"/>
     <item type="escalator" x="0" y="0"/>
     <item type="lobby" x="-24" y="0" width="48"/>
+    <item type="stairs" x="-12" y="2"/>
+    <item type="fastfood" x="-24" y="4" variant="2" open="1"/>
+    <item type="fastfood" x="-8" y="4" variant="2" open="1"/>
+    <item type="stairs" x="-12" y="3"/>
+    <item type="stairs" x="-12" y="1"/>
+    <item type="fastfood" x="8" y="4" variant="1" open="1"/>
 </tower>

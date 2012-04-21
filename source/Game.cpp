@@ -488,6 +488,11 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 		Item::Item * i = *it;
 		if (!i->canHaulPeople() || route.usesItem(i)) continue;
 		
+		//Limit the number of elevators, stairs and escalators to use per route.
+		if (i->isElevator() && route.numElevators >= 2) continue;
+		if (i->prototype->id == "stairs"    && route.numStairs     >= 3) continue;
+		if (i->prototype->id == "escalator" && route.numEscalators >= 5) continue;
+		
 		//Check whether this item connects to the floor we're currently at.
 		if (!i->connectsFloor(floor)) continue;
 		
@@ -499,21 +504,24 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 			r.add(destination);
 		}
 		
-		//Otherwise check lobbies for elevators.
+		//For elevators, check the lobbies for connecting transports.
 		else if (i->isElevator()) {
-			for (int f = i->position.y % 15; f < i->size.y; f += 15) {
-				Route sr = findRoute(route, f + i->position.y, i, destination);
+			for (int n = i->position.y % 15; n < i->size.y; n += 15) {
+				int f = n + i->position.y;
+				if (!i->connectsFloor(f)) continue;
+				Route sr = findRoute(route, f, i, destination);
 				if (r.empty() || sr.score() < r.score()) r = sr;
 			}
 		}
 		
-		//Or the floor above/below for stairs.
+		//For stairlike items, check the floor above/below for connecting transports.
 		else if (i->isStairlike()) {
 			int f = i->position.y;
 			if (f == floor) f += i->size.y-1;
 			r = findRoute(route, f, i, destination);
 		}
 		
+		//If r's score is lower (better) than the best we've found so far, make r the current best route.
 		if (!r.empty() && (best.empty() || r.score() < best.score())) best = r;
 	}
 	
