@@ -18,13 +18,14 @@ namespace OT {
 		class Journey
 		{
 		public:
-			Journey(Person * p) : person(p) {}
+			Journey(Person * p);
 			
 			void set(const Route & r);
 			
-			Item::Item * item();
-			int toFloor();
 			void next();
+			int fromFloor;
+			Item::Item * item;
+			int toFloor;
 			
 		private:
 			Person * const person;

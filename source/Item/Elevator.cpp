@@ -167,6 +167,7 @@ void Elevator::repositionMotor(int motor, int y)
 		//TODO: constrain cars to stay within elevator bounds.
 		for (Cars::iterator c = cars.begin(); c != cars.end(); c++) (*c)->reposition();
 		updateSprite();
+		cleanQueues();
 	}
 }
 
@@ -192,11 +193,42 @@ bool Elevator::connectsFloor(int floor) const
 void Elevator::addPerson(Person * p)
 {
 	Item::addPerson(p);
-	LOG(DEBUG, "%p queued up at %s", p, desc().c_str());
+	Direction dir = (p->journey.toFloor > p->journey.fromFloor ? kUp : kDown);
+	getQueue(p->journey.fromFloor, dir)->add(p);
+	LOG(DEBUG, "%p queued up at %s on floor %i", p, desc().c_str(), p->journey.fromFloor);
 }
 
 void Elevator::removePerson(Person * p)
 {
 	LOG(DEBUG, "%p leaving %s", p, desc().c_str());
+	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
+		for (int i = 0; i < 2; i++) {
+			iq->second.dirs[i]->remove(p);
+		}
+	}
 	Item::removePerson(p);
+}
+
+ElevatorQueue * Elevator::getQueue(int floor, Direction dir)
+{
+	Queues::iterator q = queues.find(floor);
+	if (q == queues.end()) {
+		LOG(DEBUG, "creating queues on floor %i for %s", floor, desc().c_str());
+		QueuePair p;
+		for (int i = 0; i < 2; i++)	p.dirs[i] = new ElevatorQueue(this);
+		queues.insert(std::pair<int, QueuePair>(floor, p));
+		return p.dirs[dir];
+	} else {
+		return q->second.dirs[dir];
+	}
+}
+
+void Elevator::cleanQueues()
+{
+	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
+		if (!connectsFloor(iq->first)) {
+			for (int i = 0; i < 2; i++) delete iq->second.dirs[i];
+			queues.erase(iq);
+		}
+	}
 }

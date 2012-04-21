@@ -153,6 +153,7 @@ bool Game::handleEvent(sf::Event & event)
 							if (!e->unservicedFloors.erase(toolPosition.y))
 								e->unservicedFloors.insert(toolPosition.y);
 							updateRoutes();
+							e->cleanQueues();
 						}
 					}
 				}

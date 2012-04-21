@@ -1,21 +1,29 @@
 #pragma once
-#include "Elevator.h"
+#include <list>
+#include "../GameObject.h"
+#include "../Math/Rect.h"
 
 namespace OT {
+	class Person;
+	
 	namespace Item {
+		class Elevator;
 		class ElevatorQueue : public GameObject
 		{
 		public:
 			Elevator * const elevator;
-			ElevatorQueue(Elevator * elevator);
+			
+			ElevatorQueue(Elevator * e);
+			~ElevatorQueue();
 			
 			recti rect;
-			Elevator::Direction direction;
+			bool called;
+			double callTime;
 			
 			typedef std::list<Person *> People;
 			People people;
-			void addPerson(Person * p);
-			void removePerson(Person * p);
+			void add(Person * p);
+			void remove(Person * p);
 		};
 	}
 }

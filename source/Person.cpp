@@ -20,6 +20,14 @@ Person::~Person()
 	}
 }
 
+Person::Journey::Journey(Person * p)
+:	person(p)
+{
+	fromFloor = 0;
+	item = NULL;
+	toFloor = 0;
+}
+
 void Person::Journey::set(const Route & r)
 {
 	while (!nodes.empty()) nodes.pop();
@@ -29,22 +37,13 @@ void Person::Journey::set(const Route & r)
 	next();
 }
 
-Item::Item * Person::Journey::item()
-{
-	if (nodes.empty()) return NULL;
-	return nodes.front().item;
-}
-
-int Person::Journey::toFloor()
-{
-	if (nodes.empty()) return 0;
-	return nodes.front().toFloor;
-}
-
 void Person::Journey::next()
 {
 	//Remove the person from where he/she is currently at.
 	if (person->at) person->at->removePerson(person);
+	
+	//Keep the current floor around.
+	fromFloor = toFloor;
 	
 	//Jump to next node.
 	assert(!nodes.empty());
@@ -52,6 +51,8 @@ void Person::Journey::next()
 	assert(!nodes.empty());
 	
 	//Add the person to the node's item.
-	Item::Item * i = item();
-	if (i) i->addPerson(person);
+	item    = nodes.front().item;
+	toFloor = nodes.front().toFloor;
+	assert(item);
+	item->addPerson(person);
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "ElevatorQueue.h"
 #include "Item.h"
 
 namespace OT {
@@ -41,9 +42,8 @@ namespace OT {
 			void addCar(int floor);
 			
 			typedef enum {
-				kUp   = 1,
-				kNone = 0,
-				kDown = -1
+				kUp   = 0,
+				kDown = 1
 			} Direction;
 			
 			virtual bool canHaulPeople() const { return true; }
@@ -52,6 +52,12 @@ namespace OT {
 			
 			virtual void addPerson(Person * p);
 			virtual void removePerson(Person * p);
+			
+			typedef struct { ElevatorQueue * dirs[2]; } QueuePair;
+			typedef std::map<int, QueuePair> Queues;
+			Queues queues;
+			ElevatorQueue * getQueue(int floor, Direction dir);
+			void cleanQueues();
 		};
 	}
 }
