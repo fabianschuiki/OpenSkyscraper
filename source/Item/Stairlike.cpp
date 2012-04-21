@@ -1,3 +1,4 @@
+#include "../Game.h"
 #include "Stairlike.h"
 
 using namespace OT::Item;
@@ -19,9 +20,10 @@ void Stairlike::init()
 void Stairlike::advance(double dt)
 {
 	Item::advance(dt);
+	double dta = game->time.dta / Time::kBaseSpeed;
 	
 	if (!people.empty()) {
-		animation = fmod(animation + dt*1.5, 1);
+		animation = fmod(animation + dta*1.5, 1);
 		int newFrame = floor(animation * (frameCount-1))+1;
 		if (frame != newFrame) {
 			frame = newFrame;

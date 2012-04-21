@@ -19,7 +19,7 @@ Game::Game(Application & app)
 	population = 0;
 	populationNeedsUpdate = false;
 	
-	time.set(5);
+	time.set(7/78.0);
 	speedMode = 1;
 	selectedTool = "inspector";
 	itemBelowCursor = NULL;
