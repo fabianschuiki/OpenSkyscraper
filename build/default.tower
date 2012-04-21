@@ -1,4 +1,4 @@
-<tower funds="2456789" rating="0" time="9.5" paused="0" rainy="0" tool="finger" x="-20" y="220">
+<tower funds="2456789" rating="0" time="9.8" paused="0" rainy="0" tool="finger" x="-20" y="220">
     <item type="fastfood" x="8" y="2" variant="0" open="0"/>
     <item type="elevator-standard" x="10" y="0" height="16">
         <unserviced floor="1"/>

@@ -11,8 +11,7 @@ using OT::rectd;
 Item::~Item()
 {
 	sprites.clear();
-	for (People::iterator p = people.begin(); p != people.end(); p++)
-		removePerson(*p);
+	for (People::iterator p = people.begin(); p != people.end(); p++) removePerson(*p);
 }
 
 void Item::setPosition(int2 p)

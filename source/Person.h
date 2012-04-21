@@ -10,7 +10,7 @@ namespace OT {
 	class Person : public GameObject
 	{
 	public:
-		Person(Game * game) : GameObject(game), journey(this) { at = NULL; }
+		Person(Game * game);
 		virtual ~Person();
 		
 		Item::Item * at;

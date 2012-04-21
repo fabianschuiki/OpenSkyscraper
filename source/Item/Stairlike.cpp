@@ -1,7 +1,10 @@
+#include <cassert>
 #include "Stairlike.h"
 
 using namespace OT;
 using namespace Item;
+
+const static double kTransitionTime = 1.5;
 
 
 void Stairlike::init()
@@ -21,13 +24,13 @@ void Stairlike::advance(double dt)
 {
 	Item::advance(dt);
 	
-	for (People::iterator ip = people.begin(); ip != people.end(); ip++) {
-		//LOG(DEBUG, "person %p has been using the %s for %f", *ip, prototype->name.c_str(), transitionTimes[*ip]);
-		if ((transitionTimes[*ip] += dt) >= 2.0) (*ip)->journey.next();
+	for (People::iterator ip = people.begin(); ip != people.end();) {
+		Person * p = *(ip++);
+		if ((transitionTimes[p] += dt) >= kTransitionTime) p->journey.next();
 	}
 	
 	if (!people.empty()) {
-		animation = fmod(animation + dt*1.5, 1);
+		animation = fmod(animation + dt*kTransitionTime, 1);
 		int newFrame = floor(animation * (frameCount-1))+1;
 		if (frame != newFrame) {
 			frame = newFrame;
@@ -59,8 +62,8 @@ bool Stairlike::connectsFloor(int floor) const
 
 void Stairlike::addPerson(Person * p)
 {
-	Item::addPerson(p);
 	transitionTimes[p] = 0;
+	Item::addPerson(p);
 }
 
 void Stairlike::removePerson(Person * p)
