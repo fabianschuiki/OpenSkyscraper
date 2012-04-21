@@ -41,6 +41,8 @@ namespace OT {
 		
 	public:
 		const static double kBaseSpeed;
+		static double absoluteToHour(double a);
+		static double hourToAbsolute(double a);
 		
 		Time();
 		
@@ -51,10 +53,11 @@ namespace OT {
 		int quarter;
 		int year;
 		
-		bool checkHour(double t);
+		bool check(double a);
+		bool checkHour(double h);
 		
 	protected:
-		void set(double t);
+		void set(double a);
 		void advance(double dt);
 		
 		double prev_absolute;
