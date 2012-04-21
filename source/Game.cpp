@@ -19,8 +19,8 @@ Game::Game(Application & app)
 	population = 0;
 	populationNeedsUpdate = false;
 	
-	time.set(5);
-	paused = false;
+	time.set(7/78.0);
+	speedMode = 1;
 	selectedTool = "inspector";
 	itemBelowCursor = NULL;
 	toolPrototype = NULL;
@@ -81,21 +81,30 @@ bool Game::handleEvent(sf::Event & event)
 	switch (event.Type) {
 		case sf::Event::KeyPressed: {
 			switch (event.Key.Code) {
-				case sf::Key::Left:  poi.x -= 20; break;
-				case sf::Key::Right: poi.x += 20; break;
-				case sf::Key::Up:    poi.y += 20; break;
-				case sf::Key::Down:  poi.y -= 20; break;
-				case sf::Key::F1:    reloadGUI(); break;
-				case sf::Key::F3:    setRating(1); break;
+				case sf::Key::Left:  poi.x -= 20; return true;
+				case sf::Key::Right: poi.x += 20; return true;
+				case sf::Key::Up:    poi.y += 20; return true;
+				case sf::Key::Down:  poi.y -= 20; return true;
+				case sf::Key::F1:    reloadGUI(); return true;
+				case sf::Key::F3:    setRating(1); return true;
 				case sf::Key::F2: {
 					FILE * f = fopen("default.tower", "w");
 					tinyxml2::XMLPrinter xml(f);
 					encodeXML(xml);
 					fclose(f);
-				} break;
-				case sf::Key::PageUp:   zoom /= 2; break;
-				case sf::Key::PageDown: zoom *= 2; break;
+				} return true;
+				case sf::Key::PageUp:   zoom /= 2; return true;
+				case sf::Key::PageDown: zoom *= 2; return true;
 			}
+		} break;
+		
+		case sf::Event::TextEntered: {
+			switch (event.Text.Unicode) {
+				case '0': setSpeedMode(0); return true;
+				case '1': setSpeedMode(1); return true;
+				case '2': setSpeedMode(2); return true;
+				case '3': setSpeedMode(3); return true;
+			} break;
 		} break;
 		
 		case sf::Event::MouseButtonPressed: {
@@ -177,7 +186,6 @@ void Game::advance(double dt)
 	drawnSprites = 0;
 	
 	//Advance time.
-	if (paused) dt = 0;
 	time.advance(dt);
 	timeWindow.updateTime();
 	
@@ -198,10 +206,10 @@ void Game::advance(double dt)
 	}
 	
 	//Play sounds.
-	if (time.checkHour(5)) cockSound.Play();
-	if (time.checkHour(6))   morningSound.Play();
-	if (time.checkHour(9))   bellsSound.Play();
-	if (time.checkHour(18))  eveningSound.Play();
+	if (time.checkHour(5))  cockSound.Play(this);
+	if (time.checkHour(6))  morningSound.Play(this);
+	if (time.checkHour(9))  bellsSound.Play(this);
+	if (time.checkHour(18)) eveningSound.Play(this);
 	morningSound.SetLoop(time.hour < 8);
 	
 	//Constrain the POI.
@@ -290,6 +298,15 @@ void Game::advance(double dt)
 	}
 	glEnd();
 	
+	//Adjust pitch of playing sounds.
+	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end(); s++) {
+		if ((*s)->GetStatus() == sf::Sound::Stopped) {
+			playingSounds.erase(s);
+		} else {
+			(*s)->SetPitch(1 + (time.speed_animated-1) * 0.2);
+		}
+	}
+	
 	//Autorelease sounds.
 	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end(); s++) {
 		if ((*s)->GetStatus() == sf::Sound::Stopped) {
@@ -336,7 +353,7 @@ void Game::encodeXML(tinyxml2::XMLPrinter & xml)
 	xml.PushAttribute("funds", funds);
 	xml.PushAttribute("rating", rating);
 	xml.PushAttribute("time", time.absolute);
-	xml.PushAttribute("paused", paused);
+	xml.PushAttribute("speed", speedMode);
 	xml.PushAttribute("rainy", sky.rainyDay);
 	xml.PushAttribute("tool", selectedTool.c_str());
 	
@@ -360,7 +377,7 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	setFunds(root->IntAttribute("funds"));
 	setRating(root->IntAttribute("rating"));
 	time.set(root->DoubleAttribute("time"));
-	setPaused(root->BoolAttribute("paused"));
+	setSpeedMode(root->IntAttribute("speed"));
 	sky.rainyDay = root->BoolAttribute("rainy");
 	selectTool(root->Attribute("tool"));
 	
@@ -431,10 +448,19 @@ void Game::ratingMayIncrease()
 	}
 }
 
-void Game::setPaused(bool p)
+void Game::setSpeedMode(int sm)
 {
-	if (paused != p) {
-		paused = p;
+	assert(sm >= 0 && sm <= 3);
+	if (speedMode != sm) {
+		speedMode = sm;
+		double speed = 0;
+		switch (speedMode) {
+			case 0: speed = 0; break;
+			case 1: speed = 1; break;
+			case 2: speed = 2; break;
+			case 3: speed = 4; break;
+		}
+		time.speed = speed;
 		toolboxWindow.updateSpeed();
 	}
 }
@@ -453,9 +479,9 @@ void Game::selectTool(const char * tool)
  *  internally. */
 void Game::playOnce(Path sound)
 {
-	sf::Sound * snd = new sf::Sound;
+	Sound * snd = new Sound;
 	snd->SetBuffer(app.sounds[sound]);
-	snd->Play();
+	snd->Play(this);
 	autoreleaseSounds.insert(snd);
 }
 

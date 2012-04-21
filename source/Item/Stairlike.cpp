@@ -1,4 +1,5 @@
 #include <cassert>
+#include "../Game.h"
 #include "Stairlike.h"
 
 using namespace OT;
@@ -23,6 +24,7 @@ void Stairlike::init()
 void Stairlike::advance(double dt)
 {
 	Item::advance(dt);
+	double dta = game->time.dta / Time::kBaseSpeed;
 	
 	for (People::iterator ip = people.begin(); ip != people.end();) {
 		Person * p = *(ip++);
@@ -30,7 +32,7 @@ void Stairlike::advance(double dt)
 	}
 	
 	if (!people.empty()) {
-		animation = fmod(animation + dt*kTransitionTime, 1);
+		animation = fmod(animation + dta*kTransitionTime, 1);
 		int newFrame = floor(animation * (frameCount-1))+1;
 		if (frame != newFrame) {
 			frame = newFrame;

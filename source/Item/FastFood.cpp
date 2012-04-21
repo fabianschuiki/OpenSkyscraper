@@ -64,7 +64,7 @@ void FastFood::advance(double dt)
 		clearCustomers();
 		for (int i = 0; i < today; i++) {
 			Customer * c = new Customer(this);
-			c->arrivalTime = Math::randd(10, 21);
+			c->arrivalTime = Math::randd(Time::hourToAbsolute(10), Time::hourToAbsolute(20));
 			customers.insert(c);
 		}
 	}
@@ -80,13 +80,14 @@ void FastFood::advance(double dt)
 	//Make customers arrive.
 	for (Customers::iterator i = customers.begin(); i != customers.end(); i++) {
 		Customer * c = *i;
-		if (game->time.checkHour(c->arrivalTime)) c->journey.set(lobbyRoute);
+		if (game->time.check(c->arrivalTime)) c->journey.set(lobbyRoute)
 	}
 	
 	//Make customers leave once they're done.
 	for (CustomerMetadataMap::iterator i = customerMetadata.begin(); i != customerMetadata.end(); i++) {
-		if (i->second.arrivalTime + 0.6 <= game->time.absolute) {
+		if (game->time.absolute >= i->second.arrivalTime + 20 * Time::kBaseSpeed || game->time.hour >= 21) {
 			//TODO: actually make the person journey away.
+			LOG(DEBUG, "%p leaving", i->first);
 			removePerson(i->first);
 		}
 	}
@@ -99,6 +100,7 @@ void FastFood::addPerson(Person * p)
 	Item::addPerson(p);
 	CustomerMetadata & m = customerMetadata[p];
 	m.arrivalTime = game->time.absolute;
+	LOG(DEBUG, "%p arrived at %f, leaves at %f", p, m.arrivalTime, m.arrivalTime + 20 * Time::kBaseSpeed);
 	spriteNeedsUpdate = true;
 }
 

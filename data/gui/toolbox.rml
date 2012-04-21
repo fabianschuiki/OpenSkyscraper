@@ -4,22 +4,27 @@
 			body {
 				top:    330px;
 				left:   0px;
-				width:  64px;
+				width:  128px;
 				background-color: #ddd;
 			}
 			
-			button#speed {
-				display: block;
-				width:  64px;
-				height: 32px;
+			div.speed-buttons {	display: block; padding: 0px 18px; padding-top: 10px; }
+			div.tool-buttons  { display: block; padding: 0px 32px; padding-bottom: 10px; }
+			
+			button.speed {
+				display: inline-block;
+				width:  23px;
+				height: 24px;
 				
 				background-decorator: image;
-				background-image: /simtower/ui/toolbox/speed;
+				background-image: /speed.png;
 				background-image-t: 0 0.5;
 			}
-			button#speed:active { background-image-t: 0.5 1; }
-			button#speed.pause { background-image-s: 0 0.5; }
-			button#speed.play  { background-image-s: 0.5 1; }
+			button.speed:active, button.speed.selected { background-image-t: 0.5 1; }
+			button#speed0  { background-image-s: 0 0.25; }
+			button#speed1  { background-image-s: 0.25 0.5; }
+			button#speed2  { background-image-s: 0.5 0.75; }
+			button#speed3  { background-image-s: 0.75 1; }
 			
 			button.tool {
 				display: inline-block;
@@ -49,9 +54,16 @@
 	</head>
 	
 	<body>
-		<button id="speed" class="play"></button>
-		<button id="bulldozer" class="tool"></button>
-		<button id="finger" class="tool"></button>
-		<button id="inspector" class="tool"></button>
+		<div class="speed-buttons">
+			<button id="speed0" class="speed"></button>
+			<button id="speed1" class="speed"></button>
+			<button id="speed2" class="speed"></button>
+			<button id="speed3" class="speed"></button>
+		</div>
+		<div class="tool-buttons">
+			<button id="bulldozer" class="tool"></button>
+			<button id="finger" class="tool"></button>
+			<button id="inspector" class="tool"></button>
+		</div>
 	</body>
 </rml>
