@@ -28,11 +28,11 @@ void Stairlike::advance(double dt)
 	
 	for (People::iterator ip = people.begin(); ip != people.end();) {
 		Person * p = *(ip++);
-		if ((transitionTimes[p] += dt) >= kTransitionTime) p->journey.next();
+		if ((transitionTimes[p] += dta) >= kTransitionTime) p->journey.next();
 	}
 	
 	if (!people.empty()) {
-		animation = fmod(animation + dta*kTransitionTime, 1);
+		animation = fmod(animation + dta * kTransitionTime, 1);
 		int newFrame = floor(animation * (frameCount-1))+1;
 		if (frame != newFrame) {
 			frame = newFrame;

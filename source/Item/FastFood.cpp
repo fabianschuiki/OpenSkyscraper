@@ -64,7 +64,7 @@ void FastFood::advance(double dt)
 		clearCustomers();
 		for (int i = 0; i < today; i++) {
 			Customer * c = new Customer(this);
-			c->arrivalTime = Math::randd(Time::hourToAbsolute(10), Time::hourToAbsolute(20));
+			c->arrivalTime = game->time.day + Math::randd(Time::hourToAbsolute(10), Time::hourToAbsolute(20));
 			customers.insert(c);
 		}
 	}
@@ -100,7 +100,6 @@ void FastFood::addPerson(Person * p)
 	Item::addPerson(p);
 	CustomerMetadata & m = customerMetadata[p];
 	m.arrivalTime = game->time.absolute;
-	LOG(DEBUG, "%p arrived at %f, leaves at %f", p, m.arrivalTime, m.arrivalTime + 20 * Time::kBaseSpeed);
 	spriteNeedsUpdate = true;
 }
 
