@@ -98,7 +98,7 @@ bool WindowsNEExecutable::load(Path path)
 	
 	//In case of an unexpected eof, jump here.
 	unexpected_eof:
-	LOG(ERROR, "file is too short (unexpected eof after %i bytes)", f.tellg());
+	LOG(ERROR, "file is too short (unexpected eof after %i bytes)", (int)f.tellg());
 	return false;
 }
 

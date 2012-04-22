@@ -28,6 +28,8 @@ list(APPEND sources thirdparty/tinyxml2/tinyxml2.cpp)
 
 # Mac OS X
 if (APPLE)
+	add_definitions("-DTARGET_APPLE")
+	
 	# Find the paths of all resources.
 	file(GLOB_RECURSE resources RELATIVE ${PROJECT_SOURCE_DIR} data/*)
 

@@ -26,7 +26,7 @@
  */
 
 #include <Rocket/Core/Core.h>
-#include <GL/gl.h>
+#include "../OpenGL.h"
 
 #include "Renderer.h"
 #include "../Application.h"

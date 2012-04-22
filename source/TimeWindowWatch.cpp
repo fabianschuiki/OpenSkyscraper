@@ -1,6 +1,6 @@
 #include "TimeWindowWatch.h"
 #include <Rocket/Core/Geometry.h>
-#include <GL/gl.h>
+#include "OpenGL.h"
 #include <cmath>
 
 using namespace OT;

@@ -1,5 +1,5 @@
 #include "Sprite.h"
-#include <GL/gl.h>
+#include "OpenGL.h"
 
 using namespace OT;
 

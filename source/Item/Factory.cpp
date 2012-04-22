@@ -37,7 +37,7 @@ void Factory::loadPrototypes()
 	}
 }
 
-Item::Item * Factory::make(AbstractPrototype * prototype, int2 position)
+OT::Item::Item * Factory::make(AbstractPrototype * prototype, int2 position)
 {
 	assert(prototype);
 	Item * item = prototype->make(game);
@@ -46,13 +46,13 @@ Item::Item * Factory::make(AbstractPrototype * prototype, int2 position)
 	return item;
 }
 
-Item::Item * Factory::make(std::string prototypeID, int2 position)
+OT::Item::Item * Factory::make(std::string prototypeID, int2 position)
 {
 	AbstractPrototype * prototype = prototypesById[prototypeID];
 	return make(prototype, position);
 }
 
-Item::Item * Factory::make(tinyxml2::XMLElement & xml)
+OT::Item::Item * Factory::make(tinyxml2::XMLElement & xml)
 {
 	int2 position(xml.IntAttribute("x"), xml.IntAttribute("y"));
 	Item * item = make(xml.Attribute("type"), position);
