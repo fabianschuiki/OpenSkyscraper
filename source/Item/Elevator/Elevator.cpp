@@ -16,6 +16,9 @@ Elevator::~Elevator()
 void Elevator::init()
 {
 	layer = 1;
+	maxCarAcceleration = 7.5;
+	maxCarSpeed = 10.0;
+	maxCarCapacity = 21;
 	
 	Item::init();
 	
@@ -92,7 +95,7 @@ void Elevator::advance(double dt)
 	bool carsMoving = false;
 	for (Cars::iterator ic = cars.begin(); ic != cars.end(); ic++) {
 		(*ic)->advance(dt);
-		//if ((*ic)->moving) carsMoving = true;
+		if ((*ic)->state == Car::kMoving) carsMoving = true;
 	}
 	
 	//Advance the queues so people get stressed.
@@ -172,7 +175,6 @@ void Elevator::repositionMotor(int motor, int y)
 		newy = (size.y + position.y - height);
 	}
 	if (newy != position.y || height != size.y) {
-		LOG(DEBUG, "relocate elevator: %i, %i", newy, height);
 		setPosition(int2(position.x, newy));
 		size.y = height;
 		//TODO: constrain cars to stay within elevator bounds.
@@ -206,12 +208,10 @@ void Elevator::addPerson(Person * p)
 	Item::addPerson(p);
 	Direction dir = (p->journey.toFloor > p->journey.fromFloor ? kUp : kDown);
 	getQueue(p->journey.fromFloor, dir)->addPerson(p);
-	LOG(DEBUG, "%p queued up at %s on floor %i", p, desc().c_str(), p->journey.fromFloor);
 }
 
 void Elevator::removePerson(Person * p)
 {
-	LOG(DEBUG, "%p leaving %s", p, desc().c_str());
 	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
 		(*iq)->removePerson(p);
 	}
@@ -251,5 +251,94 @@ void Elevator::cleanQueues()
 void Elevator::called(Queue * queue)
 {
 	assert(queue);
-	LOG(DEBUG, "called to floor %i", queue->floor);
+	respondToCalls();
+}
+
+/// Responds to the most urgent calls.
+void Elevator::respondToCalls()
+{
+	LOG(DEBUG, "");
+	
+	//Iterate through the queues, always getting the most urgent one.
+	Queue * q;
+	while (q = getMostUrgentQueue())
+	{
+		//Find the car best suited for responding. If none could be found, abort since all cars
+		//are occupied.
+		Car * car = getIdleCar(q->floor);
+		if (!car) break;
+		
+		//Answer the call.
+		q->answered = true;
+		car->direction = q->direction;
+		car->moveTo(q->floor);
+	}
+}
+
+/// Returns the queue that is the most urgent to respond to.
+Queue * Elevator::getMostUrgentQueue()
+{
+	Queue * queue = NULL;
+	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
+		if ((*iq)->called && !(*iq)->answered && (!queue || queue->getWaitDuration() < (*iq)->getWaitDuration())) queue = *iq;
+	}
+	return queue;
+}
+
+/// Returns the idle car closest to the given floor, or NULL if no car is idle.
+Car * Elevator::getIdleCar(int floor)
+{
+	Car * car = NULL;
+	for (Cars::iterator ic = cars.begin(); ic != cars.end(); ic++) {
+		Car * c = *ic;
+		if (c->state == Car::kIdle && (!car || fabs(car->altitude - floor) > fabs(c->altitude - floor))) car = c;
+	}
+	return car;
+}
+
+void Elevator::decideCarDestination(Car * car)
+{
+	//Find the next floor a passenger needs to go.
+	int nextFloor = INT_MAX;
+	for (People::iterator ip = car->passengers.begin(); ip != car->passengers.end(); ip++) {
+		int f = (*ip)->journey.toFloor;
+		if (nextFloor == INT_MAX || abs(car->destinationFloor - nextFloor) > abs(car->destinationFloor - f))
+			nextFloor = f;
+	}
+	
+	//Find the next queue that would lie in the car's path.
+	Queue * nextQueue = NULL;
+	double queueDistance = 0;
+	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
+		Queue * q = *iq;
+		
+		//Skip queues that aren't called, are answered, or are for the opposite direction.
+		if (q->direction != car->direction) continue;
+		if (!q->called || q->answered) continue;
+		
+		//Calculate the offset of the queue and the car, based on the car's current direction.
+		//This will make queues that lie ahead of the car have a positive distance, and cars that
+		//lie behin the car a negative distance. We only serve queues that are somewhat ahead of
+		//the car.
+		double distance = q->floor - car->altitude;
+		distance *= car->direction;
+		if (distance < 0.5) continue;
+		
+		//Keep the best queue.
+		if (!nextQueue || queueDistance > distance) {
+			queueDistance = distance;
+			nextQueue = q;
+		}
+	}
+	
+	//Move the car to the closer of the two destinations.
+	if (nextQueue && !car->isFull()) {
+		double floorDistance = fabs(nextFloor - car->altitude);
+		if (queueDistance <= floorDistance) {
+			nextQueue->answered = true;
+			car->moveTo(nextQueue->floor);
+		}
+	}
+	getQueue(nextFloor, car->direction)->answered = true;
+	car->moveTo(nextFloor);
 }

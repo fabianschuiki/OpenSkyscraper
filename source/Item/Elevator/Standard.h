@@ -19,7 +19,6 @@ namespace OT {
 				{
 					shaftBitmap = "simtower/elevator/narrow";
 					carBitmap   = "simtower/elevator/standard";
-					maxPassengers = 21;
 					Elevator::init();
 				}
 			};

@@ -24,11 +24,16 @@ namespace OT {
 				
 				bool called;
 				double callTime;
+				bool answered;
+				double getWaitDuration();
 				
 				typedef std::list<Person *> People;
 				People people;
 				void addPerson(Person * p);
 				void removePerson(Person * p);
+				Person * popPerson();
+				
+				bool steppingInside;
 				
 				virtual void advance(double dt);
 				virtual void Render(sf::RenderTarget & target) const;

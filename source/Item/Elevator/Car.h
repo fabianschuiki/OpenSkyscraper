@@ -5,6 +5,7 @@
 namespace OT {
 	namespace Item {
 		namespace Elevator {
+			class Queue;
 			class Car : public GameObject, public sf::Drawable
 			{
 			public:
@@ -28,6 +29,30 @@ namespace OT {
 				virtual void decodeXML(tinyxml2::XMLElement& xml);
 				
 				virtual void advance(double dt);
+				
+				Elevator::Direction direction;
+				int destinationFloor;
+				
+				typedef enum {
+					kIdle,
+					kMoving,
+					kOpeningDoors,
+					kHauling,
+					kClosingDoors
+				} State;
+				State state;
+				void setState(State s);
+				
+				double startAltitude;
+				double journeyTime;
+				
+				bool arrivingPlayed;
+				bool departingPlayed;
+				
+				bool isFull();
+				Person * nextPassengerToUnmount();
+				
+				void moveTo(int floor);
 			};
 		}
 	}

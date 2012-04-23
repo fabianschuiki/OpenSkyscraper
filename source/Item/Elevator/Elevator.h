@@ -17,7 +17,9 @@ namespace OT {
 				
 				std::string shaftBitmap;
 				std::string carBitmap;
-				int maxPassengers;
+				double maxCarAcceleration;
+				double maxCarSpeed;
+				unsigned int maxCarCapacity;
 				
 				double animation;
 				int frame;
@@ -61,6 +63,11 @@ namespace OT {
 				void cleanQueues();
 				
 				void called(Queue * queue);
+				void respondToCalls();
+				Queue * getMostUrgentQueue();
+				Car * getIdleCar(int floor);
+				
+				void decideCarDestination(Car * car);
 			};
 		}
 	}

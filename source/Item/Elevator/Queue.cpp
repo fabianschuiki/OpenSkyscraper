@@ -1,3 +1,4 @@
+#include <cassert>
 #include "../../Application.h"
 #include "../../Game.h"
 #include "../../Person.h"
@@ -5,6 +6,7 @@
 #include "Elevator.h"
 #include "Queue.h"
 
+using namespace OT;
 using namespace OT::Item::Elevator;
 
 /// The seconds at regular speed requried to stress a person from zero to max.
@@ -17,6 +19,8 @@ Queue::Queue(Elevator * e)
 {
 	called = false;
 	callTime = 0;
+	answered = false;
+	steppingInside = false;
 }
 
 Queue::~Queue()
@@ -25,6 +29,12 @@ Queue::~Queue()
 		LOG(DEBUG, "forcing passenger %p ahead", (*ip));
 		(*(ip++))->journey.next();
 	}
+}
+
+/// Returns the absolute time that has passed since the elevator was called from this queue.
+double Queue::getWaitDuration()
+{
+	return game->time.absolute - callTime;
 }
 
 void Queue::addPerson(Person * p)
@@ -42,6 +52,14 @@ void Queue::removePerson(Person * p)
 	people.remove(p);
 }
 
+Person * Queue::popPerson()
+{
+	if (people.empty()) return NULL;
+	Person * p = people.front();
+	people.pop_front();
+	return p;
+}
+
 void Queue::advance(double dt)
 {
 	double dta = game->time.dta;
@@ -55,8 +73,6 @@ void Queue::advance(double dt)
 
 void Queue::Render(sf::RenderTarget & target) const
 {
-	bool steppingInside = false;
-	
 	//Start the queue 16 pixels away from the elevator.
 	int x = 16;
 	
@@ -82,8 +98,8 @@ void Queue::Render(sf::RenderTarget & target) const
 		sf::IntRect sr;
 		sr.Left   = type * 32;
 		sr.Right  = sr.Left + 16;
-		sr.Top    = (stepping ? 24 : 0);
-		sr.Bottom = (stepping ? 48 : 24);
+		sr.Top    = (stepping ? 48 : 0);
+		sr.Bottom = (stepping ? 72 : 24);
 		if (direction == Elevator::kDown) {
 			sr.Left  += 16;
 			sr.Right += 16;
@@ -97,7 +113,7 @@ void Queue::Render(sf::RenderTarget & target) const
 		//Decide what color to use based on stress level.
 		sf::Color color = sf::Color::Black;
 		if (p->stress > 0.8) color = sf::Color(255, 0, 0);
-		else if (p->stress > 0.6) color = sf::Color(255, 128, 128);
+		else if (p->stress > 0.4) color = sf::Color(255, 128, 128);
 		
 		//Draw the person.
 		s.SetColor(color);
