@@ -3,7 +3,7 @@
 #include <tinyxml2.h>
 #include <SFML/Audio/Sound.hpp>
 
-#include "Item/Elevator.h"
+#include "Item/Elevator/Elevator.h"
 #include "Item/Factory.h"
 #include "Item/Item.h"
 #include "Sky.h"
@@ -68,7 +68,7 @@ namespace OT {
 		
 		Sky sky;
 		
-		Item::Elevator * draggingElevator;
+		Item::Elevator::Elevator * draggingElevator;
 		int draggingMotor;
 		
 		Sound cockSound;

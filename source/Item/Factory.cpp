@@ -1,12 +1,12 @@
 #include <cassert>
 #include <sstream>
 #include "../Application.h"
+#include "Elevator/Standard.h"
 #include "Escalator.h"
 #include "Factory.h"
 #include "FastFood.h"
 #include "Lobby.h"
 #include "Stairs.h"
-#include "StandardElevator.h"
 
 using namespace OT;
 using namespace Item;
@@ -29,7 +29,7 @@ void Factory::loadPrototypes()
 	register_item(Lobby);
 	register_item(Stairs);
 	register_item(Escalator);
-	register_item(StandardElevator);
+	register_item(Elevator::Standard);
 	register_item(FastFood);
 	
 	for (int i = 0; i < prototypes.size(); i++) {

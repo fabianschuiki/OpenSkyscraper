@@ -1,16 +1,17 @@
-#include "ElevatorCar.h"
+#include "Car.h"
 
-using namespace OT::Item;
+using namespace OT;
+using namespace OT::Item::Elevator;
 
 
-void ElevatorCar::init()
+void Car::init()
 {
 	sprite.SetImage(app->bitmaps[elevator->carBitmap]);
 	sprite.SetCenter(0, 30);
 	updateSprite();
 }
 
-void ElevatorCar::setAltitude(double a)
+void Car::setAltitude(double a)
 {
 	if (altitude != a) {
 		altitude = a;
@@ -18,12 +19,12 @@ void ElevatorCar::setAltitude(double a)
 	}
 }
 
-void ElevatorCar::reposition()
+void Car::reposition()
 {
 	SetPosition(0, -altitude * 36 - elevator->GetPosition().y);
 }
 
-void ElevatorCar::updateSprite()
+void Car::updateSprite()
 {
 	int state = 3;
 	int pc = passengers.size();
@@ -38,21 +39,21 @@ void ElevatorCar::updateSprite()
 	sprite.SetPosition(sf::Vector2f(2, 0));
 }
 
-void ElevatorCar::Render(sf::RenderTarget & target) const
+void Car::Render(sf::RenderTarget & target) const
 {
 	target.Draw(sprite);
 }
 
-void ElevatorCar::encodeXML(tinyxml2::XMLPrinter& xml)
+void Car::encodeXML(tinyxml2::XMLPrinter& xml)
 {
 	xml.PushAttribute("altitude", altitude);
 }
 
-void ElevatorCar::decodeXML(tinyxml2::XMLElement& xml)
+void Car::decodeXML(tinyxml2::XMLElement& xml)
 {
 	setAltitude(xml.DoubleAttribute("altitude"));
 }
 
-void ElevatorCar::advance(double dt)
+void Car::advance(double dt)
 {
 }

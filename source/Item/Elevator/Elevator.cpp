@@ -1,10 +1,11 @@
 #include <cassert>
-#include "../Sprite.h"
+#include "../../Sprite.h"
 #include "Elevator.h"
-#include "ElevatorCar.h"
+#include "Car.h"
+#include "Queue.h"
 
-using namespace OT::Item;
-using OT::rectd;
+using namespace OT;
+using namespace OT::Item::Elevator;
 
 
 Elevator::~Elevator()
@@ -51,6 +52,7 @@ void Elevator::Render(sf::RenderTarget & target) const
 {
 	Item::Render(target);
 	
+	//Draw the elevator floors.
 	Sprite s = shaft;
 	Sprite d;
 	d.SetImage(app->bitmaps["simtower/elevator/digits"]);
@@ -80,9 +82,9 @@ void Elevator::Render(sf::RenderTarget & target) const
 		}
 	}
 	
-	for (Cars::iterator c = cars.begin(); c != cars.end(); c++) {
-		target.Draw(**c);
-	}
+	//Draw the cars and queues.
+	for (Cars::iterator c = cars.begin(); c != cars.end(); c++) target.Draw(**c);
+	for (Queues::iterator q = queues.begin(); q != queues.end(); q++) target.Draw(**q);
 }
 
 void Elevator::advance(double dt)
@@ -93,6 +95,7 @@ void Elevator::advance(double dt)
 		//if ((*ic)->moving) carsMoving = true;
 	}
 	
+	//Animate the elevator motors if there's a car moving.
 	if (carsMoving) {
 		animation = fmod(animation + dt, 1);
 		int newFrame = floor(animation * 3);
@@ -134,7 +137,7 @@ void Elevator::decodeXML(tinyxml2::XMLElement & xml)
 		unservicedFloors.insert(e->IntAttribute("floor"));
 	}
 	for (tinyxml2::XMLElement * e = xml.FirstChildElement("car"); e; e = e->NextSiblingElement("car")) {
-		ElevatorCar * car = new ElevatorCar(this);
+		Car * car = new Car(this);
 		car->decodeXML(*e);
 		cars.insert(car);
 	}
@@ -184,7 +187,7 @@ void Elevator::clearCars()
 
 void Elevator::addCar(int floor)
 {
-	ElevatorCar * car = new ElevatorCar(this);
+	Car * car = new Car(this);
 	car->setAltitude(floor);
 	cars.insert(car);
 }
@@ -199,7 +202,7 @@ void Elevator::addPerson(Person * p)
 {
 	Item::addPerson(p);
 	Direction dir = (p->journey.toFloor > p->journey.fromFloor ? kUp : kDown);
-	getQueue(p->journey.fromFloor, dir)->add(p);
+	getQueue(p->journey.fromFloor, dir)->addPerson(p);
 	LOG(DEBUG, "%p queued up at %s on floor %i", p, desc().c_str(), p->journey.fromFloor);
 }
 
@@ -207,33 +210,43 @@ void Elevator::removePerson(Person * p)
 {
 	LOG(DEBUG, "%p leaving %s", p, desc().c_str());
 	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
-		for (int i = 0; i < 2; i++) {
-			iq->second.dirs[i]->remove(p);
-		}
+		(*iq)->removePerson(p);
 	}
 	Item::removePerson(p);
 }
 
-ElevatorQueue * Elevator::getQueue(int floor, Direction dir)
+/// Returns the queue for the given floor and direction, creating it if it does not yet exist.
+Queue * Elevator::getQueue(int floor, Direction dir)
 {
-	Queues::iterator q = queues.find(floor);
-	if (q == queues.end()) {
-		LOG(DEBUG, "creating queues on floor %i for %s", floor, desc().c_str());
-		QueuePair p;
-		for (int i = 0; i < 2; i++)	p.dirs[i] = new ElevatorQueue(this);
-		queues.insert(std::pair<int, QueuePair>(floor, p));
-		return p.dirs[dir];
-	} else {
-		return q->second.dirs[dir];
+	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
+		if ((*iq)->floor == floor && (*iq)->direction == dir) return *iq;
 	}
+	
+	//Create the queue as there was none.
+	Queue * q = new Queue(this);
+	q->floor     = floor;
+	q->direction = dir;
+	q->width     = 400;
+	queues.insert(q);
+	return q;
 }
 
+/// Removes all queues on floors that the elevator doesn't connect to anymore. This is necessary
+/// after the elevator motors are repositioned or certain floors deactivated.
 void Elevator::cleanQueues()
 {
 	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
-		if (!connectsFloor(iq->first)) {
-			for (int i = 0; i < 2; i++) delete iq->second.dirs[i];
+		if (!connectsFloor((*iq)->floor)) {
+			for (int i = 0; i < 2; i++) delete *iq;
 			queues.erase(iq);
 		}
 	}
+}
+
+/// Called whenever the first person queues up at an elevator queue. The elevator is now
+/// responsible for making a car answer the call or postpone it.
+void Elevator::called(Queue * queue)
+{
+	assert(queue);
+	LOG(DEBUG, "called to floor %i", queue->floor);
 }

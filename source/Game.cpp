@@ -114,7 +114,7 @@ bool Game::handleEvent(sf::Event & event)
 					for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 						if ((*i)->prototype == toolPrototype && (*i)->getRect().containsPoint(toolPosition)) {
 							LOG(DEBUG, "add car on floor %i to elevator %s", toolPosition.y, (*i)->desc().c_str());
-							((Item::Elevator *)*i)->addCar(toolPosition.y);
+							((Item::Elevator::Elevator *)*i)->addCar(toolPosition.y);
 							transferFunds(-80000);
 							handled = true;
 							break;
@@ -139,7 +139,7 @@ bool Game::handleEvent(sf::Event & event)
 				}
 				else if (selectedTool == "finger") {
 					if (itemBelowCursor->prototype->id.find("elevator") == 0) {
-						Item::Elevator * e = (Item::Elevator *)itemBelowCursor;
+						Item::Elevator::Elevator * e = (Item::Elevator::Elevator *)itemBelowCursor;
 						
 						draggingMotor = 0;
 						if (toolPosition.y < itemBelowCursor->position.y) draggingMotor = -1;
