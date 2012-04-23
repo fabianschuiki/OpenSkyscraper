@@ -18,6 +18,8 @@ void Car::init()
 	sprite.SetCenter(0, 30);
 	updateSprite();
 	
+	arrivingSound.SetBuffer(app->sounds["simtower/elevator/arriving"]);
+	departingSound.SetBuffer(app->sounds["simtower/elevator/departing"]);
 	arrivingPlayed = false;
 	departingPlayed = false;
 	
@@ -181,13 +183,14 @@ void Car::advance(double dt)
 		//Now we also want to play some sounds. If the travel is long enough, we play the departing
 		//sound.
 		if (!departingPlayed) {
-			if (t1 >= 1);
+			if (t1 >= 1) departingSound.Play(game);
 				//Audio::shared()->play(departingSound);
 			departingPlayed = true;
 		}
 		
 		//And as we approach the destination floor we also want the sound to be played.
 		if (!arrivingPlayed && (s - d) < 0.1) {
+			arrivingSound.Play(game);
 			//Audio::shared()->play(arrivingSound);
 			arrivingPlayed = true;
 		}
@@ -295,10 +298,12 @@ Person * Car::nextPassengerToUnmount()
 
 void Car::moveTo(int floor)
 {
-	LOG(DEBUG, "car %p move to %i", this, floor);
-	
 	if (destinationFloor != floor) {
 		destinationFloor = floor;
+		
+		arrivingPlayed = false;
+		departingPlayed = false;
+		
 		startAltitude = altitude;
 		setState(kMoving);
 	} else {

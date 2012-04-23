@@ -257,8 +257,6 @@ void Elevator::called(Queue * queue)
 /// Responds to the most urgent calls.
 void Elevator::respondToCalls()
 {
-	LOG(DEBUG, "");
-	
 	//Iterate through the queues, always getting the most urgent one.
 	Queue * q;
 	while (q = getMostUrgentQueue())

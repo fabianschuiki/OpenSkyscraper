@@ -47,7 +47,7 @@ namespace OT {
 		int rating;
 		int population;
 		bool populationNeedsUpdate;
-		void transferFunds(int f);
+		void transferFunds(int f, std::string message = std::string());
 		void setFunds(int f);
 		void setRating(int r);
 		void setPopulation(int p);

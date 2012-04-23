@@ -394,11 +394,15 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	updateRoutes();
 }
 
-void Game::transferFunds(int f)
+void Game::transferFunds(int f, std::string message)
 {
 	setFunds(funds + f);
 	playOnce("simtower/cash");
-	LOG(DEBUG, "%i", f);
+	if (!message.empty()) {
+		char c[32];
+		snprintf(c, 32, ": $%i", f);
+		timeWindow.showMessage(message + c);
+	}
 }
 
 void Game::setFunds(int f)
