@@ -30,6 +30,7 @@ namespace OT {
 				void addPerson(Person * p);
 				void removePerson(Person * p);
 				
+				virtual void advance(double dt);
 				virtual void Render(sf::RenderTarget & target) const;
 			};
 		}

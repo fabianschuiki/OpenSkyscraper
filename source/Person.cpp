@@ -9,7 +9,9 @@ Person::Person(Game * game)
 :	GameObject(game),
 	journey(this)
 {
-	at = NULL;
+	at     = NULL;
+	type   = kMan;
+	stress = 0;
 }
 
 Person::~Person()
@@ -55,4 +57,9 @@ void Person::Journey::next()
 	toFloor = nodes.front().toFloor;
 	assert(item);
 	item->addPerson(person);
+}
+
+int Person::getWidth()
+{
+	return (type >= kHousekeeper ? 16 : 8);
 }

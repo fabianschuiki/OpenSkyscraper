@@ -32,5 +32,20 @@ namespace OT {
 			std::queue<Route::Node> nodes;
 		};
 		Journey journey;
+		
+		typedef enum {
+			kMan = 0,
+			kSalesman,
+			kWoman1,
+			kChild,
+			kWoman2,
+			kHousekeeper,
+			kWomanWithChild1,
+			kWomanWithChild2,
+			kSecurity
+		} Type;
+		Type type;
+		double stress;
+		int getWidth();
 	};
 }

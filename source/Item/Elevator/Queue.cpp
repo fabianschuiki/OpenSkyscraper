@@ -7,6 +7,9 @@
 
 using namespace OT::Item::Elevator;
 
+/// The seconds at regular speed requried to stress a person from zero to max.
+const static double kSecondsUntilStressed = 30;
+
 
 Queue::Queue(Elevator * e)
 :	GameObject(e->game),
@@ -39,6 +42,17 @@ void Queue::removePerson(Person * p)
 	people.remove(p);
 }
 
+void Queue::advance(double dt)
+{
+	double dta = game->time.dta;
+	
+	for (People::iterator ip = people.begin(); ip != people.end();) {
+		Person * p = *(ip++);
+		p->stress += 1.0 / kSecondsUntilStressed / Time::kBaseSpeed * dta;
+		if (p->stress >= 1.0) p->journey.next();
+	}
+}
+
 void Queue::Render(sf::RenderTarget & target) const
 {
 	bool steppingInside = false;
@@ -64,7 +78,7 @@ void Queue::Render(sf::RenderTarget & target) const
 		if (stepping) x -= 16;
 		
 		//Calculate the texture subrect for this person.
-		int type = 0;
+		int type = p->type;
 		sf::IntRect sr;
 		sr.Left   = type * 32;
 		sr.Right  = sr.Left + 16;
@@ -75,22 +89,24 @@ void Queue::Render(sf::RenderTarget & target) const
 			sr.Right += 16;
 		}
 		
-		//Calculate the person's width in the queue.
-		int queueWidth = 8;
-		
 		//Calculate the person's position.
 		sf::Vector2f pos;
 		pos.y = -(floor - elevator->position.y) * 36;
 		pos.x = (direction == Elevator::kUp ? -x : elevator->size.x * 8 + x);
 		
+		//Decide what color to use based on stress level.
+		sf::Color color = sf::Color::Black;
+		if (p->stress > 0.8) color = sf::Color(255, 0, 0);
+		else if (p->stress > 0.6) color = sf::Color(255, 128, 128);
+		
 		//Draw the person.
-		s.SetColor(sf::Color::Black);
+		s.SetColor(color);
 		s.SetSubRect(sr);
 		s.SetPosition(pos);
 		target.Draw(s);
 		
 		//Move the queue and abort if we've reached our max drawing width.
-		x += (stepping ? 16 : queueWidth);
+		x += (stepping ? 16 : p->getWidth());
 		if (x >= width) break;
 	}
 }

@@ -95,6 +95,9 @@ void Elevator::advance(double dt)
 		//if ((*ic)->moving) carsMoving = true;
 	}
 	
+	//Advance the queues so people get stressed.
+	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) (*iq)->advance(dt);
+	
 	//Animate the elevator motors if there's a car moving.
 	if (carsMoving) {
 		animation = fmod(animation + dt, 1);

@@ -116,3 +116,11 @@ void FastFood::clearCustomers()
 		delete *c;
 	customers.clear();
 }
+
+FastFood::Customer::Customer(FastFood * item)
+:	Person(item->game)
+{
+	arrivalTime = 0;
+	Type types[] = {kMan, kWoman1, kWoman2, kWomanWithChild1};
+	type = types[rand() % 4];
+}
