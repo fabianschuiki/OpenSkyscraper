@@ -1,6 +1,8 @@
 #include <cassert>
 #include <sstream>
 #include "../Application.h"
+#include "Elevator/Express.h"
+#include "Elevator/Service.h"
 #include "Elevator/Standard.h"
 #include "Escalator.h"
 #include "Factory.h"
@@ -29,6 +31,8 @@ void Factory::loadPrototypes()
 	register_item(Lobby);
 	register_item(Stairs);
 	register_item(Escalator);
+	register_item(Elevator::Express);
+	register_item(Elevator::Service);
 	register_item(Elevator::Standard);
 	register_item(FastFood);
 	

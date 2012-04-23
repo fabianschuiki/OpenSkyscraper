@@ -70,11 +70,11 @@ void Elevator::Render(sf::RenderTarget & target) const
 		target.Draw(s);
 		
 		int flr = position.y + y;
-		if (unservicedFloors.count(flr)) continue;
+		if (!connectsFloor(flr)) continue;
 		
 		char c[8];
 		int len = snprintf(c, 8, "%i", flr);
-		int x = 11 - (len - 1) * 6;
+		int x = 11 - (len - 1) * 6 + (size.x - 4) * 4;
 		for (int i = 0; i < len; i++) {
 			int p = 10;
 			if (c[i] >= '0' && c[i] <= '9') p = c[i] - '0';
