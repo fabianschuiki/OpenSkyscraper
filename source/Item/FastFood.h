@@ -27,7 +27,7 @@ namespace OT {
 			
 			class Customer : public Person {
 			public:
-				Customer(FastFood * item) : Person(item->game) { arrivalTime = 0; }
+				Customer(FastFood * item);
 				virtual ~Customer()	{ LOG(DEBUG, "fastfood customer %p killed", this); }
 				double arrivalTime; //when the customer arrives at the lobby of the tower
 			};

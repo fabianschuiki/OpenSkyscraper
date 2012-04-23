@@ -3,10 +3,11 @@
 #include <tinyxml2.h>
 #include <SFML/Audio/Sound.hpp>
 
-#include "Item/Elevator.h"
+#include "Item/Elevator/Elevator.h"
 #include "Item/Factory.h"
 #include "Item/Item.h"
 #include "Sky.h"
+#include "Sound.h"
 #include "Sprite.h"
 #include "State.h"
 #include "Time.h"
@@ -46,7 +47,7 @@ namespace OT {
 		int rating;
 		int population;
 		bool populationNeedsUpdate;
-		void transferFunds(int f);
+		void transferFunds(int f, std::string message = std::string());
 		void setFunds(int f);
 		void setRating(int r);
 		void setPopulation(int p);
@@ -56,9 +57,8 @@ namespace OT {
 		TimeWindow    timeWindow;
 		
 		Time time;
-		
-		bool paused;
-		void setPaused(bool p);
+		int speedMode;
+		void setSpeedMode(int sm);
 		
 		std::string selectedTool;
 		int2 toolPosition;
@@ -68,16 +68,17 @@ namespace OT {
 		
 		Sky sky;
 		
-		Item::Elevator * draggingElevator;
+		Item::Elevator::Elevator * draggingElevator;
 		int draggingMotor;
 		
-		sf::Sound cockSound;
-		sf::Sound morningSound;
-		sf::Sound bellsSound;
-		sf::Sound eveningSound;
+		Sound cockSound;
+		Sound morningSound;
+		Sound bellsSound;
+		Sound eveningSound;
 		
-		typedef std::set<sf::Sound *> SoundSet;
+		typedef std::set<Sound *> SoundSet;
 		SoundSet autoreleaseSounds;
+		SoundSet playingSounds;
 		void playOnce(Path sound);
 		
 		void updateRoutes();

@@ -5,6 +5,10 @@
 - In `Route`, keep track of how many stairs and elevators were used. Then make the pathfinder limit
   the amount of stairs and elevators that are used per route. Otherwise algorithm complexity will
   explode.
+- Modify `Time` so that `absolute` is a day counter that advances evenly. Add some code that
+  calculates the current hour by scaling the absolute time differently for different phases of the
+  day to create the effect of time running at different speeds.
+
 
 Game
 ----

@@ -19,8 +19,8 @@ Game::Game(Application & app)
 	population = 0;
 	populationNeedsUpdate = false;
 	
-	time.set(5);
-	paused = false;
+	time.set(7/78.0);
+	speedMode = 1;
 	selectedTool = "inspector";
 	itemBelowCursor = NULL;
 	toolPrototype = NULL;
@@ -81,21 +81,30 @@ bool Game::handleEvent(sf::Event & event)
 	switch (event.Type) {
 		case sf::Event::KeyPressed: {
 			switch (event.Key.Code) {
-				case sf::Key::Left:  poi.x -= 20; break;
-				case sf::Key::Right: poi.x += 20; break;
-				case sf::Key::Up:    poi.y += 20; break;
-				case sf::Key::Down:  poi.y -= 20; break;
-				case sf::Key::F1:    reloadGUI(); break;
-				case sf::Key::F3:    setRating(1); break;
+				case sf::Key::Left:  poi.x -= 20; return true;
+				case sf::Key::Right: poi.x += 20; return true;
+				case sf::Key::Up:    poi.y += 20; return true;
+				case sf::Key::Down:  poi.y -= 20; return true;
+				case sf::Key::F1:    reloadGUI(); return true;
+				case sf::Key::F3:    setRating(1); return true;
 				case sf::Key::F2: {
 					FILE * f = fopen("default.tower", "w");
 					tinyxml2::XMLPrinter xml(f);
 					encodeXML(xml);
 					fclose(f);
-				} break;
-				case sf::Key::PageUp:   zoom /= 2; break;
-				case sf::Key::PageDown: zoom *= 2; break;
+				} return true;
+				case sf::Key::PageUp:   zoom /= 2; return true;
+				case sf::Key::PageDown: zoom *= 2; return true;
 			}
+		} break;
+		
+		case sf::Event::TextEntered: {
+			switch (event.Text.Unicode) {
+				case '0': setSpeedMode(0); return true;
+				case '1': setSpeedMode(1); return true;
+				case '2': setSpeedMode(2); return true;
+				case '3': setSpeedMode(3); return true;
+			} break;
 		} break;
 		
 		case sf::Event::MouseButtonPressed: {
@@ -105,7 +114,7 @@ bool Game::handleEvent(sf::Event & event)
 					for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 						if ((*i)->prototype == toolPrototype && (*i)->getRect().containsPoint(toolPosition)) {
 							LOG(DEBUG, "add car on floor %i to elevator %s", toolPosition.y, (*i)->desc().c_str());
-							((Item::Elevator *)*i)->addCar(toolPosition.y);
+							((Item::Elevator::Elevator *)*i)->addCar(toolPosition.y);
 							transferFunds(-80000);
 							handled = true;
 							break;
@@ -130,7 +139,7 @@ bool Game::handleEvent(sf::Event & event)
 				}
 				else if (selectedTool == "finger") {
 					if (itemBelowCursor->prototype->id.find("elevator") == 0) {
-						Item::Elevator * e = (Item::Elevator *)itemBelowCursor;
+						Item::Elevator::Elevator * e = (Item::Elevator::Elevator *)itemBelowCursor;
 						
 						draggingMotor = 0;
 						if (toolPosition.y < itemBelowCursor->position.y) draggingMotor = -1;
@@ -144,6 +153,7 @@ bool Game::handleEvent(sf::Event & event)
 							if (!e->unservicedFloors.erase(toolPosition.y))
 								e->unservicedFloors.insert(toolPosition.y);
 							updateRoutes();
+							e->cleanQueues();
 						}
 					}
 				}
@@ -177,7 +187,6 @@ void Game::advance(double dt)
 	drawnSprites = 0;
 	
 	//Advance time.
-	if (paused) dt = 0;
 	time.advance(dt);
 	timeWindow.updateTime();
 	
@@ -198,10 +207,10 @@ void Game::advance(double dt)
 	}
 	
 	//Play sounds.
-	if (time.checkHour(5)) cockSound.Play();
-	if (time.checkHour(6))   morningSound.Play();
-	if (time.checkHour(9))   bellsSound.Play();
-	if (time.checkHour(18))  eveningSound.Play();
+	if (time.checkHour(5))  cockSound.Play(this);
+	if (time.checkHour(6))  morningSound.Play(this);
+	if (time.checkHour(9))  bellsSound.Play(this);
+	if (time.checkHour(18)) eveningSound.Play(this);
 	morningSound.SetLoop(time.hour < 8);
 	
 	//Constrain the POI.
@@ -290,6 +299,15 @@ void Game::advance(double dt)
 	}
 	glEnd();
 	
+	//Adjust pitch of playing sounds.
+	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end(); s++) {
+		if ((*s)->GetStatus() == sf::Sound::Stopped) {
+			playingSounds.erase(s);
+		} else {
+			(*s)->SetPitch(1 + (time.speed_animated-1) * 0.2);
+		}
+	}
+	
 	//Autorelease sounds.
 	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end(); s++) {
 		if ((*s)->GetStatus() == sf::Sound::Stopped) {
@@ -336,7 +354,7 @@ void Game::encodeXML(tinyxml2::XMLPrinter & xml)
 	xml.PushAttribute("funds", funds);
 	xml.PushAttribute("rating", rating);
 	xml.PushAttribute("time", time.absolute);
-	xml.PushAttribute("paused", paused);
+	xml.PushAttribute("speed", speedMode);
 	xml.PushAttribute("rainy", sky.rainyDay);
 	xml.PushAttribute("tool", selectedTool.c_str());
 	
@@ -360,7 +378,7 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	setFunds(root->IntAttribute("funds"));
 	setRating(root->IntAttribute("rating"));
 	time.set(root->DoubleAttribute("time"));
-	setPaused(root->BoolAttribute("paused"));
+	setSpeedMode(root->IntAttribute("speed"));
 	sky.rainyDay = root->BoolAttribute("rainy");
 	selectTool(root->Attribute("tool"));
 	
@@ -376,11 +394,15 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 	updateRoutes();
 }
 
-void Game::transferFunds(int f)
+void Game::transferFunds(int f, std::string message)
 {
 	setFunds(funds + f);
 	playOnce("simtower/cash");
-	LOG(DEBUG, "%i", f);
+	if (!message.empty()) {
+		char c[32];
+		snprintf(c, 32, ": $%i", f);
+		timeWindow.showMessage(message + c);
+	}
 }
 
 void Game::setFunds(int f)
@@ -431,10 +453,19 @@ void Game::ratingMayIncrease()
 	}
 }
 
-void Game::setPaused(bool p)
+void Game::setSpeedMode(int sm)
 {
-	if (paused != p) {
-		paused = p;
+	assert(sm >= 0 && sm <= 3);
+	if (speedMode != sm) {
+		speedMode = sm;
+		double speed = 0;
+		switch (speedMode) {
+			case 0: speed = 0; break;
+			case 1: speed = 1; break;
+			case 2: speed = 2; break;
+			case 3: speed = 4; break;
+		}
+		time.speed = speed;
 		toolboxWindow.updateSpeed();
 	}
 }
@@ -453,9 +484,9 @@ void Game::selectTool(const char * tool)
  *  internally. */
 void Game::playOnce(Path sound)
 {
-	sf::Sound * snd = new sf::Sound;
+	Sound * snd = new Sound;
 	snd->SetBuffer(app.sounds[sound]);
-	snd->Play();
+	snd->Play(this);
 	autoreleaseSounds.insert(snd);
 }
 
@@ -470,6 +501,9 @@ void Game::updateRoutes()
 	}
 }
 
+/** Finds a route from start to destination through the tower. The returned route contains start as
+ *  the first and destination as the last node, with transportation in between. If the returned
+ *  route is empty(), no path was found through the tower. */
 Route Game::findRoute(Item::Item * start, Item::Item * destination)
 {
 	return findRoute(Route(), start->position.y, start, destination);
@@ -488,6 +522,11 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 		Item::Item * i = *it;
 		if (!i->canHaulPeople() || route.usesItem(i)) continue;
 		
+		//Limit the number of elevators, stairs and escalators to use per route.
+		if (i->isElevator() && route.numElevators >= 2) continue;
+		if (i->prototype->id == "stairs"    && route.numStairs     >= 3) continue;
+		if (i->prototype->id == "escalator" && route.numEscalators >= 5) continue;
+		
 		//Check whether this item connects to the floor we're currently at.
 		if (!i->connectsFloor(floor)) continue;
 		
@@ -499,21 +538,24 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 			r.add(destination);
 		}
 		
-		//Otherwise check lobbies for elevators.
+		//For elevators, check the lobbies for connecting transports.
 		else if (i->isElevator()) {
-			for (int f = i->position.y % 15; f < i->size.y; f += 15) {
-				Route sr = findRoute(route, f + i->position.y, i, destination);
+			for (int n = i->position.y % 15; n < i->size.y; n += 15) {
+				int f = n + i->position.y;
+				if (!i->connectsFloor(f)) continue;
+				Route sr = findRoute(route, f, i, destination);
 				if (r.empty() || sr.score() < r.score()) r = sr;
 			}
 		}
 		
-		//Or the floor above/below for stairs.
+		//For stairlike items, check the floor above/below for connecting transports.
 		else if (i->isStairlike()) {
 			int f = i->position.y;
 			if (f == floor) f += i->size.y-1;
 			r = findRoute(route, f, i, destination);
 		}
 		
+		//If r's score is lower (better) than the best we've found so far, make r the current best route.
 		if (!r.empty() && (best.empty() || r.score() < best.score())) best = r;
 	}
 	

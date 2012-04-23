@@ -64,7 +64,7 @@ void FastFood::advance(double dt)
 		clearCustomers();
 		for (int i = 0; i < today; i++) {
 			Customer * c = new Customer(this);
-			c->arrivalTime = Math::randd(10, 21);
+			c->arrivalTime = game->time.day + Math::randd(Time::hourToAbsolute(10), Time::hourToAbsolute(20));
 			customers.insert(c);
 		}
 	}
@@ -75,21 +75,21 @@ void FastFood::advance(double dt)
 		population = customers.size();
 		game->populationNeedsUpdate = true;
 		spriteNeedsUpdate = true;
+		
+		game->transferFunds(population * 200 - 2000, "Income from Fast Food");
 	}
 	
 	//Make customers arrive.
 	for (Customers::iterator i = customers.begin(); i != customers.end(); i++) {
 		Customer * c = *i;
-		if (game->time.checkHour(c->arrivalTime)) {
-			//TODO: actually send the customer on his journey.
-			addPerson(c);
-		}
+		if (game->time.check(c->arrivalTime)) c->journey.set(lobbyRoute);
 	}
 	
 	//Make customers leave once they're done.
 	for (CustomerMetadataMap::iterator i = customerMetadata.begin(); i != customerMetadata.end(); i++) {
-		if (i->second.arrivalTime + 0.6 <= game->time.absolute) {
+		if (game->time.absolute >= i->second.arrivalTime + 20 * Time::kBaseSpeed || game->time.hour >= 21) {
 			//TODO: actually make the person journey away.
+			LOG(DEBUG, "%p leaving", i->first);
 			removePerson(i->first);
 		}
 	}
@@ -117,4 +117,12 @@ void FastFood::clearCustomers()
 	for (Customers::iterator c = customers.begin(); c != customers.end(); c++)
 		delete *c;
 	customers.clear();
+}
+
+FastFood::Customer::Customer(FastFood * item)
+:	Person(item->game)
+{
+	arrivalTime = 0;
+	Type types[] = {kMan, kWoman1, kWoman2, kWomanWithChild1};
+	type = types[rand() % 4];
 }
