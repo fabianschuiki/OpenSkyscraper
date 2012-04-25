@@ -94,6 +94,9 @@ find_package(Rocket REQUIRED core controls ${rocket_debug})
 include_directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
 
+find_package(freetype REQUIRED)
+target_link_libraries(${EXECUTABLE_NAME} ${FREETYPE_LIBRARIES})
+
 # OpenGL (Needed by Rocket)
 find_package(OpenGL REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_gl_LIBRARY})

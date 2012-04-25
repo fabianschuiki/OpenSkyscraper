@@ -56,7 +56,11 @@ Game::Game(Application & app)
 	
 	//DEBUG: load from disk.
 	tinyxml2::XMLDocument xml;
-	xml.LoadFile("default.tower");
+	DataManager::Paths p = app.data.paths("default.tower");
+	for (DataManager::Paths::iterator ip = p.begin(); ip != p.end(); ip++) {
+		LOG(DEBUG, "trying %s", (*ip).c_str());
+		if (xml.LoadFile(*ip) == 0) break;
+	}
 	decodeXML(xml);
 }
 

@@ -18,14 +18,19 @@ void DataManager::init()
 	
 	Path path = app->getPath();
 	string name = /*path.name()*/"OpenSkyscraper";
-#ifdef BUILD_DEBUG
-	dirs.push_back(path.up(2).down("data"));
-#endif
 #ifdef __APPLE__
+#ifdef BUILD_DEBUG
+	//TODO: there's an issue with climbing up paths that go like ../../, since path.up() will first erase these ../ segments, instead of directly appending to them.
+	//dirs.push_back(path.up(0).down("data"));
+	dirs.push_back(path.up(6).down("data"));
+#endif
 	dirs.push_back(Path("~/Library/Application Support").down(name));
 	dirs.push_back(Path("/Library/Application Support").down(name));
 	dirs.push_back(".");
 #else
+#ifdef BUILD_DEBUG
+	dirs.push_back(path.up(2).down("data"));
+#endif
 	dirs.push_back(Path("~").down(string(".")+name));
 	dirs.push_back(Path("/usr/local/share").down(name));
 	dirs.push_back(Path("/usr/share").down(name));
