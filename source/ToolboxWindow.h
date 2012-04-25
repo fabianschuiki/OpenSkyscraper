@@ -9,8 +9,7 @@ namespace OT {
 	{
 	public:
 		ToolboxWindow(Game * game) : GameObject(game) {
-			window          = NULL;
-			speedButton     = NULL;
+			window = NULL;
 		}
 		~ToolboxWindow() { close(); }
 		
@@ -18,7 +17,6 @@ namespace OT {
 		void reload();
 		
 		Rocket::Core::ElementDocument * window;
-		Rocket::Core::Element * speedButton;
 		typedef std::set<Rocket::Core::Element *> ElementSet;
 		ElementSet buttons;
 		

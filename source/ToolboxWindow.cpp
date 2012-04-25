@@ -8,7 +8,6 @@ using namespace OT;
 
 void ToolboxWindow::close()
 {
-	speedButton = NULL;
 	buttons.clear();
 	
 	if (window) {
@@ -25,9 +24,6 @@ void ToolboxWindow::reload()
 	window = game->gui.loadDocument("toolbox.rml");
 	assert(window);
 	window->Show();
-	
-	speedButton = window->GetElementById("speed");
-	assert(speedButton);
 	
 	Rocket::Core::ElementList tmp;
 	window->GetElementsByTagName(tmp, "button");
@@ -77,16 +73,23 @@ void ToolboxWindow::ProcessEvent(Rocket::Core::Event & event)
 	if (buttons.count(element)) {
 		game->selectTool(element->GetId().CString());
 		event.StopPropagation();
-	} else if (element == speedButton) {
-		game->setPaused(!game->paused);
+	} else if (element->IsClassSet("speed")) {
+		int speed;
+		sscanf(element->GetId().CString(), "speed%i", &speed);
+		game->setSpeedMode(speed);
 		event.StopPropagation();
 	}
 }
 
 void ToolboxWindow::updateSpeed()
 {
-	speedButton->SetClass("play", !game->paused);
-	speedButton->SetClass("pause", game->paused);
+	for (int i = 0; i < 4; i++) {
+		char c[32];
+		snprintf(c, 32, "speed%i", i);
+		Rocket::Core::Element * button = window->GetElementById(c);
+		assert(button);
+		button->SetClass("selected", game->speedMode == i);
+	}
 }
 
 void ToolboxWindow::updateTool()

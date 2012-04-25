@@ -22,6 +22,10 @@ namespace OT {
 			virtual bool canHaulPeople() const { return true; }
 			virtual bool connectsFloor(int floor) const;
 			virtual bool isStairlike() const { return true; }
+			
+			std::map<Person *, double> transitionTimes;
+			virtual void addPerson(Person * p);
+			virtual void removePerson(Person * p);
 		};
 	}
 }

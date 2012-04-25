@@ -529,6 +529,33 @@ void SimTowerLoader::loadBitmaps()
 	
 	loadLobbies();
 	
+	sf::Image & elevQueue = app->bitmaps["simtower/elevator/people"];
+	sf::Image elevQueueNormal;
+	sf::Image elevQueueSecurity;
+	loadBitmap(0x8468, elevQueueNormal);
+	loadBitmap(0x8469, elevQueueSecurity);
+	elevQueue.Create(9*2*16, 3*24, sf::Color::White);
+	for (int i = 0; i < 8; i++) {
+		for (int n = 0; n < 3; n++) {
+			elevQueue.Copy(elevQueueNormal, i*32+16, 0, sf::IntRect(i*80, 12, i*80+16, 36));
+			elevQueue.Copy(elevQueueNormal, i*32, 0, sf::IntRect(i*80+64, 12, i*80+80, 36));
+			elevQueue.Copy(elevQueueNormal, i*32+16, 24, sf::IntRect(i*80+16, 12, i*80+24, 36));
+			elevQueue.Copy(elevQueueNormal, i*32+8, 24, sf::IntRect(i*80+56, 12, i*80+64, 36));
+			elevQueue.Copy(elevQueueNormal, i*32+16, 48, sf::IntRect(i*80+24, 12, i*80+40, 36));
+			elevQueue.Copy(elevQueueNormal, i*32+0, 48, sf::IntRect(i*80+40, 12, i*80+56, 36));
+		}
+	}
+	elevQueue.CreateMaskFromColor(sf::Color::White);
+	for (int x = 0; x < elevQueue.GetWidth(); x++) {
+		for (int y = 0; y < elevQueue.GetHeight(); y++) {
+			sf::Color c = elevQueue.GetPixel(x, y);
+			c.r = 255-c.r;
+			c.g = 255-c.g;
+			c.b = 255-c.b;
+			elevQueue.SetPixel(x, y, c);
+		}
+	}
+	
 	const static struct { int id; Path name; sf::Color alpha; } namedBitmaps[] = {
 		{0x8E28, "construction/grid",   sf::Color::White},
 		{0x8E29, "construction/solid"},

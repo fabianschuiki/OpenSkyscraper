@@ -2,7 +2,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include "Math/Vector2D.h"
 #include "GameObject.h"
-#include <SFML/Audio/Sound.hpp>
+#include "Sound.h"
 
 namespace OT {
 	
@@ -24,10 +24,10 @@ namespace OT {
 		
 		static double cloudNoise(double2 p);
 		
-		sf::Sound rainSound;
-		sf::Sound thunderSound;
-		sf::Sound birdsSound;
-		sf::Sound cricketsSound;
+		Sound rainSound;
+		Sound thunderSound;
+		Sound birdsSound;
+		Sound cricketsSound;
 		double soundCountdown;
 	};
 }

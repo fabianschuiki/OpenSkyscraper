@@ -29,6 +29,9 @@ namespace OT {
 		void add(Item::Item * item, int floor);
 		
 		bool usesItem(Item::Item * item) const;
+		int numStairs;
+		int numEscalators;
+		int numElevators;
 		
 		int score() const;
 		void updateScore();
