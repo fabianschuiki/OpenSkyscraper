@@ -12,3 +12,4 @@
 # Documentation
 /doc/source/*
 !/doc/source/Doxyfile
+/doc/html

@@ -86,11 +86,14 @@ void FastFood::advance(double dt)
 	}
 	
 	//Make customers leave once they're done.
-	for (CustomerMetadataMap::iterator i = customerMetadata.begin(); i != customerMetadata.end(); i++) {
-		if (game->time.absolute >= i->second.arrivalTime + 20 * Time::kBaseSpeed || game->time.hour >= 21) {
+	for (CustomerMetadataMap::iterator i = customerMetadata.begin(); i != customerMetadata.end();) {
+		Person *p = i->first;
+		CustomerMetadata &m = i->second;
+		i++;
+		if (game->time.absolute >= m.arrivalTime + 20 * Time::kBaseSpeed || game->time.hour >= 21) {
 			//TODO: actually make the person journey away.
-			LOG(DEBUG, "%p leaving", i->first);
-			removePerson(i->first);
+			LOG(DEBUG, "%p leaving", p);
+			removePerson(p);
 		}
 	}
 	
