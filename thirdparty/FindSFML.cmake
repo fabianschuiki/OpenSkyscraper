@@ -25,6 +25,8 @@
 # define the SFML_STATIC macro if static build was chosen
 if(SFML_STATIC_LIBRARIES)
     add_definitions(-DSFML_STATIC)
+else()
+	add_definitions(-DSFML_DYNAMIC)
 endif()
 
 # deduce the libraries suffix from the options
