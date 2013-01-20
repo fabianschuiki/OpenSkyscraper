@@ -9,6 +9,7 @@
 # - ROCKET_INCLUDE_DIR
 
 set(FIND_ROCKET_PATHS
+	${ROCKETDIR}
 	/usr/local
 	/usr
 	/sw

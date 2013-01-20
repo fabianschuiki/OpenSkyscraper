@@ -3,7 +3,7 @@ project(OpenSkyscraper)
 
 # Default to debug build.
 if (NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Debug)
+	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif()
 
 # Executable name.
@@ -12,6 +12,11 @@ set(EXECUTABLE_NAME OpenSkyscraper)
 # Debugging definitions.
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions("-DBUILD_DEBUG")
+endif()
+
+if (MSVC)
+	add_definitions(-Dsnprintf=_snprintf)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 
@@ -72,7 +77,11 @@ include_directories(${LUA_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${LUA_LIBRARY})
 
 # SFML
-find_package(SFML REQUIRED system window graphics audio)
+if (WIN32)
+	set(SFMLDIR "" CACHE STRING "SFML directory")
+endif ()
+set(SFML_STATIC_LIBRARIES FALSE CACHE BOOL "Check if linking to SFML static libraries")
+find_package(SFML REQUIRED audio graphics window system)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
 
@@ -90,10 +99,17 @@ endif ()
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	set(rocket_debug "debugger")
 endif()
+if (WIN32)
+	set(ROCKETDIR "" CACHE STRING "libRocket directory")
+endif ()
 find_package(Rocket REQUIRED core controls ${rocket_debug})
 include_directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
 
+if (WIN32)
+	set(FREETYPE_DIR "" CACHE STRING "freetype directory")
+	set(ENV{FREETYPE_DIR} ${FREETYPE_DIR})
+endif ()
 find_package(freetype REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} ${FREETYPE_LIBRARIES})
 
