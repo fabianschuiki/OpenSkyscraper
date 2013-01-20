@@ -104,8 +104,8 @@ public:
 	inline T distanceX(const Rect<T> &r) const {
 		if (maxX() >= r.minX() && minX() <= r.maxX())
 			return 0;
-		return std::min<T>(	fabs(r.minX() - maxX()),
-							fabs(r.maxX() - minX()));
+		return std::min<T>(	fabs((float)r.minX() - maxX()),
+							fabs((float)r.maxX() - minX()));
 	}
 	
 	//Boolean operations

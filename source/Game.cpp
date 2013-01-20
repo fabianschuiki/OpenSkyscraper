@@ -2,6 +2,10 @@
 #include "Application.h"
 #include "Game.h"
 
+#ifdef _WIN32
+#include "Math/Round.h"
+#endif
+
 using namespace OT;
 
 Game::Game(Application & app)

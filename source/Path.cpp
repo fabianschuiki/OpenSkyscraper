@@ -6,13 +6,13 @@
 using namespace OT;
 using std::string;
 
-#ifdef __WINDOWS__
+#ifdef _WIN32
 const char Path::SEPARATOR = '\\';
 void dozefy(string & s)
 {
 	for (string::iterator c = s.begin(); c != s.end(); c++)
 		if (*c == '/')
-			*c = SEPARATOR;
+			*c = Path::SEPARATOR;
 }
 #else
 const char Path::SEPARATOR = '/';
@@ -24,10 +24,10 @@ const char Path::SEPARATOR = '/';
 Path::Path(){}
 
 /** Initializes a path form the given C string. */
-Path::Path(const char * path) : path(path) { dozefy(path); fixup(); }
+Path::Path(const char * path) : path(path) { dozefy(this->path); fixup(); }
 
 /** Initializes a path from the given C++ stirng. */
-Path::Path(const string & path) : path(path) { dozefy(path); fixup(); }
+Path::Path(const string & path) : path(path) { dozefy(this->path); fixup(); }
 
 
 /** Returns a path with the given amount of levels cut off. */
@@ -85,10 +85,11 @@ Path & Path::remove(int levels)
 /** Appends the given path component. */
 Path & Path::append(const string & comp)
 {
-	dozefy(comp);
-	if (!path.empty() && *(path.end()-1) != SEPARATOR && !comp.empty() && *(comp.end()-1) != SEPARATOR)
+	string appendPath = comp;
+	dozefy(appendPath);
+	if (!path.empty() && *(path.end()-1) != SEPARATOR && !appendPath.empty() && *(appendPath.end()-1) != SEPARATOR)
 		path += SEPARATOR;
-	path += comp;
+	path += appendPath;
 	fixup();
 	return *this;
 }

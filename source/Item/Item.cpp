@@ -5,7 +5,10 @@
 
 using namespace OT::Item;
 using std::string;
+using OT::int2;
+using OT::Person;
 using OT::rectd;
+using OT::Sprite;
 
 
 Item::~Item()

@@ -1,6 +1,10 @@
 #pragma once
 #include <cstdio>
 #include <string>
+#ifdef _WIN32
+#include <windows.h>
+#undef ERROR
+#endif
 
 namespace OT
 {

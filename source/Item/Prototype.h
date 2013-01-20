@@ -3,6 +3,9 @@
 #include <string>
 #include "../Math/Vector2D.h"
 #include <tinyxml2.h>
+#ifdef _DEBUG
+#undef DEBUG
+#endif
 
 namespace OT {
 	class Game;

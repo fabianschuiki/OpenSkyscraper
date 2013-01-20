@@ -15,7 +15,7 @@ bool WindowsNEExecutable::load(Path path)
 	LOG(DEBUG, "from %s", (const char *)path);
 	
 	//Open the file for reading.
-	ifstream f(path);
+	ifstream f(path.c_str());
 	if (!f.is_open())
 		return false;
 	

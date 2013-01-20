@@ -193,6 +193,9 @@ void SimTowerLoader::prepareBitmaps()
 		unsigned int cellsInResource = r->second.length / cellPixels;
 		
 		//Create the DIB header.
+#ifdef _MSC_VER
+		#pragma pack(push, 1)
+#endif
 		struct {
 			uint32_t size;
 			uint32_t width;
@@ -205,14 +208,21 @@ void SimTowerLoader::prepareBitmaps()
 			uint32_t vDPI;
 			uint32_t numColors;
 			uint32_t numImportantColors;
-		} __attribute__((__packed__)) dib = {
-			40,
-			(cellsInResource * 8), 36,
-			1, 8,
-			0,
-			(cellsInResource * cellPixels),
-			0, 0, 256, 256
+		} 
+#ifndef _MSC_VER
+		__attribute__((__packed__)) 
+#endif
+			dib = {
+				40,
+				(cellsInResource * 8), 36,
+				1, 8,
+				0,
+				(cellsInResource * cellPixels),
+				0, 0, 256, 256
 		};
+#ifdef _MSC_VER
+		#pragma pack(pop)
+#endif
 		memcpy(bmp.data + 14, &dib, sizeof(dib));
 		
 		//Assemble the palette

@@ -230,7 +230,7 @@ void RocketRenderer::RenderCompiledGeometry(Rocket::Core::CompiledGeometryHandle
 
 	glPopMatrix();
 #else
-	ROCKET_ASSERT(false & "Not Implemented");
+	ROCKET_ASSERTMSG(false, "Not Implemented");
 #endif
 }
 
@@ -242,7 +242,7 @@ void RocketRenderer::ReleaseCompiledGeometry(Rocket::Core::CompiledGeometryHandl
 
 	delete (RocketRendererGeometryHandler *)geometry;
 #else
-	ROCKET_ASSERT(false & "Not Implemented");
+	ROCKET_ASSERTMSG(false, "Not Implemented");
 #endif
 }
 

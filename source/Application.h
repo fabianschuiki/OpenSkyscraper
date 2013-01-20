@@ -13,6 +13,15 @@
 #include "State.h"
 #include "SoundManager.h"
 
+#if defined(_MSC_VER)
+#include "stdint.h"
+#include <direct.h>
+#define mkdir(A,B)	_mkdir(A)
+#elif defined(_WIN32)
+#include <io.h>
+#define mkdir(A,B)	mkdir(A)
+#endif
+
 namespace OT
 {
 	class Application
