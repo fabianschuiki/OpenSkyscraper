@@ -22,7 +22,7 @@ void fputs_padded(FILE * f, const char * str, int padding)
 
 #ifdef _WIN32
 int vasprintf(char **strp, const char *fmt, va_list ap) {
-	int buffer_size = 16;
+	int buffer_size = 128;
 	int size = 0;
 	*strp = new char[buffer_size];
 	size = vsnprintf(*strp, buffer_size, fmt, ap);
@@ -138,6 +138,7 @@ void Logger::log(LogLevel level, const char * file, int line, const char * func,
 		if (level == ERROR) fputs("*** ", outputFile);
 		fputs_padded(outputFile, str, padding);
 		fputc('\n', outputFile);
+		fflush(outputFile);
 	}
 	
 	//Clean up.

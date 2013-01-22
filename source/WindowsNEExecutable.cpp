@@ -9,13 +9,14 @@ using namespace OT;
 using std::ifstream;
 using std::ofstream;
 using std::ios;
+using std::ios_base;
 
 bool WindowsNEExecutable::load(Path path)
 {
 	LOG(DEBUG, "from %s", (const char *)path);
 	
 	//Open the file for reading.
-	ifstream f(path.c_str());
+	ifstream f(path.c_str(), ios_base::in | ios_base::binary);
 	if (!f.is_open())
 		return false;
 	
@@ -92,6 +93,7 @@ bool WindowsNEExecutable::load(Path path)
 			f.seekg(r.offset, ios::beg);
 			f.read(r.data, r.length);
 			f.seekg(backup, ios::beg);
+			if((size_t)f.tellg() == backup)	f.clear(ifstream::goodbit);	// Clears eofbit in cases when seeking from EOF
 		}
 	}
 	return true;

@@ -26,7 +26,27 @@ Application::Application(int argc, char * argv[])
 	App = this;
 	
 	assert(argc >= 1 && "argv[0] is required");
-	path = Path(argv[0]);
+	
+	// Code to retrieve current working directory
+	// May want to move to Boost library for easier path manipulation
+	int buf_size = 128;
+	char* pwd = NULL;
+	char* r_getpwd = NULL;
+	do {
+		pwd = new char[buf_size];
+		r_getpwd = getcwd(pwd, buf_size);
+		if(!r_getpwd) {
+			delete pwd;
+			if(errno == ERANGE)	buf_size *= 2;
+			else {
+				LOG(ERROR, "Could not retrieve current working directory!");
+				exitCode = -1;
+				return;
+			}
+		}
+	} while(!r_getpwd);
+	path = Path(pwd);
+	delete pwd;
 #ifdef __APPLE__
 	path = Path("../MacOS").down(path.name());
 #endif
@@ -100,7 +120,8 @@ void Application::init()
 		LOG(WARNING, "unable to load SimTower resources");
 	}
 	//TODO: make this dependent on a command line switch
-	simtower->dump("~/SimTower Resources");
+	Path dump_path = this->getPath().append("SimTower_Resources");
+	simtower->dump(dump_path);
 	delete simtower; simtower = NULL;
 	//exitCode = 1;
 	

@@ -40,8 +40,8 @@ namespace OT
 		void preparePalettes();
 		void loadBitmaps();
 		
-		void loadMerged(char dir, sf::Image & dst, ...);
-		void loadMergedByID(char dir, sf::Image & dst, ...);
+		void loadMerged(sf::Image & dst, char dir, ...);
+		void loadMergedByID(sf::Image & dst, char dir, ...);
 		
 		void loadCondo(int id, sf::Image & img);
 		void loadOffice(int id, sf::Image & img);

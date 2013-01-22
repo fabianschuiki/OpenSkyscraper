@@ -23,9 +23,9 @@ namespace OT
 		std::string name() const;
 		
 		std::string str() const;
-		inline operator std::string  () const { return str(); }
+		inline operator std::string  () const { return path; }
 
-		const char * c_str() const { return str().c_str(); }
+		const char * c_str() const { return path.c_str(); }
 		inline operator const char * () const { return c_str(); }
 		
 		bool operator == (const Path & p) const { return path == p.path; }

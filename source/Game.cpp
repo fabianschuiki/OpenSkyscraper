@@ -308,19 +308,22 @@ void Game::advance(double dt)
 	glEnd();
 	
 	//Adjust pitch of playing sounds.
-	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end(); s++) {
+	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end();) {
 		if ((*s)->GetStatus() == sf::Sound::Stopped) {
-			playingSounds.erase(s);
+			playingSounds.erase(s++);
 		} else {
 			(*s)->SetPitch(1 + (time.speed_animated-1) * 0.2);
+			s++;
 		}
 	}
 	
 	//Autorelease sounds.
-	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end(); s++) {
+	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end();) {
 		if ((*s)->GetStatus() == sf::Sound::Stopped) {
 			delete *s;
-			autoreleaseSounds.erase(s);
+			autoreleaseSounds.erase(s++);
+		} else {
+			s++;
 		}
 	}
 	

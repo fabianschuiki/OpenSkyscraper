@@ -7,7 +7,7 @@ using namespace OT;
 
 bool BitmapManager::load(Path name, sf::Image & dst)
 {
-	if (name.str().find("simtower/") == 0) {
+	if (name.str().find(internal_path) == 0) {
 		dst.SetSmooth(false);
 		return true;
 	} else {

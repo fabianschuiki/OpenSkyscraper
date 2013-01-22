@@ -7,7 +7,7 @@ using namespace OT;
 
 bool SoundManager::load(Path name, sf::SoundBuffer & dst)
 {
-	if (name.str().find("simtower/") == 0) {
+	if (name.str().find(internal_path) == 0) {
 		return true;
 	} else {
 		DataManager::Paths paths = app->data.paths(Path("sounds") + name);
@@ -21,7 +21,7 @@ bool SoundManager::load(Path name, sf::SoundBuffer & dst)
 		if (success) {
 			LOG(DEBUG,   "loaded sound '%s'", name.c_str());
 		} else {
-			LOG(WARNING, "unable to find sound'%s'", name.c_str());
+			LOG(WARNING, "unable to find sound '%s'", name.c_str());
 		}
 		return success;
 	}

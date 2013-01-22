@@ -1,10 +1,19 @@
 #include <cassert>
+#include <sys/stat.h>
 
 #include "Application.h"
 #include "DataManager.h"
 
 using namespace OT;
 using std::string;
+
+bool DirectoryExists(const char * path)
+{
+	struct stat st;
+	if(stat(path, &st) == 0 && (st.st_mode & S_IFMT) == S_IFDIR)
+		return true;
+	return false;
+}
 
 DataManager::DataManager(Application * app)
 :	app(app)
@@ -31,14 +40,22 @@ void DataManager::init()
 #ifdef BUILD_DEBUG
 	dirs.push_back(path.up(2).down("data"));
 #endif
+#ifndef _WIN32
 	dirs.push_back(Path("~").down(string(".")+name));
 	dirs.push_back(Path("/usr/local/share").down(name));
 	dirs.push_back(Path("/usr/share").down(name));
+#endif
+	dirs.push_back(path.down("data"));
 	dirs.push_back(path.up().down("data"));
 #endif
 	
-	for (int i = 0; i < dirs.size(); i++)
-		LOG(DEBUG, "  %s", dirs[i].c_str());
+	for (int i = 0; i < dirs.size(); i++) {
+		if(!DirectoryExists(dirs[i].c_str())) {
+			dirs.erase(dirs.begin() + i);
+			i--;
+		} else
+			LOG(DEBUG, "  %s", dirs[i].c_str());
+	}
 }
 
 /** Returns a list of possible paths to the given resource. */
