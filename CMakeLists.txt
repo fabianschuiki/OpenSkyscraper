@@ -110,7 +110,7 @@ if (WIN32)
 	set(FREETYPE_DIR "" CACHE STRING "freetype directory")
 	set(ENV{FREETYPE_DIR} ${FREETYPE_DIR})
 endif ()
-find_package(freetype REQUIRED)
+find_package(Freetype REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} ${FREETYPE_LIBRARIES})
 
 # OpenGL (Needed by Rocket)

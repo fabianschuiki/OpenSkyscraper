@@ -20,6 +20,9 @@
 #elif defined(_WIN32)
 #include <io.h>
 #define mkdir(A,B)	mkdir(A)
+#else
+#include <unistd.h>
+#include <errno.h>
 #endif
 
 namespace OT
