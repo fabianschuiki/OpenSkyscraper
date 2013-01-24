@@ -36,7 +36,8 @@ namespace OT {
 			void clearCustomers();
 			
 			struct CustomerMetadata {
-				double arrivalTime; //when the customer arrived at the fast food
+				double arrivalTime;   //when the customer arrived at the fast food
+				double departureTime; //when the customer left the fast food
 			};
 			typedef std::map<Person *, CustomerMetadata> CustomerMetadataMap;
 			CustomerMetadataMap customerMetadata;

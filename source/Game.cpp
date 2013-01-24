@@ -116,6 +116,22 @@ bool Game::handleEvent(sf::Event & event)
 		} break;
 		
 		case sf::Event::MouseButtonPressed: {
+			// Prevent construction or triggering of tool if mouse cursor within toolboxWindow
+			if(	event.MouseButton.X - toolboxWindow.window->GetAbsoluteLeft() > -0.01f	&& event.MouseButton.X - (toolboxWindow.window->GetAbsoluteLeft() + toolboxWindow.window->GetClientLeft() + toolboxWindow.window->GetClientWidth()) < 0.01f &&
+				event.MouseButton.Y - toolboxWindow.window->GetAbsoluteTop() > -0.01f	&& event.MouseButton.Y - (toolboxWindow.window->GetAbsoluteTop() + toolboxWindow.window->GetClientTop() + toolboxWindow.window->GetClientHeight()) < 0.01f)
+				break;
+
+			// Prevent construction or triggering of tool if mouse cursor within timeWindow
+			if(	event.MouseButton.X - timeWindow.window->GetAbsoluteLeft() > -0.01f	&& event.MouseButton.X - (timeWindow.window->GetAbsoluteLeft() + timeWindow.window->GetClientLeft() + timeWindow.window->GetClientWidth()) < 0.01f &&
+				event.MouseButton.Y - timeWindow.window->GetAbsoluteTop() > -0.01f	&& event.MouseButton.Y - (timeWindow.window->GetAbsoluteTop() + timeWindow.window->GetClientTop() + timeWindow.window->GetClientHeight()) < 0.01f)
+				break;
+
+			// Prevent construction or triggering of tool if mouse cursor within mapWindow
+			if(	event.MouseButton.X - mapWindow->GetAbsoluteLeft() > -0.01f	&& event.MouseButton.X - (mapWindow->GetAbsoluteLeft() + mapWindow->GetClientLeft() + mapWindow->GetClientWidth()) < 0.01f &&
+				event.MouseButton.Y - mapWindow->GetAbsoluteTop() > -0.01f	&& event.MouseButton.Y - (mapWindow->GetAbsoluteTop() + mapWindow->GetClientTop() + mapWindow->GetClientHeight()) < 0.01f) {
+				break;	// Break for now, may add code to handle viewport shift in future
+			}
+
 			if (toolPrototype) {
 				bool handled = false;
 				if (toolPrototype->id.find("elevator") == 0) {

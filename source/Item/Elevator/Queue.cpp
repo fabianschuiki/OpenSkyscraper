@@ -40,11 +40,7 @@ double Queue::getWaitDuration()
 void Queue::addPerson(Person * p)
 {
 	people.push_back(p);
-	if (!called) {
-		called = true;
-		callTime = game->time.absolute;
-		elevator->called(this);
-	}
+	if (!called) callElevator();
 }
 
 void Queue::removePerson(Person * p)
@@ -60,9 +56,18 @@ Person * Queue::popPerson()
 	return p;
 }
 
+void Queue::callElevator() {
+	if (!called) {
+		called = true;
+		callTime = game->time.absolute;
+		elevator->called(this);
+	}
+}
+
 void Queue::advance(double dt)
 {
 	double dta = game->time.dta;
+	if (!people.empty() && !called) callElevator();
 	
 	for (People::iterator ip = people.begin(); ip != people.end();) {
 		Person * p = *(ip++);

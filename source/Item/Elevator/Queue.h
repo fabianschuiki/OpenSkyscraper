@@ -32,6 +32,7 @@ namespace OT {
 				void addPerson(Person * p);
 				void removePerson(Person * p);
 				Person * popPerson();
+				void callElevator();
 				
 				bool steppingInside;
 				

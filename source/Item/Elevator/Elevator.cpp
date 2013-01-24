@@ -335,6 +335,7 @@ void Elevator::decideCarDestination(Car * car)
 		if (queueDistance <= floorDistance) {
 			nextQueue->answered = true;
 			car->moveTo(nextQueue->floor);
+			return;
 		}
 	}
 	getQueue(nextFloor, car->direction)->answered = true;

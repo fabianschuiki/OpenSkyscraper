@@ -257,7 +257,7 @@ void Car::advance(double dt)
 				if (!handled && (journeyTime >= kWaitTime || isFull())) {
 					if (q) {
 						q->steppingInside = false;
-						if (q->people.empty()) q->called = false;
+						q->called = false;
 					}
 					q->answered = false;
 					if (!passengers.empty())
