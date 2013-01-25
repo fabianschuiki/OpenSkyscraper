@@ -94,7 +94,7 @@ void FastFood::advance(double dt)
 		Person * p = *ip;
 		CustomerMetadata &m = customerMetadata[p];
 		if (game->time.absolute >= m.arrivalTime + 20 * Time::kBaseSpeed || !open) {
-			Route &r = game->findRoute(this, game->mainLobby); // Customers may leave for different destinations besides main lobby, so this is not precomputed
+			const Route &r = game->findRoute(this, game->mainLobby); // Customers may leave for different destinations besides main lobby, so this is not precomputed
 			if (r.empty()) {
 				LOG(DEBUG, "%p has no route to leave", p);
 				ip++;
