@@ -13,9 +13,9 @@ public:
 	
 	std::string description() const {
 		std::string res = "(";
-		res += origin.description();
+		res += origin.desc();
 		res += ", ";
-		res += size.description();
+		res += size.desc();
 		res += ")";
 		return res;
 	}

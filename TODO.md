@@ -17,9 +17,17 @@ Game
 
 Item::FastFood
 --------------
-In order to make the customers arrive at the tower, the fast food item has to iterate over all its
+[DONE] In order to make the customers arrive at the tower, the fast food item has to iterate over all its
 customers at each frame. This could be made more efficient if there was an arrival queue which,
 after today's customers are initialized, is populated with the customers ordered by their arrival
 time. The fast food would then only have to check if the queue's frontmost customer has
 `c->arrivalTime >= game->time.hours` , pop the customer, and in case
 `game->time.checkHour(c->arrivalTime)` make the customer arrive.
+
+
+Person
+------
+Handle change of routes (from accessible to inaccessible and vice-versa) for 
+people already travelling. Need to stop them from continuing their journey 
+to prevent crashes when transport routes are changed, and transit appropriately 
+out of the flow of traffic.

@@ -36,7 +36,7 @@ namespace OT {
 				virtual void decodeXML(tinyxml2::XMLElement& xml);
 				
 				virtual rectd getMouseRegion();
-				void repositionMotor(int motor, int y);
+				bool repositionMotor(int motor, int y);
 				std::set<int> unservicedFloors;
 				
 				typedef std::set<Car *> Cars;

@@ -116,19 +116,19 @@ bool Game::handleEvent(sf::Event & event)
 		} break;
 		
 		case sf::Event::MouseButtonPressed: {
+			float2 mousePoint(event.MouseButton.X, event.MouseButton.Y);
+			rectf toolboxWindowRect(float2(toolboxWindow.window->GetAbsoluteLeft(), toolboxWindow.window->GetAbsoluteTop()), float2(toolboxWindow.window->GetClientWidth(), toolboxWindow.window->GetClientHeight()));
+			rectf timeWindowRect(float2(timeWindow.window->GetAbsoluteLeft(), timeWindow.window->GetAbsoluteTop()), float2(timeWindow.window->GetClientWidth(), timeWindow.window->GetClientHeight()));
+			rectf mapWindowRect(float2(mapWindow->GetAbsoluteLeft(), mapWindow->GetAbsoluteTop()), float2(mapWindow->GetClientWidth(), mapWindow->GetClientHeight()));
+			
 			// Prevent construction or triggering of tool if mouse cursor within toolboxWindow
-			if(	event.MouseButton.X - toolboxWindow.window->GetAbsoluteLeft() > -0.01f	&& event.MouseButton.X - (toolboxWindow.window->GetAbsoluteLeft() + toolboxWindow.window->GetClientLeft() + toolboxWindow.window->GetClientWidth()) < 0.01f &&
-				event.MouseButton.Y - toolboxWindow.window->GetAbsoluteTop() > -0.01f	&& event.MouseButton.Y - (toolboxWindow.window->GetAbsoluteTop() + toolboxWindow.window->GetClientTop() + toolboxWindow.window->GetClientHeight()) < 0.01f)
-				break;
+			if (toolboxWindowRect.containsPoint(mousePoint)) break;
 
 			// Prevent construction or triggering of tool if mouse cursor within timeWindow
-			if(	event.MouseButton.X - timeWindow.window->GetAbsoluteLeft() > -0.01f	&& event.MouseButton.X - (timeWindow.window->GetAbsoluteLeft() + timeWindow.window->GetClientLeft() + timeWindow.window->GetClientWidth()) < 0.01f &&
-				event.MouseButton.Y - timeWindow.window->GetAbsoluteTop() > -0.01f	&& event.MouseButton.Y - (timeWindow.window->GetAbsoluteTop() + timeWindow.window->GetClientTop() + timeWindow.window->GetClientHeight()) < 0.01f)
-				break;
+			if (timeWindowRect.containsPoint(mousePoint)) break;
 
 			// Prevent construction or triggering of tool if mouse cursor within mapWindow
-			if(	event.MouseButton.X - mapWindow->GetAbsoluteLeft() > -0.01f	&& event.MouseButton.X - (mapWindow->GetAbsoluteLeft() + mapWindow->GetClientLeft() + mapWindow->GetClientWidth()) < 0.01f &&
-				event.MouseButton.Y - mapWindow->GetAbsoluteTop() > -0.01f	&& event.MouseButton.Y - (mapWindow->GetAbsoluteTop() + mapWindow->GetClientTop() + mapWindow->GetClientHeight()) < 0.01f) {
+			if (mapWindowRect.containsPoint(mousePoint)) {
 				break;	// Break for now, may add code to handle viewport shift in future
 			}
 
@@ -150,15 +150,20 @@ bool Game::handleEvent(sf::Event & event)
 					Item::Item * item = itemFactory.make(toolPrototype, toolPosition);
 					addItem(item);
 					transferFunds(-toolPrototype->price);
-					updateRoutes();
+					if (item->isElevator() || item->isStairlike())
+						updateRoutes();
+					else
+						item->updateRoutes();
 					playOnce("simtower/construction/normal");
 				}
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
 					LOG(DEBUG, "destroy %s", itemBelowCursor->desc().c_str());
+					bool isTransport = false;
+					if (itemBelowCursor->isElevator() || itemBelowCursor->isStairlike()) isTransport = true;
 					removeItem(itemBelowCursor);
-					updateRoutes();
+					if (isTransport) updateRoutes();
 					playOnce("simtower/bulldozer");
 				}
 				else if (selectedTool == "finger") {
@@ -176,8 +181,8 @@ bool Game::handleEvent(sf::Event & event)
 							LOG(DEBUG, "clicked elevator %s on floor %i", itemBelowCursor->desc().c_str(), toolPosition.y);
 							if (!e->unservicedFloors.erase(toolPosition.y))
 								e->unservicedFloors.insert(toolPosition.y);
-							updateRoutes();
 							e->cleanQueues();
+							updateRoutes();
 						}
 					}
 				}
@@ -192,8 +197,7 @@ bool Game::handleEvent(sf::Event & event)
 		} break;
 		
 		case sf::Event::MouseMoved: {
-			if (draggingElevator) {
-				draggingElevator->repositionMotor(draggingMotor, toolPosition.y);
+			if (draggingElevator && draggingElevator->repositionMotor(draggingMotor, toolPosition.y)) {
 				updateRoutes();
 			}
 		} break;
@@ -571,7 +575,7 @@ Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item *
 				int f = n + i->position.y;
 				if (!i->connectsFloor(f)) continue;
 				Route sr = findRoute(route, f, i, destination);
-				if (r.empty() || sr.score() < r.score()) r = sr;
+				if (!sr.empty() && (r.empty() || sr.score() < r.score())) r = sr;
 			}
 		}
 		

@@ -157,7 +157,7 @@ rectd Elevator::getMouseRegion()
 	return rectd(p.x, p.y - s.y - 36, s.x, s.y + 2*36);
 }
 
-void Elevator::repositionMotor(int motor, int y)
+bool Elevator::repositionMotor(int motor, int y)
 {
 	assert(motor == -1 || motor == 1);
 	int height;
@@ -181,7 +181,9 @@ void Elevator::repositionMotor(int motor, int y)
 		for (Cars::iterator c = cars.begin(); c != cars.end(); c++) (*c)->reposition();
 		updateSprite();
 		cleanQueues();
+		return true;
 	}
+	return false;
 }
 
 void Elevator::clearCars()
@@ -199,7 +201,7 @@ void Elevator::addCar(int floor)
 
 bool Elevator::connectsFloor(int floor) const
 {
-	if (floor < position.y || floor > position.y + size.y) return false;
+	if (floor < position.y || floor >= position.y + size.y) return false;
 	return !unservicedFloors.count(floor);
 }
 
