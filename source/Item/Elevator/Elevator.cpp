@@ -196,6 +196,8 @@ void Elevator::addCar(int floor)
 {
 	Car * car = new Car(this);
 	car->setAltitude(floor);
+	car->startAltitude = floor;
+	car->destinationFloor = floor;
 	cars.insert(car);
 }
 

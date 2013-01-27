@@ -1,6 +1,7 @@
 #include <cassert>
 #include "Application.h"
 #include "Game.h"
+#include "Item/Lobby.h"
 
 #ifdef _WIN32
 #include "Math/Round.h"
@@ -72,6 +73,8 @@ Game::~Game()
 {
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) delete *i;
 	items.clear();
+	itemsByFloor.clear();
+	itemsByType.clear();
 }
 
 void Game::activate()
@@ -134,11 +137,18 @@ bool Game::handleEvent(sf::Event & event)
 
 			if (toolPrototype) {
 				bool handled = false;
+				recti toolBoundary = recti(toolPosition, toolPrototype->size);
 				if (toolPrototype->id.find("elevator") == 0) {
-					for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
-						if ((*i)->prototype == toolPrototype && (*i)->getRect().containsPoint(toolPosition)) {
-							LOG(DEBUG, "add car on floor %i to elevator %s", toolPosition.y, (*i)->desc().c_str());
-							((Item::Elevator::Elevator *)*i)->addCar(toolPosition.y);
+					const ItemSet &elevators = itemsByType[toolPrototype->id];
+					for (ItemSet::const_iterator i = elevators.begin(); i != elevators.end(); i++) {
+						Item::Elevator::Elevator * e = (Item::Elevator::Elevator *) *i;
+						recti itemRect = e->getRect();
+						if (toolBoundary.minX() == itemRect.minX() && 
+							toolBoundary.maxX() == itemRect.maxX() &&
+							toolBoundary.minY() >= itemRect.minY() &&
+							toolBoundary.maxY() <= itemRect.maxY()) {
+							LOG(DEBUG, "add car on floor %i to elevator %s", toolPosition.y, e->desc().c_str());
+							e->addCar(toolPosition.y);
 							transferFunds(-80000);
 							handled = true;
 							break;
@@ -146,24 +156,186 @@ bool Game::handleEvent(sf::Event & event)
 					}
 				}
 				if (!handled) {
-					LOG(DEBUG, "construct %s at %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y);
-					Item::Item * item = itemFactory.make(toolPrototype, toolPosition);
-					addItem(item);
-					transferFunds(-toolPrototype->price);
-					if (item->isElevator() || item->isStairlike())
-						updateRoutes();
-					else
-						item->updateRoutes();
-					playOnce("simtower/construction/normal");
+					bool constructionBlocked = false;
+					int minFloorX = INT_MAX;
+					int maxFloorX = INT_MIN;
+					if (toolPrototype->id.compare("lobby") == 0) {
+						if (toolPosition.y % 15 != 0) constructionBlocked = true;
+						else if (toolPosition.y != 0) {
+							// Check floor width below
+							ItemSet itemsOnFloor = itemsByFloor[toolPosition.y - 1];
+							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !constructionBlocked && ii != itemsOnFloor.end(); ii++) {
+								Item::Item * i = *ii;
+								if (i->canHaulPeople()) continue;
+								minFloorX = std::min(minFloorX, i->position.x);
+								maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+							}
+
+							// Check for non-lobby items blocking construction on lobby floor
+							itemsOnFloor = itemsByFloor[toolPosition.y];
+							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !constructionBlocked && ii != itemsOnFloor.end(); ii++) {
+								Item::Item * i = *ii;
+								if (i->canHaulPeople() || i->prototype->id.compare("lobby") == 0) continue;
+								minFloorX = std::max(minFloorX, i->getRect().maxX());
+								maxFloorX = std::min(maxFloorX, i->position.x);
+							}
+						} else {
+							minFloorX = INT_MIN;
+							maxFloorX = INT_MAX;
+						}
+					} else if (toolPrototype->id.compare("stairs") == 0 || toolPrototype->id.compare("escalator") == 0) {
+						// Check obstruction from other transport items
+						const ItemSet &stairlike = itemsByType["stairlike"];
+						for (ItemSet::const_iterator ii = stairlike.begin(); !constructionBlocked && ii != stairlike.end(); ii++) {
+							Item::Item * i = *ii;
+							if (i->position.y != toolPosition.y) continue;
+							recti itemRect = i->getRect();
+							if (toolBoundary.minX() < itemRect.maxX() && toolBoundary.maxX() > itemRect.minX()) constructionBlocked = true;
+						}
+						
+						const ItemSet &elevators = itemsByType["elevator"];
+						for (ItemSet::const_iterator ii = elevators.begin(); !constructionBlocked && ii != elevators.end(); ii++) {
+							Item::Item * i = *ii;
+							recti itemRect = i->getRect();
+							itemRect.origin.y -= 1;
+							itemRect.size.y += 2;
+							if (toolBoundary.intersectsRect(itemRect)) constructionBlocked = true;
+						}
+
+						// Check floor width above
+						ItemSet itemsNearby = itemsByFloor[toolPosition.y + 1];
+						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
+							Item::Item * i = *ii;
+							if (i->canHaulPeople()) continue;
+							minFloorX = std::min(minFloorX, i->position.x);
+							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						}
+						if (itemsNearby.empty() || toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX)
+							constructionBlocked = true;
+
+						// Check floor width
+						minFloorX = INT_MAX;
+						maxFloorX = INT_MIN;
+						itemsNearby = itemsByFloor[toolPosition.y];
+						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
+							Item::Item * i = *ii;
+							if (i->canHaulPeople()) continue;
+							minFloorX = std::min(minFloorX, i->position.x);
+							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						}
+					} else if (toolPrototype->id.find("elevator") == 0) {
+						// Check obstruction from other transport items
+						toolBoundary.origin.y -= 1;
+						toolBoundary.size.y += 2;
+
+						const ItemSet &stairlike = itemsByType["stairlike"];
+						for (ItemSet::const_iterator ii = stairlike.begin(); !constructionBlocked && ii != stairlike.end(); ii++) {
+							Item::Item * i = *ii;
+							if (toolBoundary.intersectsRect(i->getRect())) constructionBlocked = true;
+						}
+
+						const ItemSet &elevators = itemsByType["elevator"];
+						for (ItemSet::const_iterator ii = elevators.begin(); !constructionBlocked && ii != elevators.end(); ii++) {
+							Item::Item * i = *ii;
+							recti itemRect = i->getRect();
+							itemRect.origin.y -= 1;
+							itemRect.size.y += 2;
+							if (toolBoundary.intersectsRect(itemRect)) constructionBlocked = true;
+						}
+
+						// Check floor width below/above if constructing above/below ground level
+						ItemSet itemsNearby;
+						if (toolPosition.y > 0) itemsNearby = itemsByFloor[toolPosition.y - 1];
+						else if (toolPosition.y < 0) itemsNearby = itemsByFloor[toolPosition.y + 1];
+						else itemsNearby = itemsByFloor[0];
+						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
+							Item::Item * i = *ii;
+							if (i->canHaulPeople()) continue;
+							minFloorX = std::min(minFloorX, i->position.x);
+							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						}
+					} else {
+						if (toolPosition.y == 0) constructionBlocked = true;
+
+						// Check obstruction from other buildings
+						ItemSet itemsNearby;
+						itemsNearby = itemsByFloor[toolPosition.y];
+						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
+							Item::Item * i = *ii;
+							if (i->canHaulPeople()) continue;
+							if (toolBoundary.intersectsRect(i->getRect())) constructionBlocked = true;
+						}
+
+						// Check floor width below/above if constructing above/below ground level
+						if (toolPosition.y > 0) itemsNearby = itemsByFloor[toolPosition.y - 1];
+						else itemsNearby = itemsByFloor[toolPosition.y + 1];
+						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
+							Item::Item * i = *ii;
+							if (i->canHaulPeople()) continue;
+							minFloorX = std::min(minFloorX, i->position.x);
+							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						}
+					}
+					if (toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX)
+						constructionBlocked = true;
+
+					if (!constructionBlocked) {
+						LOG(DEBUG, "construct %s at %ix%i, size %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y, toolPrototype->size.x, toolPrototype->size.y);
+						if (toolPrototype->id.compare("lobby") == 0) {
+							// Look for existing lobby to extend
+							bool existingLobby = false;
+							const ItemSet &itemsOnFloor = itemsByFloor[toolPosition.y];
+							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !constructionBlocked && ii != itemsOnFloor.end(); ii++) {
+								Item::Item * i = *ii;
+								if (i->prototype->id.compare("lobby") == 0) {
+									Item::Lobby * l = (Item::Lobby *) i;
+									float diff = 0;
+									if (toolPosition.x < l->position.x) {
+										diff = l->position.x - toolPosition.x;
+										l->size.x += diff;
+										l->setPosition(toolPosition);
+									} else {
+										diff = toolPosition.x + toolPrototype->size.x - l->getRect().maxX();
+										if (diff < 0) diff = 0;
+										l->size.x += diff;
+									}
+									transferFunds(-toolPrototype->price * (diff/4));
+									l->updateSprite();
+									playOnce("simtower/construction/flexible");
+									existingLobby = true;
+								}
+							}
+							// Otherwise construct a new lobby
+							if (!existingLobby) {
+								Item::Item * item = itemFactory.make(toolPrototype, toolPosition);
+								addItem(item);
+								transferFunds(-toolPrototype->price);
+								playOnce("simtower/construction/normal");
+							}
+						} else {
+							Item::Item * item = itemFactory.make(toolPrototype, toolPosition);
+							addItem(item);
+							transferFunds(-toolPrototype->price);
+							if (item->canHaulPeople()) {
+								if (item->isElevator()) selectTool("finger");
+								updateRoutes();
+							} else
+								item->updateRoutes();
+							playOnce("simtower/construction/normal");
+						}
+					} else {
+						LOG(DEBUG, "cannot construct %s at %ix%i, size %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y, toolPrototype->size.x, toolPrototype->size.y);
+						playOnce("simtower/construction/impossible");
+					}
 				}
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
 					LOG(DEBUG, "destroy %s", itemBelowCursor->desc().c_str());
-					bool isTransport = false;
-					if (itemBelowCursor->isElevator() || itemBelowCursor->isStairlike()) isTransport = true;
+					bool canHaulPeople = false;
+					if (itemBelowCursor->canHaulPeople()) canHaulPeople = true;
 					removeItem(itemBelowCursor);
-					if (isTransport) updateRoutes();
+					if (canHaulPeople) updateRoutes();
 					playOnce("simtower/bulldozer");
 				}
 				else if (selectedTool == "finger") {
@@ -370,12 +542,27 @@ void Game::addItem(Item::Item * item)
 {
 	assert(item);
 	items.insert(item);
+	itemsByFloor[item->position.y].insert(item);
+	itemsByType[item->prototype->id].insert(item);
+
+	if (item->canHaulPeople()) {
+		itemsByType["canHaulPeople"].insert(item);
+		if (item->isElevator()) itemsByType["elevator"].insert(item);
+		else itemsByType["stairlike"].insert(item);
+	}
 }
 
 void Game::removeItem(Item::Item * item)
 {
 	assert(item);
 	items.erase(item);
+	itemsByFloor[item->position.y].erase(item);
+	itemsByType[item->prototype->id].erase(item);
+	if (item->canHaulPeople()) {
+		itemsByType["canHaulPeople"].erase(item);
+		if (item->isElevator()) itemsByType["elevator"].erase(item);
+		else itemsByType["stairlike"].erase(item);
+	}
 	if (item == itemBelowCursor) itemBelowCursor = NULL;
 }
 
