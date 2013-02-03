@@ -33,7 +33,7 @@ int vasprintf(char **strp, const char *fmt, va_list ap) {
 		*strp = new char[buffer_size];
 		size = vsnprintf(*strp, buffer_size, fmt, ap);
 	}
-	assert(size < buffer_size);
+	assert(size <= buffer_size);
 #else
 	if(size >= buffer_size) {
 		delete *strp;

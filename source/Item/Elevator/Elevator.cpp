@@ -178,7 +178,25 @@ bool Elevator::repositionMotor(int motor, int y)
 		setPosition(int2(position.x, newy));
 		size.y = height;
 		//TODO: constrain cars to stay within elevator bounds.
-		for (Cars::iterator c = cars.begin(); c != cars.end(); c++) (*c)->reposition();
+		for (Cars::iterator c = cars.begin(); c != cars.end(); c++) {
+			Car * car = *c;
+			if (car->altitude < newy)				 car->altitude = newy;
+			else if (car->altitude >= newy + height) car->altitude = newy + height - 1;
+			
+			if (car->destinationFloor < newy)				 car->destinationFloor = newy;
+			else if (car->destinationFloor >= newy + height) car->destinationFloor = newy + height - 1;
+
+			if (car->state == Car::kIdle) car->startAltitude = car->altitude;
+
+			(*c)->reposition();
+		}
+		
+		int maxY = newy + height;
+		for (std::set<int>::iterator i = unservicedFloors.begin(); i != unservicedFloors.end();) {
+			int floor = *i;
+			if (floor < newy || floor >= maxY) unservicedFloors.erase(i++);
+			else							   i++;
+		}
 		updateSprite();
 		cleanQueues();
 		return true;

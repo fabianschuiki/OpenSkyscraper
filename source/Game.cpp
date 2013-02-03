@@ -188,9 +188,16 @@ bool Game::handleEvent(sf::Event & event)
 						const ItemSet &stairlike = itemsByType["stairlike"];
 						for (ItemSet::const_iterator ii = stairlike.begin(); !constructionBlocked && ii != stairlike.end(); ii++) {
 							Item::Item * i = *ii;
-							if (i->position.y != toolPosition.y) continue;
-							recti itemRect = i->getRect();
-							if (toolBoundary.minX() < itemRect.maxX() && toolBoundary.maxX() > itemRect.minX()) constructionBlocked = true;
+							if (i->position.y == toolPosition.y) {
+								recti itemRect = i->getRect();
+								if (toolBoundary.minX() >= itemRect.minX() && toolBoundary.minX() <= itemRect.maxX()) constructionBlocked = true;
+							} else if (i->position.y == toolPosition.y - 1) {
+								recti itemRect = i->getRect();
+								if (toolBoundary.minX() > itemRect.minX() && toolBoundary.minX() < itemRect.maxX()) constructionBlocked = true;
+							} else if (i->position.y == toolPosition.y + 1) {
+								recti itemRect = i->getRect();
+								if (toolBoundary.maxX() < itemRect.maxX() && toolBoundary.maxX() > itemRect.minX()) constructionBlocked = true;
+							}
 						}
 						
 						const ItemSet &elevators = itemsByType["elevator"];
@@ -331,6 +338,10 @@ bool Game::handleEvent(sf::Event & event)
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
+					if (itemBelowCursor->prototype->id.compare("lobby") == 0) {
+						playOnce("simtower/construction/impossible");
+						break;
+					}
 					LOG(DEBUG, "destroy %s", itemBelowCursor->desc().c_str());
 					bool canHaulPeople = false;
 					if (itemBelowCursor->canHaulPeople()) canHaulPeople = true;
