@@ -1,3 +1,6 @@
+General
+-------
+
 - create `CommmandLineArguments` class which handles interpretation of the command line arguments
   (e.g. `--dump-simtower <path>`)
 - create `FileSystem` class to do file manipulation (move, copy, mkdir, etc.)
@@ -8,12 +11,8 @@
 - Modify `Time` so that `absolute` is a day counter that advances evenly. Add some code that
   calculates the current hour by scaling the absolute time differently for different phases of the
   day to create the effect of time running at different speeds.
-
-
-Game
-----
-
 - `mapWindow` should be its own class `MapWindow`, like the other two.
+
 
 ### SFML 2
 Maybe we should move everything to SFML version 2.0.
@@ -24,6 +23,10 @@ Put a limitation mechanim in place that prevents the same sound from being playe
 ### Pausing doesn't affect elevators
 When pausing the game, elevators keep moving as if the game was unpaused. The weird thing is that the elevators react to speedup by moving faster. Why wouldn't they react to the speeddown?
 
+### Clean up CMakeLists.txt
+There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
+
+
 Item::FastFood
 --------------
 [DONE] In order to make the customers arrive at the tower, the fast food item has to iterate over all its
@@ -32,6 +35,8 @@ after today's customers are initialized, is populated with the customers ordered
 time. The fast food would then only have to check if the queue's frontmost customer has
 `c->arrivalTime >= game->time.hours` , pop the customer, and in case
 `game->time.checkHour(c->arrivalTime)` make the customer arrive.
+
+New customers arrive until the fast food closes, or at least the transit times make it seem so. Maybe we should change their behaviour such that customers won't enter the tower after 1900. This would also make the fast foods look empty towards the end of the day, which is a nice thing to have.
 
 
 Person
