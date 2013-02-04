@@ -21,6 +21,9 @@ Maybe we should move everything to SFML version 2.0.
 ### Audio
 Put a limitation mechanim in place that prevents the same sound from being played at the same time. One way of doing this would be to create a map that contains the name and timestamp for each sound played. Whenever a new sound is to be played, the system checks whether enough time expired since the timestamp for this sound name, thus preventing sounds from playing 10-fold.
 
+### Pausing doesn't affect elevators
+When pausing the game, elevators keep moving as if the game was unpaused. The weird thing is that the elevators react to speedup by moving faster. Why wouldn't they react to the speeddown?
+
 Item::FastFood
 --------------
 In order to make the customers arrive at the tower, the fast food item has to iterate over all its

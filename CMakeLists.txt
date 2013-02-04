@@ -100,3 +100,16 @@ target_link_libraries(${EXECUTABLE_NAME} ${FREETYPE_LIBRARIES})
 # OpenGL (Needed by Rocket)
 find_package(OpenGL REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_gl_LIBRARY})
+
+# Add the PkgConfig package to find packages that CMake doesn't.
+find_package(PkgConfig)
+
+# libmspack for decompressing KWAJ files (SIMTOWER.EX_)
+# http://www.cabextract.org.uk/libmspack/
+pkg_check_modules(MSPACK libmspack)
+if (MSPACK_FOUND)
+	include_directories(${MSPACK_INCLUDE_DIRS})
+	link_directories(${MSPACK_LIBRARY_DIRS})
+	target_link_libraries(${EXECUTABLE_NAME} ${MSPACK_LIBRARIES})
+	add_definitions(-DMSPACK)
+endif (MSPACK_FOUND)

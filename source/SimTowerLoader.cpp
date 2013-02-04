@@ -9,6 +9,13 @@
 #include <fstream>
 #include <sys/stat.h>
 
+//Use libmspack if available to decompress SIMTOWER.EX_
+#ifdef MSPACK
+extern "C" {
+	#include <mspack.h>
+}
+#endif
+
 #include "Application.h"
 #include "Logger.h"
 #include "SimTowerLoader.h"
@@ -50,15 +57,55 @@ bool SimTowerLoader::load()
 	for (int i = 0; i < paths.size() && !success; i++) {
 		success = exe.load(paths[i]);
 	}
+
+	//Since no SIMTOWER.EXE was found, try to find a compressed SIMTOWER.EX_.
+	DataManager::Paths compressedPaths;
+#ifdef MSPACK
 	if (!success) {
-		LOG(WARNING, "unable to load SimTower executable");
+		//TODO: This is not really portable, do stuff differently.
+		Path decompressedPath("/tmp/SIMTOWER.EXE");
+
+		//Iterate through the possible locations and try to decompress each, until one is found.
+		compressedPaths = app->data.paths("SIMTOWER.EX_");
+		mskwaj_decompressor * d = mspack_create_kwaj_decompressor(NULL);
+		if (d) {
+			for (int i = 0; i < compressedPaths.size() && !success; i++) {
+				const Path &path = compressedPaths[i];
+				if (!fileExists(path)) continue;
+
+				LOG(INFO, "Decompressing %s to %s", path.c_str(), decompressedPath.c_str());
+				int result = d->decompress(d, path.c_str(), decompressedPath.c_str());
+				if (result != MSPACK_ERR_OK) {
+					LOG(ERROR, "Unable to decompress file %s.", path.c_str());
+				} else {
+					success = true;
+				}
+			}
+			mspack_destroy_kwaj_decompressor(d);
+		} else {
+			LOG(WARNING, "Unable to initialize mskwaj_decompressor. Decompressing SIMROWER.EX_ is therefore not possible.");
+		}
+
+		//If the decompression was successful, try to load the resources from there.
+		if (success) {
+			success = exe.load(decompressedPath);
+			if (!success) {
+				LOG(WARNING, "Unable to load previously decompressed file %s.", decompressedPath.c_str());
+			}
+		}
+	}
+#endif
+
+	if (!success) {
+		LOG(WARNING, "Unable to load SimTower executable");
 		for (int i = 0; i < paths.size(); i++) {
 			LOG(INFO, "  tried %s", paths[i].c_str());
 		}
+		for (int i = 0; i < compressedPaths.size(); i++) {
+			LOG(INFO, "  tried %s (compressed)", compressedPaths[i].c_str());
+		}
 		return false;
 	}
-	
-	//TODO: dump the exe if the user requested this through a command line argument.
 	
 	//Prepare the bitmaps. This prefixes bitmap resources with a BMP header.
 	preparePalettes();
