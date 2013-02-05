@@ -47,7 +47,7 @@ namespace OT {
 		Time();
 		
 		double absolute;
-		double dta;
+		double dta; //absolute time delta
 		double hour;
 		int day;
 		int quarter;

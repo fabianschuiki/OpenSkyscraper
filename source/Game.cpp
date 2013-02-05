@@ -713,6 +713,15 @@ void Game::selectTool(const char * tool)
  *  internally. */
 void Game::playOnce(Path sound)
 {
+	//Make sure we don't play sounds to frequently.
+	if (soundPlayTimes.count(sound)) {
+		if (soundPlayTimes[sound] > time.absolute - 0.25) {
+			return;
+		}
+	}
+	soundPlayTimes[sound] = time.absolute;
+
+	//Actually play the sound.
 	Sound * snd = new Sound;
 	snd->SetBuffer(app.sounds[sound]);
 	snd->Play(this);
