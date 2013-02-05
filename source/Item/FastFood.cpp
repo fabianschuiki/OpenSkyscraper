@@ -142,3 +142,13 @@ FastFood::Customer::Customer(FastFood * item)
 	Type types[] = {kMan, kWoman1, kWoman2, kWomanWithChild1};
 	type = types[rand() % 4];
 }
+
+Path FastFood::getRandomBackgroundSoundPath()
+{
+	if (!open) return "";
+	char name[128];
+	snprintf(name, 128, "simtower/fastfood/%i", rand() % 3);
+	// Maybe we should make the coice of the sound based on the number of customers, not
+	// completely random.
+	return name;
+}

@@ -509,6 +509,12 @@ void Game::advance(double dt)
 		prevFloor = n.toFloor;
 	}
 	glEnd();
+
+	//Play background sounds at a regular interval.
+	const double backgroundSoundPeriod = 0.5 * Time::kBaseSpeed;
+	if (floor(time.absolute / backgroundSoundPeriod) != floor((time.absolute - time.dta) / backgroundSoundPeriod)) {
+		playRandomBackgroundSound();
+	}
 	
 	//Adjust pitch of playing sounds.
 	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end();) {
@@ -715,7 +721,7 @@ void Game::playOnce(Path sound)
 {
 	//Make sure we don't play sounds to frequently.
 	if (soundPlayTimes.count(sound)) {
-		if (soundPlayTimes[sound] > time.absolute - 0.25) {
+		if (soundPlayTimes[sound] > time.absolute - 0.25 * Time::kBaseSpeed) {
 			return;
 		}
 	}
@@ -726,6 +732,45 @@ void Game::playOnce(Path sound)
 	snd->SetBuffer(app.sounds[sound]);
 	snd->Play(this);
 	autoreleaseSounds.insert(snd);
+}
+
+/** Randomly picks one of the items in view and asks it for a background sound that it would like
+ * to have played back. */
+void Game::playRandomBackgroundSound()
+{
+	sf::RenderWindow &win = app.window;
+	sf::FloatRect view = win.GetView().GetRect();
+
+	//Pick a random value between 0 and the screen area.
+	double r = (double)rand() / RAND_MAX * (view.Right-view.Left) * (view.Bottom-view.Top);
+
+	//Iterate through the items that are in view, subtracting each item's area from the random
+	//value until it drops below 0. That item will be given the chance to play the sound. This
+	//effectively picks a random item in view, weighted by the item areas.
+	Item::Item *pick = NULL;
+	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
+		if ((*i)->layer != 0) continue;
+		const sf::Vector2f & vp = (*i)->GetPosition();
+		const sf::Vector2f & vs = (*i)->GetSize();
+		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
+			int area = vs.x * vs.y;
+			r -= area;
+			if (r <= 0) {
+				pick = *i;
+				break;
+			}
+		}
+	}
+
+	//Ask the picked item to play the sound.
+	if (pick) {
+		LOG(DEBUG, "Playing random background sound of %s", pick->desc().c_str());
+		Path path = pick->getRandomBackgroundSoundPath();
+		if (!path.str().empty()) {
+			LOG(DEBUG, "-> sound is %s", path.c_str());
+			playOnce(path);
+		}
+	}
 }
 
 /** Called whenever the transportation layout of the tower changes. Items and people should update

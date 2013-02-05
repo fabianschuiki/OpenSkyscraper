@@ -84,6 +84,7 @@ namespace OT {
 		SoundSet playingSounds;
 		std::map<Path, double> soundPlayTimes;
 		void playOnce(Path sound);
+		void playRandomBackgroundSound();
 		
 		void updateRoutes();
 		Route findRoute(Item::Item * start, Item::Item * destination);
