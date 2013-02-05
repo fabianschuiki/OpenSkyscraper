@@ -8,7 +8,7 @@ General
 - In `Route`, keep track of how many stairs and elevators were used. Then make the pathfinder limit
   the amount of stairs and elevators that are used per route. Otherwise algorithm complexity will
   explode.
-- Modify `Time` so that `absolute` is a day counter that advances evenly. Add some code that
+- [DONE a long time ago] Modify `Time` so that `absolute` is a day counter that advances evenly. Add some code that
   calculates the current hour by scaling the absolute time differently for different phases of the
   day to create the effect of time running at different speeds.
 - `mapWindow` should be its own class `MapWindow`, like the other two.
@@ -18,7 +18,7 @@ General
 Maybe we should move everything to SFML version 2.0.
 
 ### Audio
-Put a limitation mechanim in place that prevents the same sound from being played at the same time. One way of doing this would be to create a map that contains the name and timestamp for each sound played. Whenever a new sound is to be played, the system checks whether enough time expired since the timestamp for this sound name, thus preventing sounds from playing 10-fold.
+[DONE] Put a limitation mechanim in place that prevents the same sound from being played at the same time. One way of doing this would be to create a map that contains the name and timestamp for each sound played. Whenever a new sound is to be played, the system checks whether enough time expired since the timestamp for this sound name, thus preventing sounds from playing 10-fold.
 
 ### Pausing doesn't affect elevators
 When pausing the game, elevators keep moving as if the game was unpaused. The weird thing is that the elevators react to speedup by moving faster. Why wouldn't they react to the speeddown?
@@ -29,9 +29,9 @@ There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and Objec
 
 Background Noise
 ----------------
-Many items produce background noise in the original game. E.g. Fast Foods, Offices and Condos had really distinctive sounds. Write a system that regularly iterates over a subset of all visible items and asks each for a background sound to be played. The system should be fair, i.e. each item should have a fair chance of playing back some sound.
+[DONE] Many items produce background noise in the original game. E.g. Fast Foods, Offices and Condos had really distinctive sounds. Write a system that regularly iterates over a subset of all visible items and asks each for a background sound to be played. The system should be fair, i.e. each item should have a fair chance of playing back some sound.
 
-My current implementation idea: Iterate through the visible items at regular intervals, say 0.5s. Each item has a playback chance calculated as `p = itemArea / screenArea = itemWidth * itemHeight / screenArea`. Through a random number an item is picked that is asked for a sound which is then played back. One caveat here is that simply using `screenArea` in the above formula yields a total probability of `p >= 1`, since the total area of all items may actually be larger than the screen area due to items being only partially visible. Substitute `screenArea` in the above formula with `K = max(screenArea, summedItemAreas)`.
+[DONE] My current implementation idea: Iterate through the visible items at regular intervals, say 0.5s. Each item has a playback chance calculated as `p = itemArea / screenArea = itemWidth * itemHeight / screenArea`. Through a random number an item is picked that is asked for a sound which is then played back. One caveat here is that simply using `screenArea` in the above formula yields a total probability of `p >= 1`, since the total area of all items may actually be larger than the screen area due to items being only partially visible. Substitute `screenArea` in the above formula with `K = max(screenArea, summedItemAreas)`.
 
 
 Item::FastFood
