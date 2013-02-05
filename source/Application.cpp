@@ -26,6 +26,7 @@ Application::Application(int argc, char * argv[])
 	App = this;
 	
 	assert(argc >= 1 && "argv[0] is required");
+	dumpResources = false;
 	
 	// Code to retrieve current working directory
 	// May want to move to Boost library for easier path manipulation
@@ -67,6 +68,11 @@ Application::Application(int argc, char * argv[])
 		if (strcmp(argv[i], "--log") == 0) {
 			assert(i+1 < argc && "--log is missing path");
 			logger.setOutputPath(argv[i++]);
+		}
+		if (strcmp(argv[i], "--dump-resources") == 0) {
+			assert(i+1 < argc && "--dump-resources is missing path");
+			dumpResources = true;
+			dumpResourcesPath = argv[i+1];
 		}
 	}
 	
@@ -119,9 +125,9 @@ void Application::init()
 	if (!simtower->load()) {
 		LOG(WARNING, "unable to load SimTower resources");
 	}
-	//TODO: make this dependent on a command line switch
-	Path dump_path = this->getPath().append("SimTower_Resources");
-	simtower->dump(dump_path);
+	if (dumpResources) {
+		simtower->dump(dumpResourcesPath);
+	}
 	delete simtower; simtower = NULL;
 	//exitCode = 1;
 	

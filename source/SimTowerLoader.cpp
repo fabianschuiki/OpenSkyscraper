@@ -1027,7 +1027,20 @@ void SimTowerLoader::loadSounds()
 		{0x9b5a, "construction/impossible"},	//annoying "click" :)
 		{0x9b5b, "bulldozer"},
 		
+		{0x8568, "restaurant"},
+		{0x85a8, "office"},
+		{0x8ba8, "metro"},
 		{0x8b28, "partyhall"},
+		{0x8569, "fastfood/0"},
+		{0x9f40, "fastfood/1"},
+		{0x8668, "fastfood/2"},
+
+		{0x86a8, "car/departing"},
+		{0x86a9, "car/arriving"},
+
+		{0x8628, "doorbell"},
+		{0x88e8, "hover"},
+		{0x8629, "toilet"},
 		
 		{0x9388, "birds/morning"},
 		{0x9389, "cock"},
@@ -1043,6 +1056,25 @@ void SimTowerLoader::loadSounds()
 		{0xa711, "applause"},
 		{0xa712, "santa"},
 		{0xa71d, "cash"},
+		{0xa715, "wind"},
+
+		{0xa329, "cinema/movie0"},
+		{0xa32a, "cinema/movie1"},
+		{0xa32b, "cinema/movie2"},
+		{0xa32c, "cinema/movie3"},
+		{0xa32d, "cinema/movie4"},
+		{0xa32e, "cinema/movie5"},
+		{0xa32f, "cinema/movie6"},
+		{0xa330, "cinema/movie7"},
+		{0xa331, "cinema/movie8"},
+		{0xa332, "cinema/movie9"},
+		{0xa333, "cinema/movie10"},
+		{0xa334, "cinema/movie11"},
+		{0xa335, "cinema/movie12"},
+		{0xa336, "cinema/movie13"},
+		{0xa337, "cinema/movie14"},
+
+		{0xce20, "splashscreen"},
 		
 		{0x9771, "elevator/arriving"},
 		{0x9772, "elevator/departing"},
