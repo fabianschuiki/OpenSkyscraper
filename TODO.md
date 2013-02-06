@@ -52,3 +52,14 @@ Handle change of routes (from accessible to inaccessible and vice-versa) for
 people already travelling. Need to stop them from continuing their journey 
 to prevent crashes when transport routes are changed, and transit appropriately 
 out of the flow of traffic.
+
+
+Hotels
+------
+Implement the hotel system. For this, maybe have a look at the implementation in the `master` branch. It is not very well-written but reproduces the original game's behaviour. In general what should happen is:
+
+- Hotels should start to get populated after 17:00. Occupants immediately queue up in the lobby.
+- Occupants should move out for dinner after ~0.5h after entering their room. This means they will look for Item::Restaurant items, or leave the tower.
+- All occupants should go to sleep between 23:00 and 1:30.
+- Occupants should get up between 6:00 and 8:00 and leave between 8:00 and 10:00 and leave the room back in the dirty state.
+- Housekeepers should move to dirty bedrooms, stay there and clean for a fixed amount of absolute time. This is important since otherwise the housekeepers would take far longer to clean a room during noon than at 10:00. After leaving the hotel room, the room should be reset to the tidy state.
