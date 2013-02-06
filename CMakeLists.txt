@@ -71,9 +71,6 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/thirdparty" ${CMAKE_MODULE_PATH})
 # Include the ObjectiveLua headers.
 include_directories(thirdparty/objectivelua/include)
 
-# Include AStar-Search headers
-include_directories(thirdparty/astar-search/)
-
 # Lua
 find_package(Lua51 REQUIRED)
 include_directories(${LUA_INCLUDE_DIR})
@@ -81,7 +78,7 @@ target_link_libraries(${EXECUTABLE_NAME} ${LUA_LIBRARY})
 
 # SFML
 if (WIN32)
-	set(SFMLDIR "" CACHE PATH "SFML directory")
+	set(SFMLDIR "" CACHE STRING "SFML directory")
 endif ()
 set(SFML_STATIC_LIBRARIES FALSE CACHE BOOL "Check if linking to SFML static libraries")
 find_package(SFML REQUIRED audio graphics window system)
@@ -103,14 +100,14 @@ if (CMAKE_BUILD_TYPE MATCHES Debug)
 	set(rocket_debug "debugger")
 endif()
 if (WIN32)
-	set(ROCKETDIR "" CACHE PATH "libRocket directory")
+	set(ROCKETDIR "" CACHE STRING "libRocket directory")
 endif ()
 find_package(Rocket REQUIRED core controls ${rocket_debug})
 include_directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
 
 if (WIN32)
-	set(FREETYPE_DIR "" CACHE PATH "freetype directory")
+	set(FREETYPE_DIR "" CACHE STRING "freetype directory")
 	set(ENV{FREETYPE_DIR} ${FREETYPE_DIR})
 endif ()
 find_package(Freetype REQUIRED)

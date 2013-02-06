@@ -4,6 +4,3 @@
 [submodule "thirdparty/tinyxml2"]
 	path = thirdparty/tinyxml2
 	url = https://github.com/leethomason/tinyxml2.git
-[submodule "thirdparty/astar-search"]
-	path = thirdparty/astar-search
-	url = https://github.com/justinhj/astar-algorithm-cpp.git
