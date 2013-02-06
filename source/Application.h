@@ -64,6 +64,9 @@ namespace OT
 		std::stack<State *> states;
 		void pushState(State * state);
 		void popState();
+
+		bool dumpResources;
+		Path dumpResourcesPath;
 	};
 	
 	extern Application * App;

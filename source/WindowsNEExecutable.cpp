@@ -12,13 +12,12 @@ using std::ios;
 using std::ios_base;
 
 bool WindowsNEExecutable::load(Path path)
-{
-	LOG(DEBUG, "from %s", (const char *)path);
-	
+{	
 	//Open the file for reading.
 	ifstream f(path.c_str(), ios_base::in | ios_base::binary);
 	if (!f.is_open())
 		return false;
+	LOG(DEBUG, "from %s", (const char *)path);
 	
 	//Read the offset at which the segmented EXE header is located.
 	uint32_t off_sh;

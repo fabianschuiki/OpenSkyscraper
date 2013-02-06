@@ -9,6 +9,7 @@
 #include "../Person.h"
 #include "../Route.h"
 #include "../Sprite.h"
+#include "../Path.h"
 #include "Prototype.h"
 
 namespace OT {
@@ -67,6 +68,8 @@ namespace OT {
 			virtual bool connectsFloor(int floor) const { return false; }
 			virtual bool isStairlike() const { return false; }
 			virtual bool isElevator()  const { return false; }
+
+			virtual Path getRandomBackgroundSoundPath() { return ""; }
 		};
 	}
 }

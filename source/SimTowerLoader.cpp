@@ -9,6 +9,13 @@
 #include <fstream>
 #include <sys/stat.h>
 
+//Use libmspack if available to decompress SIMTOWER.EX_
+#ifdef MSPACK
+extern "C" {
+	#include <mspack.h>
+}
+#endif
+
 #include "Application.h"
 #include "Logger.h"
 #include "SimTowerLoader.h"
@@ -50,15 +57,55 @@ bool SimTowerLoader::load()
 	for (int i = 0; i < paths.size() && !success; i++) {
 		success = exe.load(paths[i]);
 	}
+
+	//Since no SIMTOWER.EXE was found, try to find a compressed SIMTOWER.EX_.
+	DataManager::Paths compressedPaths;
+#ifdef MSPACK
 	if (!success) {
-		LOG(WARNING, "unable to load SimTower executable");
+		//TODO: This is not really portable, do stuff differently.
+		Path decompressedPath("/tmp/SIMTOWER.EXE");
+
+		//Iterate through the possible locations and try to decompress each, until one is found.
+		compressedPaths = app->data.paths("SIMTOWER.EX_");
+		mskwaj_decompressor * d = mspack_create_kwaj_decompressor(NULL);
+		if (d) {
+			for (int i = 0; i < compressedPaths.size() && !success; i++) {
+				const Path &path = compressedPaths[i];
+				if (!fileExists(path)) continue;
+
+				LOG(INFO, "Decompressing %s to %s", path.c_str(), decompressedPath.c_str());
+				int result = d->decompress(d, path.c_str(), decompressedPath.c_str());
+				if (result != MSPACK_ERR_OK) {
+					LOG(ERROR, "Unable to decompress file %s.", path.c_str());
+				} else {
+					success = true;
+				}
+			}
+			mspack_destroy_kwaj_decompressor(d);
+		} else {
+			LOG(WARNING, "Unable to initialize mskwaj_decompressor. Decompressing SIMROWER.EX_ is therefore not possible.");
+		}
+
+		//If the decompression was successful, try to load the resources from there.
+		if (success) {
+			success = exe.load(decompressedPath);
+			if (!success) {
+				LOG(WARNING, "Unable to load previously decompressed file %s.", decompressedPath.c_str());
+			}
+		}
+	}
+#endif
+
+	if (!success) {
+		LOG(WARNING, "Unable to load SimTower executable");
 		for (int i = 0; i < paths.size(); i++) {
 			LOG(INFO, "  tried %s", paths[i].c_str());
 		}
+		for (int i = 0; i < compressedPaths.size(); i++) {
+			LOG(INFO, "  tried %s (compressed)", compressedPaths[i].c_str());
+		}
 		return false;
 	}
-	
-	//TODO: dump the exe if the user requested this through a command line argument.
 	
 	//Prepare the bitmaps. This prefixes bitmap resources with a BMP header.
 	preparePalettes();
@@ -980,7 +1027,20 @@ void SimTowerLoader::loadSounds()
 		{0x9b5a, "construction/impossible"},	//annoying "click" :)
 		{0x9b5b, "bulldozer"},
 		
+		{0x8568, "restaurant"},
+		{0x85a8, "office"},
+		{0x8ba8, "metro"},
 		{0x8b28, "partyhall"},
+		{0x8569, "fastfood/0"},
+		{0x9f40, "fastfood/1"},
+		{0x8668, "fastfood/2"},
+
+		{0x86a8, "car/departing"},
+		{0x86a9, "car/arriving"},
+
+		{0x8628, "doorbell"},
+		{0x88e8, "hover"},
+		{0x8629, "toilet"},
 		
 		{0x9388, "birds/morning"},
 		{0x9389, "cock"},
@@ -996,6 +1056,25 @@ void SimTowerLoader::loadSounds()
 		{0xa711, "applause"},
 		{0xa712, "santa"},
 		{0xa71d, "cash"},
+		{0xa715, "wind"},
+
+		{0xa329, "cinema/movie0"},
+		{0xa32a, "cinema/movie1"},
+		{0xa32b, "cinema/movie2"},
+		{0xa32c, "cinema/movie3"},
+		{0xa32d, "cinema/movie4"},
+		{0xa32e, "cinema/movie5"},
+		{0xa32f, "cinema/movie6"},
+		{0xa330, "cinema/movie7"},
+		{0xa331, "cinema/movie8"},
+		{0xa332, "cinema/movie9"},
+		{0xa333, "cinema/movie10"},
+		{0xa334, "cinema/movie11"},
+		{0xa335, "cinema/movie12"},
+		{0xa336, "cinema/movie13"},
+		{0xa337, "cinema/movie14"},
+
+		{0xce20, "splashscreen"},
 		
 		{0x9771, "elevator/arriving"},
 		{0x9772, "elevator/departing"},

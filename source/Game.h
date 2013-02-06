@@ -2,6 +2,7 @@
 
 #include <tinyxml2.h>
 #include <SFML/Audio/Sound.hpp>
+#include <map>
 
 #include "Item/Elevator/Elevator.h"
 #include "Item/Factory.h"
@@ -81,7 +82,9 @@ namespace OT {
 		typedef std::set<Sound *> SoundSet;
 		SoundSet autoreleaseSounds;
 		SoundSet playingSounds;
+		std::map<Path, double> soundPlayTimes;
 		void playOnce(Path sound);
+		void playRandomBackgroundSound();
 		
 		void updateRoutes();
 		Route findRoute(Item::Item * start, Item::Item * destination);

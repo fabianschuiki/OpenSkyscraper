@@ -57,6 +57,8 @@ namespace OT {
 			
 			virtual void addPerson(Person * p);
 			virtual void removePerson(Person * p);
+
+			Path getRandomBackgroundSoundPath();
 		};
 	}
 }
