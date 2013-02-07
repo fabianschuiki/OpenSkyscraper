@@ -403,7 +403,7 @@ void SimTowerLoader::loadBitmaps()
 	loadMergedByID(app->bitmaps["simtower/parking/ramp"], 'x', 0x8EE8, 0x8EE9, 0x8EEA, NULL);
 	loadMergedByID(app->bitmaps["simtower/parking/space"], 'x', 0x86A8, 0x86A9, NULL);
 	
-	loadMergedByID(app->bitmaps["simtower/party_hall"], 'y', 0x8B28, 0x8B68, NULL);
+	loadMergedByID(app->bitmaps["simtower/partyhall"], 'y', 0x8B28, 0x8B68, NULL);
 	
 	//Recycling Center
 	sf::Image recycling[2];

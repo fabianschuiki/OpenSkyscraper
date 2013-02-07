@@ -1,16 +1,9 @@
 General
 -------
 
-- create `CommmandLineArguments` class which handles interpretation of the command line arguments
-  (e.g. `--dump-simtower <path>`)
-- create `FileSystem` class to do file manipulation (move, copy, mkdir, etc.)
-	- adjust `WindowsNEExecutable::dump`
 - In `Route`, keep track of how many stairs and elevators were used. Then make the pathfinder limit
   the amount of stairs and elevators that are used per route. Otherwise algorithm complexity will
   explode.
-- [DONE a long time ago] Modify `Time` so that `absolute` is a day counter that advances evenly. Add some code that
-  calculates the current hour by scaling the absolute time differently for different phases of the
-  day to create the effect of time running at different speeds.
 - `mapWindow` should be its own class `MapWindow`, like the other two.
 
 
@@ -25,6 +18,8 @@ When pausing the game, elevators keep moving as if the game was unpaused. The we
 
 ### Clean up CMakeLists.txt
 There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
+
+### Cache the result of the KWAJ decompression so the game doesn't decompress SIMTOWER.EX_ everytime it is relaunched.
 
 
 Background Noise
@@ -43,7 +38,9 @@ time. The fast food would then only have to check if the queue's frontmost custo
 `c->arrivalTime >= game->time.hours` , pop the customer, and in case
 `game->time.checkHour(c->arrivalTime)` make the customer arrive.
 
-New customers arrive until the fast food closes, or at least the transit times make it seem so. Maybe we should change their behaviour such that customers won't enter the tower after 1900. This would also make the fast foods look empty towards the end of the day, which is a nice thing to have.
+- New customers arrive until the fast food closes, or at least the transit times make it seem so. Maybe we should change their behaviour such that customers won't enter the tower after 1900. This would also make the fast foods look empty towards the end of the day, which is a nice thing to have.
+
+- Store the customers to disk. At the moment, when you save the debug tower using F2 and reload the game, you end up with open yet empty fast foods.
 
 
 Person
@@ -63,3 +60,11 @@ Implement the hotel system. For this, maybe have a look at the implementation in
 - All occupants should go to sleep between 23:00 and 1:30.
 - Occupants should get up between 6:00 and 8:00 and leave between 8:00 and 10:00 and leave the room back in the dirty state.
 - Housekeepers should move to dirty bedrooms, stay there and clean for a fixed amount of absolute time. This is important since otherwise the housekeepers would take far longer to clean a room during noon than at 10:00. After leaving the hotel room, the room should be reset to the tidy state.
+
+
+Item::PartyHall
+---------------
+
+- Check the original game for the exact timing of parties. I think I recall that there were two parties held each day, but I don't remember when.
+- Check how much money you get back from party halls. Maybe that's based on the number of people visiting?
+- Make people arrive/leave.

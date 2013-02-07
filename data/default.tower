@@ -1,31 +1,34 @@
-<tower funds="1100000" rating="0" time="0.195" speed="1" rainy="0" tool="finger" x="0" y="200">
-    <item type="fastfood" x="8" y="2" variant="0" open="0"/>
-    <item type="elevator-standard" x="10" y="0" height="6">
-        <car altitude="0.000000"/>
-        <car altitude="0.000000"/>
-    </item>
+<tower funds="100000" rating="0" time="0.195" speed="1" rainy="0" tool="finger" x="0" y="200">
     <item type="elevator-standard" x="-12" y="15" height="18">
-        <car altitude="15.000000"/>
+        <car altitude="15.247282"/>
     </item>
     <item type="elevator-express" x="-20" y="0" height="16">
-        <car altitude="0.000000"/>
+        <car altitude="15.000000"/>
     </item>
-    <item type="fastfood" x="-8" y="24" variant="4" open="0"/>
-    <item type="fastfood" x="-8" y="2" variant="4" open="0"/>
-    <item type="fastfood" x="-24" y="1" variant="0" open="0"/>
-    <item type="fastfood" x="8" y="3" variant="2" open="0"/>
-    <item type="fastfood" x="-8" y="1" variant="1" open="0"/>
-    <item type="fastfood" x="8" y="1" variant="2" open="0"/>
-    <item type="fastfood" x="-24" y="2" variant="3" open="0"/>
-    <item type="fastfood" x="-8" y="3" variant="0" open="0"/>
-    <item type="fastfood" x="-24" y="3" variant="4" open="0"/>
+    <item type="fastfood" x="8" y="2" variant="0" open="1"/>
+    <item type="elevator-standard" x="10" y="0" height="7">
+        <unserviced floor="6"/>
+        <car altitude="3.000000"/>
+        <car altitude="2.000000"/>
+    </item>
+    <item type="fastfood" x="-8" y="24" variant="4" open="1"/>
+    <item type="fastfood" x="-8" y="2" variant="4" open="1"/>
+    <item type="fastfood" x="-24" y="1" variant="0" open="1"/>
+    <item type="fastfood" x="8" y="3" variant="2" open="1"/>
+    <item type="fastfood" x="-8" y="1" variant="1" open="1"/>
+    <item type="fastfood" x="8" y="1" variant="2" open="1"/>
+    <item type="fastfood" x="-24" y="2" variant="3" open="1"/>
+    <item type="fastfood" x="-8" y="3" variant="0" open="1"/>
+    <item type="fastfood" x="-24" y="3" variant="4" open="1"/>
+    <item type="lobby" x="-24" y="0" width="48"/>
+    <item type="fastfood" x="-24" y="4" variant="2" open="1"/>
+    <item type="fastfood" x="-8" y="4" variant="2" open="1"/>
+    <item type="fastfood" x="8" y="4" variant="1" open="1"/>
+    <item type="partyhall" x="0" y="5" open="0"/>
+    <item type="partyhall" x="-24" y="5" open="0"/>
     <item type="stairs" x="-12" y="0"/>
     <item type="escalator" x="0" y="0"/>
-    <item type="lobby" x="-24" y="0" width="48"/>
     <item type="stairs" x="-12" y="2"/>
-    <item type="fastfood" x="-24" y="4" variant="2" open="0"/>
-    <item type="fastfood" x="-8" y="4" variant="2" open="0"/>
     <item type="stairs" x="-12" y="3"/>
     <item type="stairs" x="-12" y="1"/>
-    <item type="fastfood" x="8" y="4" variant="1" open="0"/>
 </tower>
