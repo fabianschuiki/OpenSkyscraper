@@ -435,7 +435,7 @@ void SimTowerLoader::loadBitmaps()
 	loadAnimatedBitmap(0x8868, cinemaUpper);
 	loadBitmap(0x88A8, cinemaLower);
 	sf::Image & cinema = app->bitmaps["simtower/cinema/hall"];
-	cinema.Create(182*5, 60);
+	cinema.Create(192*5, 60);
 	cinema.Copy(cinemaUpper[1], 192, 0);
 	cinema.Copy(cinemaUpper[0], 0, 0);
 	cinema.Copy(cinemaLower, 192, 24);
