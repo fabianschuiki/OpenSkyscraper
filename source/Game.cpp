@@ -333,6 +333,7 @@ bool Game::handleEvent(sf::Event & event)
 					} else {
 						LOG(DEBUG, "cannot construct %s at %ix%i, size %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y, toolPrototype->size.x, toolPrototype->size.y);
 						playOnce("simtower/construction/impossible");
+						timeWindow.showMessage("Cannot place item there");
 					}
 				}
 			}
@@ -559,7 +560,8 @@ void Game::addItem(Item::Item * item)
 {
 	assert(item);
 	items.insert(item);
-	itemsByFloor[item->position.y].insert(item);
+	for (int i = 0; i < item->size.y; i++)
+		itemsByFloor[item->position.y + i].insert(item);
 	itemsByType[item->prototype->id].insert(item);
 
 	if (item->canHaulPeople()) {
@@ -573,7 +575,8 @@ void Game::removeItem(Item::Item * item)
 {
 	assert(item);
 	items.erase(item);
-	itemsByFloor[item->position.y].erase(item);
+	for (int i = 0; i < item->size.y; i++)
+		itemsByFloor[item->position.y + i].erase(item);
 	itemsByType[item->prototype->id].erase(item);
 	if (item->canHaulPeople()) {
 		itemsByType["canHaulPeople"].erase(item);

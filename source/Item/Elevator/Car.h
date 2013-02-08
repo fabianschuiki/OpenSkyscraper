@@ -23,6 +23,7 @@ namespace OT {
 				void updateSprite();
 				
 				Item::People passengers;
+				void removePassenger(Person *p);
 				
 				virtual void Render(sf::RenderTarget & target) const;
 				

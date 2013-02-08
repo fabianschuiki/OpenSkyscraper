@@ -1,4 +1,4 @@
-<tower funds="100000" rating="0" time="0.195" speed="1" rainy="0" tool="finger" x="0" y="200">
+<tower funds="10000000" rating="0" time="0.195" speed="1" rainy="0" tool="finger" x="0" y="200">
     <item type="elevator-standard" x="-12" y="15" height="18">
         <car altitude="15.247282"/>
     </item>

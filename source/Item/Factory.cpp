@@ -10,6 +10,7 @@
 #include "Lobby.h"
 #include "Stairs.h"
 #include "PartyHall.h"
+#include "Cinema.h"
 
 using namespace OT;
 using namespace Item;
@@ -37,6 +38,7 @@ void Factory::loadPrototypes()
 	register_item(Elevator::Standard);
 	register_item(FastFood);
 	register_item(PartyHall);
+	register_item(Cinema);
 	
 	for (int i = 0; i < prototypes.size(); i++) {
 		prototypesById[prototypes[i]->id] = prototypes[i];

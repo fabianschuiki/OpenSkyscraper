@@ -5,6 +5,7 @@ General
   the amount of stairs and elevators that are used per route. Otherwise algorithm complexity will
   explode.
 - `mapWindow` should be its own class `MapWindow`, like the other two.
+- Cache the result of the KWAJ decompression so the game doesn't decompress SIMTOWER.EX_ everytime it is relaunched.
 
 
 ### SFML 2
@@ -19,7 +20,8 @@ When pausing the game, elevators keep moving as if the game was unpaused. The we
 ### Clean up CMakeLists.txt
 There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
 
-### Cache the result of the KWAJ decompression so the game doesn't decompress SIMTOWER.EX_ everytime it is relaunched.
+### Game Speed
+The game speed seems to be rather fast compared to elevator movements. Cinema customers are hardly able to arrive at the theatre in time. Maybe we should slow down the time a bit? Or speed up the elevators? I don't remember how fast the regular elevators actually were.
 
 
 Background Noise
@@ -68,3 +70,11 @@ Item::PartyHall
 - Check the original game for the exact timing of parties. I think I recall that there were two parties held each day, but I don't remember when.
 - Check how much money you get back from party halls. Maybe that's based on the number of people visiting?
 - Make people arrive/leave.
+
+
+Item::Cinema
+------------
+
+- Check playing times in the original game.
+- Implement income simulation. It is somehow based on the number of patrons I guess.
+- Did the original game have a break halfway through the movie?

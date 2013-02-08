@@ -237,6 +237,9 @@ void Elevator::removePerson(Person * p)
 	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
 		(*iq)->removePerson(p);
 	}
+	for (Cars::iterator ic = cars.begin(); ic != cars.end(); ic++) {
+		(*ic)->removePassenger(p);
+	}
 	Item::removePerson(p);
 }
 
@@ -281,7 +284,7 @@ void Elevator::respondToCalls()
 {
 	//Iterate through the queues, always getting the most urgent one.
 	Queue * q;
-	while (q = getMostUrgentQueue())
+	while ((q = getMostUrgentQueue()))
 	{
 		//Find the car best suited for responding. If none could be found, abort since all cars
 		//are occupied.

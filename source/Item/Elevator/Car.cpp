@@ -7,9 +7,9 @@ using namespace OT;
 using namespace OT::Item::Elevator;
 
 const static double kDoorPeriod    = 0.1;  //seconds it takes the door to open/close
-const static double kWaitTime      = 0.25; //seconds the elevator waits before closing doors
-const static double kMountPeriod   = 0.1;  //seconds it takes for one person to get on the elevator
-const static double kUnmountPeriod = 0.1;  //dito, but off the elevator
+const static double kWaitTime      = 0.15; //seconds the elevator waits before closing doors
+const static double kMountPeriod   = 0.03; //seconds it takes for one person to get on the elevator
+const static double kUnmountPeriod = 0.03; //dito, but off the elevator
 
 
 void Car::init()
@@ -309,4 +309,10 @@ void Car::moveTo(int floor)
 	} else {
 		setState(kHauling);
 	}
+}
+
+/** Removes the given passenger from this car. Does nothing if the person is not in the car. */
+void Car::removePassenger(Person *p)
+{
+	passengers.erase(p);
 }
