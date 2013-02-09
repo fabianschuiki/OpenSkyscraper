@@ -295,6 +295,7 @@ bool Game::handleEvent(sf::Event & event)
 							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !constructionBlocked && ii != itemsOnFloor.end(); ii++) {
 								Item::Item * i = *ii;
 								if (i->prototype->id.compare("lobby") == 0) {
+									gameMap.removeNode(MapNode::Point(i->position.x + i->size.x/2, i->position.y), i);
 									Item::Lobby * l = (Item::Lobby *) i;
 									float diff = 0;
 									if (toolPosition.x < l->position.x) {
@@ -308,6 +309,7 @@ bool Game::handleEvent(sf::Event & event)
 									}
 									transferFunds(-toolPrototype->price * (diff/4));
 									l->updateSprite();
+									gameMap.addNode(MapNode::Point(i->position.x + i->size.x/2, i->position.y), i);
 									playOnce("simtower/construction/flexible");
 									existingLobby = true;
 								}
@@ -361,10 +363,22 @@ bool Game::handleEvent(sf::Event & event)
 						if (draggingMotor != 0) {
 							LOG(DEBUG, "drag elevator %s motor %i", itemBelowCursor->desc().c_str(), draggingMotor);
 							draggingElevator = e;
+							draggingElevatorStart = toolPosition.y;
+							if (draggingElevatorStart < draggingElevator->position.y) {
+								draggingElevatorLower = true;
+								draggingElevatorStart++;
+							} else {
+								draggingElevatorLower = false;
+								draggingElevatorStart--;
+							}
 						} else {
 							LOG(DEBUG, "clicked elevator %s on floor %i", itemBelowCursor->desc().c_str(), toolPosition.y);
-							if (!e->unservicedFloors.erase(toolPosition.y))
+							if (!e->unservicedFloors.erase(toolPosition.y)) {
 								e->unservicedFloors.insert(toolPosition.y);
+								gameMap.removeNode(MapNode::Point(e->position.x + e->size.x/2, toolPosition.y), itemBelowCursor);
+							} else {
+								gameMap.addNode(MapNode::Point(e->position.x + e->size.x/2, toolPosition.y), itemBelowCursor);
+							}
 							e->cleanQueues();
 							updateRoutes();
 						}
@@ -382,6 +396,8 @@ bool Game::handleEvent(sf::Event & event)
 		
 		case sf::Event::MouseMoved: {
 			if (draggingElevator && draggingElevator->repositionMotor(draggingMotor, toolPosition.y)) {
+				// Update PathFinder map
+				gameMap.handleElevatorResize(draggingElevator, draggingElevatorLower, draggingElevatorStart);
 				updateRoutes();
 			}
 		} break;
@@ -569,6 +585,8 @@ void Game::addItem(Item::Item * item)
 		if (item->isElevator()) itemsByType["elevator"].insert(item);
 		else itemsByType["stairlike"].insert(item);
 	}
+	
+	gameMap.addNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
 }
 
 void Game::removeItem(Item::Item * item)
@@ -584,6 +602,8 @@ void Game::removeItem(Item::Item * item)
 		else itemsByType["stairlike"].erase(item);
 	}
 	if (item == itemBelowCursor) itemBelowCursor = NULL;
+
+	gameMap.removeNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
 }
 
 void Game::encodeXML(tinyxml2::XMLPrinter & xml)
@@ -792,58 +812,7 @@ void Game::updateRoutes()
  *  route is empty(), no path was found through the tower. */
 Route Game::findRoute(Item::Item * start, Item::Item * destination)
 {
-	return findRoute(Route(), start->position.y, start, destination);
-}
-
-Route Game::findRoute(Route route, int floor, Item::Item * current, Item::Item * destination)
-{
-	route.add(current, floor);
-	if (floor == destination->position.y) {
-		route.add(destination);
-		return route;
-	}
-	
-	Route best;
-	for (ItemSet::iterator it = items.begin(); it != items.end(); it++) {
-		Item::Item * i = *it;
-		if (!i->canHaulPeople() || route.usesItem(i)) continue;
-		
-		//Limit the number of elevators, stairs and escalators to use per route.
-		if (i->isElevator() && route.numElevators >= 2) continue;
-		if (i->prototype->id == "stairs"    && route.numStairs     >= 3) continue;
-		if (i->prototype->id == "escalator" && route.numEscalators >= 5) continue;
-		
-		//Check whether this item connects to the floor we're currently at.
-		if (!i->connectsFloor(floor)) continue;
-		
-		//If this item connects to our destination floor, use it.
-		Route r;
-		if (i->connectsFloor(destination->position.y)) {
-			r = route;
-			r.add(i, destination->position.y);
-			r.add(destination);
-		}
-		
-		//For elevators, check the lobbies for connecting transports.
-		else if (i->isElevator()) {
-			for (int n = i->position.y % 15; n < i->size.y; n += 15) {
-				int f = n + i->position.y;
-				if (!i->connectsFloor(f)) continue;
-				Route sr = findRoute(route, f, i, destination);
-				if (!sr.empty() && (r.empty() || sr.score() < r.score())) r = sr;
-			}
-		}
-		
-		//For stairlike items, check the floor above/below for connecting transports.
-		else if (i->isStairlike()) {
-			int f = i->position.y;
-			if (f == floor) f += i->size.y-1;
-			r = findRoute(route, f, i, destination);
-		}
-		
-		//If r's score is lower (better) than the best we've found so far, make r the current best route.
-		if (!r.empty() && (best.empty() || r.score() < best.score())) best = r;
-	}
-	
-	return best;
+	MapNode *start_mapnode = gameMap.findNode(MapNode::Point(start->position.x + start->size.x/2, start->position.y), start);
+	MapNode *destination_mapnode = gameMap.findNode(MapNode::Point(destination->position.x + destination->size.x/2, destination->position.y), destination); 
+	return pathFinder.findRoute(start_mapnode, destination_mapnode, start, destination);
 }

@@ -1,7 +1,6 @@
 #pragma once
-#include <cstdlib>
+#include <cstddef>
 #include <vector>
-#include <set>
 
 namespace OT {
 	namespace Item { class Item; }
@@ -28,16 +27,14 @@ namespace OT {
 		void add(Item::Item * item);
 		void add(Item::Item * item, int floor);
 		
-		bool usesItem(Item::Item * item) const;
 		int numStairs;
 		int numEscalators;
 		int numElevators;
 		
 		int score() const;
-		void updateScore();
+		void updateScore(int score);
 		
 	private:
-		std::set<Item::Item *> usedItems;
 		int cached_score;
 	};
 }
