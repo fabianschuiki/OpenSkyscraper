@@ -7,6 +7,8 @@
 #include "Item/Elevator/Elevator.h"
 #include "Item/Factory.h"
 #include "Item/Item.h"
+#include "PathFinder/GameMap.h"
+#include "PathFinder/PathFinder.h"
 #include "Sky.h"
 #include "Sound.h"
 #include "Sprite.h"
@@ -72,6 +74,8 @@ namespace OT {
 		Sky sky;
 		
 		Item::Elevator::Elevator * draggingElevator;
+		int draggingElevatorStart;
+		bool draggingElevatorLower;
 		int draggingMotor;
 		
 		Sound cockSound;
@@ -88,9 +92,11 @@ namespace OT {
 		
 		void updateRoutes();
 		Route findRoute(Item::Item * start, Item::Item * destination);
-		Route findRoute(Route route, int floor, Item::Item * current, Item::Item * destination);
 		
 		Route visualizeRoute;
+
+		GameMap gameMap;
+		PathFinder pathFinder;
 		
 	private:
 		double zoom;
