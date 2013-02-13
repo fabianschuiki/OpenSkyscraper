@@ -78,3 +78,15 @@ Item::Cinema
 - Check playing times in the original game.
 - Implement income simulation. It is somehow based on the number of patrons I guess.
 - Did the original game have a break halfway through the movie?
+
+
+Item::Elevator
+--------------
+
+- Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator.
+
+
+Item::Cinema
+------------
+
+- Should be able to be built underground (if I recall correctly).
