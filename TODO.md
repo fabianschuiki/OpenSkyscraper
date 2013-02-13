@@ -83,10 +83,18 @@ Item::Cinema
 Item::Elevator
 --------------
 
-- Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator. [DONE]
+- [DONE] Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator.
 
 
 Item::Cinema
 ------------
 
 - Should be able to be built underground (if I recall correctly).
+
+
+Item::Metro
+-----------
+
+- Make trains arrive/leave in regular absolute time intervals (see Time object's absolute time member).
+- Metro stations should create customers that visit shops below ground. Each train should bring new customers, and haul away passengers waiting on the platform.
+- Add metro tracks. This should probably go into the same category as the fire stairs and crane, i.e. tower decorations.
