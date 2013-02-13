@@ -8,8 +8,8 @@ using namespace OT::Item::Elevator;
 
 const static double kDoorPeriod    = 0.1;  //seconds it takes the door to open/close
 const static double kWaitTime      = 0.15; //seconds the elevator waits before closing doors
-const static double kMountPeriod   = 0.03; //seconds it takes for one person to get on the elevator
-const static double kUnmountPeriod = 0.03; //dito, but off the elevator
+const static double kMountPeriod   = 0.05; //seconds it takes for one person to get on the elevator
+const static double kUnmountPeriod = 0.05; //dito, but off the elevator
 
 
 void Car::init()
@@ -61,6 +61,32 @@ void Car::updateSprite()
 void Car::Render(sf::RenderTarget & target) const
 {
 	target.Draw(sprite);
+
+	//Draw the people stepping out of the elevator.
+	Person *p = NULL;
+	if (state == kHauling && (p = nextPassengerToUnmount())) {
+		Sprite s;
+		s.SetImage(app->bitmaps["simtower/elevator/people"]);
+		s.SetCenter(direction == Elevator::kUp ? -elevator->shaft.GetSize().x : 16, 24);
+
+		//Calculate the texture subrect for the person stepping out of the car.
+		int type = p->type;
+		sf::IntRect sr;
+		sr.Left   = type * 32;
+		sr.Right  = sr.Left + 16;
+		sr.Top    = 24;
+		sr.Bottom = 48;
+		if (direction == Elevator::kUp) {
+			sr.Left  += 16;
+			sr.Right += 16;
+		}
+		
+		//Draw the person.
+		s.SetColor(sf::Color::Black);
+		s.SetSubRect(sr);
+		s.SetPosition(elevator->shaft.GetPosition().x, sprite.GetPosition().y);
+		target.Draw(s);
+	}
 }
 
 void Car::encodeXML(tinyxml2::XMLPrinter& xml)
@@ -286,11 +312,11 @@ bool Car::isFull()
 	return (passengers.size() >= elevator->maxCarCapacity);
 }
 
-Person * Car::nextPassengerToUnmount()
+Person * Car::nextPassengerToUnmount() const
 {
 	//Iterate through all passengers and return the first one we find that has the current floor
 	//as its end floor, i.e. that needs to get off on this floor.
-	for (Item::People::iterator ip = passengers.begin(); ip != passengers.end(); ip++)
+	for (Item::People::const_iterator ip = passengers.begin(); ip != passengers.end(); ip++)
 		if ((*ip)->journey.toFloor == destinationFloor)
 			return *ip;
 	return NULL;

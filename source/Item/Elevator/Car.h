@@ -54,7 +54,7 @@ namespace OT {
 				bool departingPlayed;
 				
 				bool isFull();
-				Person * nextPassengerToUnmount();
+				Person * nextPassengerToUnmount() const;
 				
 				void moveTo(int floor);
 			};

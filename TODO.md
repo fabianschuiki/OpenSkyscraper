@@ -83,7 +83,7 @@ Item::Cinema
 Item::Elevator
 --------------
 
-- Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator.
+- Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator. [DONE]
 
 
 Item::Cinema
