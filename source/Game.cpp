@@ -193,17 +193,11 @@ bool Game::handleEvent(sf::Event & event)
 						const ItemSet &stairlike = itemsByType["stairlike"];
 						for (ItemSet::const_iterator ii = stairlike.begin(); !constructionBlocked && ii != stairlike.end(); ii++) {
 							Item::Item * i = *ii;
-							if (i->position.y == toolPosition.y) {
-								recti itemRect = i->getRect();
-								if (toolBoundary.minX() >= itemRect.minX() && toolBoundary.minX() <= itemRect.maxX()) constructionBlocked = true;
-							} else if (i->position.y == toolPosition.y - 1) {
-								recti itemRect = i->getRect();
-								if (toolBoundary.minX() > itemRect.minX() && toolBoundary.minX() < itemRect.maxX()) constructionBlocked = true;
-							} else if (i->position.y == toolPosition.y + 1) {
-								recti itemRect = i->getRect();
-								if (toolBoundary.maxX() < itemRect.maxX() && toolBoundary.maxX() > itemRect.minX()) constructionBlocked = true;
-							}
-							if (constructionBlocked) {
+							int xOffset = (toolPosition.x - i->position.x);
+							if ((i->position.y == toolPosition.y && xOffset > -4 && xOffset < 4) ||
+								(i->position.y == toolPosition.y - 1 && xOffset > 0 && xOffset < 8) ||
+								(i->position.y == toolPosition.y + 1 && xOffset > -8 && xOffset < 0)) {
+								constructionBlocked = true;
 								blockReason = "Other " + i->prototype->name + " is in the way";
 							}
 						}
