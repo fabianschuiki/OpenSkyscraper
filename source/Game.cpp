@@ -15,7 +15,8 @@ Game::Game(Application & app)
 	itemFactory(this),
 	toolboxWindow(this),
 	timeWindow(this),
-	sky(this)
+	sky(this),
+	decorations(this)
 {
 	mapWindow     = NULL;
 	
@@ -500,8 +501,9 @@ void Game::advance(double dt)
 	}
 	if (previousPrototype != toolPrototype) timeWindow.updateTooltip();
 	
-	//Draw the sky.
+	//Draw the sky and decorations.
 	win.Draw(sky);
+	win.Draw(decorations);
 	
 	//Draw the items that are in view.
 	Item::Item * previousItemBelowCursor = itemBelowCursor;
@@ -612,8 +614,10 @@ void Game::addItem(Item::Item * item)
 {
 	assert(item);
 	items.insert(item);
-	for (int i = 0; i < item->size.y; i++)
+	for (int i = 0; i < item->size.y; i++) {
 		itemsByFloor[item->position.y + i].insert(item);
+		decorations.updateFloor(item->position.y + i);
+	}
 	itemsByType[item->prototype->id].insert(item);
 
 	if (item->canHaulPeople()) {
@@ -629,8 +633,10 @@ void Game::removeItem(Item::Item * item)
 {
 	assert(item);
 	items.erase(item);
-	for (int i = 0; i < item->size.y; i++)
+	for (int i = 0; i < item->size.y; i++) {
 		itemsByFloor[item->position.y + i].erase(item);
+		decorations.updateFloor(item->position.y + i);
+	}
 	itemsByType[item->prototype->id].erase(item);
 	if (item->canHaulPeople()) {
 		itemsByType["canHaulPeople"].erase(item);

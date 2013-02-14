@@ -16,6 +16,7 @@
 #include "Time.h"
 #include "TimeWindow.h"
 #include "ToolboxWindow.h"
+#include "Decorations.h"
 
 namespace OT {
 	namespace Item { class AbstractPrototype; }
@@ -97,6 +98,7 @@ namespace OT {
 
 		GameMap gameMap;
 		PathFinder pathFinder;
+		Decorations decorations;
 		
 	private:
 		double zoom;

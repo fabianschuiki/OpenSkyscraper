@@ -26,6 +26,9 @@ Add tower decorations:
 ### Construction Animation
 Animate the construction of items. The `construction/*` bitmaps should help with that. The `solid` bitmap is for regular items, the `grid` bitmap for lobbies, car parkings, etc.
 
+### Different Access Floors for Items
+At the moment, people enter all items on floor 0 (relative to the item). Certain items, such as the Metro station, are accessed via floor 1. The item prototype should contain a field that enables a relative shift of the access floor.
+
 
 Background Noise
 ----------------
