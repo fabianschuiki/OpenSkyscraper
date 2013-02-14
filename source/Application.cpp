@@ -131,8 +131,8 @@ void Application::init()
 	delete simtower; simtower = NULL;
 	//exitCode = 1;
 	
-	videoMode.Width        = /*1280*/1080;
-	videoMode.Height       = /*768*/648;
+	videoMode.Width        = 1280;
+	videoMode.Height       = 768;
 	videoMode.BitsPerPixel = 32;
 	
 	window.Create(videoMode, "OpenSkyscraper SFML");

@@ -446,9 +446,14 @@ void Game::advance(double dt)
 	poi.y = std::max<double>(std::min<double>(poi.y, 360*12 - halfsize.y), -360 + halfsize.y);
 	
 	//Adust the camera.
-	sf::View cameraView(sf::Vector2f(poi.x, -poi.y), sf::Vector2f(halfsize.x, halfsize.y));
+	sf::FloatRect view;
+	view.Left   = round(poi.x - halfsize.x);
+	view.Top    = round(-poi.y - halfsize.y);
+	view.Right  = view.Left + halfsize.x*2;
+	view.Bottom = view.Top + halfsize.y*2;
+	sf::View cameraView(view);
 	win.SetView(cameraView);
-	sf::FloatRect view = cameraView.GetRect();
+	//sf::FloatRect view = cameraView.GetRect();
 	//win.SetView(sf::View(view));
 	
 	//Prepare the current tool.
