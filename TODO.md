@@ -20,8 +20,8 @@ The game speed seems to be rather fast compared to elevator movements. Cinema cu
 ### Decorations
 Add tower decorations:
 
-- Fire Stairs
-- Crane at the top of the tower
+- [DONE] Fire Stairs
+- [DONE] Crane at the top of the tower
 
 ### Construction Animation
 Animate the construction of items. The `construction/*` bitmaps should help with that. The `solid` bitmap is for regular items, the `grid` bitmap for lobbies, car parkings, etc.
