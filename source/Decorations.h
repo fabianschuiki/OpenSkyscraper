@@ -14,6 +14,7 @@ namespace OT {
 		Decorations(Game * game);
 
 		void updateFloor(int y);
+		void updateCrane();
 
 		virtual void Render(sf::RenderTarget & target) const;
 
@@ -24,5 +25,8 @@ namespace OT {
 		};
 		typedef std::map<int, FireStairPair> FireStairs;
 		FireStairs fireStairs;
+
+		Sprite crane;
+		bool craneVisible;
 	};
 }

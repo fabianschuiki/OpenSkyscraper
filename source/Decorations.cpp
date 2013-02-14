@@ -7,6 +7,10 @@ using OT::Decorations;
 Decorations::Decorations(Game * game)
 :	GameObject(game)
 {
+	// Initialize the crane sprite.
+	crane.SetImage(App->bitmaps["simtower/deco/crane"]);
+	crane.SetCenter(20, 36);
+	craneVisible = false;
 }
 
 /** Updates the decorations for the given floor. This effectively repositions the fire stairs of
@@ -59,7 +63,40 @@ void Decorations::updateFloor(int y)
 	}
 }
 
+/** Updates the position of the crane present at the top of the tower. Call this method whenever
+ * the tower's top floor changes, i.e. the tower height is changed or another item is placed on
+ * the top floor. */
+void Decorations::updateCrane()
+{
+	//Find the tower's top floor.
+	int maxY = 0;
+	for (Game::ItemSetByInt::const_iterator ii = game->itemsByFloor.begin(); ii != game->itemsByFloor.end(); ii++) {
+		if (ii->first > maxY)
+			maxY = ii->first;
+	}
 
+	//Find the dimensions of the top floor.
+	if (maxY > 0) {
+		const Game::ItemSet &items = game->itemsByFloor[maxY];
+		int minFloorX = INT_MAX;
+		int maxFloorX = INT_MIN;
+		for (Game::ItemSet::const_iterator ii = items.begin(); ii != items.end(); ii++) {
+			Item::Item * i = *ii;
+			minFloorX = std::min(minFloorX, i->position.x);
+			maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+		}
+		if (minFloorX < maxFloorX) {
+			crane.SetPosition((minFloorX + maxFloorX) / 2 * 8, -(maxY + 1) * 36);
+			craneVisible = (maxFloorX - minFloorX >= 4);
+		} else {
+			craneVisible = false;
+		}
+	} else {
+		craneVisible = false;
+	}
+}
+
+/** Renders the tower decorations to the given render target. */
 void Decorations::Render(sf::RenderTarget & target) const
 {
 	sf::FloatRect rect = target.GetView().GetRect();
@@ -69,4 +106,6 @@ void Decorations::Render(sf::RenderTarget & target) const
 		target.Draw(fsi->second.minX);
 		target.Draw(fsi->second.maxX);
 	}
+
+	if (craneVisible) target.Draw(crane);
 }

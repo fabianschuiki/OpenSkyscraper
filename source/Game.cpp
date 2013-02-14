@@ -627,6 +627,7 @@ void Game::addItem(Item::Item * item)
 	}
 	
 	gameMap.addNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
+	decorations.updateCrane();
 }
 
 void Game::removeItem(Item::Item * item)
@@ -646,6 +647,7 @@ void Game::removeItem(Item::Item * item)
 	if (item == itemBelowCursor) itemBelowCursor = NULL;
 
 	gameMap.removeNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
+	decorations.updateCrane();
 }
 
 void Game::encodeXML(tinyxml2::XMLPrinter & xml)
