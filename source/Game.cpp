@@ -157,10 +157,14 @@ bool Game::handleEvent(sf::Event & event)
 				}
 				if (!handled) {
 					bool constructionBlocked = false;
+					std::string blockReason;
 					int minFloorX = INT_MAX;
 					int maxFloorX = INT_MIN;
 					if (toolPrototype->id.compare("lobby") == 0) {
-						if (toolPosition.y % 15 != 0) constructionBlocked = true;
+						if (toolPosition.y % 15 != 0) {
+							constructionBlocked = true;
+							blockReason = "Lobbies can only be built on every 15th floor";
+						}
 						else if (toolPosition.y != 0) {
 							// Check floor width below
 							ItemSet itemsOnFloor = itemsByFloor[toolPosition.y - 1];
@@ -198,6 +202,9 @@ bool Game::handleEvent(sf::Event & event)
 								recti itemRect = i->getRect();
 								if (toolBoundary.maxX() < itemRect.maxX() && toolBoundary.maxX() > itemRect.minX()) constructionBlocked = true;
 							}
+							if (constructionBlocked) {
+								blockReason = "Another " + i->prototype->name + " is in the way";
+							}
 						}
 						
 						const ItemSet &elevators = itemsByType["elevator"];
@@ -206,7 +213,10 @@ bool Game::handleEvent(sf::Event & event)
 							recti itemRect = i->getRect();
 							itemRect.origin.y -= 1;
 							itemRect.size.y += 2;
-							if (toolBoundary.intersectsRect(itemRect)) constructionBlocked = true;
+							if (toolBoundary.intersectsRect(itemRect)) {
+								constructionBlocked = true;
+								blockReason = i->prototype->name + " is in the way";
+							}
 						}
 
 						// Check floor width above
@@ -217,8 +227,11 @@ bool Game::handleEvent(sf::Event & event)
 							minFloorX = std::min(minFloorX, i->position.x);
 							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
 						}
-						if (itemsNearby.empty() || toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX)
+						if (itemsNearby.empty() || toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX) {
+							if (!constructionBlocked)
+								blockReason = "Upper floor is not wide enough";
 							constructionBlocked = true;
+						}
 
 						// Check floor width
 						minFloorX = INT_MAX;
@@ -238,7 +251,10 @@ bool Game::handleEvent(sf::Event & event)
 						const ItemSet &stairlike = itemsByType["stairlike"];
 						for (ItemSet::const_iterator ii = stairlike.begin(); !constructionBlocked && ii != stairlike.end(); ii++) {
 							Item::Item * i = *ii;
-							if (toolBoundary.intersectsRect(i->getRect())) constructionBlocked = true;
+							if (toolBoundary.intersectsRect(i->getRect())) {
+								constructionBlocked = true;
+								blockReason = i->prototype->name + " is in the way";
+							}
 						}
 
 						const ItemSet &elevators = itemsByType["elevator"];
@@ -247,7 +263,10 @@ bool Game::handleEvent(sf::Event & event)
 							recti itemRect = i->getRect();
 							itemRect.origin.y -= 1;
 							itemRect.size.y += 2;
-							if (toolBoundary.intersectsRect(itemRect)) constructionBlocked = true;
+							if (toolBoundary.intersectsRect(itemRect)) {
+								constructionBlocked = true;
+								blockReason = "Other " + i->prototype->name + " is in the way";
+							}
 						}
 
 						// Check floor width below/above if constructing above/below ground level
@@ -262,7 +281,10 @@ bool Game::handleEvent(sf::Event & event)
 							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
 						}
 					} else {
-						if (toolPosition.y == 0) constructionBlocked = true;
+						if (toolPosition.y == 0) {
+							constructionBlocked = true;
+							blockReason = "Only lobbies may be built on the ground floor";
+						}
 
 						// Check obstruction from other buildings
 						ItemSet itemsNearby;
@@ -270,21 +292,30 @@ bool Game::handleEvent(sf::Event & event)
 						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
 							Item::Item * i = *ii;
 							if (i->canHaulPeople()) continue;
-							if (toolBoundary.intersectsRect(i->getRect())) constructionBlocked = true;
+							if (toolBoundary.intersectsRect(i->getRect())) {
+								constructionBlocked = true;
+								blockReason = i->prototype->name + " is in the way";
+							}
 						}
 
 						// Check floor width below/above if constructing above/below ground level
-						if (toolPosition.y > 0) itemsNearby = itemsByFloor[toolPosition.y - 1];
-						else itemsNearby = itemsByFloor[toolPosition.y + 1];
+						if (toolPosition.y > 0)
+							itemsNearby = itemsByFloor[toolPosition.y - 1];
+						else
+							itemsNearby = itemsByFloor[toolPosition.y + toolPrototype->size.y];
 						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
 							Item::Item * i = *ii;
 							if (i->canHaulPeople()) continue;
 							minFloorX = std::min(minFloorX, i->position.x);
 							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
 						}
+						LOG(DEBUG, "floor is %i..%i", minFloorX, maxFloorX);
 					}
-					if (toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX)
+					if (toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX) {
+						if (!constructionBlocked)
+							blockReason = "Floor " + std::string(toolPosition.y > 0 ? "below" : "above") + " is not wide enough";
 						constructionBlocked = true;
+					}
 
 					if (!constructionBlocked) {
 						LOG(DEBUG, "construct %s at %ix%i, size %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y, toolPrototype->size.x, toolPrototype->size.y);
@@ -335,7 +366,7 @@ bool Game::handleEvent(sf::Event & event)
 					} else {
 						LOG(DEBUG, "cannot construct %s at %ix%i, size %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y, toolPrototype->size.x, toolPrototype->size.y);
 						playOnce("simtower/construction/impossible");
-						timeWindow.showMessage("Cannot place item there");
+						timeWindow.showMessage("Cannot place item there. " + blockReason + ".");
 					}
 				}
 			}
