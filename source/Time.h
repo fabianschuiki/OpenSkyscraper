@@ -54,6 +54,7 @@ namespace OT {
 		int year;
 		
 		bool check(double a);
+		bool checkTick(double p);
 		bool checkHour(double h);
 		
 	protected:

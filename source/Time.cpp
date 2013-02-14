@@ -82,6 +82,13 @@ bool Time::check(double a)
 	return (prev_absolute < a && absolute >= a);
 }
 
+/** Returns true if the time hast just passed a multiple of the given period p. E.g. check(1/10.0)
+ * will return true 10 times per day. */
+bool Time::checkTick(double p)
+{
+	return (floor(prev_absolute / p) != floor(absolute / p));
+}
+
 /** Returns true if the time has just passed said hour. E.g. if the time advanced from 9.98 to 10.1
  * checkHour(10) would return true. */
 bool Time::checkHour(double h)

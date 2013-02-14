@@ -30,8 +30,16 @@ Currently we're performing the following experiments and tests:
 Coding Style
 ------------
 
+- Add a copyright line in the top comment of each file you edit:
+
+      /* Copyright © 2010 John Doe
+       * Copyright © 2013 Mark Mensk */
+  
+
 - Everything resides in the OT namespace.
+
 - Source file names match the class names in capitalization, e.g. the class `Application` yields `Application.{h|cpp}`.
+
 - The directory hierarchy reflects the namespace hierarchy, so `Math::Vector2D` goes into `Math/Vector2D.{h|cpp}`.
 
 There are some violations of this style left in the source. I'm working on getting rid of them.
