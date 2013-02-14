@@ -204,7 +204,7 @@ bool Game::handleEvent(sf::Event & event)
 								if (toolBoundary.maxX() < itemRect.maxX() && toolBoundary.maxX() > itemRect.minX()) constructionBlocked = true;
 							}
 							if (constructionBlocked) {
-								blockReason = "Another " + i->prototype->name + " is in the way";
+								blockReason = "Other " + i->prototype->name + " is in the way";
 							}
 						}
 						
@@ -289,13 +289,15 @@ bool Game::handleEvent(sf::Event & event)
 
 						// Check obstruction from other buildings
 						ItemSet itemsNearby;
-						itemsNearby = itemsByFloor[toolPosition.y];
-						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
-							Item::Item * i = *ii;
-							if (i->canHaulPeople()) continue;
-							if (toolBoundary.intersectsRect(i->getRect())) {
-								constructionBlocked = true;
-								blockReason = i->prototype->name + " is in the way";
+						for (int y = 0; !constructionBlocked && y < toolPrototype->size.y; y++) {
+							itemsNearby = itemsByFloor[toolPosition.y + y];
+							for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
+								Item::Item * i = *ii;
+								if (i->canHaulPeople()) continue;
+								if (toolBoundary.intersectsRect(i->getRect())) {
+									constructionBlocked = true;
+									blockReason = i->prototype->name + " is in the way";
+								}
 							}
 						}
 
