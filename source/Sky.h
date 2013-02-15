@@ -18,11 +18,14 @@ namespace OT {
 		bool rainyDay;
 		double rainAnimation;
 		double thunderOverlay;
+
+		sf::Color skyColor;
 		
 		void advance(double dt);
 		virtual void Render(sf::RenderTarget & target) const;
 		
 		static double cloudNoise(double2 p);
+		void computeSkyColor();
 		
 		Sound rainSound;
 		Sound thunderSound;

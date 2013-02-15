@@ -42,9 +42,6 @@ namespace OT {
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
 			
-			Sprite ceiling;
-			void defaultCeiling();
-			
 			std::string desc() {
 				char c[512];
 				snprintf(c, 512, "%s floor %i", prototype->id.c_str(), position.y);

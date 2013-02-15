@@ -23,8 +23,6 @@ void FastFood::init()
 	addSprite(&sprite);
 	spriteNeedsUpdate = false;
 	
-	defaultCeiling();
-	
 	updateSprite();
 }
 

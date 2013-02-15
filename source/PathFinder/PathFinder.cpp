@@ -46,6 +46,7 @@ void PathFinder::buildRoute(Route &r, Item::Item *start_item, Item::Item *end_it
 		r.clear();
 		return;
 	}
+
 	if(!start_item || !end_item) {
 		r.clear();
 		return;
@@ -53,6 +54,12 @@ void PathFinder::buildRoute(Route &r, Item::Item *start_item, Item::Item *end_it
 
 	MapSearchNode *end_node = astarsearch.GetSolutionEnd();
 	MapSearchNode *start_node = astarsearch.GetSolutionStart();
+
+	if(start_node->IsSameState(*end_node)) {
+		r.add(start_item, start_item->position.y);
+		r.add(end_item, end_item->position.y);
+		return;
+	}
 	
 	MapSearchNode *n = start_node;
 	MapSearchNode *n_child;

@@ -7,6 +7,7 @@
 #include "Escalator.h"
 #include "Factory.h"
 #include "FastFood.h"
+#include "Floor.h"
 #include "Lobby.h"
 #include "Stairs.h"
 
@@ -29,6 +30,7 @@ void Factory::loadPrototypes()
 	
 	#define register_item(cls) prototypes.push_back(cls::makePrototype());
 	register_item(Lobby);
+	register_item(Floor);
 	register_item(Stairs);
 	register_item(Escalator);
 	register_item(Elevator::Express);

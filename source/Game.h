@@ -44,9 +44,11 @@ namespace OT {
 		ItemSet items;
 		std::map<int, ItemSet> itemsByFloor;
 		std::map<std::string, ItemSet> itemsByType;
+		std::map<int, Item::Item *> floorItems;
 		Item::Item * mainLobby;
 		void addItem(Item::Item * item);
 		void removeItem(Item::Item * item);
+		void extendFloor(int floor, int minX, int maxX);
 		
 		int funds;
 		int rating;

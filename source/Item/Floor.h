@@ -4,18 +4,18 @@
 
 namespace OT {
 	namespace Item {
-		class Lobby : public Item
+		class Floor : public Item
 		{
 		public:
-			OT_ITEM_CONSTRUCTOR(Lobby);
-			OT_ITEM_PROTOTYPE(Lobby) {
-				p->id    = "lobby";
-				p->name  = "Lobby";
-				p->price = 20000;
-				p->size  = int2(4,1);
-				p->icon  = 0;
+			OT_ITEM_CONSTRUCTOR(Floor);
+			OT_ITEM_PROTOTYPE(Floor) {
+				p->id    = "floor";
+				p->name  = "Floor";
+				p->price = 500;
+				p->size  = int2(1,1);
+				p->icon  = 1;
 			}
-			virtual ~Lobby();
+			virtual ~Floor();
 			
 			virtual void init();
 			
@@ -23,9 +23,6 @@ namespace OT {
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
 			
 			Sprite background;
-			Sprite window;
-			Sprite overlay;
-			Sprite entrances[2];
 			void updateSprite();
 			
 			void Render(sf::RenderTarget & target) const;

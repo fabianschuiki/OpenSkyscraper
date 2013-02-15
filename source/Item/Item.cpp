@@ -44,7 +44,7 @@ void Item::Render(sf::RenderTarget & target) const
 		target.Draw(**s);
 	}
 	
-	if (!canHaulPeople() && game->mainLobby != this && lobbyRoute.empty()) {
+	if (!canHaulPeople() && position.y != 0 && prototype->icon != 1 && lobbyRoute.empty()) {
 		Sprite noroute;
 		noroute.SetImage(app->bitmaps["noroute.png"]);
 		sf::Vector2f size = noroute.GetSize();
@@ -64,16 +64,6 @@ void Item::encodeXML(tinyxml2::XMLPrinter & xml)
 
 void Item::decodeXML(tinyxml2::XMLElement & xml)
 {
-}
-
-void Item::defaultCeiling()
-{
-	ceiling.SetImage(App->bitmaps["simtower/floor"]);
-	ceiling.SetSubRect(sf::IntRect(0, 0, 8, 12));
-	ceiling.Resize(GetSize().x, 12);
-	//ceiling.SetCenter(0.375, 0.375);
-	ceiling.SetPosition(sf::Vector2f(0, -GetSize().y));
-	addSprite(&ceiling);
 }
 
 void Item::addPerson(Person * p)
@@ -101,7 +91,7 @@ rectd Item::getMouseRegion()
 
 void Item::updateRoutes()
 {
-	if (!canHaulPeople() && game->mainLobby && game->mainLobby != this) {
+	if (!canHaulPeople() && position.y != 0) {
 		lobbyRoute = game->findRoute(game->mainLobby, this);
 	} else {
 		lobbyRoute.clear();
