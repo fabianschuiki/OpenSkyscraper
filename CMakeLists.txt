@@ -68,16 +68,8 @@ endif ()
 # Tell CMake to also search the thirdparty directory for modules.
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/thirdparty" ${CMAKE_MODULE_PATH})
 
-# Include the ObjectiveLua headers.
-include_directories(thirdparty/objectivelua/include)
-
 # Include AStar-Search headers
 include_directories(thirdparty/astar-search/)
-
-# Lua
-find_package(Lua51 REQUIRED)
-include_directories(${LUA_INCLUDE_DIR})
-target_link_libraries(${EXECUTABLE_NAME} ${LUA_LIBRARY})
 
 # SFML
 if (WIN32)
@@ -92,11 +84,6 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
 if (APPLE)
 	install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
 endif ()
-
-# CEGUI
-#find_package(CEGUI REQUIRED opengl)
-#include_directories(${CEGUI_INCLUDE_DIR})
-#target_link_libraries(${EXECUTABLE_NAME} ${CEGUI_LIBRARY})
 
 # libRocket
 if (CMAKE_BUILD_TYPE MATCHES Debug)
