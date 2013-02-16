@@ -104,3 +104,10 @@ Item::Metro
 - Make trains arrive/leave in regular absolute time intervals (see Time object's absolute time member).
 - Metro stations should create customers that visit shops below ground. Each train should bring new customers, and haul away passengers waiting on the platform.
 - Add metro tracks. This should probably go into the same category as the fire stairs and crane, i.e. tower decorations.
+
+
+Item::Office
+------------
+Office workers don't leave the office at 12 to have lunch yet. The lunch time is being properly scheduled at the moment, but no decision logic is in place that looks for an appropriate fast food for these people.
+
+Office workers should also be able to arrive by car. At the moment, they only use the lobby.
