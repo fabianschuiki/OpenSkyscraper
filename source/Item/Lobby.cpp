@@ -32,10 +32,6 @@ void Lobby::init()
 			entrances[i].SetSubRect(sf::IntRect(i*56, 0, (i+1)*56, 36));
 			addSprite(&entrances[i]);
 		}
-	} else {
-		window.SetBlendMode(sf::Blend::None);
-		window.SetImage(sf::Image(312, 36, sf::Color(0,0,0)));
-		window.SetCenter(0, 36);
 	}
 	
 	updateSprite();
@@ -81,40 +77,18 @@ void Lobby::Render(sf::RenderTarget & target) const
 	int maxx = std::min<int>(ceil(view.Right / 256), ceil (rect.maxX() / 32.0));
 	Sprite b = background;
 
-	if (position.y == 0) {
-		for (int x = minx; x < maxx; x++) {
-			int offl = std::max<int>(0, rect.minX() - x*32) * 8;
-			int offr = std::max<int>(0, (x+1)*32 - rect.maxX()) * 8;
-			sf::IntRect sr = background.GetSubRect();
-			sr.Left  += offl;
-			sr.Right -= offr;
-			b.SetSubRect(sr);
+	for (int x = minx; x < maxx; x++) {
+		int offl = std::max<int>(0, rect.minX() - x*32) * 8;
+		int offr = std::max<int>(0, (x+1)*32 - rect.maxX()) * 8;
+		sf::IntRect sr = background.GetSubRect();
+		sr.Left  += offl;
+		sr.Right -= offr;
+		b.SetSubRect(sr);
 		
-			b.SetX((x * 32 - rect.minX()) * 8 + offl);
-			target.Draw(b);
+		b.SetX((x * 32 - rect.minX()) * 8 + offl);
+		target.Draw(b);
 		
-			game->drawnSprites++;
-		}
-	} else {
-		Sprite w = window;
-		w.SetColor(game->sky.skyColor);
-
-		for (int x = minx; x < maxx; x++) {
-			int offl = std::max<int>(0, rect.minX() - x*32) * 8;
-			int offr = std::max<int>(0, (x+1)*32 - rect.maxX()) * 8;
-			sf::IntRect sr = background.GetSubRect();
-			sr.Left  += offl;
-			sr.Right -= offr;
-			w.SetSubRect(sr);
-			b.SetSubRect(sr);
-
-			w.SetX((x * 32 - rect.minX()) * 8 + offl);
-			b.SetX((x * 32 - rect.minX()) * 8 + offl);
-			target.Draw(w);
-			target.Draw(b);
-
-			game->drawnSprites += 2;
-		}
+		game->drawnSprites++;
 	}
 	
 	Sprite o = overlay;

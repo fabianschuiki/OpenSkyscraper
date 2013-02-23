@@ -105,9 +105,6 @@ void Sky::advance(double dt)
 		}
 		soundCountdown += Math::randd(duration + 0.5, duration + 10);
 	}
-
-	if (skyColor.b == 0 && progress == 0) computeSkyColor();
-	if (progress != 0) computeSkyColor();
 }
 
 void Sky::Render(sf::RenderTarget & target) const
@@ -213,14 +210,4 @@ double Sky::cloudNoise(double2 p)
 	n=(n<<13)^n;
 	int nn=(n*(n*n*60493+19990303)+1376312589)&0x7fffffff;
 	return 1.0-((double)nn/1073741824.0);
-}
-
-void Sky::computeSkyColor() {
-	int idx = std::max<int>(floor(GetPosition().y / 360), -1);
-	idx =	  std::min<int>(idx, 11) + 1;
-	const sf::Color &fromColor = app->bitmaps["simtower/sky"].GetPixel((std::min<int>(idx, 9) * 6 + to) * 32, 0);
-	const sf::Color &toColor =	 app->bitmaps["simtower/sky"].GetPixel((std::min<int>(idx, 9) * 6 + from) * 32, 0);
-	skyColor.r = fromColor.r * progress + toColor.r * (1 - progress);
-	skyColor.g = fromColor.g * progress + toColor.g * (1 - progress);
-	skyColor.b = fromColor.b * progress + toColor.b * (1 - progress);
 }

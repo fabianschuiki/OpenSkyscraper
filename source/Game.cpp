@@ -161,6 +161,17 @@ bool Game::handleEvent(sf::Event & event)
 					std::string blockReason;
 					int minFloorX = INT_MAX;
 					int maxFloorX = INT_MIN;
+
+					if (toolPosition.y < -9 && toolPrototype->icon != 19) {
+						constructionBlocked = true;
+						blockReason = "Cannot build below floor B9";
+					}
+
+					if (toolPosition.y > 0 && toolPrototype->icon == 19) {
+						constructionBlocked = true;
+						blockReason = toolPrototype->name + " unavailable above ground";
+					}
+
 					if (toolPrototype->icon == 0) {
 						if (toolPosition.y % 15 != 0) {
 							constructionBlocked = true;
@@ -649,11 +660,48 @@ void Game::addItem(Item::Item * item)
 	}
 
 	if (item->prototype->icon == 1) {
-		floorItems[item->position.y] = (Item::Floor *) item;
+		// Add floor item
+		Item::Floor * f = (Item::Floor *) item;
+		if (floorItems.count(item->position.y) != 0) {
+			// Replace existing floor item with newly created floor item
+			Item::Floor * existing_f = floorItems[item->position.y];
+			if (existing_f->size.x >= f->size.x) {
+				f->position = existing_f->position;
+				f->size = existing_f->size;
+			} else {
+				std::multiset<int> &existing_f_i = existing_f->interval;
+				existing_f_i.erase(existing_f->position.x);
+				existing_f_i.erase(existing_f->getRect().maxX());
+				existing_f_i.insert(f->position.x);
+				existing_f_i.insert(f->getRect().maxX());
+			}
+			
+			f->interval = existing_f->interval;
+			removeItem(existing_f);
+		}
+		
+		floorItems[item->position.y] = f;
 		decorations.updateFloor(item->position.y);
 	} else {
 		for (int i = 0; i < item->size.y; i++) {
 			itemsByFloor[item->position.y + i].insert(item);
+			
+			if (floorItems.count(item->position.y + i) == 0) {
+				// This is necessary in case of loading a save game where the floor item is not loaded before the building item on that floor.
+				int minX = item->position.x;
+				int maxX = item->getRect().maxX();
+				Item::Floor * f = (Item::Floor *) itemFactory.make(itemFactory.prototypesById["floor"], int2(minX,item->position.y + i));
+				f->interval.erase(f->getRect().maxX());
+				f->size.x = maxX - minX;
+				f->interval.insert(f->getRect().maxX());
+				f->updateSprite();
+				addItem(f);
+			}
+			if (!item->canHaulPeople()) {
+				std::multiset<int> &interval = floorItems[item->position.y + i]->interval;
+				interval.insert(item->position.x);
+				interval.insert(item->getRect().maxX());
+			}
 		}
 	}
 
@@ -674,11 +722,17 @@ void Game::removeItem(Item::Item * item)
 	}
 
 	if (item->prototype->icon == 1) {
+		// Remove floor item
 		floorItems.erase(item->position.y);
 		decorations.updateFloor(item->position.y);
 	} else {
 		for (int i = 0; i < item->size.y; i++) {
 			itemsByFloor[item->position.y + i].erase(item);
+			if (!item->canHaulPeople()) {
+				std::multiset<int> &interval = floorItems[item->position.y + i]->interval;
+				interval.erase(interval.find(item->position.x));
+				interval.erase(interval.find(item->getRect().maxX()));
+			}
 		}
 	}
 
@@ -692,6 +746,9 @@ void Game::extendFloor(int floor, int minX, int maxX) {
 	if (floorItems.count(floor) != 0) {
 		// Look for existing floor to extend
 		Item::Floor * f = floorItems[floor];
+		std::multiset<int> &interval = f->interval;
+		interval.erase(interval.find(f->position.x));
+		interval.erase(interval.find(f->getRect().maxX()));
 		gameMap.removeNode(MapNode::Point(f->position.x + f->size.x/2, f->position.y), f);
 		float diff_left = 0;
 		if (minX < f->position.x) {
@@ -706,6 +763,8 @@ void Game::extendFloor(int floor, int minX, int maxX) {
 		f->size.x += diff_right;
 
 		f->updateSprite();
+		interval.insert(f->position.x);
+		interval.insert(f->getRect().maxX());
 		gameMap.addNode(MapNode::Point(f->position.x + f->size.x/2, f->position.y), f);
 		if (diff_left + diff_right > 0) {
 			decorations.updateFloor(f->position.y);
@@ -715,7 +774,9 @@ void Game::extendFloor(int floor, int minX, int maxX) {
 	} else {
 		// Otherwise construct a new floor
 		Item::Floor * f = (Item::Floor *) itemFactory.make(itemFactory.prototypesById["floor"], int2(minX,floor));
+		f->interval.erase(f->getRect().maxX());
 		f->size.x = maxX - minX;
+		f->interval.insert(f->getRect().maxX());
 		f->updateSprite();
 		addItem(f);
 		transferFunds(-f->prototype->price);

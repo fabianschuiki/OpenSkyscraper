@@ -23,7 +23,6 @@ namespace OT {
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
 			
 			Sprite background;
-			Sprite window;
 			Sprite overlay;
 			Sprite entrances[2];
 			void updateSprite();

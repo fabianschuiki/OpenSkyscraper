@@ -12,7 +12,7 @@ Maybe we should move everything to SFML version 2.0.
 When pausing the game, elevators keep moving as if the game was unpaused. The weird thing is that the elevators react to speedup by moving faster. Why wouldn't they react to the speeddown?
 
 ### Clean up CMakeLists.txt
-There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
+[DONE] There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
 
 ### Game Speed
 The game speed seems to be rather fast compared to elevator movements. Cinema customers are hardly able to arrive at the theatre in time. Maybe we should slow down the time a bit? Or speed up the elevators? I don't remember how fast the regular elevators actually were.
@@ -27,7 +27,7 @@ Add tower decorations:
 Animate the construction of items. The `construction/*` bitmaps should help with that. The `solid` bitmap is for regular items, the `grid` bitmap for lobbies, car parkings, etc.
 
 ### Different Access Floors for Items
-At the moment, people enter all items on floor 0 (relative to the item). Certain items, such as the Metro station, are accessed via floor 1. The item prototype should contain a field that enables a relative shift of the access floor.
+At the moment, people enter all items on floor 0 (relative to the item). Certain items, such as the Metro station & Cinema, are accessed via floor 1. The item prototype should contain a field that enables a relative shift of the access floor.
 
 
 Background Noise
@@ -62,10 +62,7 @@ time. The fast food would then only have to check if the queue's frontmost custo
 
 Person
 ------
-Handle change of routes (from accessible to inaccessible and vice-versa) for 
-people already travelling. Need to stop them from continuing their journey 
-to prevent crashes when transport routes are changed, and transit appropriately 
-out of the flow of traffic.
+- Handle change of routes (from accessible to inaccessible and vice-versa) for people already travelling. Need to stop them from continuing their journey to prevent crashes when transport routes are changed, and transit appropriately out of the flow of traffic.
 
 
 Hotels
@@ -93,6 +90,7 @@ Item::Cinema
 - Check playing times in the original game.
 - Implement income simulation. It is somehow based on the number of patrons I guess.
 - Did the original game have a break halfway through the movie?
+- Should be able to be built underground (if I recall correctly).
 
 
 Item::Elevator
@@ -101,18 +99,14 @@ Item::Elevator
 - [DONE] Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator.
 
 
-Item::Cinema
-------------
-
-- Should be able to be built underground (if I recall correctly).
-
-
 Item::Metro
 -----------
 
 - Make trains arrive/leave in regular absolute time intervals (see Time object's absolute time member).
 - Metro stations should create customers that visit shops below ground. Each train should bring new customers, and haul away passengers waiting on the platform.
 - Add metro tracks. This should probably go into the same category as the fire stairs and crane, i.e. tower decorations.
+- Allow only one instance of Metro in the game.
+- Prevent construction of any item below Metro.
 
 
 Item::Floor
@@ -121,3 +115,4 @@ Item::Floor
 - [DONE] Create & extend width of floor item automatically when constructing building items & resizing elevators.
 - [DONE] Floor item will provide floor width information, so there is no longer a need to iterate through all items on a floor to find the floor width limits.
 - [DONE] Floor item is rendered behind all other building items, so there is no longer a need to render ceilings separately for buildings.
+- [DONE] Floor item is rendered in segments: Full floor item if there is no building item present, and only ceiling if there is a building item present.
