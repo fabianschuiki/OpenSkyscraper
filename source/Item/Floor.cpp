@@ -6,10 +6,7 @@ using namespace OT;
 using namespace Item;
 
 
-Floor::~Floor()
-{
-	assert(position.y != 0);
-}
+Floor::~Floor() {}
 
 void Floor::init()
 {

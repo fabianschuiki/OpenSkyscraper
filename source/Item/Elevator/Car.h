@@ -23,6 +23,7 @@ namespace OT {
 				void updateSprite();
 				
 				Item::People passengers;
+				void removePassenger(Person *p);
 				
 				virtual void Render(sf::RenderTarget & target) const;
 				
@@ -53,7 +54,7 @@ namespace OT {
 				bool departingPlayed;
 				
 				bool isFull();
-				Person * nextPassengerToUnmount();
+				Person * nextPassengerToUnmount() const;
 				
 				void moveTo(int floor);
 			};

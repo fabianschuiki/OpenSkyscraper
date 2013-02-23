@@ -1,24 +1,12 @@
 General
 -------
 
-- create `CommmandLineArguments` class which handles interpretation of the command line arguments
-  (e.g. `--dump-simtower <path>`)
-- create `FileSystem` class to do file manipulation (move, copy, mkdir, etc.)
-	- adjust `WindowsNEExecutable::dump`
-- In `Route`, keep track of how many stairs and elevators were used. Then make the pathfinder limit
-  the amount of stairs and elevators that are used per route. Otherwise algorithm complexity will
-  explode.
-- [DONE a long time ago] Modify `Time` so that `absolute` is a day counter that advances evenly. Add some code that
-  calculates the current hour by scaling the absolute time differently for different phases of the
-  day to create the effect of time running at different speeds.
 - `mapWindow` should be its own class `MapWindow`, like the other two.
+- Cache the result of the KWAJ decompression so the game doesn't decompress SIMTOWER.EX_ everytime it is relaunched.
 
 
 ### SFML 2
 Maybe we should move everything to SFML version 2.0.
-
-### Audio
-[DONE] Put a limitation mechanim in place that prevents the same sound from being played at the same time. One way of doing this would be to create a map that contains the name and timestamp for each sound played. Whenever a new sound is to be played, the system checks whether enough time expired since the timestamp for this sound name, thus preventing sounds from playing 10-fold.
 
 ### Pausing doesn't affect elevators
 When pausing the game, elevators keep moving as if the game was unpaused. The weird thing is that the elevators react to speedup by moving faster. Why wouldn't they react to the speeddown?
@@ -26,12 +14,36 @@ When pausing the game, elevators keep moving as if the game was unpaused. The we
 ### Clean up CMakeLists.txt
 There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
 
+### Game Speed
+The game speed seems to be rather fast compared to elevator movements. Cinema customers are hardly able to arrive at the theatre in time. Maybe we should slow down the time a bit? Or speed up the elevators? I don't remember how fast the regular elevators actually were.
+
+### Decorations
+Add tower decorations:
+
+- [DONE] Fire Stairs
+- [DONE] Crane at the top of the tower
+
+### Construction Animation
+Animate the construction of items. The `construction/*` bitmaps should help with that. The `solid` bitmap is for regular items, the `grid` bitmap for lobbies, car parkings, etc.
+
+### Different Access Floors for Items
+At the moment, people enter all items on floor 0 (relative to the item). Certain items, such as the Metro station, are accessed via floor 1. The item prototype should contain a field that enables a relative shift of the access floor.
+
 
 Background Noise
 ----------------
 [DONE] Many items produce background noise in the original game. E.g. Fast Foods, Offices and Condos had really distinctive sounds. Write a system that regularly iterates over a subset of all visible items and asks each for a background sound to be played. The system should be fair, i.e. each item should have a fair chance of playing back some sound.
 
 [DONE] My current implementation idea: Iterate through the visible items at regular intervals, say 0.5s. Each item has a playback chance calculated as `p = itemArea / screenArea = itemWidth * itemHeight / screenArea`. Through a random number an item is picked that is asked for a sound which is then played back. One caveat here is that simply using `screenArea` in the above formula yields a total probability of `p >= 1`, since the total area of all items may actually be larger than the screen area due to items being only partially visible. Substitute `screenArea` in the above formula with `K = max(screenArea, summedItemAreas)`.
+
+
+PathFinding
+-----------
+
+- [DONE] Create a game map representing the various transport access points as transport nodes, and available floors as floor nodes. Buildings are assumed to be accessible once we reach a generic floor node.
+- [DONE] Rewrite findRoute() to utilise A-Star search algorithm to find a route from start to destination item.
+- Balance the path costs for using each transport to better represent the original, or to make it more reasonable.
+- Check for availability of sky-lobby before allowing transfer between elevators.
 
 
 Item::FastFood
@@ -43,7 +55,9 @@ time. The fast food would then only have to check if the queue's frontmost custo
 `c->arrivalTime >= game->time.hours` , pop the customer, and in case
 `game->time.checkHour(c->arrivalTime)` make the customer arrive.
 
-New customers arrive until the fast food closes, or at least the transit times make it seem so. Maybe we should change their behaviour such that customers won't enter the tower after 1900. This would also make the fast foods look empty towards the end of the day, which is a nice thing to have.
+- New customers arrive until the fast food closes, or at least the transit times make it seem so. Maybe we should change their behaviour such that customers won't enter the tower after 1900. This would also make the fast foods look empty towards the end of the day, which is a nice thing to have.
+
+- Store the customers to disk. At the moment, when you save the debug tower using F2 and reload the game, you end up with open yet empty fast foods.
 
 
 Person
@@ -63,3 +77,47 @@ Implement the hotel system. For this, maybe have a look at the implementation in
 - All occupants should go to sleep between 23:00 and 1:30.
 - Occupants should get up between 6:00 and 8:00 and leave between 8:00 and 10:00 and leave the room back in the dirty state.
 - Housekeepers should move to dirty bedrooms, stay there and clean for a fixed amount of absolute time. This is important since otherwise the housekeepers would take far longer to clean a room during noon than at 10:00. After leaving the hotel room, the room should be reset to the tidy state.
+
+
+Item::PartyHall
+---------------
+
+- Check the original game for the exact timing of parties. I think I recall that there were two parties held each day, but I don't remember when.
+- Check how much money you get back from party halls. Maybe that's based on the number of people visiting?
+- Make people arrive/leave.
+
+
+Item::Cinema
+------------
+
+- Check playing times in the original game.
+- Implement income simulation. It is somehow based on the number of patrons I guess.
+- Did the original game have a break halfway through the movie?
+
+
+Item::Elevator
+--------------
+
+- [DONE] Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator.
+
+
+Item::Cinema
+------------
+
+- Should be able to be built underground (if I recall correctly).
+
+
+Item::Metro
+-----------
+
+- Make trains arrive/leave in regular absolute time intervals (see Time object's absolute time member).
+- Metro stations should create customers that visit shops below ground. Each train should bring new customers, and haul away passengers waiting on the platform.
+- Add metro tracks. This should probably go into the same category as the fire stairs and crane, i.e. tower decorations.
+
+
+Item::Floor
+-----------
+
+- [DONE] Create & extend width of floor item automatically when constructing building items & resizing elevators.
+- [DONE] Floor item will provide floor width information, so there is no longer a need to iterate through all items on a floor to find the floor width limits.
+- [DONE] Floor item is rendered behind all other building items, so there is no longer a need to render ceilings separately for buildings.

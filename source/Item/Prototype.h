@@ -24,6 +24,7 @@ namespace OT {
 			int icon;
 			
 			virtual Item * make(Game * game) = 0;
+			virtual ~AbstractPrototype() {}
 			
 			std::string desc() {
 				char c[512];

@@ -403,7 +403,7 @@ void SimTowerLoader::loadBitmaps()
 	loadMergedByID(app->bitmaps["simtower/parking/ramp"], 'x', 0x8EE8, 0x8EE9, 0x8EEA, NULL);
 	loadMergedByID(app->bitmaps["simtower/parking/space"], 'x', 0x86A8, 0x86A9, NULL);
 	
-	loadMergedByID(app->bitmaps["simtower/party_hall"], 'y', 0x8B28, 0x8B68, NULL);
+	loadMergedByID(app->bitmaps["simtower/partyhall"], 'y', 0x8B28, 0x8B68, NULL);
 	
 	//Recycling Center
 	sf::Image recycling[2];
@@ -435,7 +435,7 @@ void SimTowerLoader::loadBitmaps()
 	loadAnimatedBitmap(0x8868, cinemaUpper);
 	loadBitmap(0x88A8, cinemaLower);
 	sf::Image & cinema = app->bitmaps["simtower/cinema/hall"];
-	cinema.Create(182*5, 60);
+	cinema.Create(192*5, 60);
 	cinema.Copy(cinemaUpper[1], 192, 0);
 	cinema.Copy(cinemaUpper[0], 0, 0);
 	cinema.Copy(cinemaLower, 192, 24);

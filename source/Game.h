@@ -6,6 +6,7 @@
 
 #include "Item/Elevator/Elevator.h"
 #include "Item/Factory.h"
+#include "Item/Floor.h"
 #include "Item/Item.h"
 #include "PathFinder/GameMap.h"
 #include "PathFinder/PathFinder.h"
@@ -16,6 +17,7 @@
 #include "Time.h"
 #include "TimeWindow.h"
 #include "ToolboxWindow.h"
+#include "Decorations.h"
 
 namespace OT {
 	namespace Item { class AbstractPrototype; }
@@ -42,9 +44,11 @@ namespace OT {
 		
 		typedef std::set<Item::Item *> ItemSet;
 		ItemSet items;
-		std::map<int, ItemSet> itemsByFloor;
-		std::map<std::string, ItemSet> itemsByType;
-		std::map<int, Item::Item *> floorItems;
+		typedef std::map<int, ItemSet> ItemSetByInt;
+		typedef std::map<std::string, ItemSet> ItemSetByString;
+		ItemSetByInt itemsByFloor;
+		ItemSetByString itemsByType;
+		std::map<int, Item::Floor *> floorItems;
 		Item::Item * mainLobby;
 		void addItem(Item::Item * item);
 		void removeItem(Item::Item * item);
@@ -99,6 +103,7 @@ namespace OT {
 
 		GameMap gameMap;
 		PathFinder pathFinder;
+		Decorations decorations;
 		
 	private:
 		double zoom;
