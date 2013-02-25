@@ -50,6 +50,7 @@ namespace OT {
 		ItemSetByString itemsByType;
 		std::map<int, Item::Floor *> floorItems;
 		Item::Item * mainLobby;
+		Item::Item * metroStation;
 		void addItem(Item::Item * item);
 		void removeItem(Item::Item * item);
 		void extendFloor(int floor, int minX, int maxX);

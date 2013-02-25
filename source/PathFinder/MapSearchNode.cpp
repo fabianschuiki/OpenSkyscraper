@@ -77,7 +77,7 @@ float MapSearchNode::GoalDistanceEstimate(MapSearchNode &nodeGoal) {
 			h = (float)(std::abs(end_point.x - mapNode->position.x)*WALKING_COST + std::abs(end_point.y - mapNode->position.y)*FLOOR_COST);
 	} else {
 		if(!mapNode->floorNode)
-			h = (float)(std::abs(nodeGoal.mapNode->position.x - start_point.x)*WALKING_COST + std::abs(nodeGoal.mapNode->position.y - mapNode->position.y)*FLOOR_COST);
+			h = (float)(std::abs(nodeGoal.mapNode->position.x - start_point.x)*WALKING_COST + std::abs(nodeGoal.mapNode->position.y - start_point.y)*FLOOR_COST);
 		else
 			h = (float)(std::abs(nodeGoal.mapNode->position.x - mapNode->position.x)*WALKING_COST + std::abs(nodeGoal.mapNode->position.y - mapNode->position.y)*FLOOR_COST);
 	}

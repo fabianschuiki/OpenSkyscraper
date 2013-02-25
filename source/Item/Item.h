@@ -74,6 +74,8 @@ namespace OT {
 #define OT_ITEM_PROTOTYPE(cls)\
 	static AbstractPrototype * makePrototype() {\
 		AbstractPrototype * p = new Prototype<cls>;\
+		p->entrance_offset = 0;\
+		p->exit_offset = 0;\
 		initPrototype(p);\
 		return p;\
 	}\

@@ -12,8 +12,8 @@ PathFinder::PathFinder() {}
 PathFinder::~PathFinder() { clear(); }
 
 Route PathFinder::findRoute(const MapNode *start_mapnode, const MapNode *end_mapnode, Item::Item *start_item, Item::Item *end_item) {
-	MapNode::Point start_point(start_item->position.x + start_item->size.x/2, start_item->position.y);
-	MapNode::Point end_point(end_item->position.x + end_item->size.x/2, end_item->position.y);
+	MapNode::Point start_point(start_item->position.x + start_item->size.x/2, start_mapnode->position.y);
+	MapNode::Point end_point(end_item->position.x + end_item->size.x/2, end_mapnode->position.y);
 
 	MapSearchNode nodeStart(start_mapnode);
 	nodeStart.parent_item = start_item;
@@ -56,8 +56,8 @@ void PathFinder::buildRoute(Route &r, Item::Item *start_item, Item::Item *end_it
 	MapSearchNode *start_node = astarsearch.GetSolutionStart();
 
 	if(start_node->IsSameState(*end_node)) {
-		r.add(start_item, start_item->position.y);
-		r.add(end_item, end_item->position.y);
+		r.add(start_item, start_node->mapNode->position.y);
+		r.add(end_item, end_node->mapNode->position.y);
 		return;
 	}
 	
@@ -82,5 +82,5 @@ void PathFinder::buildRoute(Route &r, Item::Item *start_item, Item::Item *end_it
 		n = n_child;
 	};
 	r.add(end_item, n->mapNode->position.y);
-	r.updateScore(std::abs(end_node->g + end_node->h));
+	r.updateScore((int)std::abs(end_node->g + end_node->h));
 }

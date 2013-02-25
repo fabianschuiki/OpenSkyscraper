@@ -38,6 +38,7 @@ Game::Game(Application & app)
 	draggingMotor = 0;
 	
 	mainLobby = NULL;
+	metroStation = NULL;
 	
 	itemFactory.loadPrototypes();
 	
@@ -282,6 +283,11 @@ bool Game::handleEvent(sf::Event & event)
 							maxFloorX = i->getRect().maxX();
 						}
 					} else {
+						if (toolPrototype->icon == 19 && metroStation != NULL) {
+							constructionBlocked = true;
+							blockReason = "Only one Metro Station allowed";
+						}
+						
 						if (toolPosition.y == 0) {
 							constructionBlocked = true;
 							blockReason = "Only lobbies may be built on the ground floor";
@@ -380,7 +386,7 @@ bool Game::handleEvent(sf::Event & event)
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
-					if (itemBelowCursor->prototype->icon == 0 || itemBelowCursor->prototype->icon == 1) {
+					if (itemBelowCursor->prototype->icon == 0 || itemBelowCursor->prototype->icon == 1 || itemBelowCursor->prototype->icon == 19) {
 						playOnce("simtower/construction/impossible");
 						timeWindow.showMessage("Cannot bulldoze " + itemBelowCursor->prototype->name);
 						break;
@@ -990,7 +996,16 @@ void Game::updateRoutes()
  *  route is empty(), no path was found through the tower. */
 Route Game::findRoute(Item::Item * start, Item::Item * destination)
 {
-	MapNode *start_mapnode = gameMap.findNode(MapNode::Point(start->position.x + start->size.x/2, start->position.y), start);
-	MapNode *destination_mapnode = gameMap.findNode(MapNode::Point(destination->position.x + destination->size.x/2, destination->position.y), destination); 
+	MapNode::Point start_point(start->position.x + start->size.x/2, start->position.y + start->prototype->exit_offset);
+	MapNode::Point end_point(destination->position.x + destination->size.x/2, destination->position.y + destination->prototype->entrance_offset);
+	
+	// For the special case of Metro, passengers can enter/exit from the middle floor if their destination is on that floor
+	if (start->prototype->icon == 19 && (end_point.y == start_point.y - 1))
+		start_point.y = end_point.y;
+	else if (destination->prototype->icon == 19 && (start_point.y == end_point.y - 1))
+		end_point.y = start_point.y;
+
+	MapNode *start_mapnode = gameMap.findNode(start_point, start);
+	MapNode *destination_mapnode = gameMap.findNode(end_point, destination);
 	return pathFinder.findRoute(start_mapnode, destination_mapnode, start, destination);
 }

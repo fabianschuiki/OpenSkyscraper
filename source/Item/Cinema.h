@@ -15,6 +15,7 @@ namespace OT {
 				p->price = 500000;
 				p->size  = int2(31,2);
 				p->icon  = 14;
+				p->entrance_offset = 1;
 			}
 			virtual ~Cinema();
 			

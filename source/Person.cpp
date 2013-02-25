@@ -36,6 +36,7 @@ void Person::Journey::set(const Route & r)
 	for (std::vector<Route::Node>::const_iterator nit = r.nodes.begin(); nit != r.nodes.end(); nit++) {
 		nodes.push(*nit);
 	}
+	toFloor = nodes.front().toFloor;
 	next();
 }
 
