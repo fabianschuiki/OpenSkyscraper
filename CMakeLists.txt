@@ -1,22 +1,24 @@
 cmake_minimum_required(VERSION 2.6)
 project(OpenSkyscraper)
 
-# Default to debug build.
-if (NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
-endif()
-
 # Executable name.
 set(EXECUTABLE_NAME OpenSkyscraper)
 
-# Debugging definitions.
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-	add_definitions("-DBUILD_DEBUG")
-endif()
-
+# Additional definitions.
 if (MSVC)
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DBUILD_DEBUG")
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /DBUILD_DEBUG")
 	add_definitions(-Dsnprintf=_snprintf)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+else()
+	# Default to debug build.
+	if (NOT CMAKE_BUILD_TYPE)
+		set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
+	endif()
+
+	if (CMAKE_BUILD_TYPE MATCHES Debug)
+		add_definitions("-DBUILD_DEBUG")
+	endif()
 endif()
 
 
@@ -86,13 +88,11 @@ if (APPLE)
 endif ()
 
 # libRocket
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-	set(rocket_debug "debugger")
-endif()
 if (WIN32)
 	set(ROCKETDIR "" CACHE PATH "libRocket directory")
 endif ()
-find_package(Rocket REQUIRED core controls ${rocket_debug})
+find_package(Rocket REQUIRED core controls debugger)
+string(REPLACE "optimized;${ROCKET_DEBUGGER_LIBRARY_RELEASE}" "" ROCKET_LIBRARIES "${ROCKET_LIBRARIES}")
 include_directories(${ROCKET_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${ROCKET_LIBRARIES})
 

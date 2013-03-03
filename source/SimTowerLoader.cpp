@@ -62,8 +62,22 @@ bool SimTowerLoader::load()
 	DataManager::Paths compressedPaths;
 #ifdef MSPACK
 	if (!success) {
-		//TODO: This is not really portable, do stuff differently.
-		Path decompressedPath("/tmp/SIMTOWER.EXE");
+		string tmp;
+#ifdef _WIN32
+		TCHAR buf[MAX_PATH];
+		if (GetTempPath(MAX_PATH, buf) != 0) tmp.append(buf);
+#else
+		const char *tmp_env[] = {"TMPDIR", "TMP", "TEMP", "TEMPDIR", NULL};
+		char * buf = NULL;
+		for (int i = 0; buf == NULL && tmp_env[i] != NULL; i++) {			buf = getenv(tmp_env[i]);
+		}
+
+		if (buf != NULL) tmp.append(buf);
+		else			 tmp.append("/tmp");
+		if (!tmp.empty() && *tmp.rbegin() != '/') tmp.append("/");
+#endif
+		tmp.append("SIMTOWER.EXE");
+		Path decompressedPath(tmp);
 
 		//Iterate through the possible locations and try to decompress each, until one is found.
 		compressedPaths = app->data.paths("SIMTOWER.EX_");
