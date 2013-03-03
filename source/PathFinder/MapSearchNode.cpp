@@ -8,12 +8,14 @@ using namespace OT;
 MapSearchNode::MapSearchNode() : mapNode(NULL), parent_item(NULL), 
 								 numStairs(0), numEscalators(0), numElevators(0), 
 								 g(0), h(0), 
-								 start_point(INT_MIN, INT_MIN), end_point(INT_MIN, INT_MIN) {}
+								 start_point(INT_MIN, INT_MIN), end_point(INT_MIN, INT_MIN),
+								 serviceRoute(false) {}
 
 MapSearchNode::MapSearchNode(const OT::MapNode *mp) : mapNode(mp), parent_item(NULL), 
 													  numStairs(0), numEscalators(0), numElevators(0), 
 													  g(0), h(0), 
-													  start_point(INT_MIN, INT_MIN), end_point(INT_MIN, INT_MIN) {}
+													  start_point(INT_MIN, INT_MIN), end_point(INT_MIN, INT_MIN),
+													  serviceRoute(false) {}
 
 float MapSearchNode::GetCost(MapSearchNode &successor) {
 	Item::Item *i = getItemOnRoute(&successor); // Discover item that lies on this node, given the next step
@@ -98,23 +100,21 @@ bool MapSearchNode::GetSuccessors(AStarSearch< MapSearchNode > *astarsearch, Map
 		assert(nodesOnFloor != NULL);
 		for(std::list<MapNode *>::const_iterator i = nodesOnFloor->begin(); i != nodesOnFloor->end(); i++) {
 			MapNode *node = *i;
-			if(node->position.x <= start_point.x) left = node;
-			else {
+			if(node->position.x <= start_point.x && canTransfer(this, node, MapNode::LEFT)) left = node;
+			else if(canTransfer(this, node, MapNode::RIGHT)) {
 				right = node;
 				break;
 			}
 		}
 
 		if(left) {
-			n = MapSearchNode(left);
-			n.end_point = end_point;
+			createNode(n, left);
 			ret = astarsearch->AddSuccessor(n);
 			if(!ret) return false;
 		}
 		
 		if(right) {
-			n = MapSearchNode(right);
-			n.end_point = end_point;
+			createNode(n, right);
 			ret = astarsearch->AddSuccessor(n);
 			if(!ret) return false;
 		}
@@ -127,8 +127,7 @@ bool MapSearchNode::GetSuccessors(AStarSearch< MapSearchNode > *astarsearch, Map
 		// Add destination floor node
 		if(!mapNode->floorNode) return false; // ERROR: All transport nodes must contain pointer to their respective floor node.
 
-		n = MapSearchNode(mapNode->floorNode);
-		n.end_point = end_point;
+		createNode(n, mapNode->floorNode);
 		ret = astarsearch->AddSuccessor(n);
 		if(!ret) return false;
 		else	 return true;
@@ -155,33 +154,44 @@ bool MapSearchNode::GetSuccessors(AStarSearch< MapSearchNode > *astarsearch, Map
 	}
 
 	if(left) {
-		n = MapSearchNode(left);
-		n.end_point = end_point;
+		createNode(n, left);
 		ret = astarsearch->AddSuccessor(n);
 		if(!ret) return false;
 	}
 
 	if(right) {
-		n = MapSearchNode(right);
-		n.end_point = end_point;
+		createNode(n, right);
 		ret = astarsearch->AddSuccessor(n);
 		if(!ret) return false;
 	}
 
 	if(mapNode->neighbours[MapNode::UP]) {
 		node = mapNode->neighbours[MapNode::UP];
-		if(canTransfer(this, node, MapNode::UP)) {
-			n = MapSearchNode(node);
-			n.end_point = end_point;
+		if(mapNode->hasElevator) {
+			while(node) {
+				createNode(n, node);
+				ret = astarsearch->AddSuccessor(n);
+				if(!ret) return false;
+				node = node->neighbours[MapNode::UP];
+			}
+		} else if(canTransfer(this, node, MapNode::UP)) {
+			createNode(n, node);
 			ret = astarsearch->AddSuccessor(n);
 			if(!ret) return false;
 		}
 	}
+
 	if(mapNode->neighbours[MapNode::DOWN]) {
 		node = mapNode->neighbours[MapNode::DOWN];
-		if(canTransfer(this, node, MapNode::DOWN)) {
-			n = MapSearchNode(node);
-			n.end_point = end_point;
+		if(mapNode->hasElevator) {
+			while(node) {
+				createNode(n, node);
+				ret = astarsearch->AddSuccessor(n);
+				if(!ret) return false;
+				node = node->neighbours[MapNode::DOWN];
+			}
+		} else if(canTransfer(this, node, MapNode::DOWN)) {
+			createNode(n, node);
 			ret = astarsearch->AddSuccessor(n);
 			if(!ret) return false;
 		}
@@ -215,7 +225,12 @@ OT::Item::Item * MapSearchNode::getItemOnRoute(const MapSearchNode *successor) {
 		 return mapNode->transportItems[MapNode::UP];
 	else if(mapNode->neighbours[MapNode::DOWN] == s_mapnode)
 		 return mapNode->transportItems[MapNode::DOWN];
-	else return NULL;
+	else if(mapNode->transportItems[MapNode::UP] == s_mapnode->transportItems[MapNode::DOWN])
+		return mapNode->transportItems[MapNode::UP];
+	else if(mapNode->transportItems[MapNode::DOWN] == s_mapnode->transportItems[MapNode::UP])
+		return mapNode->transportItems[MapNode::DOWN];
+	else
+		return NULL;
 }
 
 bool MapSearchNode::canTransfer(const MapSearchNode *start, const OT::MapNode *dest, const OT::MapNode::Direction dir) const {
@@ -223,7 +238,7 @@ bool MapSearchNode::canTransfer(const MapSearchNode *start, const OT::MapNode *d
 		Returns true if transfer to destination transport has not exceed transfer limits.
 		Returns false otherwise.
 		Maximum transfer limits are:
-			2 elevators (no stairs/escalators allowed before boarding an elevator)
+			2 elevators (no more than 1 elevator if journey has already used stairs or escalators)
 			3 stairs
 			6 escalators
 			1 stair, 2 escalators OR 2 stairs, 1 escalator
@@ -234,23 +249,27 @@ bool MapSearchNode::canTransfer(const MapSearchNode *start, const OT::MapNode *d
 		if(start->mapNode->hasElevator) return true;
 
 		// Hence we only check limits for stairlike travel
-		if(start->numStairs >= 3) return false;
-
 		if(start->mapNode->transportItems[dir]->prototype->icon == 2) {
-			if(start->numEscalators >= 3) return false;
-			if(start->numStairs >= 3 - start->numEscalators) return false;
+			if(start->numStairs > 2 - start->numEscalators) return false;
 		} else {
-			if(start->numEscalators >= 6) return false;
-			if(start->numStairs > 0 && start->numEscalators >= 3 - start->numStairs) return false;
+			if(start->numEscalators > 5) return false;
+			if(start->numStairs > 0 && start->numEscalators > 2 - start->numStairs) return false;
 		}
 	} else {
 		if(dest->hasElevator) {
-			if(start->numElevators >= 2) return false;
-			if(start->numStairs > 0 || start->numEscalators > 0) return false;
+			if((!start->serviceRoute && dest->hasServiceElevator) || (start->serviceRoute && !dest->hasServiceElevator)) return false;
+			if(start->numElevators > 1) return false;
+			if(start->numElevators == 1 && (start->mapNode->position.y % 15 != 0 || start->numStairs > 0 || start->numEscalators > 0)) return false;
 		}
 		// Transit to other stairlike nodes (moving left/right) has no limits.
 		// Limit only applies when actually using (moving up/down) the stairlike.
 	}
 
 	return true;
+}
+
+void MapSearchNode::createNode(MapSearchNode &n, const OT::MapNode *node) {
+	n = MapSearchNode(node);
+	n.end_point = end_point;
+	n.serviceRoute = serviceRoute;
 }

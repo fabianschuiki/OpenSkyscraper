@@ -4,7 +4,7 @@
 using namespace OT;
 
 
-MapNode::MapNode(FloorNode *floor) : hasElevator(false), floorNode(floor), nodesOnFloor(NULL) {
+MapNode::MapNode(FloorNode *floor) : hasElevator(false), hasServiceElevator(false), floorNode(floor), nodesOnFloor(NULL) {
 	init();
 }
 

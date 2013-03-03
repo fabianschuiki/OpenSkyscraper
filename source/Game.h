@@ -98,7 +98,7 @@ namespace OT {
 		void playRandomBackgroundSound();
 		
 		void updateRoutes();
-		Route findRoute(Item::Item * start, Item::Item * destination);
+		Route findRoute(Item::Item * start, Item::Item * destination, bool serviceRoute = false);
 		
 		Route visualizeRoute;
 

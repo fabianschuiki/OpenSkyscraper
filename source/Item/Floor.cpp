@@ -56,9 +56,10 @@ void Floor::Render(sf::RenderTarget & target) const
 		if(drawBackground) {
 			// Draw full floor sprite
 			drawBackground = false;
-			left = *i;
-			right = *++i;
-			if(left == right || i == interval.end()) continue;
+			left = *i; ++i;
+			if(i == interval.end()) break;
+			right = *i;
+			if(left == right) continue;
 
 			b.Resize((right - left) * 8.0f, 36.0f);
 			b.SetX((left - position.x) * 8.0f);
@@ -66,9 +67,10 @@ void Floor::Render(sf::RenderTarget & target) const
 		} else {
 			// Draw only ceiling sprite
 			drawBackground = true;
-			left = *i;
-			right = *++i;
-			if(left == right || i == interval.end()) continue;
+			left = *i; ++i;
+			if(i == interval.end()) break;
+			right = *i;
+			if(left == right) continue;
 
 			c.Resize((right - left) * 8.0f, 12.0f);
 			c.SetX((left - position.x) * 8.0f);

@@ -19,6 +19,7 @@ public:
 	float h;
 	OT::MapNode::Point start_point;
 	OT::MapNode::Point end_point;
+	bool serviceRoute;
 
 	MapSearchNode();
 	explicit MapSearchNode(const OT::MapNode *mp);
@@ -31,6 +32,7 @@ public:
 
 	OT::Item::Item * getItemOnRoute(const MapSearchNode *successor);
 	bool canTransfer(const MapSearchNode *start, const OT::MapNode *dest, const OT::MapNode::Direction dir) const;
+	void createNode(MapSearchNode &n, const OT::MapNode *node);
 
 private:
 	static const int MAX_WALKING_DIST = 80;

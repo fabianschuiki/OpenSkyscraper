@@ -86,6 +86,7 @@ MapNode* GameMap::addNode(const MapNode::Point &p, Item::Item *item) {
 		n_upper->transportItems[MapNode::DOWN] = item;
 	} else if(item->isElevator()) {
 		n->hasElevator = true;
+		if(item->prototype->icon == 5) n->hasServiceElevator = true;
 		// Link to upper/lower floor node
 		Item::Elevator::Elevator *e =(Item::Elevator::Elevator *) item;
 		for(int i = p.y + 1; i < item->position.y + item->size.y; i++) {
@@ -149,6 +150,7 @@ void GameMap::removeNode(const MapNode::Point &p, Item::Item *item) {
 	} else if(item->isElevator()) {
 		assert(n->hasElevator == true);
 		n->hasElevator = false;
+		if(item->prototype->icon == 5) n->hasServiceElevator = false;
 
 		// Link upper & lower floor node to skip this node
 		if(n->neighbours[MapNode::UP]) {
@@ -172,7 +174,7 @@ void GameMap::removeNode(const MapNode::Point &p, Item::Item *item) {
 	}
 
 	// Delete and erase only if no other overlapping item
-	if( !n->hasElevator && 
+	if( !n->hasElevator && !n->hasServiceElevator &&
 		!n->transportItems[MapNode::UP] && !n->transportItems[MapNode::DOWN]) {
 		//LOG(DEBUG, "Deleting node at %dx%d", p.x, p.y);
 		if(n->neighbours[MapNode::LEFT]) {

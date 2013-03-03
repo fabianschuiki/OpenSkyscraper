@@ -11,7 +11,7 @@ PathFinder::PathFinder() {}
 
 PathFinder::~PathFinder() { clear(); }
 
-Route PathFinder::findRoute(const MapNode *start_mapnode, const MapNode *end_mapnode, Item::Item *start_item, Item::Item *end_item) {
+Route PathFinder::findRoute(const MapNode *start_mapnode, const MapNode *end_mapnode, Item::Item *start_item, Item::Item *end_item, bool serviceRoute) {
 	MapNode::Point start_point(start_item->position.x + start_item->size.x/2, start_mapnode->position.y);
 	MapNode::Point end_point(end_item->position.x + end_item->size.x/2, end_mapnode->position.y);
 
@@ -19,6 +19,7 @@ Route PathFinder::findRoute(const MapNode *start_mapnode, const MapNode *end_map
 	nodeStart.parent_item = start_item;
 	nodeStart.start_point = start_point;
 	nodeStart.end_point = end_point;
+	nodeStart.serviceRoute = serviceRoute;
 	MapSearchNode nodeEnd(end_mapnode);
 	astarsearch.SetStartAndGoalStates(nodeStart, nodeEnd);
 
