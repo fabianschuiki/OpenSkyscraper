@@ -112,7 +112,25 @@ find_package(PkgConfig)
 
 # libmspack for decompressing KWAJ files (SIMTOWER.EX_)
 # http://www.cabextract.org.uk/libmspack/
-pkg_check_modules(MSPACK libmspack)
+if (WIN32)
+	set(MSPACK_DIR "" CACHE PATH "mspack directory (optional)")
+	find_path(MSPACK_INCLUDE_DIRS mspack.h
+			  PATH_SUFFIXES mspack
+			  PATHS
+			  ${MSPACK_DIR})			  
+	find_library(MSPACK_LIBRARIES
+				 NAMES mspack
+				 PATH_SUFFIXES lib
+				 PATHS ${MSPACK_DIR})
+	
+	MARK_AS_ADVANCED(MSPACK_INCLUDE_DIRS MSPACK_LIBRARIES)
+	
+	if (MSPACK_INCLUDE_DIRS AND MSPACK_LIBRARIES)
+		set(MSPACK_FOUND TRUE)
+	endif ()
+else ()
+	pkg_check_modules(MSPACK libmspack)
+endif ()
 if (MSPACK_FOUND)
 	include_directories(${MSPACK_INCLUDE_DIRS})
 	link_directories(${MSPACK_LIBRARY_DIRS})
