@@ -69,7 +69,8 @@ bool SimTowerLoader::load()
 #else
 		const char *tmp_env[] = {"TMPDIR", "TMP", "TEMP", "TEMPDIR", NULL};
 		char * buf = NULL;
-		for (int i = 0; buf == NULL && tmp_env[i] != NULL; i++) {			buf = getenv(tmp_env[i]);
+		for (int i = 0; buf == NULL && tmp_env[i] != NULL; i++) {
+			buf = getenv(tmp_env[i]);
 		}
 
 		if (buf != NULL) tmp.append(buf);

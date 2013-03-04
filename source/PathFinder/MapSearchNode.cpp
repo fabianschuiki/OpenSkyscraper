@@ -225,9 +225,9 @@ OT::Item::Item * MapSearchNode::getItemOnRoute(const MapSearchNode *successor) {
 		 return mapNode->transportItems[MapNode::UP];
 	else if(mapNode->neighbours[MapNode::DOWN] == s_mapnode)
 		 return mapNode->transportItems[MapNode::DOWN];
-	else if(mapNode->transportItems[MapNode::UP] == s_mapnode->transportItems[MapNode::DOWN])
+	else if(mapNode->transportItems[MapNode::UP] && mapNode->transportItems[MapNode::UP] == s_mapnode->transportItems[MapNode::DOWN])
 		return mapNode->transportItems[MapNode::UP];
-	else if(mapNode->transportItems[MapNode::DOWN] == s_mapnode->transportItems[MapNode::UP])
+	else if(mapNode->transportItems[MapNode::DOWN] && mapNode->transportItems[MapNode::DOWN] == s_mapnode->transportItems[MapNode::UP])
 		return mapNode->transportItems[MapNode::DOWN];
 	else
 		return NULL;

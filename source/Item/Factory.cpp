@@ -9,6 +9,7 @@
 #include "FastFood.h"
 #include "Floor.h"
 #include "Lobby.h"
+#include "Restaurant.h"
 #include "Stairs.h"
 #include "PartyHall.h"
 #include "Cinema.h"
@@ -40,6 +41,7 @@ void Factory::loadPrototypes()
 	register_item(Elevator::Service);
 	register_item(Elevator::Standard);
 	register_item(FastFood);
+	register_item(Restaurant);
 	register_item(PartyHall);
 	register_item(Cinema);
 	register_item(Metro);
