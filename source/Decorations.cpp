@@ -12,6 +12,12 @@ Decorations::Decorations(Game * game)
 	crane.SetImage(App->bitmaps["simtower/deco/crane"]);
 	crane.SetCenter(20, 36);
 	craneVisible = false;
+
+	track.SetImage(App->bitmaps["simtower/metro/tracks"]);
+	track.SetSubRect(sf::IntRect(0,0,32,36));
+	track.SetCenter(0, 36);
+	track.Resize(32, 36);
+	tracksVisible = false;
 }
 
 /** Updates the decorations for the given floor. This effectively repositions the fire stairs of
@@ -32,7 +38,7 @@ void Decorations::updateFloor(int y)
 		Item::Item * f = game->floorItems[y];
 
 		//Create a new pair of fire stairs if required.
-		bool exists = fireStairs.count(y);
+		bool exists = fireStairs.count(y) == 1;
 		FireStairPair &fsp = fireStairs[y];
 		if (!exists) {
 			fsp.minX.SetImage(App->bitmaps["simtower/deco/fireladder"]);
@@ -47,8 +53,8 @@ void Decorations::updateFloor(int y)
 		//Position the fire stairs accordingly.
 		int minFloorX = f->position.x;
 		int maxFloorX = f->getRect().maxX();
-		fsp.minX.SetPosition(minFloorX * 8, -y * 36);
-		fsp.maxX.SetPosition(maxFloorX * 8, -y * 36);
+		fsp.minX.SetPosition(minFloorX * 8.0f, -y * 36.0f);
+		fsp.maxX.SetPosition(maxFloorX * 8.0f, -y * 36.0f);
 		LOG(DEBUG, "Repositioned fire stairs on floor %i to %i and %i", y, minFloorX, maxFloorX);
 	}
 }
@@ -76,7 +82,7 @@ void Decorations::updateCrane()
 			maxFloorX = std::max(maxFloorX, i->getRect().maxX());
 		}
 		if (minFloorX < maxFloorX) {
-			crane.SetPosition((minFloorX + maxFloorX) / 2 * 8, -(maxY + 1) * 36);
+			crane.SetPosition((minFloorX + maxFloorX) / 2 * 8.0f, -(maxY + 1) * 36.0f);
 			craneVisible = (maxFloorX - minFloorX >= 4);
 		} else {
 			craneVisible = false;
@@ -86,11 +92,20 @@ void Decorations::updateCrane()
 	}
 }
 
+void Decorations::updateTracks() {
+	if (game->metroStation) {
+		track.SetY(-game->metroStation->position.y * 36.0f);
+		tracksVisible = true;
+	} else {
+		tracksVisible = false;
+	}
+}
+
 /** Renders the tower decorations to the given render target. */
 void Decorations::Render(sf::RenderTarget & target) const
 {
 	sf::FloatRect rect = target.GetView().GetRect();
-	for (int y = floor(-rect.Bottom / 36); y <= ceil(-rect.Top / 36); y++) {
+	for (int y = (int)floor(-rect.Bottom / 36); y <= ceil(-rect.Top / 36); y++) {
 		FireStairs::const_iterator fsi = fireStairs.find(y);
 		if (fsi == fireStairs.end()) continue;
 		target.Draw(fsi->second.minX);
@@ -98,4 +113,49 @@ void Decorations::Render(sf::RenderTarget & target) const
 	}
 
 	if (craneVisible) target.Draw(crane);
+
+	if (tracksVisible) {
+		sf::FloatRect view = target.GetView().GetRect();
+		recti rect = game->metroStation->getRect();
+
+		int minx = (int)floor(view.Left / 32);
+		int maxx = 0;
+		Sprite t = track;
+		if (minx < floor(rect.minX() / 4.0f)) {
+			// Render tracks on the left
+			maxx = (int) ceil(rect.minX() / 4.0f);
+			for (int x = minx; x < maxx; x++) {
+				int offl = std::max<int>(0, (int)(view.Left - x*32));
+				int offr = std::max<int>(0, (x+1)*4 - rect.minX()) * 8;
+				sf::IntRect sr = track.GetSubRect();
+				sr.Left  += offl;
+				sr.Right -= offr;
+				t.SetSubRect(sr);
+
+				t.SetX(x * 32.0f + offl);
+				target.Draw(t);
+
+				game->drawnSprites++;
+			}
+		}
+
+		minx = (int)floor(rect.maxX() / 4.0f);
+		if (minx < floor(view.Right/ 32)) {
+			// Render tracks on the right
+			maxx = (int)ceil(view.Right / 32);
+			for (int x = minx; x < maxx; x++) {
+				int offl = std::max<int>(0, rect.maxX() - x*4) * 8;
+				int offr = std::max<int>(0, (int)((x+1)*32 - view.Right));
+				sf::IntRect sr = track.GetSubRect();
+				sr.Left  += offl;
+				sr.Right -= offr;
+				t.SetSubRect(sr);
+
+				t.SetX(x * 32.0f + offl);
+				target.Draw(t);
+				
+				game->drawnSprites++;
+			}
+		}
+	}
 }

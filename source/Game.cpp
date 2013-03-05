@@ -713,6 +713,7 @@ void Game::addItem(Item::Item * item)
 
 	gameMap.addNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
 	decorations.updateCrane();
+	if (item == metroStation) decorations.updateTracks();
 }
 
 void Game::removeItem(Item::Item * item)
@@ -746,6 +747,7 @@ void Game::removeItem(Item::Item * item)
 
 	gameMap.removeNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
 	decorations.updateCrane();
+	if (item->prototype->icon == 19) decorations.updateTracks(); // Technically, this should not happen as Metro Stations are not removable.
 }
 
 void Game::extendFloor(int floor, int minX, int maxX) {

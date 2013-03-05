@@ -45,7 +45,7 @@ void Restaurant::updateSprite()
 {
 	spriteNeedsUpdate = false;
 	int index = 3;
-	if (open) index = std::min<int>(ceil(people.size() / 5.0), 2);
+	if (open) index = std::min<int>((int)ceil(people.size() / 5.0f), 2);
 	sprite.SetSubRect(sf::IntRect(index*192, variant*24, (index+1)*192, (variant+1)*24));
 	sprite.Resize(192, 24);
 }

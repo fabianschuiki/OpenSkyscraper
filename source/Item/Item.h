@@ -35,7 +35,7 @@ namespace OT {
 			recti getRect() const { return recti(position, size); }
 			
 			virtual void Render(sf::RenderTarget & target) const;
-			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8, size.y*36); }
+			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8.0f, size.y*36.0f); }
 			
 			virtual rectd getMouseRegion(); //in world pixel
 			

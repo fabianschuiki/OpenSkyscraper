@@ -45,7 +45,7 @@ void FastFood::updateSprite()
 {
 	spriteNeedsUpdate = false;
 	int index = 3;
-	if (open) index = std::min<int>(ceil(people.size() / 5.0), 2);
+	if (open) index = std::min<int>((int)ceil(people.size() / 5.0), 2);
 	sprite.SetSubRect(sf::IntRect(index*128, variant*24, (index+1)*128, (variant+1)*24));
 	sprite.Resize(128, 24);
 }
@@ -146,7 +146,7 @@ Path FastFood::getRandomBackgroundSoundPath()
 	if (!open) return "";
 	char name[128];
 	snprintf(name, 128, "simtower/fastfood/%i", rand() % 3);
-	// Maybe we should make the coice of the sound based on the number of customers, not
+	// Maybe we should make the choice of the sound based on the number of customers, not
 	// completely random.
 	return name;
 }
