@@ -35,15 +35,12 @@ namespace OT {
 			recti getRect() const { return recti(position, size); }
 			
 			virtual void Render(sf::RenderTarget & target) const;
-			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8, size.y*36); }
+			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8.0f, size.y*36.0f); }
 			
 			virtual rectd getMouseRegion(); //in world pixel
 			
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
-			
-			Sprite ceiling;
-			void defaultCeiling();
 			
 			std::string desc() {
 				char c[512];
@@ -77,6 +74,8 @@ namespace OT {
 #define OT_ITEM_PROTOTYPE(cls)\
 	static AbstractPrototype * makePrototype() {\
 		AbstractPrototype * p = new Prototype<cls>;\
+		p->entrance_offset = 0;\
+		p->exit_offset = 0;\
 		initPrototype(p);\
 		return p;\
 	}\

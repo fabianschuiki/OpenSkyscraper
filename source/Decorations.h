@@ -15,6 +15,7 @@ namespace OT {
 
 		void updateFloor(int y);
 		void updateCrane();
+		void updateTracks();
 
 		virtual void Render(sf::RenderTarget & target) const;
 
@@ -28,5 +29,8 @@ namespace OT {
 
 		Sprite crane;
 		bool craneVisible;
+
+		Sprite track;
+		bool tracksVisible;
 	};
 }

@@ -24,8 +24,9 @@ void Metro::init()
 	addSprite(&station);
 	addSprite(&platform);
 	spriteNeedsUpdate = true;
-	
-	defaultCeiling();
+
+	assert(game->metroStation == NULL);
+	game->metroStation = this;
 	
 	updateSprite();
 }

@@ -38,6 +38,7 @@ Game::Game(Application & app)
 	draggingMotor = 0;
 	
 	mainLobby = NULL;
+	metroStation = NULL;
 	
 	itemFactory.loadPrototypes();
 	
@@ -161,26 +162,35 @@ bool Game::handleEvent(sf::Event & event)
 					std::string blockReason;
 					int minFloorX = INT_MAX;
 					int maxFloorX = INT_MIN;
-					if (toolPrototype->id.compare("lobby") == 0) {
+
+					if (toolPosition.y < -9 && toolPrototype->icon != 19) {
+						constructionBlocked = true;
+						blockReason = "Cannot build below floor B9";
+					}
+
+					if (toolPosition.y > 0 && toolPrototype->icon == 19) {
+						constructionBlocked = true;
+						blockReason = toolPrototype->name + " unavailable above ground";
+					}
+
+					if (toolPrototype->icon == 0) {
 						if (toolPosition.y % 15 != 0) {
 							constructionBlocked = true;
 							blockReason = "Lobbies can only be built on every 15th floor";
 						}
 						else if (toolPosition.y != 0) {
 							// Check floor width below
-							ItemSet itemsOnFloor = itemsByFloor[toolPosition.y - 1];
-							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !constructionBlocked && ii != itemsOnFloor.end(); ii++) {
-								Item::Item * i = *ii;
-								if (i->canHaulPeople()) continue;
-								minFloorX = std::min(minFloorX, i->position.x);
-								maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+							if (floorItems.count(toolPosition.y - 1) != 0) {
+								Item::Item * i = floorItems[toolPosition.y - 1];
+								minFloorX = i->position.x;
+								maxFloorX = i->getRect().maxX();
 							}
 
 							// Check for non-lobby items blocking construction on lobby floor
-							itemsOnFloor = itemsByFloor[toolPosition.y];
+							ItemSet itemsOnFloor = itemsByFloor[toolPosition.y];
 							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !constructionBlocked && ii != itemsOnFloor.end(); ii++) {
 								Item::Item * i = *ii;
-								if (i->canHaulPeople() || i->prototype->id.compare("lobby") == 0) continue;
+								if (i->canHaulPeople() || i->prototype->icon == 0) continue;
 								minFloorX = std::max(minFloorX, i->getRect().maxX());
 								maxFloorX = std::min(maxFloorX, i->position.x);
 							}
@@ -188,7 +198,7 @@ bool Game::handleEvent(sf::Event & event)
 							minFloorX = INT_MIN;
 							maxFloorX = INT_MAX;
 						}
-					} else if (toolPrototype->id.compare("stairs") == 0 || toolPrototype->id.compare("escalator") == 0) {
+					} else if (toolPrototype->icon == 2 || toolPrototype->icon == 3) {
 						// Check obstruction from other transport items
 						const ItemSet &stairlike = itemsByType["stairlike"];
 						for (ItemSet::const_iterator ii = stairlike.begin(); !constructionBlocked && ii != stairlike.end(); ii++) {
@@ -215,14 +225,12 @@ bool Game::handleEvent(sf::Event & event)
 						}
 
 						// Check floor width above
-						ItemSet itemsNearby = itemsByFloor[toolPosition.y + 1];
-						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
-							Item::Item * i = *ii;
-							if (i->canHaulPeople()) continue;
-							minFloorX = std::min(minFloorX, i->position.x);
-							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						if (floorItems.count(toolPosition.y + 1) != 0) {
+							Item::Item * i = floorItems[toolPosition.y + 1];
+							minFloorX = i->position.x;
+							maxFloorX = i->getRect().maxX();
 						}
-						if (itemsNearby.empty() || toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX) {
+						if (toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX) {
 							if (!constructionBlocked)
 								blockReason = "Upper floor is not wide enough";
 							constructionBlocked = true;
@@ -231,12 +239,10 @@ bool Game::handleEvent(sf::Event & event)
 						// Check floor width
 						minFloorX = INT_MAX;
 						maxFloorX = INT_MIN;
-						itemsNearby = itemsByFloor[toolPosition.y];
-						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
-							Item::Item * i = *ii;
-							if (i->canHaulPeople()) continue;
-							minFloorX = std::min(minFloorX, i->position.x);
-							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						if (floorItems.count(toolPosition.y) != 0) {
+							Item::Item * i = floorItems[toolPosition.y];
+							minFloorX = i->position.x;
+							maxFloorX = i->getRect().maxX();
 						}
 					} else if (toolPrototype->id.find("elevator") == 0) {
 						// Check obstruction from other transport items
@@ -265,17 +271,23 @@ bool Game::handleEvent(sf::Event & event)
 						}
 
 						// Check floor width below/above if constructing above/below ground level
-						ItemSet itemsNearby;
-						if (toolPosition.y > 0) itemsNearby = itemsByFloor[toolPosition.y - 1];
-						else if (toolPosition.y < 0) itemsNearby = itemsByFloor[toolPosition.y + 1];
-						else itemsNearby = itemsByFloor[0];
-						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
-							Item::Item * i = *ii;
-							if (i->canHaulPeople()) continue;
-							minFloorX = std::min(minFloorX, i->position.x);
-							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						Item::Item * i = NULL;
+						if (toolPosition.y > 0 && floorItems.count(toolPosition.y - 1) != 0)
+							i = floorItems[toolPosition.y - 1];
+						else if (toolPosition.y < 0 && floorItems.count(toolPosition.y + 1) != 0)
+							i = floorItems[toolPosition.y + 1];
+						else if (floorItems.count(0) != 0)
+							i = floorItems[0];
+						if (i) {
+							minFloorX = i->position.x;
+							maxFloorX = i->getRect().maxX();
 						}
 					} else {
+						if (toolPrototype->icon == 19 && metroStation != NULL) {
+							constructionBlocked = true;
+							blockReason = "Only one Metro Station allowed";
+						}
+						
 						if (toolPosition.y == 0) {
 							constructionBlocked = true;
 							blockReason = "Only lobbies may be built on the ground floor";
@@ -296,17 +308,15 @@ bool Game::handleEvent(sf::Event & event)
 						}
 
 						// Check floor width below/above if constructing above/below ground level
-						if (toolPosition.y > 0)
-							itemsNearby = itemsByFloor[toolPosition.y - 1];
-						else
-							itemsNearby = itemsByFloor[toolPosition.y + toolPrototype->size.y];
-						for (ItemSet::const_iterator ii = itemsNearby.begin(); !constructionBlocked && ii != itemsNearby.end(); ii++) {
-							Item::Item * i = *ii;
-							if (i->canHaulPeople()) continue;
-							minFloorX = std::min(minFloorX, i->position.x);
-							maxFloorX = std::max(maxFloorX, i->getRect().maxX());
+						Item::Item * i = NULL;
+						if (toolPosition.y > 0 && floorItems.count(toolPosition.y - 1) != 0)
+							i = floorItems[toolPosition.y - 1];
+						else if (floorItems.count(toolPosition.y + toolPrototype->size.y) != 0)
+							i = floorItems[toolPosition.y + toolPrototype->size.y];
+						if (i) {
+							minFloorX = i->position.x;
+							maxFloorX = i->getRect().maxX();
 						}
-						LOG(DEBUG, "floor is %i..%i", minFloorX, maxFloorX);
 					}
 					if (toolPosition.x < minFloorX || toolPosition.x + toolPrototype->size.x > maxFloorX) {
 						if (!constructionBlocked)
@@ -316,13 +326,18 @@ bool Game::handleEvent(sf::Event & event)
 
 					if (!constructionBlocked) {
 						LOG(DEBUG, "construct %s at %ix%i, size %ix%i", toolPrototype->id.c_str(), toolPosition.x, toolPosition.y, toolPrototype->size.x, toolPrototype->size.y);
-						if (toolPrototype->id.compare("lobby") == 0) {
+
+						// Construct floors
+						for (int i = 0; i < toolPrototype->size.y; i++)
+							extendFloor(toolPosition.y + i, toolPosition.x, toolPosition.x + toolPrototype->size.x);
+
+						if (toolPrototype->icon == 0) {
 							// Look for existing lobby to extend
 							bool existingLobby = false;
 							const ItemSet &itemsOnFloor = itemsByFloor[toolPosition.y];
-							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !constructionBlocked && ii != itemsOnFloor.end(); ii++) {
+							for (ItemSet::const_iterator ii = itemsOnFloor.begin(); !existingLobby && ii != itemsOnFloor.end(); ii++) {
 								Item::Item * i = *ii;
-								if (i->prototype->id.compare("lobby") == 0) {
+								if (i->prototype->icon == 0) {
 									gameMap.removeNode(MapNode::Point(i->position.x + i->size.x/2, i->position.y), i);
 									Item::Lobby * l = (Item::Lobby *) i;
 									float diff = 0;
@@ -335,10 +350,12 @@ bool Game::handleEvent(sf::Event & event)
 										if (diff < 0) diff = 0;
 										l->size.x += diff;
 									}
-									transferFunds(-toolPrototype->price * (diff/4));
 									l->updateSprite();
 									gameMap.addNode(MapNode::Point(i->position.x + i->size.x/2, i->position.y), i);
-									playOnce("simtower/construction/flexible");
+									if (diff > 0) {
+										transferFunds(-toolPrototype->price * (diff/4));
+										playOnce("simtower/construction/flexible");
+									}
 									existingLobby = true;
 								}
 							}
@@ -349,7 +366,7 @@ bool Game::handleEvent(sf::Event & event)
 								transferFunds(-toolPrototype->price);
 								playOnce("simtower/construction/normal");
 							}
-						} else {
+						} else if (toolPrototype->icon != 1) {
 							Item::Item * item = itemFactory.make(toolPrototype, toolPosition);
 							addItem(item);
 							transferFunds(-toolPrototype->price);
@@ -369,8 +386,9 @@ bool Game::handleEvent(sf::Event & event)
 			}
 			else if (itemBelowCursor) {
 				if (selectedTool == "bulldozer") {
-					if (itemBelowCursor->prototype->id.compare("lobby") == 0) {
+					if (itemBelowCursor->prototype->icon == 0 || itemBelowCursor->prototype->icon == 1 || itemBelowCursor->prototype->icon == 19) {
 						playOnce("simtower/construction/impossible");
+						timeWindow.showMessage("Cannot bulldoze " + itemBelowCursor->prototype->name);
 						break;
 					}
 					LOG(DEBUG, "destroy %s", itemBelowCursor->desc().c_str());
@@ -424,8 +442,25 @@ bool Game::handleEvent(sf::Event & event)
 		
 		case sf::Event::MouseMoved: {
 			if (draggingElevator && draggingElevator->repositionMotor(draggingMotor, toolPosition.y)) {
+				// Construct floors
+				if (draggingElevatorLower) {
+					if (draggingElevatorStart > draggingElevator->position.y) {
+						for(int i = draggingElevator->position.y; i < draggingElevatorStart ; i++) {
+							extendFloor(i, draggingElevator->position.x, draggingElevator->getRect().maxX());
+						}
+					}
+				} else {
+					recti rect = draggingElevator->getRect();
+					if (draggingElevatorStart < rect.maxY() - 1) {
+						for(int i = rect.maxY() - 1; i > draggingElevatorStart; i--) {
+							extendFloor(i, draggingElevator->position.x, draggingElevator->getRect().maxX());
+						}
+					}
+				}
+
 				// Update PathFinder map
 				gameMap.handleElevatorResize(draggingElevator, draggingElevatorLower, draggingElevatorStart);
+				
 				updateRoutes();
 			}
 		} break;
@@ -504,6 +539,18 @@ void Game::advance(double dt)
 	//Draw the items that are in view.
 	Item::Item * previousItemBelowCursor = itemBelowCursor;
 	itemBelowCursor = NULL;
+
+	//Draw floor items first
+	for (ItemSet::iterator i = itemsByType["floor"].begin(); i != itemsByType["floor"].end(); i++) {
+		const sf::Vector2f & vp = (*i)->GetPosition();
+		const sf::Vector2f & vs = (*i)->GetSize();
+		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
+			win.Draw(**i);
+			if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
+		}
+	}
+
+	//Draw the remaining items in the building
 	for (int layer = 0; layer < 2; layer++) {
 		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 			if ((*i)->layer != layer) continue;
@@ -610,10 +657,6 @@ void Game::addItem(Item::Item * item)
 {
 	assert(item);
 	items.insert(item);
-	for (int i = 0; i < item->size.y; i++) {
-		itemsByFloor[item->position.y + i].insert(item);
-		decorations.updateFloor(item->position.y + i);
-	}
 	itemsByType[item->prototype->id].insert(item);
 
 	if (item->canHaulPeople()) {
@@ -621,29 +664,132 @@ void Game::addItem(Item::Item * item)
 		if (item->isElevator()) itemsByType["elevator"].insert(item);
 		else itemsByType["stairlike"].insert(item);
 	}
-	
+
+	if (item->prototype->icon == 1) {
+		// Add floor item
+		Item::Floor * f = (Item::Floor *) item;
+		if (floorItems.count(item->position.y) != 0) {
+			// Replace existing floor item with newly created floor item
+			Item::Floor * existing_f = floorItems[item->position.y];
+			if (existing_f->size.x >= f->size.x) {
+				f->position = existing_f->position;
+				f->size = existing_f->size;
+			} else {
+				std::multiset<int> &existing_f_i = existing_f->interval;
+				existing_f_i.erase(existing_f->position.x);
+				existing_f_i.erase(existing_f->getRect().maxX());
+				existing_f_i.insert(f->position.x);
+				existing_f_i.insert(f->getRect().maxX());
+			}
+			
+			f->interval = existing_f->interval;
+			removeItem(existing_f);
+		}
+		
+		floorItems[item->position.y] = f;
+		decorations.updateFloor(item->position.y);
+	} else {
+		for (int i = 0; i < item->size.y; i++) {
+			itemsByFloor[item->position.y + i].insert(item);
+			
+			if (floorItems.count(item->position.y + i) == 0) {
+				// This is necessary in case of loading a save game where the floor item is not loaded before the building item on that floor.
+				int minX = item->position.x;
+				int maxX = item->getRect().maxX();
+				Item::Floor * f = (Item::Floor *) itemFactory.make(itemFactory.prototypesById["floor"], int2(minX,item->position.y + i));
+				f->interval.erase(f->getRect().maxX());
+				f->size.x = maxX - minX;
+				f->interval.insert(f->getRect().maxX());
+				f->updateSprite();
+				addItem(f);
+			}
+			if (!item->canHaulPeople()) {
+				std::multiset<int> &interval = floorItems[item->position.y + i]->interval;
+				interval.insert(item->position.x);
+				interval.insert(item->getRect().maxX());
+			}
+		}
+	}
+
 	gameMap.addNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
 	decorations.updateCrane();
+	if (item == metroStation) decorations.updateTracks();
 }
 
 void Game::removeItem(Item::Item * item)
 {
 	assert(item);
 	items.erase(item);
-	for (int i = 0; i < item->size.y; i++) {
-		itemsByFloor[item->position.y + i].erase(item);
-		decorations.updateFloor(item->position.y + i);
-	}
 	itemsByType[item->prototype->id].erase(item);
+
 	if (item->canHaulPeople()) {
 		itemsByType["canHaulPeople"].erase(item);
 		if (item->isElevator()) itemsByType["elevator"].erase(item);
 		else itemsByType["stairlike"].erase(item);
 	}
+
+	if (item->prototype->icon == 1) {
+		// Remove floor item
+		floorItems.erase(item->position.y);
+		decorations.updateFloor(item->position.y);
+	} else {
+		for (int i = 0; i < item->size.y; i++) {
+			itemsByFloor[item->position.y + i].erase(item);
+			if (!item->canHaulPeople()) {
+				std::multiset<int> &interval = floorItems[item->position.y + i]->interval;
+				interval.erase(interval.find(item->position.x));
+				interval.erase(interval.find(item->getRect().maxX()));
+			}
+		}
+	}
+
 	if (item == itemBelowCursor) itemBelowCursor = NULL;
 
 	gameMap.removeNode(MapNode::Point(item->position.x + item->size.x/2, item->position.y), item);
 	decorations.updateCrane();
+	if (item->prototype->icon == 19) decorations.updateTracks(); // Technically, this should not happen as Metro Stations are not removable.
+}
+
+void Game::extendFloor(int floor, int minX, int maxX) {
+	if (floorItems.count(floor) != 0) {
+		// Look for existing floor to extend
+		Item::Floor * f = floorItems[floor];
+		std::multiset<int> &interval = f->interval;
+		interval.erase(interval.find(f->position.x));
+		interval.erase(interval.find(f->getRect().maxX()));
+		gameMap.removeNode(MapNode::Point(f->position.x + f->size.x/2, f->position.y), f);
+		float diff_left = 0;
+		if (minX < f->position.x) {
+			diff_left = f->position.x - minX;
+			f->size.x += diff_left;
+			f->setPosition(int2(minX, floor));
+		}
+
+		float diff_right = 0;
+		diff_right = maxX - f->getRect().maxX();
+		if (diff_right < 0) diff_right = 0;
+		f->size.x += diff_right;
+
+		f->updateSprite();
+		interval.insert(f->position.x);
+		interval.insert(f->getRect().maxX());
+		gameMap.addNode(MapNode::Point(f->position.x + f->size.x/2, f->position.y), f);
+		if (diff_left + diff_right > 0) {
+			decorations.updateFloor(f->position.y);
+			transferFunds(-f->prototype->price * (diff_left + diff_right));
+			playOnce("simtower/construction/flexible");
+		}
+	} else {
+		// Otherwise construct a new floor
+		Item::Floor * f = (Item::Floor *) itemFactory.make(itemFactory.prototypesById["floor"], int2(minX,floor));
+		f->interval.erase(f->getRect().maxX());
+		f->size.x = maxX - minX;
+		f->interval.insert(f->getRect().maxX());
+		f->updateSprite();
+		addItem(f);
+		transferFunds(-f->prototype->price);
+		playOnce("simtower/construction/normal");
+	}
 }
 
 void Game::encodeXML(tinyxml2::XMLPrinter & xml)
@@ -850,9 +996,18 @@ void Game::updateRoutes()
 /** Finds a route from start to destination through the tower. The returned route contains start as
  *  the first and destination as the last node, with transportation in between. If the returned
  *  route is empty(), no path was found through the tower. */
-Route Game::findRoute(Item::Item * start, Item::Item * destination)
+Route Game::findRoute(Item::Item * start, Item::Item * destination, bool serviceRoute)
 {
-	MapNode *start_mapnode = gameMap.findNode(MapNode::Point(start->position.x + start->size.x/2, start->position.y), start);
-	MapNode *destination_mapnode = gameMap.findNode(MapNode::Point(destination->position.x + destination->size.x/2, destination->position.y), destination); 
-	return pathFinder.findRoute(start_mapnode, destination_mapnode, start, destination);
+	MapNode::Point start_point(start->position.x + start->size.x/2, start->position.y + start->prototype->exit_offset);
+	MapNode::Point end_point(destination->position.x + destination->size.x/2, destination->position.y + destination->prototype->entrance_offset);
+	
+	// For the special case of Metro, passengers can enter/exit from the middle floor if their destination is on that floor
+	if (start->prototype->icon == 19 && (end_point.y == start_point.y - 1))
+		start_point.y = end_point.y;
+	else if (destination->prototype->icon == 19 && (start_point.y == end_point.y - 1))
+		end_point.y = start_point.y;
+
+	MapNode *start_mapnode = gameMap.findNode(start_point, start);
+	MapNode *destination_mapnode = gameMap.findNode(end_point, destination);
+	return pathFinder.findRoute(start_mapnode, destination_mapnode, start, destination, serviceRoute);
 }

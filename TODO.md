@@ -12,7 +12,7 @@ Maybe we should move everything to SFML version 2.0.
 When pausing the game, elevators keep moving as if the game was unpaused. The weird thing is that the elevators react to speedup by moving faster. Why wouldn't they react to the speeddown?
 
 ### Clean up CMakeLists.txt
-There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
+[DONE] There's a lot of old stuff in the CMakeLists.txt file, such as the Lua and ObjectiveLua stuff, as well as CEGUI and the like. Clean this up so the compiling process won't break on stuff that's not even required anymore ;)
 
 ### Game Speed
 The game speed seems to be rather fast compared to elevator movements. Cinema customers are hardly able to arrive at the theatre in time. Maybe we should slow down the time a bit? Or speed up the elevators? I don't remember how fast the regular elevators actually were.
@@ -27,7 +27,7 @@ Add tower decorations:
 Animate the construction of items. The `construction/*` bitmaps should help with that. The `solid` bitmap is for regular items, the `grid` bitmap for lobbies, car parkings, etc.
 
 ### Different Access Floors for Items
-At the moment, people enter all items on floor 0 (relative to the item). Certain items, such as the Metro station, are accessed via floor 1. The item prototype should contain a field that enables a relative shift of the access floor.
+At the moment, people enter all items on floor 0 (relative to the item). Certain items, such as the Metro station & Cinema, are accessed via floor 1. The item prototype should contain a field that enables a relative shift of the access floor.
 
 
 Background Noise
@@ -35,6 +35,15 @@ Background Noise
 [DONE] Many items produce background noise in the original game. E.g. Fast Foods, Offices and Condos had really distinctive sounds. Write a system that regularly iterates over a subset of all visible items and asks each for a background sound to be played. The system should be fair, i.e. each item should have a fair chance of playing back some sound.
 
 [DONE] My current implementation idea: Iterate through the visible items at regular intervals, say 0.5s. Each item has a playback chance calculated as `p = itemArea / screenArea = itemWidth * itemHeight / screenArea`. Through a random number an item is picked that is asked for a sound which is then played back. One caveat here is that simply using `screenArea` in the above formula yields a total probability of `p >= 1`, since the total area of all items may actually be larger than the screen area due to items being only partially visible. Substitute `screenArea` in the above formula with `K = max(screenArea, summedItemAreas)`.
+
+
+PathFinding
+-----------
+
+- [DONE] Create a game map representing the various transport access points as transport nodes, and available floors as floor nodes. Buildings are assumed to be accessible once we reach a generic floor node.
+- [DONE] Rewrite findRoute() to utilise A-Star search algorithm to find a route from start to destination item.
+- Balance the path costs for using each transport to better represent the original, or to make it more reasonable.
+- Check for availability of sky-lobby before allowing transfer between elevators.
 
 
 Item::FastFood
@@ -53,10 +62,7 @@ time. The fast food would then only have to check if the queue's frontmost custo
 
 Person
 ------
-Handle change of routes (from accessible to inaccessible and vice-versa) for 
-people already travelling. Need to stop them from continuing their journey 
-to prevent crashes when transport routes are changed, and transit appropriately 
-out of the flow of traffic.
+- Handle change of routes (from accessible to inaccessible and vice-versa) for people already travelling. Need to stop them from continuing their journey to prevent crashes when transport routes are changed, and transit appropriately out of the flow of traffic.
 
 
 Hotels
@@ -84,18 +90,13 @@ Item::Cinema
 - Check playing times in the original game.
 - Implement income simulation. It is somehow based on the number of patrons I guess.
 - Did the original game have a break halfway through the movie?
+- Should be able to be built underground (if I recall correctly).
 
 
 Item::Elevator
 --------------
 
 - [DONE] Add animation of people leaving an elevator car. At the moment, only the "step in" animation is shown when people enter the elevator.
-
-
-Item::Cinema
-------------
-
-- Should be able to be built underground (if I recall correctly).
 
 
 Item::Metro
@@ -111,3 +112,15 @@ Item::Office
 Office workers don't leave the office at 12 to have lunch yet. The lunch time is being properly scheduled at the moment, but no decision logic is in place that looks for an appropriate fast food for these people.
 
 Office workers should also be able to arrive by car. At the moment, they only use the lobby.
+
+- Allow only one instance of Metro in the game.
+- Prevent construction of any item below Metro.
+
+
+Item::Floor
+-----------
+
+- [DONE] Create & extend width of floor item automatically when constructing building items & resizing elevators.
+- [DONE] Floor item will provide floor width information, so there is no longer a need to iterate through all items on a floor to find the floor width limits.
+- [DONE] Floor item is rendered behind all other building items, so there is no longer a need to render ceilings separately for buildings.
+- [DONE] Floor item is rendered in segments: Full floor item if there is no building item present, and only ceiling if there is a building item present.

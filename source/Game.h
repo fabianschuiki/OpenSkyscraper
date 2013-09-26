@@ -6,6 +6,7 @@
 
 #include "Item/Elevator/Elevator.h"
 #include "Item/Factory.h"
+#include "Item/Floor.h"
 #include "Item/Item.h"
 #include "PathFinder/GameMap.h"
 #include "PathFinder/PathFinder.h"
@@ -47,9 +48,12 @@ namespace OT {
 		typedef std::map<std::string, ItemSet> ItemSetByString;
 		ItemSetByInt itemsByFloor;
 		ItemSetByString itemsByType;
+		std::map<int, Item::Floor *> floorItems;
 		Item::Item * mainLobby;
+		Item::Item * metroStation;
 		void addItem(Item::Item * item);
 		void removeItem(Item::Item * item);
+		void extendFloor(int floor, int minX, int maxX);
 		
 		int funds;
 		int rating;
@@ -94,7 +98,7 @@ namespace OT {
 		void playRandomBackgroundSound();
 		
 		void updateRoutes();
-		Route findRoute(Item::Item * start, Item::Item * destination);
+		Route findRoute(Item::Item * start, Item::Item * destination, bool serviceRoute = false);
 		
 		Route visualizeRoute;
 

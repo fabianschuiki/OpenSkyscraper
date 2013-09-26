@@ -1,24 +1,24 @@
 #include "../Game.h"
 #include "../Math/Rand.h"
-#include "FastFood.h"
+#include "Restaurant.h"
 
 using namespace OT;
 using namespace OT::Item;
 
 
-FastFood::~FastFood()
+Restaurant::~Restaurant()
 {
 	clearCustomers();
 }
 
-void FastFood::init()
+void Restaurant::init()
 {
 	Item::init();
 	
-	variant = rand() % 5;
+	variant = rand() % 4;
 	open = false;
 	
-	sprite.SetImage(App->bitmaps["simtower/fastfood"]);
+	sprite.SetImage(App->bitmaps["simtower/restaurant"]);
 	sprite.SetCenter(0, 24);
 	addSprite(&sprite);
 	spriteNeedsUpdate = false;
@@ -26,14 +26,14 @@ void FastFood::init()
 	updateSprite();
 }
 
-void FastFood::encodeXML(tinyxml2::XMLPrinter & xml)
+void Restaurant::encodeXML(tinyxml2::XMLPrinter & xml)
 {
 	Item::encodeXML(xml);
 	xml.PushAttribute("variant", variant);
 	xml.PushAttribute("open", open);
 }
 
-void FastFood::decodeXML(tinyxml2::XMLElement & xml)
+void Restaurant::decodeXML(tinyxml2::XMLElement & xml)
 {
 	Item::decodeXML(xml);
 	variant = xml.IntAttribute("variant");
@@ -41,19 +41,19 @@ void FastFood::decodeXML(tinyxml2::XMLElement & xml)
 	updateSprite();
 }
 
-void FastFood::updateSprite()
+void Restaurant::updateSprite()
 {
 	spriteNeedsUpdate = false;
 	int index = 3;
-	if (open) index = std::min<int>((int)ceil(people.size() / 5.0), 2);
-	sprite.SetSubRect(sf::IntRect(index*128, variant*24, (index+1)*128, (variant+1)*24));
-	sprite.Resize(128, 24);
+	if (open) index = std::min<int>((int)ceil(people.size() / 5.0f), 2);
+	sprite.SetSubRect(sf::IntRect(index*192, variant*24, (index+1)*192, (variant+1)*24));
+	sprite.Resize(192, 24);
 }
 
-void FastFood::advance(double dt)
+void Restaurant::advance(double dt)
 {
 	//Open
-	if (game->time.checkHour(10)) {
+	if (game->time.checkHour(17)) {
 		open = true;
 		spriteNeedsUpdate = true;
 		
@@ -62,20 +62,20 @@ void FastFood::advance(double dt)
 		clearCustomers();
 		for (int i = 0; i < today; i++) {
 			Customer * c = new Customer(this);
-			c->arrivalTime = (game->time.year - 1) * 12 + (game->time.quarter - 1) * 3 + game->time.day + Math::randd(Time::hourToAbsolute(10), Time::hourToAbsolute(20));
+			c->arrivalTime = (game->time.year - 1) * 12 + (game->time.quarter - 1) * 3 + game->time.day + Math::randd(Time::hourToAbsolute(17), Time::hourToAbsolute(22));
 			customers.insert(c);
 			arrivingCustomers.push(c);
 		}
 	}
 	
 	//Close
-	if (game->time.checkHour(21) && open) {
+	if (game->time.checkHour(23) && open) {
 		open = false;
 		population = customerMetadata.size();
 		game->populationNeedsUpdate = true;
 		spriteNeedsUpdate = true;
 		
-		game->transferFunds(population * 200 - 2000, "Income from Fast Food");
+		game->transferFunds(population * 400 - 4000, "Income from Restaurant");
 	}
 	
 	//Make customers arrive.
@@ -108,7 +108,7 @@ void FastFood::advance(double dt)
 	if (spriteNeedsUpdate) updateSprite();
 }
 
-void FastFood::addPerson(Person * p)
+void Restaurant::addPerson(Person * p)
 {
 	Item::addPerson(p);
 	CustomerMetadata & m = customerMetadata[p];
@@ -117,13 +117,13 @@ void FastFood::addPerson(Person * p)
 	spriteNeedsUpdate = true;
 }
 
-void FastFood::removePerson(Person * p)
+void Restaurant::removePerson(Person * p)
 {
 	Item::removePerson(p);
 	spriteNeedsUpdate = true;
 }
 
-void FastFood::clearCustomers()
+void Restaurant::clearCustomers()
 {
 	for (Customers::iterator c = customers.begin(); c != customers.end(); c++)
 		delete *c;
@@ -133,7 +133,7 @@ void FastFood::clearCustomers()
 	customerMetadata.clear();
 }
 
-FastFood::Customer::Customer(FastFood * item)
+Restaurant::Customer::Customer(Restaurant * item)
 :	Person(item->game)
 {
 	arrivalTime = 0;
@@ -141,12 +141,8 @@ FastFood::Customer::Customer(FastFood * item)
 	type = types[rand() % 4];
 }
 
-Path FastFood::getRandomBackgroundSoundPath()
+Path Restaurant::getRandomBackgroundSoundPath()
 {
 	if (!open) return "";
-	char name[128];
-	snprintf(name, 128, "simtower/fastfood/%i", rand() % 3);
-	// Maybe we should make the choice of the sound based on the number of customers, not
-	// completely random.
-	return name;
+	return "simtower/restaurant";
 }

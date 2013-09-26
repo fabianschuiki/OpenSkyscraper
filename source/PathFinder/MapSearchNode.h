@@ -19,6 +19,7 @@ public:
 	float h;
 	OT::MapNode::Point start_point;
 	OT::MapNode::Point end_point;
+	bool serviceRoute;
 
 	MapSearchNode();
 	explicit MapSearchNode(const OT::MapNode *mp);
@@ -31,15 +32,15 @@ public:
 
 	OT::Item::Item * getItemOnRoute(const MapSearchNode *successor);
 	bool canTransfer(const MapSearchNode *start, const OT::MapNode *dest, const OT::MapNode::Direction dir) const;
+	void createNode(MapSearchNode &n, const OT::MapNode *node);
 
 private:
+	static const int MAX_WALKING_DIST = 80;
 	static const int WALKING_COST	  = 1;
 	static const int FLOOR_COST		  = 5;
 	static const int ESCALATOR_COST	  = 10;
 	static const int STAIRS_COST	  = 30;
-	static const int ELEVATOR_COST	  = STAIRS_COST*3 + ESCALATOR_COST/2;
-	static const int EXPRESS_COST	  = ELEVATOR_COST/2;
+	static const int ELEVATOR_COST	  = STAIRS_COST*3 + WALKING_COST*MAX_WALKING_DIST;
+	static const int EXPRESS_COST	  = 20;
 	static const int INHIBITORY_COST  = 10000;
-
-	static const int MAX_WALKING_DIST = 80;
 };

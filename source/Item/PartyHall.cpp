@@ -21,8 +21,6 @@ void PartyHall::init()
 	addSprite(&sprite);
 	spriteNeedsUpdate = false;
 	
-	defaultCeiling();
-	
 	updateSprite();
 }
 

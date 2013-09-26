@@ -76,6 +76,7 @@ void Lobby::Render(sf::RenderTarget & target) const
 	int minx = std::max<int>(floor(view.Left / 256), floor(rect.minX() / 32.0));
 	int maxx = std::min<int>(ceil(view.Right / 256), ceil (rect.maxX() / 32.0));
 	Sprite b = background;
+
 	for (int x = minx; x < maxx; x++) {
 		int offl = std::max<int>(0, rect.minX() - x*32) * 8;
 		int offr = std::max<int>(0, (x+1)*32 - rect.maxX()) * 8;

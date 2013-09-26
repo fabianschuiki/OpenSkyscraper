@@ -28,8 +28,6 @@ void Cinema::init()
 	addSprite(&screenSprite);
 	spriteNeedsUpdate = false;
 	
-	defaultCeiling();
-	
 	updateSprite();
 }
 

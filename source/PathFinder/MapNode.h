@@ -32,6 +32,7 @@ namespace OT {
 		};
 		
 		bool hasElevator;
+		bool hasServiceElevator;
 		Item::Item *transportItems[2];
 		
 		FloorNode *floorNode; // NULL if MapNode is actually a FloorNode, otherwise is points to the corresponding FloorNode

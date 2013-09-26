@@ -10,7 +10,7 @@ namespace OT {
 	public:
 		PathFinder();
 		~PathFinder();
-		Route findRoute(const MapNode *start_mapnode, const MapNode *end_mapnode, Item::Item *start_item, Item::Item *end_item);
+		Route findRoute(const MapNode *start_mapnode, const MapNode *end_mapnode, Item::Item *start_item, Item::Item *end_item, bool serviceRoute);
 
 	private:
 		AStarSearch< MapSearchNode > astarsearch;
