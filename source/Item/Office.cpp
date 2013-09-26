@@ -46,7 +46,7 @@ void Office::init()
 	}
 	rescheduleWorkers();
 	
-	defaultCeiling();
+	// defaultCeiling();
 	
 	updateSprite();
 }
