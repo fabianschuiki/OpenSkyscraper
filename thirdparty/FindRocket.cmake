@@ -8,10 +8,13 @@
 # - ROCKET_FOUND
 # - ROCKET_INCLUDE_DIR
 
+
+set(ROCKETDIR "" CACHE PATH "libRocket directory")
+
 set(FIND_ROCKET_PATHS
 	${ROCKETDIR}
-	/usr/local
-	/usr
+	#/usr/local
+	#/usr
 	/sw
 	/opt/local
 	/opt/csw
@@ -22,7 +25,7 @@ set(FIND_ROCKET_PATHS
 find_path(
 	ROCKET_INCLUDE_DIR Rocket/Core.h
 	PATH_SUFFIXES include
-	PATHS ${FIND_ROCKET_PATHS}
+	HINTS ${FIND_ROCKET_PATHS}
 	
 )
 if (ROCKET_INCLUDE_DIR)
@@ -45,7 +48,7 @@ foreach (component ${Rocket_FIND_COMPONENTS})
 		ROCKET_${component_upper}_LIBRARY_DEBUG
 		NAMES Rocket${component_cap}_d
 		PATH_SUFFIXES lib64 lib
-		PATHS ${FIND_ROCKET_PATHS}
+		HINTS ${FIND_ROCKET_PATHS}
 	)
 				 
 	# release library
@@ -53,7 +56,7 @@ foreach (component ${Rocket_FIND_COMPONENTS})
 		ROCKET_${component_upper}_LIBRARY_RELEASE
 		NAMES Rocket${component_cap}
 		PATH_SUFFIXES lib64 lib
-		PATHS ${FIND_ROCKET_PATHS}
+		HINTS ${FIND_ROCKET_PATHS}
 	)
 	
 	# check whether we've found the library
@@ -102,5 +105,5 @@ if (NOT ROCKET_FOUND)
 		message("${FIND_ROCKET_ERROR}")
 	endif()
 else()
-	message("Found Rocket: ${ROCKET_INCLUDE_DIR}")
+	message("Found Rocket: ${ROCKET_LIBRARIES}")
 endif()

@@ -18,9 +18,29 @@ else()
 
 	if (CMAKE_BUILD_TYPE MATCHES Debug)
 		add_definitions("-DBUILD_DEBUG")
+	else()
+		add_definitions("-DBUILD_RELEASE")
 	endif()
 endif()
 
+add_definitions("-Wno-switch")
+
+# Setup the version strings.
+if (NOT VERSION)
+	set(VERSION "dev" CACHE STRING "Version string (e.g. 1.2alpha1 or dev)" FORCE)
+endif()
+
+set(YEAR "" CACHE STRING "Year of compilation" FORCE)
+if (NOT YEAR)
+	if (UNIX)
+		execute_process(COMMAND date +%Y OUTPUT_VARIABLE YEAR OUTPUT_STRIP_TRAILING_WHITESPACE)
+	endif()
+	mark_as_advanced(YEAR)
+endif()
+
+set(MACOSX_BUNDLE_BUNDLE_NAME ${EXECUTABLE_NAME})
+set(MACOSX_BUNDLE_COPYRIGHT "Copyright © 2011-${YEAR} by OpenSkyscraper Project")
+set(MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION})
 
 # Gather the source files.
 file(GLOB_RECURSE sources RELATIVE ${PROJECT_SOURCE_DIR} source/*.cpp)
@@ -88,9 +108,6 @@ if (APPLE)
 endif ()
 
 # libRocket
-if (WIN32)
-	set(ROCKETDIR "" CACHE PATH "libRocket directory")
-endif ()
 find_package(Rocket REQUIRED core controls debugger)
 string(REPLACE "optimized;${ROCKET_DEBUGGER_LIBRARY_RELEASE}" "" ROCKET_LIBRARIES "${ROCKET_LIBRARIES}")
 include_directories(${ROCKET_INCLUDE_DIR})
@@ -107,30 +124,9 @@ target_link_libraries(${EXECUTABLE_NAME} ${FREETYPE_LIBRARIES})
 find_package(OpenGL REQUIRED)
 target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_gl_LIBRARY})
 
-# Add the PkgConfig package to find packages that CMake doesn't.
-find_package(PkgConfig)
-
 # libmspack for decompressing KWAJ files (SIMTOWER.EX_)
 # http://www.cabextract.org.uk/libmspack/
-if (WIN32)
-	set(MSPACK_DIR "" CACHE PATH "mspack directory (optional)")
-	find_path(MSPACK_INCLUDE_DIRS mspack.h
-			  PATH_SUFFIXES mspack
-			  PATHS
-			  ${MSPACK_DIR})			  
-	find_library(MSPACK_LIBRARIES
-				 NAMES mspack
-				 PATH_SUFFIXES lib
-				 PATHS ${MSPACK_DIR})
-	
-	MARK_AS_ADVANCED(MSPACK_INCLUDE_DIRS MSPACK_LIBRARIES)
-	
-	if (MSPACK_INCLUDE_DIRS AND MSPACK_LIBRARIES)
-		set(MSPACK_FOUND TRUE)
-	endif ()
-else ()
-	pkg_check_modules(MSPACK libmspack)
-endif ()
+find_package(mspack)
 if (MSPACK_FOUND)
 	include_directories(${MSPACK_INCLUDE_DIRS})
 	link_directories(${MSPACK_LIBRARY_DIRS})

@@ -173,5 +173,5 @@ endif()
 
 # handle success
 if(SFML_FOUND)
-    message("Found SFML: ${SFML_INCLUDE_DIR}")
+    message("Found SFML: ${SFML_LIBRARIES}")
 endif()

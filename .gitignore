@@ -1,5 +1,6 @@
 /build/*
 !/build/default.tower
+build
 .*
 *~
 !.gitignore
