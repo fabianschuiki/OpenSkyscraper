@@ -5,8 +5,13 @@
 
 set -e # exit if any of these commands fail
 
-export CFLAGS="$CFLAGS -arch i386 -arch x86_64"
-export LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
+if [ -z "$DEPLOY_HOST" ]; then
+	echo "environment variable DEPLOY_HOST must be set"
+	exit 1
+fi
+
+CFLAGS="$CFLAGS -arch i386 -arch x86_64"
+LDFLAGS="$LDFLAGS -arch i386 -arch x86_64"
 
 BUILD_DIR="$PWD/build"
 PROJECT_DIR="$(cd "$(dirname "$0")/../" && pwd)"
@@ -26,7 +31,11 @@ ROCKET_URL="https://github.com/lloydw/libRocket/archive/release-$ROCKET_VERSION.
 ROCKET_DIR="$BUILD_DIR/rocket-$ROCKET_VERSION"
 ROCKET_BUILD_DIR="$ROCKET_DIR/_build"
 
-OSS_VERSION="0.1"
+if [ -z "$1" ]; then
+	echo "usage: $0 OSS_VERSION"
+	exit 1
+fi
+OSS_VERSION="$1"
 OSS_DIR="$BUILD_DIR/oss-$OSS_VERSION"
 OSS_NAME="openskyscraper-$OSS_VERSION-macosx"
 OSS_ARCHIVE="$OSS_NAME.tar.bz2"
@@ -65,7 +74,7 @@ if [ ! -f "$MSPACK_BUILD_DIR/lib/libmspack.a" ]; then
 	echo_sub "building"
 	LASTWD="$PWD"
 	cd "$MSPACK_DIR"
-	./configure --disable-shared --enable-static --prefix="$MSPACK_BUILD_DIR" --disable-dependency-tracking
+	(export CFLAGS && export LDFLAGS && ./configure --disable-shared --enable-static --prefix="$MSPACK_BUILD_DIR" --disable-dependency-tracking)
 	make
 	make install
 	cd "$LASTWD"
@@ -112,7 +121,7 @@ if [ ! -f "$ROCKET_BUILD_DIR/lib/libRocketCore.a" ]; then
 	echo_sub "building"
 	LASTWD="$PWD"
 	cd "$ROCKET_DIR/Build"
-	cmake -D BUILD_PYTHON_BINDINGS=OFF -D BUILD_SAMPLES=OFF -D BUILD_SHARED_LIBS=OFF -D CMAKE_INSTALL_PREFIX="$ROCKET_BUILD_DIR" CMAKE_OSX_ARCHITECTURES="i386;x86_64" .
+	cmake -D BUILD_PYTHON_BINDINGS=OFF -D BUILD_SAMPLES=OFF -D BUILD_SHARED_LIBS=OFF -D CMAKE_INSTALL_PREFIX="$ROCKET_BUILD_DIR" -D CMAKE_BUILD_TYPE="Release" CMAKE_OSX_ARCHITECTURES="i386;x86_64" .
 	make
 	make install
 	cd "$LASTWD"
@@ -136,6 +145,6 @@ tar -jcf "$OSS_ARCHIVE" OpenSkyscraper.app
 # Deploy via FTP. The DEPLOY_HOST is likely to look like <user>:<pass>@<host>.
 # It is omitted from this script for security reasons.
 echo_sub "deploying"
-curl --ftp-create-dirs -T "$OSS_ARCHIVE" "ftp://${DEPLOY_HOST}/binaries/$OSS_VERSION/"
+curl --ftp-create-dirs -T "$OSS_ARCHIVE" "ftp://$DEPLOY_HOST/"
 
 echo -e "\033[32;1mDone, OpenSkyscraper $OSS_VERSION for Mac OS X deployed\033[0m"
