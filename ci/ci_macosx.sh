@@ -53,8 +53,7 @@ git submodule update --init
 echo_sub "fetching commits and tags"
 git fetch origin
 git fetch --tags
-VERSION_TAGS=$(git tag -l | grep ^v\\d)
-echo "$VERSION_TAGS"
+VERSION_TAGS=$(git tag -l | (grep ^v\\d || :))
 
 # Perform self-update if requested.
 if [ "$1" == "update" ]; then
@@ -64,8 +63,7 @@ if [ "$1" == "update" ]; then
 fi
 
 echo_sub "fetching list of deployed versions"
-DEPLOYED_VERSIONS=$(curl -l "ftp://$DEPLOY_HOST/") # | grep ^[^\.]
-echo "$DEPLOYED_VERSIONS"
+DEPLOYED_VERSIONS=$(curl -l "ftp://$DEPLOY_HOST/" | (grep ^[^\.] || :))
 
 deploy() {
 	echo_sub "compiling"
