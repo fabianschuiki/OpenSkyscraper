@@ -123,27 +123,19 @@ echo_main "Building OpenSkyscraper $OSS_VERSION"
 if [ ! -d "$OSS_DIR" ]; then
 	mkdir "$OSS_DIR"
 fi
-LASTWD="$PWD"
 cd "$OSS_DIR"
 
-if [ ! -f "$OSS_DIR/OpenSkyscraper.app/Contents/MacOS/OpenSkyscraper" ]; then
-	echo_sub "compiling"
-	if [ -f "$OSS_ARCHIVE" ]; then
-		rm "$OSS_ARCHIVE"
-	fi
-	cmake -D SFMLDIR="$SFML_BUILD_DIR" -D MSPACKDIR="$MSPACK_BUILD_DIR" -D ROCKETDIR="$ROCKET_BUILD_DIR" -D CMAKE_BUILD_TYPE="Release" -D CMAKE_OSX_ARCHITECTURES="i386;x86_64" -D VERSION="$OSS_VERSION" "$PROJECT_DIR"
-	make
-	make install
-fi
+echo_sub "compiling"
+cmake -D SFMLDIR="$SFML_BUILD_DIR" -D MSPACKDIR="$MSPACK_BUILD_DIR" -D ROCKETDIR="$ROCKET_BUILD_DIR" -D CMAKE_BUILD_TYPE="Release" -D CMAKE_OSX_ARCHITECTURES="i386;x86_64" -D VERSION="$OSS_VERSION" "$PROJECT_DIR"
+make
+make install
 
-if [ ! -f "$OSS_ARCHIVE" ]; then
-	echo_sub "archiving"
-	tar -jcf "$OSS_ARCHIVE" OpenSkyscraper.app
-fi
+echo_sub "archiving"
+tar -jcf "$OSS_ARCHIVE" OpenSkyscraper.app
 
 # Deploy via FTP. The DEPLOY_HOST is likely to look like <user>:<pass>@<host>.
 # It is omitted from this script for security reasons.
 echo_sub "deploying"
 curl --ftp-create-dirs -T "$OSS_ARCHIVE" "ftp://${DEPLOY_HOST}/binaries/$OSS_VERSION/"
 
-cd "$LASTWD"
+echo -e "\033[32;1mDone, OpenSkyscraper $OSS_VERSION for Mac OS X deployed\033[0m"
