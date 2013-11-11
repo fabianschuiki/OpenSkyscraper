@@ -56,6 +56,13 @@ git fetch --tags
 VERSION_TAGS=$(git tag -l | grep ^v\\d)
 echo "$VERSION_TAGS"
 
+# Perform self-update if requested.
+if [ "$1" == "update" ]; then
+	git checkout -f remotes/origin/master
+	cp ci/ci_macosx.sh "$SCRIPTWD/$0"
+	exit 0
+fi
+
 echo_sub "fetching list of deployed versions"
 DEPLOYED_VERSIONS=$(curl -l "ftp://$DEPLOY_HOST/") # | grep ^[^\.]
 echo "$DEPLOYED_VERSIONS"
@@ -87,7 +94,7 @@ for TAG in $VERSION_TAGS; do
 	VERSION=${TAG:1}
 	if [ -z $(echo "$DEPLOYED_VERSIONS" | grep "^openskyscraper-$VERSION-macosx.tar.bz2$") ]; then
 		echo_main "Deploying $VERSION"
-		git checkout "$TAG"
+		git checkout -f "$TAG"
 		deploy
 	fi
 done
