@@ -26,7 +26,8 @@ namespace OT {
 				
 				virtual bool connectsFloor(int floor) const
 				{
-					if ((floor % 15) != 0) return false;
+					if(floor < 0) return true;
+					else if ((floor % 15) != 0) return false;
 					return Elevator::connectsFloor(floor);
 				}
 			};
