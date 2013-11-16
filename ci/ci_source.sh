@@ -100,10 +100,18 @@ for TAG in $VERSION_TAGS; do
 	fi
 done
 
+formatdate() {
+	if [ $(uname | grep "^Darwin") ]; then
+		date -j -r $1 +"%Y%m%d-%H%M"
+	else
+		date -d @$1 +"%Y%m%d-%H%M"
+	fi
+}
+
 # Checkout master and check whether it has not yet been deployed.
 git checkout -f remotes/origin/master
 COMMIT_HASH=$(git log -n 1 --format=format:"%h")
-COMMIT_DATE=$(date -d @$(git log -n 1 --format=format:"%at") +"%Y%m%d-%H%M")
+COMMIT_DATE=$(formatdate $(git log -n 1 --format=format:"%at"))
 VERSION="$COMMIT_DATE-$COMMIT_HASH"
 if [ -z $(echo "$DEPLOYED_VERSIONS" | grep "^openskyscraper-$VERSION-source.tar.bz2$") ]; then
 	echo_main "Deploying $VERSION"
