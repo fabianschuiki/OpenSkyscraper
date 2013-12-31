@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt	2013-12-30 23:15:28.891685502 +0000
++++ b/CMakeLists.txt	2013-12-30 23:22:49.056523197 +0000
+@@ -98,7 +98,7 @@
+ 	set(SFMLDIR "" CACHE PATH "SFML directory")
+ endif ()
+ set(SFML_STATIC_LIBRARIES FALSE CACHE BOOL "Check if linking to SFML static libraries")
+-find_package(SFML REQUIRED audio graphics window system)
++find_package(SFML REQUIRED audio-1.6 graphics-1.6 window-1.6 system-1.6)
+ include_directories(${SFML_INCLUDE_DIR})
+ target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
+ 
