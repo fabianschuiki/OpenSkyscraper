@@ -31,10 +31,10 @@ Coding Style
 ------------
 
 - Add a copyright line in the top comment of each file you edit:
-
-      /* Copyright © 2010 John Doe
-       * Copyright © 2013 Mark Mensk */
-  
+  ```
+  /* Copyright © 2010-2014 John Doe */
+  /* Copyright © 2013 Mark Mensk */
+  ```
 
 - Everything resides in the OT namespace.
 
