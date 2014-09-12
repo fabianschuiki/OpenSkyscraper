@@ -101,6 +101,11 @@ void Decorations::updateTracks() {
 	}
 }
 
+void Decorations::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	Render(target);
+}
+
 /** Renders the tower decorations to the given render target. */
 void Decorations::Render(sf::RenderTarget & target) const
 {

@@ -58,6 +58,11 @@ void Car::updateSprite()
 	sprite.SetPosition(sf::Vector2f(2, 0));
 }
 
+void Car::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	Render(target);
+}
+
 void Car::Render(sf::RenderTarget & target) const
 {
 	target.Draw(sprite);

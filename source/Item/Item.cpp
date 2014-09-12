@@ -37,6 +37,11 @@ void Item::removeSprite(Sprite * sprite)
 	sprites.erase(sprite);
 }
 
+void Item::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	Render(target);
+}
+
 void Item::Render(sf::RenderTarget & target) const
 {
 	for (SpriteSet::iterator s = sprites.begin(); s != sprites.end(); s++) {

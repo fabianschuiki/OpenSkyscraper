@@ -76,6 +76,11 @@ void Queue::advance(double dt)
 	}
 }
 
+void Queue::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	Render(target);
+}
+
 void Queue::Render(sf::RenderTarget & target) const
 {
 	//Start the queue 16 pixels away from the elevator.

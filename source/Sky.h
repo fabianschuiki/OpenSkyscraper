@@ -20,6 +20,7 @@ namespace OT {
 		double thunderOverlay;
 
 		void advance(double dt);
+		void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 		virtual void Render(sf::RenderTarget & target) const;
 		
 		static double cloudNoise(double2 p);

@@ -25,6 +25,7 @@ namespace OT {
 				Item::People passengers;
 				void removePassenger(Person *p);
 				
+				void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 				virtual void Render(sf::RenderTarget & target) const;
 				
 				virtual void encodeXML(tinyxml2::XMLPrinter& xml);

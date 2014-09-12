@@ -34,6 +34,7 @@ namespace OT {
 			void setPosition(int2 p);
 			recti getRect() const { return recti(position, size); }
 			
+			void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 			virtual void Render(sf::RenderTarget & target) const;
 			sf::Vector2f GetSize() const { return sf::Vector2f(size.x*8.0f, size.y*36.0f); }
 			

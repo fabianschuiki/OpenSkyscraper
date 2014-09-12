@@ -37,6 +37,7 @@ namespace OT {
 				bool steppingInside;
 				
 				virtual void advance(double dt);
+				void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 				virtual void Render(sf::RenderTarget & target) const;
 			};
 		}

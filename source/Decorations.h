@@ -17,6 +17,7 @@ namespace OT {
 		void updateCrane();
 		void updateTracks();
 
+		void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 		virtual void Render(sf::RenderTarget & target) const;
 
 	private:

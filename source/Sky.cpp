@@ -107,6 +107,11 @@ void Sky::advance(double dt)
 	}
 }
 
+void Sky::draw(sf::RenderTarget & target, RenderStates states) const
+{
+    Render(target);
+}
+
 void Sky::Render(sf::RenderTarget & target) const
 {
 	sf::FloatRect rect = target.GetView().GetRect();
