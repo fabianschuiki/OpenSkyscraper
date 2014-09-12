@@ -56,10 +56,10 @@ Game::Game(Application & app)
 	
 	reloadGUI();
 	
-	cockSound.SetBuffer(app.sounds["simtower/cock"]);
-	morningSound.SetBuffer(app.sounds["simtower/birds/morning"]);
-	bellsSound.SetBuffer(app.sounds["simtower/bells"]);
-	eveningSound.SetBuffer(app.sounds["simtower/birds/evening"]);
+	cockSound.setBuffer(app.sounds["simtower/cock"]);
+	morningSound.setBuffer(app.sounds["simtower/birds/morning"]);
+	bellsSound.setBuffer(app.sounds["simtower/bells"]);
+	eveningSound.setBuffer(app.sounds["simtower/birds/evening"]);
 	
 	//DEBUG: load from disk.
 	tinyxml2::XMLDocument xml;
