@@ -505,7 +505,7 @@ void Game::advance(double dt)
 	morningSound.SetLoop(time.hour < 8);
 	
 	//Constrain the POI.
-	double2 halfsize(win.GetWidth()*0.5*zoom, win.GetHeight()*0.5*zoom);
+	double2 halfsize((win.getView().getSize().x)*0.5*zoom, (win.getView().getSize().y)*0.5*zoom);
 	poi.y = std::max<double>(std::min<double>(poi.y, 360*12 - halfsize.y), -360 + halfsize.y);
 	
 	//Adust the camera.
