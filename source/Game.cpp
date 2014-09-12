@@ -94,20 +94,20 @@ bool Game::handleEvent(sf::Event & event)
 	switch (event.Type) {
 		case sf::Event::KeyPressed: {
 			switch (event.Key.Code) {
-				case sf::Key::Left:  poi.x -= 20; return true;
-				case sf::Key::Right: poi.x += 20; return true;
-				case sf::Key::Up:    poi.y += 20; return true;
-				case sf::Key::Down:  poi.y -= 20; return true;
-				case sf::Key::F1:    reloadGUI(); return true;
-				case sf::Key::F3:    setRating(1); return true;
-				case sf::Key::F2: {
+				case sf::Keyboard::Left:  poi.x -= 20; return true;
+				case sf::Keyboard::Right: poi.x += 20; return true;
+				case sf::Keyboard::Up:    poi.y += 20; return true;
+				case sf::Keyboard::Down:  poi.y -= 20; return true;
+				case sf::Keyboard::F1:    reloadGUI(); return true;
+				case sf::Keyboard::F3:    setRating(1); return true;
+				case sf::Keyboard::F2: {
 					FILE * f = fopen("default.tower", "w");
 					tinyxml2::XMLPrinter xml(f);
 					encodeXML(xml);
 					fclose(f);
 				} return true;
-				case sf::Key::PageUp:   zoom /= 2; return true;
-				case sf::Key::PageDown: zoom *= 2; return true;
+				case sf::Keyboard::PageUp:   zoom /= 2; return true;
+				case sf::Keyboard::PageDown: zoom *= 2; return true;
 			}
 		} break;
 		
