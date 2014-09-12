@@ -18,7 +18,7 @@ bool BitmapManager::load(Path name, sf::Image & dst)
 		//Try to load the font.
 		bool success = false;
 		for (int i = 0; i < paths.size() && !success; i++) {
-			success = dst.LoadFromFile(paths[i].c_str());
+			success = dst.loadFromFile(paths[i].c_str());
 		}
 		
 		//Return success.
