@@ -15,7 +15,10 @@ GUI::GUI(std::string name, GUIManager * manager)
 	assert(manager && "GUI requires a GUIManager");
 	
 	this->manager = manager;
-	context = Rocket::Core::CreateContext(name.c_str(), Rocket::Core::Vector2i(manager->window->GetWidth(), manager->window->GetHeight()));
+	context = Rocket::Core::CreateContext(name.c_str(),
+					Rocket::Core::Vector2i(
+						manager->window->getView().getSize().x,
+						manager->window->getView().getSize().y));
 	assert(context && "unable to initialize context");
 }
 
@@ -29,7 +32,9 @@ bool GUI::handleEvent(sf::Event & event)
 {
 	switch (event.Type) {
 		case sf::Event::Resized:
-			this->context->SetDimensions(Rocket::Core::Vector2i(manager->window->GetWidth(), manager->window->GetHeight()));
+			this->context->SetDimensions(Rocket::Core::Vector2i(
+											manager->window->getView().getSize().x,
+											manager->window->getView().getSize().y));
 			return true;
 		case sf::Event::MouseMoved:
 			context->ProcessMouseMove(event.MouseMove.X, event.MouseMove.Y, manager->getKeyModifiers());
@@ -57,7 +62,7 @@ void GUI::draw()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0, manager->window->GetWidth(), manager->window->GetHeight(), 0, -1, 1);
+	glOrtho(0, manager->window->getView().getSize().x, manager->window->getView().getSize().y, 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
