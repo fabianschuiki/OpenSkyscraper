@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Game.h"
 #include "Item/Lobby.h"
+#include "GL/gl.h"
 
 #ifdef _WIN32
 #include "Math/Round.h"
@@ -91,9 +92,9 @@ void Game::deactivate()
 
 bool Game::handleEvent(sf::Event & event)
 {
-	switch (event.Type) {
+	switch (event.type) {
 		case sf::Event::KeyPressed: {
-			switch (event.Key.Code) {
+			switch (event.key.code) {
 				case sf::Keyboard::Left:  poi.x -= 20; return true;
 				case sf::Keyboard::Right: poi.x += 20; return true;
 				case sf::Keyboard::Up:    poi.y += 20; return true;
@@ -112,7 +113,7 @@ bool Game::handleEvent(sf::Event & event)
 		} break;
 		
 		case sf::Event::TextEntered: {
-			switch (event.Text.Unicode) {
+			switch (event.text.unicode) {
 				case '0': setSpeedMode(0); return true;
 				case '1': setSpeedMode(1); return true;
 				case '2': setSpeedMode(2); return true;
@@ -121,7 +122,7 @@ bool Game::handleEvent(sf::Event & event)
 		} break;
 		
 		case sf::Event::MouseButtonPressed: {
-			float2 mousePoint(event.MouseButton.X, event.MouseButton.Y);
+			float2 mousePoint(event.mouseButton.x, event.mouseButton.y);
 			rectf toolboxWindowRect(float2(toolboxWindow.window->GetAbsoluteLeft(), toolboxWindow.window->GetAbsoluteTop()), float2(toolboxWindow.window->GetClientWidth(), toolboxWindow.window->GetClientHeight()));
 			rectf timeWindowRect(float2(timeWindow.window->GetAbsoluteLeft(), timeWindow.window->GetAbsoluteTop()), float2(timeWindow.window->GetClientWidth(), timeWindow.window->GetClientHeight()));
 			rectf mapWindowRect(float2(mapWindow->GetAbsoluteLeft(), mapWindow->GetAbsoluteTop()), float2(mapWindow->GetClientWidth(), mapWindow->GetClientHeight()));
@@ -502,7 +503,7 @@ void Game::advance(double dt)
 	if (time.checkHour(6))  morningSound.Play(this);
 	if (time.checkHour(9))  bellsSound.Play(this);
 	if (time.checkHour(18)) eveningSound.Play(this);
-	morningSound.SetLoop(time.hour < 8);
+	morningSound.setLoop(time.hour < 8);
 	
 	//Constrain the POI.
 	double2 halfsize((win.getView().getSize().x)*0.5*zoom, (win.getView().getSize().y)*0.5*zoom);
@@ -510,12 +511,12 @@ void Game::advance(double dt)
 	
 	//Adust the camera.
 	sf::FloatRect view;
-	view.Left   = round(poi.x - halfsize.x);
-	view.Top    = round(-poi.y - halfsize.y);
-	view.Right  = view.Left + halfsize.x*2;
-	view.Bottom = view.Top + halfsize.y*2;
+	view.left   = round(poi.x - halfsize.x);
+	view.top    = round(-poi.y - halfsize.y);
+	view.width  = halfsize.x*2;
+	view.height = halfsize.y*2;
 	sf::View cameraView(view);
-	win.SetView(cameraView);
+	win.setView(cameraView);
 	//sf::FloatRect view = cameraView.GetRect();
 	//win.SetView(sf::View(view));
 	

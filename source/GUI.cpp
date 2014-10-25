@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "GUI.h"
 #include "GUIManager.h"
+#include "GL/gl.h"
 
 using namespace OT;
 
@@ -30,29 +31,29 @@ GUI::~GUI()
 
 bool GUI::handleEvent(sf::Event & event)
 {
-	switch (event.Type) {
+	switch (event.type) {
 		case sf::Event::Resized:
 			this->context->SetDimensions(Rocket::Core::Vector2i(
 											manager->window->getView().getSize().x,
 											manager->window->getView().getSize().y));
 			return true;
 		case sf::Event::MouseMoved:
-			context->ProcessMouseMove(event.MouseMove.X, event.MouseMove.Y, manager->getKeyModifiers());
+			context->ProcessMouseMove(event.mouseMove.x, event.mouseMove.y, manager->getKeyModifiers());
 			return true;
 		case sf::Event::MouseButtonPressed:
-			context->ProcessMouseButtonDown(event.MouseButton.Button, manager->getKeyModifiers());
+			context->ProcessMouseButtonDown(event.mouseButton.button, manager->getKeyModifiers());
 			return true;
 		case sf::Event::MouseButtonReleased:
-			context->ProcessMouseButtonUp(event.MouseButton.Button, manager->getKeyModifiers());
+			context->ProcessMouseButtonUp(event.mouseButton.button, manager->getKeyModifiers());
 			return true;
 		case sf::Event::MouseWheelMoved:
-			return context->ProcessMouseWheel(event.MouseWheel.Delta, manager->getKeyModifiers());
+			return context->ProcessMouseWheel(event.mouseWheel.delta, manager->getKeyModifiers());
 		case sf::Event::TextEntered:
-			return context->ProcessTextInput(event.Text.Unicode);
+			return context->ProcessTextInput(event.text.unicode);
 		case sf::Event::KeyPressed:
-			return context->ProcessKeyDown(manager->translateKey(event.Key.Code), manager->getKeyModifiers());
+			return context->ProcessKeyDown(manager->translateKey(event.key.code), manager->getKeyModifiers());
 		case sf::Event::KeyReleased:
-			return context->ProcessKeyUp(manager->translateKey(event.Key.Code), manager->getKeyModifiers());
+			return context->ProcessKeyUp(manager->translateKey(event.key.code), manager->getKeyModifiers());
 	}
 	return false;
 }
