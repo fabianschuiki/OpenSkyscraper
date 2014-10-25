@@ -521,8 +521,7 @@ void Game::advance(double dt)
 	//win.SetView(sf::View(view));
 	
 	//Prepare the current tool.
-	const sf::Input & input = win.GetInput();
-	sf::Vector2f mp = win.ConvertCoords(input.GetMouseX(), input.GetMouseY());
+	sf::Vector2f mp = win.mapPixelToCoords(sf::Mouse::getPosition());
 	Item::AbstractPrototype * previousPrototype = toolPrototype;
 	if (selectedTool.find("item-") == 0) {
 		toolPrototype = itemFactory.prototypesById[selectedTool.substr(5)];
