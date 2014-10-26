@@ -533,8 +533,8 @@ void Game::advance(double dt)
 	if (previousPrototype != toolPrototype) timeWindow.updateTooltip();
 	
 	//Draw the sky and decorations.
-	win.Draw(sky);
-	win.Draw(decorations);
+	win.draw(sky);
+	win.draw(decorations);
 	
 	//Draw the items that are in view.
 	Item::Item * previousItemBelowCursor = itemBelowCursor;
@@ -544,8 +544,9 @@ void Game::advance(double dt)
 	for (ItemSet::iterator i = itemsByType["floor"].begin(); i != itemsByType["floor"].end(); i++) {
 		const sf::Vector2f & vp = (*i)->getPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
-		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
-			win.Draw(**i);
+		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) &&
+			vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
+			win.draw(**i);
 			if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 		}
 	}
@@ -556,8 +557,8 @@ void Game::advance(double dt)
 			if ((*i)->layer != layer) continue;
 			const sf::Vector2f & vp = (*i)->GetPosition();
 			const sf::Vector2f & vs = (*i)->GetSize();
-			if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
-				win.Draw(**i);
+			if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) && vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
+				win.draw(**i);
 				if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 			}
 		}
@@ -566,11 +567,11 @@ void Game::advance(double dt)
 	//Highlight the item below the cursor.
 	if (!toolPrototype && itemBelowCursor) {
 		sf::Sprite s;
-		s.Resize(itemBelowCursor->GetSize().x, itemBelowCursor->GetSize().y-12);
-		s.SetCenter(0, 1);
-		s.SetPosition(itemBelowCursor->GetPosition());
-		s.SetColor(sf::Color(255, 255, 255, 255*0.5));
-		win.Draw(s);
+		s.scale(itemBelowCursor->GetSize().x, itemBelowCursor->GetSize().y-12);
+		s.setOrigin(0, 1);
+		s.setPosition(itemBelowCursor->GetPosition());
+		s.setColor(sf::Color(255, 255, 255, 255*0.5));
+		win.draw(s);
 		drawnSprites++;
 		if (previousItemBelowCursor != itemBelowCursor) {
 			timeWindow.showMessage(itemBelowCursor->prototype->name);
@@ -616,17 +617,17 @@ void Game::advance(double dt)
 	
 	//Adjust pitch of playing sounds.
 	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end();) {
-		if ((*s)->GetStatus() == sf::Sound::Stopped) {
+		if ((*s)->getStatus() == sf::Sound::Stopped) {
 			playingSounds.erase(s++);
 		} else {
-			(*s)->SetPitch(1 + (time.speed_animated-1) * 0.2);
+			(*s)->setPitch(1 + (time.speed_animated-1) * 0.2);
 			s++;
 		}
 	}
 	
 	//Autorelease sounds.
 	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end();) {
-		if ((*s)->GetStatus() == sf::Sound::Stopped) {
+		if ((*s)->getStatus() == sf::Sound::Stopped) {
 			delete *s;
 			autoreleaseSounds.erase(s++);
 		} else {
@@ -938,7 +939,7 @@ void Game::playOnce(Path sound)
 
 	//Actually play the sound.
 	Sound * snd = new Sound;
-	snd->SetBuffer(app.sounds[sound]);
+	snd->setBuffer(app.sounds[sound]);
 	snd->Play(this);
 	autoreleaseSounds.insert(snd);
 }
@@ -948,10 +949,10 @@ void Game::playOnce(Path sound)
 void Game::playRandomBackgroundSound()
 {
 	sf::RenderWindow &win = app.window;
-	sf::FloatRect view = win.GetView().GetRect();
+	sf::FloatRect view = win.getView().getViewport();
 
 	//Pick a random value between 0 and the screen area.
-	double r = (double)rand() / RAND_MAX * (view.Right-view.Left) * (view.Bottom-view.Top);
+	double r = (double)rand() / RAND_MAX * (view.width) * (view.height);
 
 	//Iterate through the items that are in view, subtracting each item's area from the random
 	//value until it drops below 0. That item will be given the chance to play the sound. This
@@ -961,7 +962,7 @@ void Game::playRandomBackgroundSound()
 		if ((*i)->layer != 0) continue;
 		const sf::Vector2f & vp = (*i)->GetPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
-		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
+		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) && vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
 			int area = vs.x * vs.y;
 			r -= area;
 			if (r <= 0) {
