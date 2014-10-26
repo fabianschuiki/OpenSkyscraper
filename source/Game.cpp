@@ -542,7 +542,7 @@ void Game::advance(double dt)
 
 	//Draw floor items first
 	for (ItemSet::iterator i = itemsByType["floor"].begin(); i != itemsByType["floor"].end(); i++) {
-		const sf::Vector2f & vp = (*i)->GetPosition();
+		const sf::Vector2f & vp = (*i)->getPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
 		if (vp.x+vs.x >= view.Left && vp.x <= view.Right && vp.y >= view.Top && vp.y-vs.y <= view.Bottom) {
 			win.Draw(**i);

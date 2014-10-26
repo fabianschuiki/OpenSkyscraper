@@ -32,6 +32,7 @@ namespace OT {
 			int2 position;
 			int2 size;
 			void setPosition(int2 p);
+			int2 getPosition();
 			recti getRect() const { return recti(position, size); }
 			
 			void draw(sf::RenderTarget & target, sf::RenderStates states) const;

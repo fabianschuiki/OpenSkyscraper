@@ -20,9 +20,14 @@ Item::~Item()
 void Item::setPosition(int2 p)
 {
 	if (position != p) {
-		position = p;
-		SetPosition(p.x*8, -p.y*36);
+		position.x = p.x*8;
+		position.y = -p.y*36
 	}
+}
+
+int2 Item::getPosition()
+{
+	return position;
 }
 
 void Item::addSprite(Sprite * sprite)
