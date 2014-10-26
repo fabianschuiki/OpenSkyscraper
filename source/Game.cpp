@@ -542,7 +542,7 @@ void Game::advance(double dt)
 
 	//Draw floor items first
 	for (ItemSet::iterator i = itemsByType["floor"].begin(); i != itemsByType["floor"].end(); i++) {
-		const sf::Vector2f & vp = (*i)->getPosition();
+		const int2 & vp = (*i)->getPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
 		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) &&
 			vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
@@ -555,7 +555,7 @@ void Game::advance(double dt)
 	for (int layer = 0; layer < 2; layer++) {
 		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 			if ((*i)->layer != layer) continue;
-			const sf::Vector2f & vp = (*i)->GetPosition();
+			const int2 & vp = (*i)->getPosition();
 			const sf::Vector2f & vs = (*i)->GetSize();
 			if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) && vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
 				win.draw(**i);
@@ -569,7 +569,7 @@ void Game::advance(double dt)
 		sf::Sprite s;
 		s.scale(itemBelowCursor->GetSize().x, itemBelowCursor->GetSize().y-12);
 		s.setOrigin(0, 1);
-		s.setPosition(itemBelowCursor->GetPosition());
+		s.setPosition(itemBelowCursor->getPosition().x, itemBelowCursor->getPosition().y);
 		s.setColor(sf::Color(255, 255, 255, 255*0.5));
 		win.draw(s);
 		drawnSprites++;
@@ -960,7 +960,7 @@ void Game::playRandomBackgroundSound()
 	Item::Item *pick = NULL;
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		if ((*i)->layer != 0) continue;
-		const sf::Vector2f & vp = (*i)->GetPosition();
+		const int2 & vp = (*i)->getPosition();
 		const sf::Vector2f & vs = (*i)->GetSize();
 		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) && vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
 			int area = vs.x * vs.y;
