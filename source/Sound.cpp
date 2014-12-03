@@ -26,3 +26,9 @@ void Sound::Stop()
 		playingInGame = NULL;
 	}
 }
+
+double Sound::getDurationDouble()
+{
+	sf::Time t = getBuffer()->getDuration();
+	return t.asSeconds + 0.001*t.asMilliseconds() + 0.000001*t.asMicroseconds();
+}

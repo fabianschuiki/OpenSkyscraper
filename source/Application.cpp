@@ -131,11 +131,11 @@ void Application::init()
 	delete simtower; simtower = NULL;
 	//exitCode = 1;
 	
-	videoMode.Width        = 1280;
-	videoMode.Height       = 768;
-	videoMode.BitsPerPixel = 32;
+	videoMode.width        = 1280;
+	videoMode.height       = 768;
+	videoMode.bitsPerPixel = 32;
 	
-	window.Create(videoMode, "OpenSkyscraper SFML");
+	window.create(videoMode, "OpenSkyscraper SFML");
 	
 	if (!gui.init(&window)) {
 		LOG(ERROR, "unable to initialize gui");
@@ -181,8 +181,11 @@ void Application::loop()
 	double dt_max = 0, dt_min = 0;
 	int dt_maxmin_resetTimer = 0;
 	
-	while (window.IsOpened() && exitCode == 0 && !states.empty()) {
-		double dt_real = clock.GetElapsedTime();
+	while (window.isOpen() && exitCode == 0 && !states.empty()) {
+		sf::Time realtime = clock.getElapsedTime();
+		double dt_real = realtime.asSeconds() +
+						realtime.asMilliseconds() * 0.001 +
+						realtime.asMicroseconds() * 0.000001;
 		//dt_max = (dt_max + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
 		//dt_min = (dt_min + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
 		if (dt_real > dt_max) {
@@ -194,7 +197,7 @@ void Application::loop()
 			dt_maxmin_resetTimer = 0;
 		}
 		double dt = std::min<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
-		clock.Reset();
+		clock.restart();
 		
 		//Update the rate indicator.
 		rateDampFactor = (dt_real * 1);

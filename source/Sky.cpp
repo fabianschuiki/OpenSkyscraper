@@ -17,11 +17,11 @@ Sky::Sky(Game * game) : GameObject(game) {
 	soundCountdown = 0;
 	thunderOverlay = 0;
 	
-	rainSound.SetBuffer(app->sounds["simtower/rain"]);
-	rainSound.SetLoop(true);
-	thunderSound.SetBuffer(app->sounds["simtower/thunder"]);
-	birdsSound.SetBuffer(app->sounds["simtower/birds/day"]);
-	cricketsSound.SetBuffer(app->sounds["simtower/crickets"]);
+	rainSound.setBuffer(app->sounds["simtower/rain"]);
+	rainSound.setLoop(true);
+	thunderSound.setBuffer(app->sounds["simtower/thunder"]);
+	birdsSound.setBuffer(app->sounds["simtower/birds/day"]);
+	cricketsSound.setBuffer(app->sounds["simtower/crickets"]);
 }
 
 void Sky::advance(double dt)
@@ -95,13 +95,13 @@ void Sky::advance(double dt)
 		if (rainyDay && time >= 8 && time < 16) {
 			thunderSound.Play(game);
 			thunderOverlay = 1;
-			duration = thunderSound.GetBuffer()->GetDuration();
+			duration = thunderSound.getDurationDouble();
 		} else if (time >= 8 && time < 17) {
 			birdsSound.Play(game);
-			duration = birdsSound.GetBuffer()->GetDuration();
+			duration = birdsSound.getDurationDouble();
 		} else if (time >= 20 || time < 1.5) {
 			cricketsSound.Play(game);
-			duration = cricketsSound.GetBuffer()->GetDuration();
+			duration = cricketsSound.getDurationDouble();
 		}
 		soundCountdown += Math::randd(duration + 0.5, duration + 10);
 	}
@@ -114,11 +114,11 @@ void Sky::draw(sf::RenderTarget & target, RenderStates states) const
 
 void Sky::Render(sf::RenderTarget & target) const
 {
-	sf::FloatRect rect = target.GetView().GetRect();
+	sf::FloatRect rect = target.getView().getViewport();
 	
 	//Draw the sky color.
-	int sky_lower = std::max<int>(floor(-rect.Bottom / 360), -1);
-	int sky_upper = std::min<int>(ceil (-rect.Top    / 360), 11);
+	int sky_lower = std::max<int>(floor(-(rect.top + rect.height) / 360), -1);
+	int sky_upper = std::min<int>(ceil (-rect.top    / 360), 11);
 	
 	Sprite sky;
 	sky.SetImage(app->bitmaps["simtower/sky"]);
@@ -127,7 +127,7 @@ void Sky::Render(sf::RenderTarget & target) const
 			if ((i == 0 && progress == 1) || (i == 1 && progress == 0)) continue;
 			
 			int index = (std::min<int>(y + 1, 9) * 6 + (i == 0 ? from : to));
-			sky.SetSubRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
+			sky.setTextureRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
 			sky.Resize(32, 360);
 			sky.SetCenter(0, 360);
 			sky.SetColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
