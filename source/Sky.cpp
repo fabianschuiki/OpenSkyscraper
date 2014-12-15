@@ -107,7 +107,7 @@ void Sky::advance(double dt)
 	}
 }
 
-void Sky::draw(sf::RenderTarget & target, RenderStates states) const
+void Sky::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
     Render(target);
 }
