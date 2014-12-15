@@ -128,13 +128,13 @@ void Sky::Render(sf::RenderTarget & target) const
 			
 			int index = (std::min<int>(y + 1, 9) * 6 + (i == 0 ? from : to));
 			sky.setTextureRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
-			sky.Resize(32, 360);
-			sky.SetCenter(0, 360);
-			sky.SetColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
+			sky.setScale(32, 360);
+			sky.setOrigin(0, 360);
+			sky.setColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
 			
-			for (int x = floor(rect.Left / 32); x < ceil(rect.Right / 32); x++) {
-				sky.SetPosition(x * 32, -y * 360);
-				target.Draw(sky);
+			for (int x = floor(rect.left / 32); x < ceil((rect.left + rect.width) / 32); x++) {
+				sky.setPosition(x * 32, -y * 360);
+				target.draw(sky);
 				game->drawnSprites++;
 			}
 		}
