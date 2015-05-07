@@ -182,10 +182,7 @@ void Application::loop()
 	int dt_maxmin_resetTimer = 0;
 	
 	while (window.isOpen() && exitCode == 0 && !states.empty()) {
-		sf::Time realtime = clock.getElapsedTime();
-		double dt_real = realtime.asSeconds() +
-						realtime.asMilliseconds() * 0.001 +
-						realtime.asMicroseconds() * 0.000001;
+		double dt_real = clock.getElapsedTime().asSeconds();
 		//dt_max = (dt_max + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
 		//dt_min = (dt_min + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
 		if (dt_real > dt_max) {

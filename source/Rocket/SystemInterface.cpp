@@ -311,7 +311,7 @@ Rocket::Core::Input::KeyIdentifier RocketSystemInterface::TranslateKey(sf::Keybo
 
 float RocketSystemInterface::GetElapsedTime()
 {
-	return timer.GetElapsedTime();
+	return timer.getElapsedTime().asSeconds();
 };
 
 bool RocketSystemInterface::LogMessage(Rocket::Core::Log::Type type, const Rocket::Core::String& message)
