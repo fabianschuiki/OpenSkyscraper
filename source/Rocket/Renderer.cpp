@@ -88,7 +88,7 @@ sf::RenderWindow * RocketRenderer::GetWindow()
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.
 void RocketRenderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
-	MyWindow->SetActive();
+	MyWindow->setActive();
 
 	glPushMatrix();
 	glTranslatef(translation.x, translation.y, 0);
@@ -249,7 +249,7 @@ void RocketRenderer::ReleaseCompiledGeometry(Rocket::Core::CompiledGeometryHandl
 // Called by Rocket when it wants to enable or disable scissoring to clip content.		
 void RocketRenderer::EnableScissorRegion(bool enable)
 {
-	MyWindow->SetActive();
+	MyWindow->setActive();
 
 	if (enable)
 		glEnable(GL_SCISSOR_TEST);
@@ -260,7 +260,7 @@ void RocketRenderer::EnableScissorRegion(bool enable)
 // Called by Rocket when it wants to change the scissor region.		
 void RocketRenderer::SetScissorRegion(int x, int y, int width, int height)
 {
-	MyWindow->SetActive();
+	MyWindow->setActive();
 
 	glScissor(x, MyWindow->GetHeight() - (y + height), width, height);
 }
@@ -268,7 +268,7 @@ void RocketRenderer::SetScissorRegion(int x, int y, int width, int height)
 // Called by Rocket when a texture is required by the library.		
 bool RocketRenderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
 {
-	MyWindow->SetActive();
+	MyWindow->setActive();
 	
 	printf("-> LOADING TEXTURE %s\n", source.CString());
 	
@@ -306,7 +306,7 @@ bool RocketRenderer::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Ro
 // Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
 bool RocketRenderer::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
 {
-	MyWindow->SetActive();
+	MyWindow->setActive();
 
 	sf::Image *image = new sf::Image();
 
