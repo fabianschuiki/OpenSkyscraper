@@ -164,7 +164,7 @@ void SimTowerLoader::dump(Path path)
 		Path d = p.up();
 		if (!makeDirectory(d))
 			continue;
-		i->second.SaveToFile(p.str() + ".png");
+		i->second.saveToFile(p.str() + ".png");
 	}
 	
 	Path unhandledBitmapsDir = bitmapsDir.down("unhandled");
@@ -199,7 +199,7 @@ void SimTowerLoader::dump(Path path)
 		Path d = p.up();
 		if (!makeDirectory(d))
 			continue;
-		i->second.SaveToFile(p.str() + ".wav");
+		i->second.saveToFile(p.str() + ".wav");
 	}
 	
 	Path unhandledSoundsDir = soundsDir.down("unhandled");
@@ -344,58 +344,58 @@ void SimTowerLoader::loadBitmaps()
 	LOG(INFO, "Loading Bitmaps");
 	//Condos
 	sf::Image & condos = app->bitmaps["simtower/condo"];
-	condos.Create(5*128, 3*24);
+	condos.create(5*128, 3*24);
 	for (int i = 0; i < 3; i++) {
 		sf::Image condo;
 		loadCondo(0x8628 + i*5, condo);
-		condos.Copy(condo, 0, i*24);
+		condos.copy(condo, 0, i*24);
 	}
 	
 	//Offices
 	sf::Image & offices = app->bitmaps["simtower/office"];
-	offices.Create(144, 7*24);
+	offices.create(144, 7*24);
 	unsigned int y = 0;
 	for (int i = 0; i < 4; i++) {
 		sf::Image office;
 		loadOffice(0x85A8 + i, office);
-		offices.Copy(office, 0, y);
-		y += office.GetHeight();
+		offices.copy(office, 0, y);
+		y += office.getSize().y;
 	}
 	
 	//Fast Foods
 	sf::Image & fastfoods   = app->bitmaps["simtower/fastfood"];
-	fastfoods.Create(4*128, 5*24);
+	fastfoods.create(4*128, 5*24);
 	for (int i = 0; i < 5; i++) {
 		sf::Image fastfood;
 		loadFood(0x86E8 + i*2, fastfood);
-		fastfoods.Copy(fastfood, 0, i*24);
+		fastfoods.copy(fastfood, 0, i*24);
 	}
 	
 	//Restaurants
 	sf::Image & restaurants = app->bitmaps["simtower/restaurant"];
-	restaurants.Create(4*192, 4*24);
+	restaurants.create(4*192, 4*24);
 	for (int i = 0; i < 5; i++) {
 		sf::Image restaurant;
 		loadFood(0x8568 + i*2, restaurant);
-		restaurants.Copy(restaurant, 0, i*24);
+		restaurants.copy(restaurant, 0, i*24);
 	}
 	
 	//Single hotel rooms
 	sf::Image & singleRooms = app->bitmaps["simtower/single"];
-	singleRooms.Create(9*32, 2*24);
+	singleRooms.create(9*32, 2*24);
 	for (int i = 0; i < 2; i++) {
 		sf::Image hotel;
 		loadHotel(0x84A8 + i*2, hotel);
-		singleRooms.Copy(hotel, 0, i*24);
+		singleRooms.copy(hotel, 0, i*24);
 	}
 	
 	//Double hotel rooms
 	sf::Image & doubleRooms = app->bitmaps["simtower/double"];
-	doubleRooms.Create(9*48, 4*24);
+	doubleRooms.create(9*48, 4*24);
 	for (int i = 0; i < 4; i++) {
 		sf::Image hotel;
 		loadHotel(0x84E8 + i*2, hotel);
-		doubleRooms.Copy(hotel, 0, i*24);
+		doubleRooms.copy(hotel, 0, i*24);
 	}
 	
 	//Suite hotel rooms
@@ -409,11 +409,11 @@ void SimTowerLoader::loadBitmaps()
 	loadMergedByID(stairs[0], 'y', 0x8968, 0x89A8, NULL);
 	loadMergedByID(stairs[1], 'y', 0x8969, 0x89A9, NULL);
 	loadMerged(app->bitmaps["simtower/stairs"], 'x', &stairs[0], &stairs[1], NULL);
-	app->bitmaps["simtower/stairs"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
+	app->bitmaps["simtower/stairs"].createMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
 	
 	//Escalator
 	loadMergedByID(app->bitmaps["simtower/escalator"], 'y', 0x8AA8, 0x8AE8, 0);
-	app->bitmaps["simtower/escalator"].CreateMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
+	app->bitmaps["simtower/escalator"].createMaskFromColor(sf::Color(0xFF, 0xFF, 0xFF));
 	
 	loadMergedByID(app->bitmaps["simtower/parking/ramp"], 'x', 0x8EE8, 0x8EE9, 0x8EEA, NULL);
 	loadMergedByID(app->bitmaps["simtower/parking/space"], 'x', 0x86A8, 0x86A9, NULL);
@@ -430,7 +430,7 @@ void SimTowerLoader::loadBitmaps()
 	loadBitmap(0x88E8, recyclingEmpty);
 	loadBitmap(0x892E, recyclingCar);
 	recyclingEmptying = recyclingEmpty;
-	recyclingEmptying.Copy(recyclingCar, 0, 24);
+	recyclingEmptying.copy(recyclingCar, 0, 24);
 	loadMerged(app->bitmaps["simtower/recycling"], 'x', &recyclingEmpty, &recyclingLoad, &recyclingEmptying, NULL);
 	
 	//Metro
@@ -450,11 +450,11 @@ void SimTowerLoader::loadBitmaps()
 	loadAnimatedBitmap(0x8868, cinemaUpper);
 	loadBitmap(0x88A8, cinemaLower);
 	sf::Image & cinema = app->bitmaps["simtower/cinema/hall"];
-	cinema.Create(192*5, 60);
-	cinema.Copy(cinemaUpper[1], 192, 0);
-	cinema.Copy(cinemaUpper[0], 0, 0);
-	cinema.Copy(cinemaLower, 192, 24);
-	cinema.Copy(cinemaLower, 0, 24);
+	cinema.create(192*5, 60);
+	cinema.copy(cinemaUpper[1], 192, 0);
+	cinema.copy(cinemaUpper[0], 0, 0);
+	cinema.copy(cinemaLower, 192, 24);
+	cinema.copy(cinemaLower, 0, 24);
 	
 	loadMergedByID(app->bitmaps["simtower/fire/large"], 'x', 0x8F68, 0x8F69, 0x8F6A, 0x8F6B, NULL);
 	
@@ -475,15 +475,15 @@ void SimTowerLoader::loadBitmaps()
 	//People
 	sf::Image people[5];
 	loadBitmap(0x82BC, people[0]);
-	people[0].CreateMaskFromColor(sf::Color(0xE6, 0xE6, 0xE6));
+	people[0].createMaskFromColor(sf::Color(0xE6, 0xE6, 0xE6));
 	people[4] = people[3] = people[2] = people[1] = people[0];
-	for (int x = 0; x < people[0].GetWidth(); x++) {
-		for (int y = 0; y < people[0].GetHeight(); y++) {
-			if (people[0].GetPixel(x, y).a > 0) {
-				people[1].SetPixel(x, y, sf::Color(0xFF, 0x99, 0x99));
-				people[2].SetPixel(x, y, sf::Color(0xFF, 0x00, 0x00));
-				people[3].SetPixel(x, y, sf::Color(0x00, 0x00, 0xFF));
-				people[4].SetPixel(x, y, sf::Color(0xFF, 0xFF, 0x00));
+	for (int x = 0; x < people[0].getSize().x; x++) {
+		for (int y = 0; y < people[0].getSize().y; y++) {
+			if (people[0].getPixel(x, y).a > 0) {
+				people[1].setPixel(x, y, sf::Color(0xFF, 0x99, 0x99));
+				people[2].setPixel(x, y, sf::Color(0xFF, 0x00, 0x00));
+				people[3].setPixel(x, y, sf::Color(0x00, 0x00, 0xFF));
+				people[4].setPixel(x, y, sf::Color(0xFF, 0xFF, 0x00));
 			}
 		}
 	}
@@ -502,16 +502,16 @@ void SimTowerLoader::loadBitmaps()
 	for (int i = 0; i < 3; i++) {
 		sf::Image tmp;
 		loadBitmap(0x812C+i, tmp);
-		items[i].Create(32*26, 32);
+		items[i].create(32*26, 32);
 		for (int n = 0; n < 4; n++)
-			items[i].Copy(tmp, n*256, 0, sf::IntRect(0, n*32, 256, n*32+32));
+			items[i].copy(tmp, n*256, 0, sf::IntRect(0, n*32, 256, n*32+32));
 	}
 	loadMerged(app->bitmaps["simtower/ui/toolbox/items"], 'y', &items[0], &items[1], &items[2], NULL);
 	
 	//Map
 	Blob & mapRaw = rawBitmaps[0x8160];
 	sf::Image & mapSky = app->bitmaps["simtower/ui/map/sky"];
-	mapSky.Create(200*4, 264);
+	mapSky.create(200*4, 264);
 	for (int i = 0; i < 4; i++)
 	{
 		int rct = 0;
@@ -521,17 +521,17 @@ void SimTowerLoader::loadBitmaps()
 		applyReplacementPalette(rct, mapRaw);
 		
 		sf::Image tmp;
-		if (!tmp.LoadFromMemory(mapRaw.data, mapRaw.length)) {
+		if (!tmp.loadFromMemory(mapRaw.data, mapRaw.length)) {
 			LOG(ERROR, "unable to load map sky bitmap from memory");
 			return;
 		}
-		mapSky.Copy(tmp, i*200, 0);
+		mapSky.copy(tmp, i*200, 0);
 	}
 	sf::Image map;
 	loadBitmap(0x8160, map);
 	sf::Image & mapGround = app->bitmaps["simtower/ui/map/ground"];
-	mapGround.Create(200, 24, sf::Color(0, 0, 0, 0));
-	mapGround.Copy(map, 0, 0, sf::IntRect(0, 264, 200, 24));
+	mapGround.create(200, 24, sf::Color(0, 0, 0, 0));
+	mapGround.copy(map, 0, 0, sf::IntRect(0, 264, 200, 24));
 	loadMergedByID(app->bitmaps["simtower/ui/map/buttons"], 'y', 0x8138, 0x8136, 0x8137, NULL);
 	loadMergedByID(app->bitmaps["simtower/ui/map/overlays"], 'y', 0x8139, 0x813a, 0x813b, NULL);
 	
@@ -543,16 +543,16 @@ void SimTowerLoader::loadBitmaps()
 	loadBitmap(0x8143, stars[1]);
 	loadBitmap(0x8147, starTower);
 	sf::Image & rating = app->bitmaps["simtower/ui/time/rating"];
-	rating.Create(108, 22*6, sf::Color(0, 0, 0, 0)); 
+	rating.create(108, 22*6, sf::Color(0, 0, 0, 0)); 
 	for (int i = 0; i < 5; i++) {
 		for (int n = 0; n < 5; n++) {
 			int si = (n <= i ? 0 : 1);
-			rating.Copy(stars[si], n*21+1, i*22+1);
+			rating.copy(stars[si], n*21+1, i*22+1);
 		}
 	}
-	rating.Copy(starTower, 0, 22*5);
-	rating.CreateMaskFromColor(sf::Color(0x99, 0x99, 0x99));
-	rating.CreateMaskFromColor(sf::Color::White);
+	rating.copy(starTower, 0, 22*5);
+	rating.createMaskFromColor(sf::Color(0x99, 0x99, 0x99));
+	rating.createMaskFromColor(sf::Color::White);
 	
 	sf::Image skies[11];
 	for (int i = 0; i < 11; i++) {
@@ -568,9 +568,9 @@ void SimTowerLoader::loadBitmaps()
 	sf::Image floorTmp;
 	loadBitmap(0x83e8, floorTmp);
 	sf::Image & floor = app->bitmaps["simtower/floor"];
-	floor.Create(8, 36);
+	floor.create(8, 36);
 	for (int i = 0; i < 8; i += 2) {
-		floor.Copy(floorTmp, i, 0, sf::IntRect(16, 0, 2, 36));
+		floor.copy(floorTmp, i, 0, sf::IntRect(16, 0, 2, 36));
 	}
 	
 	for (int n = 0; n < 4; n++) {
@@ -589,17 +589,17 @@ void SimTowerLoader::loadBitmaps()
 			applyReplacementPalette(rct, cloudRaw);
 			
 			sf::Image tmp;
-			if (!tmp.LoadFromMemory(cloudRaw.data, cloudRaw.length)) {
+			if (!tmp.loadFromMemory(cloudRaw.data, cloudRaw.length)) {
 				LOG(ERROR, "unable to load cloud bitmap from memory");
 				return;
 			}
 			if (!init) {
-				cloud.Create(tmp.GetWidth(), tmp.GetHeight()*4);
+				cloud.create(tmp.getSize().x, tmp.getSize().y*4);
 				init = true;
 			}
-			cloud.Copy(tmp, 0, i*tmp.GetHeight());
+			cloud.copy(tmp, 0, i*tmp.getSize().y);
 		}
-		cloud.CreateMaskFromColor(sf::Color::White);
+		cloud.createMaskFromColor(sf::Color::White);
 	}
 	
 	loadLobbies();
@@ -609,25 +609,25 @@ void SimTowerLoader::loadBitmaps()
 	sf::Image elevQueueSecurity;
 	loadBitmap(0x8468, elevQueueNormal);
 	loadBitmap(0x8469, elevQueueSecurity);
-	elevQueue.Create(9*2*16, 3*24, sf::Color::White);
+	elevQueue.create(9*2*16, 3*24, sf::Color::White);
 	for (int i = 0; i < 8; i++) {
 		for (int n = 0; n < 3; n++) {
-			elevQueue.Copy(elevQueueNormal, i*32+16, 0, sf::IntRect(i*80, 12, i*80+16, 36));
-			elevQueue.Copy(elevQueueNormal, i*32, 0, sf::IntRect(i*80+64, 12, i*80+80, 36));
-			elevQueue.Copy(elevQueueNormal, i*32+16, 24, sf::IntRect(i*80+16, 12, i*80+24, 36));
-			elevQueue.Copy(elevQueueNormal, i*32+8, 24, sf::IntRect(i*80+56, 12, i*80+64, 36));
-			elevQueue.Copy(elevQueueNormal, i*32+16, 48, sf::IntRect(i*80+24, 12, i*80+40, 36));
-			elevQueue.Copy(elevQueueNormal, i*32+0, 48, sf::IntRect(i*80+40, 12, i*80+56, 36));
+			elevQueue.copy(elevQueueNormal, i*32+16, 0, sf::IntRect(i*80, 12, i*80+16, 36));
+			elevQueue.copy(elevQueueNormal, i*32, 0, sf::IntRect(i*80+64, 12, i*80+80, 36));
+			elevQueue.copy(elevQueueNormal, i*32+16, 24, sf::IntRect(i*80+16, 12, i*80+24, 36));
+			elevQueue.copy(elevQueueNormal, i*32+8, 24, sf::IntRect(i*80+56, 12, i*80+64, 36));
+			elevQueue.copy(elevQueueNormal, i*32+16, 48, sf::IntRect(i*80+24, 12, i*80+40, 36));
+			elevQueue.copy(elevQueueNormal, i*32+0, 48, sf::IntRect(i*80+40, 12, i*80+56, 36));
 		}
 	}
-	elevQueue.CreateMaskFromColor(sf::Color::White);
-	for (int x = 0; x < elevQueue.GetWidth(); x++) {
-		for (int y = 0; y < elevQueue.GetHeight(); y++) {
-			sf::Color c = elevQueue.GetPixel(x, y);
+	elevQueue.createMaskFromColor(sf::Color::White);
+	for (int x = 0; x < elevQueue.getSize().x; x++) {
+		for (int y = 0; y < elevQueue.getSize().y; y++) {
+			sf::Color c = elevQueue.getPixel(x, y);
 			c.r = 255-c.r;
 			c.g = 255-c.g;
 			c.b = 255-c.b;
-			elevQueue.SetPixel(x, y, c);
+			elevQueue.setPixel(x, y, c);
 		}
 	}
 	
@@ -662,7 +662,7 @@ void SimTowerLoader::loadBitmaps()
 		sf::Image & bmp = app->bitmaps[Path("simtower/") + namedBitmaps[i].name];
 		loadBitmap(namedBitmaps[i].id, bmp);
 		if (namedBitmaps[i].alpha != sf::Color()) {
-			bmp.CreateMaskFromColor(namedBitmaps[i].alpha);
+			bmp.createMaskFromColor(namedBitmaps[i].alpha);
 		}
 	}
 }
@@ -680,24 +680,24 @@ void SimTowerLoader::loadMerged(sf::Image & dst, char dir, ...)
 		img = va_arg(args, sf::Image *);
 		if (img) {
 			if (dir == 'x') {
-				width  += img->GetWidth();
-				height  = std::max<unsigned int>(height, img->GetHeight());
+				width  += img->getSize().x;
+				height  = std::max<unsigned int>(height, img->getSize().y);
 			}
 			if (dir == 'y') {
-				width   = std::max<unsigned int>(width, img->GetWidth());
-				height += img->GetHeight();
+				width   = std::max<unsigned int>(width, img->getSize().x);
+				height += img->getSize().y;
 			}
 		}
 	} while (img);
 	
 	va_start(args, dir);
-	dst.Create(width, height);
+	dst.create(width, height);
 	unsigned int p = 0;
 	do {
 		img = va_arg(args, sf::Image *);
 		if (img) {
-			dst.Copy(*img, (dir == 'x' ? p : 0), (dir == 'y' ? p : 0));
-			p += (dir == 'x' ? img->GetWidth() : img->GetHeight());
+			dst.copy(*img, (dir == 'x' ? p : 0), (dir == 'y' ? p : 0));
+			p += (dir == 'x' ? img->getSize().x : img->getSize().y);
 		}
 	} while (img);
 	
@@ -720,33 +720,33 @@ void SimTowerLoader::loadMergedByID(sf::Image & dst, char dir, ...)
 		imgs.push_back(sf::Image());
 		loadBitmap(id, imgs.back());
 		if (dir == 'x') {
-			width  += imgs[i].GetWidth();
-			height  = std::max<unsigned int>(height, imgs[i].GetHeight());
+			width  += imgs[i].getSize().x;
+			height  = std::max<unsigned int>(height, imgs[i].getSize().y);
 		}
 		if (dir == 'y') {
-			width   = std::max<unsigned int>(width, imgs[i].GetWidth());
-			height += imgs[i].GetHeight();
+			width   = std::max<unsigned int>(width, imgs[i].getSize().x);
+			height += imgs[i].getSize().y;
 		}
 	}
 	va_end(args);
 	
-	dst.Create(width, height);
+	dst.create(width, height);
 	unsigned int p = 0;
 	for (int i = 0; i < imgs.size(); i++) {
-		dst.Copy(imgs[i], (dir == 'x' ? p : 0), (dir == 'y' ? p : 0));
-		p += (dir == 'x' ? imgs[i].GetWidth() : imgs[i].GetHeight());
+		dst.copy(imgs[i], (dir == 'x' ? p : 0), (dir == 'y' ? p : 0));
+		p += (dir == 'x' ? imgs[i].getSize().x : imgs[i].getSize().y);
 	}
 }
 
 void SimTowerLoader::loadCondo(int id, sf::Image & img)
 {
-	img.Create(5*128, 24);
+	img.create(5*128, 24);
 	for (int i = 0; i < 5; i++) {
 		sf::Image state;
 		loadBitmap(id + i, state);
-		state.CreateMaskFromColor(sf::Color(0x66, 0x99, 0xCC));
-		state.CreateMaskFromColor(sf::Color(0x0C, 0x0C, 0x0C));
-		img.Copy(state, i*128, 0);
+		state.createMaskFromColor(sf::Color(0x66, 0x99, 0xCC));
+		state.createMaskFromColor(sf::Color(0x0C, 0x0C, 0x0C));
+		img.copy(state, i*128, 0);
 	}
 }
 
@@ -754,12 +754,12 @@ void SimTowerLoader::loadOffice(int id, sf::Image & img)
 {
 	sf::Image office;
 	loadBitmap(id, office);
-	office.CreateMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
-	office.CreateMaskFromColor(sf::Color(0x42, 0xC6, 0xFF));
-	unsigned int slices = office.GetWidth() / 144;
-	img.Create(144, slices*24);
+	office.createMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
+	office.createMaskFromColor(sf::Color(0x42, 0xC6, 0xFF));
+	unsigned int slices = office.getSize().x / 144;
+	img.create(144, slices*24);
 	for (int i = 0; i < slices; i++) {
-		img.Copy(office, 0, i*24, sf::IntRect(i*144, 0, (i+1)*144, 24));
+		img.copy(office, 0, i*24, sf::IntRect(i*144, 0, (i+1)*144, 24));
 	}
 }
 
@@ -769,9 +769,9 @@ void SimTowerLoader::loadFood(int id, sf::Image & img)
 		sf::Image food;
 		loadBitmap(id + i, food);
 		if (i == 0) {
-			img.Create(food.GetWidth() * 2, food.GetHeight());
+			img.create(food.getSize().x * 2, food.getSize().y);
 		}
-		img.Copy(food, i * food.GetWidth(), 0);
+		img.copy(food, i * food.getSize().x, 0);
 	}
 }
 
@@ -780,11 +780,11 @@ void SimTowerLoader::loadHotel(int id, sf::Image & img)
 	sf::Image first, second;
 	loadBitmap(id, first);
 	loadBitmap(id+1, second);
-	img.Create(first.GetWidth() + second.GetWidth(), 24);
-	img.Copy(first, 0, 0);
-	img.Copy(second, first.GetWidth(), 0);	
-	img.CreateMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
-	img.CreateMaskFromColor(sf::Color(0x4A, 0xB4, 0xFF));
+	img.create(first.getSize().x + second.getSize().x, 24);
+	img.copy(first, 0, 0);
+	img.copy(second, first.getSize().x, 0);
+	img.createMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
+	img.createMaskFromColor(sf::Color(0x4A, 0xB4, 0xFF));
 }
 
 void SimTowerLoader::loadElevators()
@@ -802,10 +802,10 @@ void SimTowerLoader::loadElevators()
 	
 	//Cut off the engine portion from the standard and express elevator so the cars are all in the same format.
 	sf::Image standard, express;
-	standard.Create(32*5, 36);
-	express. Create(48*5, 36);
-	standard.Copy(standard_combined[0], 0, 0);
-	express. Copy(express_combined[0], 0, 0);
+	standard.create(32*5, 36);
+	express. create(48*5, 36);
+	standard.copy(standard_combined[0], 0, 0);
+	express. copy(express_combined[0], 0, 0);
 	
 	//Cut out the cars from their surrounding shaft for animation.
 	loadElevatorCar(standard, app->bitmaps["simtower/elevator/standard"]);
@@ -815,11 +815,11 @@ void SimTowerLoader::loadElevators()
 	//Render the engines.
 	sf::Image & shaft_narrow = app->bitmaps["simtower/elevator/narrow"]; 
 	sf::Image & shaft_wide   = app->bitmaps["simtower/elevator/wide"];
-	shaft_narrow.Create(32*7, 36);
-	shaft_wide.  Create(48*7, 36);
+	shaft_narrow.create(32*7, 36);
+	shaft_wide.  create(48*7, 36);
 	for (int i = 0; i < 3; i++) {
-		shaft_narrow.Copy(standard_combined[i], i*2*32+32, 0, sf::IntRect(5*32, 0, 7*32, 36));
-		shaft_wide  .Copy(express_combined[i],  i*2*48+48, 0, sf::IntRect(5*48, 0, 7*48, 36));
+		shaft_narrow.copy(standard_combined[i], i*2*32+32, 0, sf::IntRect(5*32, 0, 7*32, 36));
+		shaft_wide  .copy(express_combined[i],  i*2*48+48, 0, sf::IntRect(5*48, 0, 7*48, 36));
 	}
 	
 	//Render the shafts. The wide shaft requires some copy-pasting of the narrow shaft.
@@ -827,20 +827,20 @@ void SimTowerLoader::loadElevators()
 	sf::Image extension;
 	loadBitmap(0x87E8, shaft);
 	loadBitmap(0x842c, extension);
-	shaft_narrow.Copy(shaft, 0, 0, sf::IntRect(0, 0, 32, 36));
-	shaft_wide.Copy(shaft, 8,  0, sf::IntRect(0,  0, 32, 36));
-	shaft_wide.Copy(extension, 0, 0, sf::IntRect(0, 0, 8, 36));
-	shaft_wide.Copy(extension, 40, 0, sf::IntRect(8, 0, 16, 36));
+	shaft_narrow.copy(shaft, 0, 0, sf::IntRect(0, 0, 32, 36));
+	shaft_wide.copy(shaft, 8,  0, sf::IntRect(0,  0, 32, 36));
+	shaft_wide.copy(extension, 0, 0, sf::IntRect(0, 0, 8, 36));
+	shaft_wide.copy(extension, 40, 0, sf::IntRect(8, 0, 16, 36));
 	
 	//Render the shaft digits.
 	sf::Image rawDigits[2];
 	loadBitmap(0x87e9, rawDigits[0]);
 	loadBitmap(0x87ec, rawDigits[1]);
 	sf::Image & digits = app->bitmaps["simtower/elevator/digits"];
-	digits.Create(11*12, 2*17);
+	digits.create(11*12, 2*17);
 	for (int i = 0; i < 10; i++) {
 		for (int n = 0; n < 2; n++) {
-			digits.Copy(rawDigits[n], i*11, n*17, sf::IntRect(1+16*i, 16, 1+16*i+11, 33));
+			digits.copy(rawDigits[n], i*11, n*17, sf::IntRect(1+16*i, 16, 1+16*i+11, 33));
 		}
 	}
 	
@@ -848,21 +848,21 @@ void SimTowerLoader::loadElevators()
 	loadBitmap(0x87ea, rawFirstDigits[0]);
 	loadBitmap(0x87ed, rawFirstDigits[1]);
 	for (int n = 0; n < 2; n++) {
-		digits.Copy(rawFirstDigits[n], 110, n*17, sf::IntRect(36, 16, 47, 33));
+		digits.copy(rawFirstDigits[n], 110, n*17, sf::IntRect(36, 16, 47, 33));
 	}
 	
-	digits.CreateMaskFromColor(sf::Color(25, 25, 25));
+	digits.createMaskFromColor(sf::Color(25, 25, 25));
 }
 
 void SimTowerLoader::loadElevatorCar(const sf::Image & img, sf::Image & dst)
 {
-	unsigned int w = img.GetWidth() / 5;
-	unsigned int h = img.GetHeight();
+	unsigned int w = img.getSize().x / 5;
+	unsigned int h = img.getSize().y;
 	unsigned int carw = w - 2 - 2;
 	unsigned int carh = h - 1 - 5;
-	dst.Create(carw*5, carh);
+	dst.create(carw*5, carh);
 	for (int i = 0; i < 5; i++) {
-		dst.Copy(img, i*carw, 0, sf::IntRect(i*w + 2, 5, (i+1)*w - 2, h - 1));
+		dst.copy(img, i*carw, 0, sf::IntRect(i*w + 2, 5, (i+1)*w - 2, h - 1));
 	}
 }
 
@@ -899,7 +899,7 @@ void SimTowerLoader::loadSky(int id, sf::Image & img)
 	char cbright[24]; memcpy(cbright, pbright, 24);
 	
 	//Assemble the image.
-	img.Create(32*6, 360);
+	img.create(32*6, 360);
 	for (int i = 0; i < 6; i++)
 	{
 		//Choose a replacement palette which yields twilight, night and overcast colorings.
@@ -945,11 +945,11 @@ void SimTowerLoader::loadSky(int id, sf::Image & img)
 		
 		//Copy the modified sky bitmap onto the final bitmap.
 		sf::Image tmp;
-		if (!tmp.LoadFromMemory(raw.data, raw.length)) {
+		if (!tmp.loadFromMemory(raw.data, raw.length)) {
 			LOG(ERROR, "unable to load bitmap 0x%x from memory", id);
 			return;
 		}
-		img.Copy(tmp, i*32, 0);
+		img.copy(tmp, i*32, 0);
 	}
 	rawBitmaps.erase(id);
 }
@@ -959,9 +959,9 @@ void SimTowerLoader::loadLobbies()
 	sf::Image & normal = app->bitmaps["simtower/lobby/normal"];
 	sf::Image & sky    = app->bitmaps["simtower/lobby/sky"];
 	sf::Image & high   = app->bitmaps["simtower/lobby/high"];
-	normal.Create(312, 3*36);
-	sky   .Create(312, 3*36);
-	high  .Create(312, 3*108);
+	normal.create(312, 3*36);
+	sky   .create(312, 3*36);
+	high  .create(312, 3*108);
 	
 	sf::Image * segments[] = {&normal, &sky, &high};
 	
@@ -970,11 +970,11 @@ void SimTowerLoader::loadLobbies()
 		loadBitmap(0x89e8 + i, raw);
 		for (int n = 0; n < 3; n++) {
 			int dsty = (n < 2 ? i*36 : i*108+72);
-			segments[n]->Copy(raw, 7*8, dsty, sf::IntRect(n*328, 0, (n+1)*328-9*8, 36));
-			segments[n]->Copy(raw, 0,   dsty, sf::IntRect((n+1)*328-7*8, 0, (n+1)*328, 36));
+			segments[n]->copy(raw, 7*8, dsty, sf::IntRect(n*328, 0, (n+1)*328-9*8, 36));
+			segments[n]->copy(raw, 0,   dsty, sf::IntRect((n+1)*328-7*8, 0, (n+1)*328, 36));
 		}
 	}
-	sky.CreateMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
+	sky.createMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
 	
 	for (int i = 0; i < 3; i++) {
 		sf::Image middle, top;
@@ -983,8 +983,8 @@ void SimTowerLoader::loadLobbies()
 		sf::Image * vsegments[] = {&top, &middle};
 		for (int n = 0; n < 2; n++) {
 			int xoff = (n == 1 ? 328 : 0);
-			high.Copy(*vsegments[n], 7*8, i*108 + n*36, sf::IntRect(xoff, 0, xoff + 328-9*8, 36));
-			high.Copy(*vsegments[n], 0, i*108 + n*36, sf::IntRect(xoff + 328-7*8, 0, xoff + 328, 36));
+			high.copy(*vsegments[n], 7*8, i*108 + n*36, sf::IntRect(xoff, 0, xoff + 328-9*8, 36));
+			high.copy(*vsegments[n], 0, i*108 + n*36, sf::IntRect(xoff + 328-7*8, 0, xoff + 328, 36));
 		}
 	}
 }
@@ -992,7 +992,7 @@ void SimTowerLoader::loadLobbies()
 void SimTowerLoader::loadBitmap(int id, sf::Image & img)
 {
 	Blob & bmp = rawBitmaps[id];
-	if (!img.LoadFromMemory(bmp.data, bmp.length)) {
+	if (!img.loadFromMemory(bmp.data, bmp.length)) {
 		LOG(ERROR, "unable to load bitmap 0x%x from memory", id);
 		return;
 	}
@@ -1024,7 +1024,7 @@ void SimTowerLoader::loadAnimatedBitmap(int id, sf::Image img[3])
 			bmp.data[o + 20] = bmp.data[o + 16];
 			bmp.data[o + 16] = temp;
 		}
-		if (!img[i].LoadFromMemory(bmp.data, bmp.length)) {
+		if (!img[i].loadFromMemory(bmp.data, bmp.length)) {
 			LOG(ERROR, "unable to load bitmap 0x%x from memory", id);
 			return;
 		}
@@ -1104,7 +1104,7 @@ void SimTowerLoader::loadSounds()
 void SimTowerLoader::loadSound(int id, sf::SoundBuffer & snd)
 {
 	WindowsNEExecutable::Resource & data = exe.resources[0xFF0A][id];
-	if (!snd.LoadFromMemory(data.data, data.length)) {
+	if (!snd.loadFromMemory(data.data, data.length)) {
 		LOG(ERROR, "unable to load sound 0x%x from memory", id);
 		return;
 	}
