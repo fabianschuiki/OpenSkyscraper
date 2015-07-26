@@ -15,12 +15,12 @@ void Sound::Play(Game * game)
 	assert(game);
 	playingInGame = game;
 	game->playingSounds.insert(this);
-	sf::Sound::Play();
+	sf::Sound::play();
 }
 
 void Sound::Stop()
 {
-	sf::Sound::Stop();
+	sf::Sound::stop();
 	if (playingInGame) {
 		playingInGame->playingSounds.erase(this);
 		playingInGame = NULL;
