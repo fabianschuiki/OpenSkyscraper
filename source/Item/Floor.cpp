@@ -14,15 +14,18 @@ void Floor::init()
 	
 	layer = -1;
 	
-	background.SetImage(App->bitmaps["simtower/floor"]);
-	background.SetSubRect(sf::IntRect(0, 0, 8, 36));
-	background.SetCenter(0, 36);
-	background.Resize(0, 36);
+	sf::Image& floor = App->bitmaps["simtower/floor"];
+	background.SetImage(floor);
+	background.setTextureRect(sf::IntRect(0, 0, 8, 36));
+	background.setOrigin(0, 36);
+	background.setScale(8 / floor.getSize().x, 36 / floor.getSize().y);
+	//background.Resize(0, 36);
 
-	ceiling.SetImage(App->bitmaps["simtower/floor"]);
-	ceiling.SetSubRect(sf::IntRect(0, 0, 8, 12));
-	ceiling.Resize(0, 12);
-	ceiling.SetPosition(0, -GetSize().y);
+	ceiling.SetImage(floor);
+	ceiling.setTextureRect(sf::IntRect(0, 0, 8, 12));
+	//ceiling.Resize(0, 12);
+	ceiling.setScale(8 / floor.getSize().x, 12 / floor.getSize().y);
+	ceiling.setOrigin(0, -GetSize().y);
 
 	interval.insert(position.x);
 	interval.insert(getRect().maxX());
@@ -61,9 +64,11 @@ void Floor::Render(sf::RenderTarget & target) const
 			right = *i;
 			if(left == right) continue;
 
-			b.Resize((right - left) * 8.0f, 36.0f);
-			b.SetX((left - position.x) * 8.0f);
-			target.Draw(b);
+			//b.Resize((right - left) * 8.0f, 36.0f);
+			b.setScale((right - left) * 8.0f / b.getTextureRect().width, 36.0f / b.getTextureRect().height);
+			//b.SetX((left - position.x) * 8.0f);
+			b.setPosition((left - position.x) * 8.0f, b.getTextureRect().top);
+			target.draw(b);
 		} else {
 			// Draw only ceiling sprite
 			drawBackground = true;
@@ -72,9 +77,11 @@ void Floor::Render(sf::RenderTarget & target) const
 			right = *i;
 			if(left == right) continue;
 
-			c.Resize((right - left) * 8.0f, 12.0f);
-			c.SetX((left - position.x) * 8.0f);
-			target.Draw(c);
+			//c.Resize((right - left) * 8.0f, 12.0f);
+			c.setScale((right - left) * 8.0f / c.getTextureRect().width, 12.0f / c.getTextureRect().height);
+			//c.SetX((left - position.x) * 8.0f);
+			c.setPosition((left - position.x) * 8.0f, c.getTextureRect().top);
+			target.draw(c);
 		}
 
 		game->drawnSprites++;
