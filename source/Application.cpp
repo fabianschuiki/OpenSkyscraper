@@ -174,7 +174,7 @@ void Application::init()
 void Application::loop()
 {
 	sf::Clock clock;
-	sf::String rateIndicator("<not available>", fonts["UbuntuMono-Regular.ttf"], 16);
+	sf::Text rateIndicator("<not available>", fonts["UbuntuMono-Regular.ttf"], 16);
 	double rateIndicatorTimer = 0;
 	double rateDamped = 0;
 	double rateDampFactor = 0;
@@ -210,17 +210,17 @@ void Application::loop()
 		
 		//Handle events.
 		sf::Event event;
-		while (window.GetEvent(event)) {
-			if (event.Type == sf::Event::Resized) {
-				LOG(INFO, "resized (%i, %i)", window.GetWidth(), window.GetHeight());
-				window.GetDefaultView().SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Resized) {
+				LOG(INFO, "resized (%i, %i)", window.getSize().x, window.getSize().y);
+				window.setView(sf::View(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y)));
 			}
-			if (event.Type == sf::Event::KeyPressed) {
-				if (event.Key.Code == sf::Key::Escape) {
+			if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Escape) {
 					exitCode = 1;
 					continue;
 				}
-				if (event.Key.Code == sf::Key::R && event.Key.Control) {
+				if (event.key.code == sf::Keyboard::R && event.key.control) {
 					LOG(IMPORTANT, "reinitializing game");
 					Game * old = (Game *)states.top();
 					popState();
@@ -230,7 +230,7 @@ void Application::loop()
 					continue;
 				}
 #ifdef BUILD_DEBUG
-				if (event.Key.Code == sf::Key::F8) {
+				if (event.key.code == sf::Keyboard::F8) {
 					bool visible = !Rocket::Debugger::IsVisible();
 					LOG(DEBUG, "Rocket::Debugger %s", (visible ? "on" : "off"));
 					Rocket::Debugger::SetVisible(visible);
@@ -244,7 +244,7 @@ void Application::loop()
 				if (states.top()->gui.handleEvent(event))
 					continue;
 			}
-			if (event.Type == sf::Event::Closed) {
+			if (event.type == sf::Event::Closed) {
 				LOG(WARNING, "current state did not handle sf::Event::Closed");
 				exitCode = 1;
 				continue;
@@ -265,16 +265,19 @@ void Application::loop()
 			strcat(dbg, "\n");
 			strcat(dbg, states.top()->debugString);
 		}
-		rateIndicator.SetText(dbg);
+		rateIndicator.setString(dbg);
 		
-		window.SetView(window.GetDefaultView());
-		sf::FloatRect r = rateIndicator.GetRect();
-		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right, r.Bottom, sf::Color(0, 0, 0, 0.25*255));
-		window.Draw(bg);
-		window.Draw(rateIndicator);
+		window.setView(window.getDefaultView());
+		sf::FloatRect r = rateIndicator.getLocalBounds();
+		//sf::Shape bg = sf::RectangleShape(r.left, r.top, (r.left + r.width), (r.top + r.height), sf::Color(0, 0, 0, 0.25*255));
+		sf::RectangleShape bg = sf::RectangleShape(sf::Vector2f(r.width, r.height));
+		bg.setFillColor(sf::Color(0, 0, 0, 0.25*255));
+		bg.setPosition(sf::Vector2f(r.left, r.top));
+		window.draw(bg);
+		window.draw(rateIndicator);
 		
 		//Swap buffers.
-		window.Display();
+		window.display();
 	}
 }
 
@@ -284,7 +287,7 @@ void Application::cleanup()
 		popState();
 	}
 	
-	window.Close();
+	window.close();
 }
 
 /** Pushes the given State ontop of the state stack, causing it to receive events. */
