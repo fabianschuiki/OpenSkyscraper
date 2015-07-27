@@ -19,7 +19,7 @@ void Lobby::init()
 	Path p = (groundLobby ? "simtower/lobby/normal" : "simtower/lobby/sky");
 	
 	background.SetImage(App->bitmaps[p]);
-	background.SetCenter(0, 36);
+	background.setOrigin(0, 36);
 	overlay = background;
 	
 	if (groundLobby) {
@@ -28,8 +28,8 @@ void Lobby::init()
 		
 		for (int i = 0; i < 2; i++) {
 			entrances[i].SetImage(App->bitmaps["simtower/deco/entrances"]);
-			entrances[i].SetCenter(56*(1-i), 36);
-			entrances[i].SetSubRect(sf::IntRect(i*56, 0, (i+1)*56, 36));
+			entrances[i].setOrigin(56*(1-i), 36);
+			entrances[i].setTextureRect(sf::IntRect(i*56, 0, (i+1)*56, 36));
 			addSprite(&entrances[i]);
 		}
 	}
@@ -57,44 +57,45 @@ void Lobby::updateSprite()
 	if (game->rating >= 3) y = 2;
 	
 	sf::IntRect rect(0, y*36, 0, (y+1)*36);
-	rect.Right = 7*8;
-	overlay.SetSubRect(rect);
-	rect.Left  = rect.Right;
-	rect.Right = 312;
-	background.SetSubRect(rect);
+	rect.left = 7*8 - rect.width;
+	overlay.setTextureRect(rect);
+	rect.left += rect.width;
+	background.setTextureRect(rect);
 	
-	entrances[0].SetX(0);
-	entrances[1].SetX(GetSize().x);
+	//entrances[0].SetX(0);
+	entrances[0].setPosition(0, entrances[0].getTextureRect().height);
+	//entrances[1].SetX(GetSize().x);
+	entrances[1].setPosition(GetSize().x, entrances[1].getTextureRect().height);
 }
 
 void Lobby::Render(sf::RenderTarget & target) const
 {
 	Item::Render(target);
-	sf::FloatRect view = target.GetView().GetRect();
+	sf::FloatRect view = target.getView().getViewport();
 	recti rect = getRect();
 	
-	int minx = std::max<int>(floor(view.Left / 256), floor(rect.minX() / 32.0));
-	int maxx = std::min<int>(ceil(view.Right / 256), ceil (rect.maxX() / 32.0));
+	int minx = std::max<int>(floor(view.left / 256), floor(rect.minX() / 32.0));
+	int maxx = std::min<int>(ceil((view.left + view.width) / 256), ceil (rect.maxX() / 32.0));
 	Sprite b = background;
 
 	for (int x = minx; x < maxx; x++) {
 		int offl = std::max<int>(0, rect.minX() - x*32) * 8;
 		int offr = std::max<int>(0, (x+1)*32 - rect.maxX()) * 8;
-		sf::IntRect sr = background.GetSubRect();
-		sr.Left  += offl;
-		sr.Right -= offr;
-		b.SetSubRect(sr);
+		sf::IntRect sr = background.getTextureRect();
+		sr.left  += offl;
+		sr.width -= offr + offl;
+		b.setTextureRect(sr);
 		
-		b.SetX((x * 32 - rect.minX()) * 8 + offl);
-		target.Draw(b);
+		b.setPosition((x * 32 - rect.minX()) * 8 + offl, b.getTextureRect().top);
+		target.draw(b);
 		
 		game->drawnSprites++;
 	}
 	
 	Sprite o = overlay;
-	sf::IntRect sr = o.GetSubRect();
-	sr.Right = std::min<int>(sr.Right, GetSize().x - 16);
-	o.SetSubRect(sr);
-	target.Draw(o);
+	sf::IntRect sr = o.getTextureRect();
+	sr.width = std::min<int>(sr.left + sr.width, GetSize().x - 16) - sr.left;
+	o.setTextureRect(sr);
+	target.draw(o);
 	game->drawnSprites++;
 }
