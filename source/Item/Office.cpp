@@ -20,7 +20,7 @@ Office::~Office()
 void Office::init()
 {
 	Item::init();
-	
+
 	variant = 0;
 	occupied = false;
 	lit = false;
@@ -28,7 +28,7 @@ void Office::init()
 	rentDeposit = rent;
 
 	sprite.SetImage(App->bitmaps["simtower/office"]);
-	sprite.SetCenter(0, 24);
+	sprite.setOrigin(0, 24);
 	addSprite(&sprite);
 	spriteNeedsUpdate = false;
 
@@ -45,9 +45,9 @@ void Office::init()
 		workers.insert(new Worker(this, types[i]));
 	}
 	rescheduleWorkers();
-	
+
 	// defaultCeiling();
-	
+
 	updateSprite();
 }
 
@@ -77,8 +77,7 @@ void Office::updateSprite()
 	spriteNeedsUpdate = false;
 	int index_x = (lit ? 0 : 1);
 	int index_y = (occupied ? variant : 6);
-	sprite.SetSubRect(sf::IntRect(index_x*72, index_y*24, (index_x+1)*72, (index_y+1)*24));
-	sprite.Resize(72, 24);
+	sprite.setTextureRect(sf::IntRect(index_x*72, index_y*24, (index_x+1)*72, (index_y+1)*24));
 }
 
 void Office::advance(double dt)

@@ -3,6 +3,7 @@
 #include "Elevator.h"
 #include "Car.h"
 #include "Queue.h"
+#include <cmath>
 
 using namespace OT;
 using namespace OT::Item::Elevator;
@@ -19,75 +20,75 @@ void Elevator::init()
 	maxCarAcceleration = 7.5;
 	maxCarSpeed = 10.0;
 	maxCarCapacity = 21;
-	
+
 	Item::init();
-	
+
 	animation = 0;
 	frame = 0;
-	
+
 	shaft.SetImage(app->bitmaps[shaftBitmap]);
-	shaft.SetSubRect(sf::IntRect(0, 0, size.x*8, 36));
-	shaft.SetCenter(0, 36);
-	
-	topMotor.SetImage(*shaft.GetImage());
-	bottomMotor.SetImage(*shaft.GetImage());
-	
+	shaft.setTextureRect(sf::IntRect(0, 0, size.x*8, 36));
+	shaft.setOrigin(0, 36);
+
+	topMotor.SetImage(*shaft.getTexture());
+	bottomMotor.SetImage(*shaft.getTexture());
+
 	addSprite(&topMotor);
 	addSprite(&bottomMotor);
-	
+
 	updateSprite();
-	
+
 	addCar(position.y);
 }
 
 void Elevator::updateSprite()
 {
-	int w = GetSize().x;
-	int h = GetSize().y;
-	
-	topMotor.SetSubRect   (sf::IntRect((2*frame+1)*w, 0, (2*frame+2)*w, 36));
-	bottomMotor.SetSubRect(sf::IntRect((2*frame+2)*w, 0, (2*frame+3)*w, 36));
-	topMotor.SetCenter(0, 36);
-	topMotor.SetY(-h);
+	int w = getSize().x;
+	int h = getSize().y;
+
+	topMotor.setTextureRect   (sf::IntRect((2*frame+1)*w, 0, (2*frame+2)*w, 36));
+	bottomMotor.setTextureRect(sf::IntRect((2*frame+2)*w, 0, (2*frame+3)*w, 36));
+	topMotor.setOrigin(0, 36);
+	topMotor.setPosition(topMotor.getPosition().x, -h);
 }
 
-void Elevator::Render(sf::RenderTarget & target) const
+void Elevator::render(sf::RenderTarget & target) const
 {
-	Item::Render(target);
-	
+	Item::render(target);
+
 	//Draw the elevator floors.
 	Sprite s = shaft;
 	Sprite d;
 	d.SetImage(app->bitmaps["simtower/elevator/digits"]);
-	d.SetCenter(0, 17);
-	
+	d.setOrigin(0, 17);
+
 	int minY = 0;
 	int maxY = size.y-1;
-	
+
 	for (int y = minY; y <= maxY; y++) {
-		s.SetY(-y*36);
-		d.SetY(-y*36 - 3);
-		target.Draw(s);
-		
+		s.setPosition(s.getPosition().x, -y*36);
+		d.setPosition(d.getPosition().x, -y*36 - 3);
+		target.draw(s);
+
 		int flr = position.y + y;
 		if (!connectsFloor(flr)) continue;
-		
+
 		char c[8];
 		int len = snprintf(c, 8, "%i", flr);
 		int x = 11 - (len - 1) * 6 + (size.x - 4) * 4;
 		for (int i = 0; i < len; i++) {
 			int p = 10;
 			if (c[i] >= '0' && c[i] <= '9') p = c[i] - '0';
-			d.SetSubRect(sf::IntRect(p*11, 0, (p+1)*11, 17));
-			d.SetX(x);
-			target.Draw(d);
+			d.setTextureRect(sf::IntRect(p*11, 0, (p+1)*11, 17));
+			d.setPosition(x, d.getPosition().y);
+			target.draw(d);
 			x += 12;
 		}
 	}
-	
+
 	//Draw the cars and queues.
-	for (Cars::iterator c = cars.begin(); c != cars.end(); c++) target.Draw(**c);
-	for (Queues::iterator q = queues.begin(); q != queues.end(); q++) target.Draw(**q);
+	for (Cars::iterator c = cars.begin(); c != cars.end(); c++) target.draw(**c);
+	for (Queues::iterator q = queues.begin(); q != queues.end(); q++) target.draw(**q);
 }
 
 void Elevator::advance(double dt)
@@ -97,14 +98,14 @@ void Elevator::advance(double dt)
 		(*ic)->advance(dt);
 		if ((*ic)->state == Car::kMoving) carsMoving = true;
 	}
-	
+
 	//Advance the queues so people get stressed.
 	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) (*iq)->advance(dt);
-	
+
 	//Animate the elevator motors if there's a car moving.
 	if (carsMoving) {
-		animation = fmod(animation + dt, 1);
-		int newFrame = floor(animation * 3);
+		animation = std::fmod(animation + dt, 1);
+		int newFrame = std::floor(animation * 3);
 		if (frame != newFrame) {
 			frame = newFrame;
 			updateSprite();
@@ -152,8 +153,8 @@ void Elevator::decodeXML(tinyxml2::XMLElement & xml)
 
 rectd Elevator::getMouseRegion()
 {
-	sf::Vector2f p = GetPosition();
-	sf::Vector2f s = GetSize();
+	int2 p = getPosition();
+	sf::Vector2u s = getSize();
 	return rectd(p.x, p.y - s.y - 36, s.x, s.y + 2*36);
 }
 
@@ -182,7 +183,7 @@ bool Elevator::repositionMotor(int motor, int y)
 			Car * car = *c;
 			if (car->altitude < newy)				 car->altitude = newy;
 			else if (car->altitude >= newy + height) car->altitude = newy + height - 1;
-			
+
 			if (car->destinationFloor < newy)				 car->destinationFloor = newy;
 			else if (car->destinationFloor >= newy + height) car->destinationFloor = newy + height - 1;
 
@@ -190,7 +191,7 @@ bool Elevator::repositionMotor(int motor, int y)
 
 			(*c)->reposition();
 		}
-		
+
 		int maxY = newy + height;
 		for (std::set<int>::iterator i = unservicedFloors.begin(); i != unservicedFloors.end();) {
 			int floor = *i;
@@ -249,7 +250,7 @@ Queue * Elevator::getQueue(int floor, Direction dir)
 	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
 		if ((*iq)->floor == floor && (*iq)->direction == dir) return *iq;
 	}
-	
+
 	//Create the queue as there was none.
 	Queue * q = new Queue(this);
 	q->floor     = floor;
@@ -290,7 +291,7 @@ void Elevator::respondToCalls()
 		//are occupied.
 		Car * car = getIdleCar(q->floor);
 		if (!car) break;
-		
+
 		//Answer the call.
 		q->answered = true;
 		car->direction = q->direction;
@@ -328,17 +329,17 @@ void Elevator::decideCarDestination(Car * car)
 		if (nextFloor == INT_MAX || abs(car->destinationFloor - nextFloor) > abs(car->destinationFloor - f))
 			nextFloor = f;
 	}
-	
+
 	//Find the next queue that would lie in the car's path.
 	Queue * nextQueue = NULL;
 	double queueDistance = 0;
 	for (Queues::iterator iq = queues.begin(); iq != queues.end(); iq++) {
 		Queue * q = *iq;
-		
+
 		//Skip queues that aren't called, are answered, or are for the opposite direction.
 		if (q->direction != car->direction) continue;
 		if (!q->called || q->answered) continue;
-		
+
 		//Calculate the offset of the queue and the car, based on the car's current direction.
 		//This will make queues that lie ahead of the car have a positive distance, and cars that
 		//lie behin the car a negative distance. We only serve queues that are somewhat ahead of
@@ -346,14 +347,14 @@ void Elevator::decideCarDestination(Car * car)
 		double distance = q->floor - car->altitude;
 		distance *= car->direction;
 		if (distance < 0.5) continue;
-		
+
 		//Keep the best queue.
 		if (!nextQueue || queueDistance > distance) {
 			queueDistance = distance;
 			nextQueue = q;
 		}
 	}
-	
+
 	//Move the car to the closer of the two destinations.
 	if (nextQueue && !car->isFull()) {
 		double floorDistance = fabs(nextFloor - car->altitude);

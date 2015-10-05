@@ -16,7 +16,7 @@ Sky::Sky(Game * game) : GameObject(game) {
 	rainAnimation = 0;
 	soundCountdown = 0;
 	thunderOverlay = 0;
-	
+
 	rainSound.setBuffer(app->sounds["simtower/rain"]);
 	rainSound.setLoop(true);
 	thunderSound.setBuffer(app->sounds["simtower/thunder"]);
@@ -32,18 +32,18 @@ void Sky::advance(double dt)
 		rainAnimation = 0;
 		game->timeWindow.showMessage(rainyDay ? "I've heard we're in for some bad weather..." : "Weather's going to be good today!");
 	}
-	
+
 	/* Decide what sky color to use based on the current time of day. The drawing code will
 	 * interpolate between the sky texture offsets 'from' and 'to'. So to get a transition
 	 * from day to dusk, from = 0, to = 1 and progress is anywhere between 0..1. */
 	double time = game->time.hour;
 	double dta = game->time.dta / Time::kBaseSpeed;
-	
+
 	//Night
 	if (time < 5 || time >= 19) {
 		from = to = 2; progress = 0;
 	}
-	
+
 	//Dawn
 	else if (time >= 5 && time < 6) {
 		from = 2; to = 1; progress = (time-5);
@@ -51,7 +51,7 @@ void Sky::advance(double dt)
 	else if (time >= 6 && time < 7) {
 		from = 1; to = 0; progress = (time-6);
 	}
-	
+
 	//Dusk
 	else if (time >= 17 && time < 18) {
 		from = 0; to = 1; progress = (time-17);
@@ -59,12 +59,12 @@ void Sky::advance(double dt)
 	else if (time >= 18 && time < 19) {
 		from = 1; to = 2; progress = (time-18);
 	}
-	
+
 	//Day
 	else if (!rainyDay) {
 		from = to = 0; progress = 0;
 	}
-	
+
 	//Rain
 	else if (time >= 7 && time < 8) {
 		from = 0; to = 3; progress = (time-7);
@@ -76,18 +76,18 @@ void Sky::advance(double dt)
 		rainAnimation += dta;
 		from = to = 4+floor(fmod(rainAnimation, 1) * 2); progress = 0;
 	}
-	
+
 	//Rain sounds.
 	if (rainyDay) {
 		if (game->time.checkHour(8))  rainSound.Play(game);
 		if (game->time.checkHour(16)) rainSound.Stop();
 	}
-	
+
 	if (thunderOverlay > 0) {
 		thunderOverlay *= exp(-dta * 7);
 		if (thunderOverlay < 1e-3) thunderOverlay = 0;
 	}
-	
+
 	//Sounds.
 	soundCountdown -= dta;
 	if (soundCountdown < 0) {
@@ -109,29 +109,29 @@ void Sky::advance(double dt)
 
 void Sky::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-    Render(target);
+    render(target);
 }
 
-void Sky::Render(sf::RenderTarget & target) const
+void Sky::render(sf::RenderTarget & target) const
 {
 	sf::FloatRect rect = target.getView().getViewport();
-	
+
 	//Draw the sky color.
 	int sky_lower = std::max<int>(floor(-(rect.top + rect.height) / 360), -1);
 	int sky_upper = std::min<int>(ceil (-rect.top    / 360), 11);
-	
+
 	Sprite sky;
 	sky.SetImage(app->bitmaps["simtower/sky"]);
 	for (int y = sky_lower; y <= sky_upper; y++) {
 		for (int i = 0; i < 2; i++) {
 			if ((i == 0 && progress == 1) || (i == 1 && progress == 0)) continue;
-			
+
 			int index = (std::min<int>(y + 1, 9) * 6 + (i == 0 ? from : to));
 			sky.setTextureRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
 			sky.setScale(32, 360);
 			sky.setOrigin(0, 360);
 			sky.setColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
-			
+
 			for (int x = floor(rect.left / 32); x < ceil((rect.left + rect.width) / 32); x++) {
 				sky.setPosition(x * 32, -y * 360);
 				target.draw(sky);
@@ -139,7 +139,7 @@ void Sky::Render(sf::RenderTarget & target) const
 			}
 		}
 	}
-	
+
 	//Draw the clouds.
 	Sprite cloud;
 	int2 cloudGrid(250, 100);
@@ -149,32 +149,32 @@ void Sky::Render(sf::RenderTarget & target) const
 	for (int x = cmin.x; x <= cmax.x; x++) {
 		for (int y = cmin.y; y <= cmax.y; y++) {
 			int2 position(x*cloudGrid.x, -y*cloudGrid.y);
-			
+
 			//Decide whether this location should have a cloud, based on the cloud noise
 			//function.
 			if (cloudNoise(position*45) < 0.3) continue;
-			
+
 			//Decide what cloud variant to use. Multiplying the position with some arbitrary
 			//large number introduces a higher noise frequency so the clouds look more random.
 			//(...+1)*2 converts the noise range [-1,1] to [0,3].
 			int variant = (cloudNoise(position * 4672) + 1) * 2;
 			assert(variant >= 0 && variant <= 3);
-			
+
 			//Introduce some jitter so the clouds don't look like they're on a grid.
 			double2 offset(cloudNoise(position * 941), cloudNoise(position * 786));
 			position += offset * 50;
-			
+
 			char c[128];
 			snprintf(c, 128, "simtower/deco/cloud/%i", abs(variant)%4);
 			cloud.SetImage(app->bitmaps[c]);
 			sf::Vector2u size = cloud.getTexture()->getSize();
 			int w = size.x;
 			int h = size.y / 4;
-			
+
 			for (int i = 0; i < 2; i++) {
 				if ((i == 0 && progress == 1) || (i == 1 && progress == 0)) continue;
 				int state = std::min<int>(3, i == 0 ? from : to);
-				
+
 				cloud.setTextureRect(sf::IntRect(0, state*h, w, (state+1)*h));
 				cloud.setScale(w, h);
 				cloud.setOrigin(w/2, h/2);
@@ -185,7 +185,7 @@ void Sky::Render(sf::RenderTarget & target) const
 			}
 		}
 	}
-	
+
 	//Draw the thunder overlay.
 	if (thunderOverlay > 0) {
 		Sprite s;
@@ -195,7 +195,7 @@ void Sky::Render(sf::RenderTarget & target) const
 		target.draw(s);
 		game->drawnSprites++;
 	}
-	
+
 	//Draw the skyline, if in view.
 	if (-(rect.top + rect.height) <= 96 && -rect.top >= 0) {
 		Sprite city;

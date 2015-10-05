@@ -20,23 +20,23 @@ GUIManager::~GUIManager()
 bool GUIManager::init(sf::RenderWindow * window)
 {
 	assert(window != NULL && "window must not be NULL");
-	
+
 	this->window = window;
 	renderer.SetWindow(window);
-	
+
 	Rocket::Core::SetRenderInterface(&renderer);
 	Rocket::Core::SetSystemInterface(&system);
-	
+
 	if (!Rocket::Core::Initialise()) {
 		LOG(ERROR, "unable to initialize Rocket::Core");
 		return false;
 	}
 	Rocket::Controls::Initialise();
-	
+
 	return true;
 }
 
-Rocket::Core::Input::KeyIdentifier GUIManager::translateKey(sf::Key::Code key)
+Rocket::Core::Input::KeyIdentifier GUIManager::translateKey(sf::Keyboard::Key key)
 {
 	return system.TranslateKey(key);
 }

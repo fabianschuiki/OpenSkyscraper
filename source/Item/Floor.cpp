@@ -11,10 +11,10 @@ Floor::~Floor() {}
 void Floor::init()
 {
 	Item::init();
-	
+
 	layer = -1;
-	
-	sf::Image& floor = App->bitmaps["simtower/floor"];
+
+	sf::Texture& floor = App->bitmaps["simtower/floor"];
 	background.SetImage(floor);
 	background.setTextureRect(sf::IntRect(0, 0, 8, 36));
 	background.setOrigin(0, 36);
@@ -25,11 +25,11 @@ void Floor::init()
 	ceiling.setTextureRect(sf::IntRect(0, 0, 8, 12));
 	//ceiling.Resize(0, 12);
 	ceiling.setScale(8 / floor.getSize().x, 12 / floor.getSize().y);
-	ceiling.setOrigin(0, -GetSize().y);
+	ceiling.setOrigin(0, -getSize().y);
 
 	interval.insert(position.x);
 	interval.insert(getRect().maxX());
-	
+
 	updateSprite();
 }
 
@@ -48,7 +48,7 @@ void Floor::decodeXML(tinyxml2::XMLElement & xml)
 
 void Floor::updateSprite() {}
 
-void Floor::Render(sf::RenderTarget & target) const
+void Floor::render(sf::RenderTarget & target) const
 {
 	bool drawBackground = true;
 	int left = 0;

@@ -3,14 +3,19 @@
 
 using namespace OT;
 
-void Sprite::Render(sf::RenderTarget & target) const
+void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	glTranslatef(-0.375f, -0.375f, 0.f);
-	sf::Sprite::Render(target);
-}		
+	target.draw((const sf::Sprite&)*this, states);
+}
 
-void Sprite::SetImage(sf::Image& image)
+void Sprite::SetImage(const sf::Image& image)
 {
 	texture.loadFromImage(image);
-	setTexure(texture);
+	setTexture(texture);
+}
+
+void Sprite::SetImage(const sf::Texture& texture)
+{
+	setTexture(texture);
 }

@@ -13,21 +13,21 @@ Cinema::~Cinema()
 void Cinema::init()
 {
 	Item::init();
-	
+
 	open = false;
 	playing = false;
 	movieType = rand() % 15;
 	animation = 0;
 	animationFrame = 0;
-	
+
 	hallSprite.SetImage(App->bitmaps["simtower/cinema/hall"]);
-	hallSprite.SetCenter(-56, 60);
+	hallSprite.setOrigin(-56, 60);
 	screenSprite.SetImage(App->bitmaps["simtower/cinema/screens"]);
-	screenSprite.SetCenter(0, 60);
+	screenSprite.setOrigin(0, 60);
 	addSprite(&hallSprite);
 	addSprite(&screenSprite);
 	spriteNeedsUpdate = false;
-	
+
 	updateSprite();
 }
 
@@ -62,10 +62,10 @@ void Cinema::updateSprite()
 			screenIndex = hallIndex;
 		}
 	}
-	hallSprite.SetSubRect(sf::IntRect(hallIndex*192, 0, (hallIndex+1)*192, 60));
-	hallSprite.Resize(192, 60);
-	screenSprite.SetSubRect(sf::IntRect(screenIndex*56, 0, (screenIndex+1)*56, 60));
-	screenSprite.Resize(56, 60);
+	hallSprite.setTextureRect(sf::IntRect(hallIndex*192, 0, (hallIndex+1)*192, 60));
+	// hallSprite.resize(192, 60);
+	screenSprite.setTextureRect(sf::IntRect(screenIndex*56, 0, (screenIndex+1)*56, 60));
+	// screenSprite.resize(56, 60);
 }
 
 void Cinema::advance(double dt)
@@ -94,13 +94,13 @@ void Cinema::advance(double dt)
 		spriteNeedsUpdate = true;
 		game->timeWindow.showMessage("Movie starts at the Movie Theatre");
 	}
-	
+
 	//Close
 	if ((game->time.checkHour(17) || game->time.checkHour(23)) && open) {
 		open = false;
 		playing = false;
 		spriteNeedsUpdate = true;
-		
+
 		//TODO: Specify cinema income.
 		game->transferFunds(customers.size() * 500 - 2000, "Income from Movie Theatre");
 
@@ -117,7 +117,7 @@ void Cinema::advance(double dt)
 			}
 		}
 	}
-	
+
 	//Animate the sprite.
 	animation = fmod(animation + dt, 1);
 	int af = floor(animation * 2);
@@ -125,7 +125,7 @@ void Cinema::advance(double dt)
 		animationFrame = af;
 		spriteNeedsUpdate = true;
 	}
-	
+
 	if (spriteNeedsUpdate) updateSprite();
 }
 

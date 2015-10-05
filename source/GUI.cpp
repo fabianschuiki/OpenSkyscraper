@@ -14,7 +14,7 @@ using namespace OT;
 GUI::GUI(std::string name, GUIManager * manager)
 {
 	assert(manager && "GUI requires a GUIManager");
-	
+
 	this->manager = manager;
 	context = Rocket::Core::CreateContext(name.c_str(),
 					Rocket::Core::Vector2i(
@@ -67,10 +67,10 @@ void GUI::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	
+
 	context->Update();
 	context->Render();
-	
+
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

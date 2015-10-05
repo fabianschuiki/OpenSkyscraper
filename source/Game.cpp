@@ -20,29 +20,29 @@ Game::Game(Application & app)
 	decorations(this)
 {
 	mapWindow     = NULL;
-	
+
 	funds  = 4000000;
 	rating = 0;
 	population = 0;
 	populationNeedsUpdate = false;
-	
+
 	time.set(7/78.0);
 	speedMode = 1;
 	selectedTool = "inspector";
 	itemBelowCursor = NULL;
 	toolPrototype = NULL;
-	
+
 	zoom = 1;
 	poi.y = 200;
-	
+
 	draggingElevator = NULL;
 	draggingMotor = 0;
-	
+
 	mainLobby = NULL;
 	metroStation = NULL;
-	
+
 	itemFactory.loadPrototypes();
-	
+
 	/*Item::Item * i = itemFactory.prototypes.front()->make(this);
 	addItem(i);
 	i = itemFactory.prototypes.front()->make(this);
@@ -54,14 +54,14 @@ Game::Game(Application & app)
 	s->SetCenter(0, 24);
 	s->SetPosition(0, 0);
 	sprites.insert(s);*/
-	
+
 	reloadGUI();
-	
+
 	cockSound.setBuffer(app.sounds["simtower/cock"]);
 	morningSound.setBuffer(app.sounds["simtower/birds/morning"]);
 	bellsSound.setBuffer(app.sounds["simtower/bells"]);
 	eveningSound.setBuffer(app.sounds["simtower/birds/evening"]);
-	
+
 	//DEBUG: load from disk.
 	tinyxml2::XMLDocument xml;
 	DataManager::Paths p = app.data.paths("default.tower");
@@ -111,7 +111,7 @@ bool Game::handleEvent(sf::Event & event)
 				case sf::Keyboard::PageDown: zoom *= 2; return true;
 			}
 		} break;
-		
+
 		case sf::Event::TextEntered: {
 			switch (event.text.unicode) {
 				case '0': setSpeedMode(0); return true;
@@ -120,13 +120,13 @@ bool Game::handleEvent(sf::Event & event)
 				case '3': setSpeedMode(3); return true;
 			} break;
 		} break;
-		
+
 		case sf::Event::MouseButtonPressed: {
 			float2 mousePoint(event.mouseButton.x, event.mouseButton.y);
 			rectf toolboxWindowRect(float2(toolboxWindow.window->GetAbsoluteLeft(), toolboxWindow.window->GetAbsoluteTop()), float2(toolboxWindow.window->GetClientWidth(), toolboxWindow.window->GetClientHeight()));
 			rectf timeWindowRect(float2(timeWindow.window->GetAbsoluteLeft(), timeWindow.window->GetAbsoluteTop()), float2(timeWindow.window->GetClientWidth(), timeWindow.window->GetClientHeight()));
 			rectf mapWindowRect(float2(mapWindow->GetAbsoluteLeft(), mapWindow->GetAbsoluteTop()), float2(mapWindow->GetClientWidth(), mapWindow->GetClientHeight()));
-			
+
 			// Prevent construction or triggering of tool if mouse cursor within toolboxWindow
 			if (toolboxWindowRect.containsPoint(mousePoint)) break;
 
@@ -146,7 +146,7 @@ bool Game::handleEvent(sf::Event & event)
 					for (ItemSet::const_iterator i = elevators.begin(); i != elevators.end(); i++) {
 						Item::Elevator::Elevator * e = (Item::Elevator::Elevator *) *i;
 						recti itemRect = e->getRect();
-						if (toolBoundary.minX() == itemRect.minX() && 
+						if (toolBoundary.minX() == itemRect.minX() &&
 							toolBoundary.maxX() == itemRect.maxX() &&
 							toolBoundary.minY() >= itemRect.minY() &&
 							toolBoundary.maxY() <= itemRect.maxY()) {
@@ -212,7 +212,7 @@ bool Game::handleEvent(sf::Event & event)
 								blockReason = "Other " + i->prototype->name + " is in the way";
 							}
 						}
-						
+
 						const ItemSet &elevators = itemsByType["elevator"];
 						for (ItemSet::const_iterator ii = elevators.begin(); !constructionBlocked && ii != elevators.end(); ii++) {
 							Item::Item * i = *ii;
@@ -288,7 +288,7 @@ bool Game::handleEvent(sf::Event & event)
 							constructionBlocked = true;
 							blockReason = "Only one Metro Station allowed";
 						}
-						
+
 						if (toolPosition.y == 0) {
 							constructionBlocked = true;
 							blockReason = "Only lobbies may be built on the ground floor";
@@ -402,11 +402,11 @@ bool Game::handleEvent(sf::Event & event)
 				else if (selectedTool == "finger") {
 					if (itemBelowCursor->prototype->id.find("elevator") == 0) {
 						Item::Elevator::Elevator * e = (Item::Elevator::Elevator *)itemBelowCursor;
-						
+
 						draggingMotor = 0;
 						if (toolPosition.y < itemBelowCursor->position.y) draggingMotor = -1;
 						if (toolPosition.y >= itemBelowCursor->position.y + itemBelowCursor->size.y) draggingMotor = 1;
-						
+
 						if (draggingMotor != 0) {
 							LOG(DEBUG, "drag elevator %s motor %i", itemBelowCursor->desc().c_str(), draggingMotor);
 							draggingElevator = e;
@@ -440,7 +440,7 @@ bool Game::handleEvent(sf::Event & event)
 				}
 			}
 		} break;
-		
+
 		case sf::Event::MouseMoved: {
 			if (draggingElevator && draggingElevator->repositionMotor(draggingMotor, toolPosition.y)) {
 				// Construct floors
@@ -461,11 +461,11 @@ bool Game::handleEvent(sf::Event & event)
 
 				// Update PathFinder map
 				gameMap.handleElevatorResize(draggingElevator, draggingElevatorLower, draggingElevatorStart);
-				
+
 				updateRoutes();
 			}
 		} break;
-		
+
 		case sf::Event::MouseButtonReleased: {
 			draggingElevator = NULL;
 		} break;
@@ -477,18 +477,18 @@ void Game::advance(double dt)
 {
 	sf::RenderWindow & win = app.window;
 	drawnSprites = 0;
-	
+
 	//Advance time.
 	time.advance(dt);
 	timeWindow.updateTime();
-	
+
 	timeWindow.advance(dt);
 	sky.advance(dt);
-	
+
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		(*i)->advance(dt);
 	}
-	
+
 	if (populationNeedsUpdate) {
 		populationNeedsUpdate = false;
 		int p = 0;
@@ -497,18 +497,18 @@ void Game::advance(double dt)
 		}
 		setPopulation(p);
 	}
-	
+
 	//Play sounds.
 	if (time.checkHour(5))  cockSound.Play(this);
 	if (time.checkHour(6))  morningSound.Play(this);
 	if (time.checkHour(9))  bellsSound.Play(this);
 	if (time.checkHour(18)) eveningSound.Play(this);
 	morningSound.setLoop(time.hour < 8);
-	
+
 	//Constrain the POI.
 	double2 halfsize((win.getView().getSize().x)*0.5*zoom, (win.getView().getSize().y)*0.5*zoom);
 	poi.y = std::max<double>(std::min<double>(poi.y, 360*12 - halfsize.y), -360 + halfsize.y);
-	
+
 	//Adust the camera.
 	sf::FloatRect view;
 	view.left   = round(poi.x - halfsize.x);
@@ -519,7 +519,7 @@ void Game::advance(double dt)
 	win.setView(cameraView);
 	//sf::FloatRect view = cameraView.GetRect();
 	//win.SetView(sf::View(view));
-	
+
 	//Prepare the current tool.
 	sf::Vector2f mp = win.mapPixelToCoords(sf::Mouse::getPosition());
 	Item::AbstractPrototype * previousPrototype = toolPrototype;
@@ -531,11 +531,11 @@ void Game::advance(double dt)
 		toolPosition = int2(floor(mp.x/8), floor(-mp.y/36));
 	}
 	if (previousPrototype != toolPrototype) timeWindow.updateTooltip();
-	
+
 	//Draw the sky and decorations.
 	win.draw(sky);
 	win.draw(decorations);
-	
+
 	//Draw the items that are in view.
 	Item::Item * previousItemBelowCursor = itemBelowCursor;
 	itemBelowCursor = NULL;
@@ -543,7 +543,7 @@ void Game::advance(double dt)
 	//Draw floor items first
 	for (ItemSet::iterator i = itemsByType["floor"].begin(); i != itemsByType["floor"].end(); i++) {
 		const int2 & vp = (*i)->getPosition();
-		const sf::Vector2f & vs = (*i)->GetSize();
+		const sf::Vector2u & vs = (*i)->getSize();
 		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) &&
 			vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
 			win.draw(**i);
@@ -556,18 +556,18 @@ void Game::advance(double dt)
 		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 			if ((*i)->layer != layer) continue;
 			const int2 & vp = (*i)->getPosition();
-			const sf::Vector2f & vs = (*i)->GetSize();
+			const sf::Vector2u & vs = (*i)->getSize();
 			if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) && vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
 				win.draw(**i);
 				if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 			}
 		}
 	}
-	
+
 	//Highlight the item below the cursor.
 	if (!toolPrototype && itemBelowCursor) {
 		sf::Sprite s;
-		s.scale(itemBelowCursor->GetSize().x, itemBelowCursor->GetSize().y-12);
+		s.scale(itemBelowCursor->getSize().x, itemBelowCursor->getSize().y-12);
 		s.setOrigin(0, 1);
 		s.setPosition(itemBelowCursor->getPosition().x, itemBelowCursor->getPosition().y);
 		s.setColor(sf::Color(255, 255, 255, 255*0.5));
@@ -577,7 +577,7 @@ void Game::advance(double dt)
 			timeWindow.showMessage(itemBelowCursor->prototype->name);
 		}
 	}
-	
+
 	//Draw construction template.
 	glBindTexture(GL_TEXTURE_2D, 0);
 	if (toolPrototype) {
@@ -592,7 +592,7 @@ void Game::advance(double dt)
 		glVertex2f(r.minX(), r.minY());
 		glEnd();
 	}
-	
+
 	//Visualize route.
 	glColor3f(0, 1, 0);
 	glBegin(GL_LINE_STRIP);
@@ -614,7 +614,7 @@ void Game::advance(double dt)
 	if (floor(time.absolute / backgroundSoundPeriod) != floor((time.absolute - time.dta) / backgroundSoundPeriod)) {
 		playRandomBackgroundSound();
 	}
-	
+
 	//Adjust pitch of playing sounds.
 	for (SoundSet::iterator s = playingSounds.begin(); s != playingSounds.end();) {
 		if ((*s)->getStatus() == sf::Sound::Stopped) {
@@ -624,7 +624,7 @@ void Game::advance(double dt)
 			s++;
 		}
 	}
-	
+
 	//Autorelease sounds.
 	for (SoundSet::iterator s = autoreleaseSounds.begin(); s != autoreleaseSounds.end();) {
 		if ((*s)->getStatus() == sf::Sound::Stopped) {
@@ -634,7 +634,7 @@ void Game::advance(double dt)
 			s++;
 		}
 	}
-	
+
 	//Draw the debug string.
 	snprintf(debugString, 512, "%i sprites", drawnSprites);
 }
@@ -645,11 +645,11 @@ void Game::reloadGUI()
 		mapWindow->RemoveReference();
 		mapWindow->Close();
 	}
-	
+
 	mapWindow     = gui.loadDocument("map.rml");
-	
+
 	if (mapWindow)     mapWindow    ->Show();
-	
+
 	toolboxWindow.reload();
 	timeWindow.reload();
 }
@@ -682,17 +682,17 @@ void Game::addItem(Item::Item * item)
 				existing_f_i.insert(f->position.x);
 				existing_f_i.insert(f->getRect().maxX());
 			}
-			
+
 			f->interval = existing_f->interval;
 			removeItem(existing_f);
 		}
-		
+
 		floorItems[item->position.y] = f;
 		decorations.updateFloor(item->position.y);
 	} else {
 		for (int i = 0; i < item->size.y; i++) {
 			itemsByFloor[item->position.y + i].insert(item);
-			
+
 			if (floorItems.count(item->position.y + i) == 0) {
 				// This is necessary in case of loading a save game where the floor item is not loaded before the building item on that floor.
 				int minX = item->position.x;
@@ -802,16 +802,16 @@ void Game::encodeXML(tinyxml2::XMLPrinter & xml)
 	xml.PushAttribute("speed", speedMode);
 	xml.PushAttribute("rainy", sky.rainyDay);
 	xml.PushAttribute("tool", selectedTool.c_str());
-	
+
 	xml.PushAttribute("x", (int)poi.x);
 	xml.PushAttribute("y", (int)poi.y);
-	
+
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		xml.OpenElement("item");
 		(*i)->encodeXML(xml);
 		xml.CloseElement();
 	}
-	
+
 	xml.CloseElement();
 }
 
@@ -819,17 +819,17 @@ void Game::decodeXML(tinyxml2::XMLDocument & xml)
 {
 	tinyxml2::XMLElement * root = xml.RootElement();
 	assert(root);
-	
+
 	setFunds(root->IntAttribute("funds"));
 	setRating(root->IntAttribute("rating"));
 	time.set(root->DoubleAttribute("time"));
 	setSpeedMode(root->IntAttribute("speed"));
 	sky.rainyDay = root->BoolAttribute("rainy");
 	selectTool(root->Attribute("tool"));
-	
+
 	poi.x = root->IntAttribute("x");
 	poi.y = root->IntAttribute("y");
-	
+
 	tinyxml2::XMLElement * e = root->FirstChildElement("item");
 	while (e) {
 		Item::Item * item = itemFactory.make(*e);
@@ -961,7 +961,7 @@ void Game::playRandomBackgroundSound()
 	for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 		if ((*i)->layer != 0) continue;
 		const int2 & vp = (*i)->getPosition();
-		const sf::Vector2f & vs = (*i)->GetSize();
+		const sf::Vector2u & vs = (*i)->getSize();
 		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) && vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
 			int area = vs.x * vs.y;
 			r -= area;
@@ -1001,7 +1001,7 @@ Route Game::findRoute(Item::Item * start, Item::Item * destination, bool service
 {
 	MapNode::Point start_point(start->position.x + start->size.x/2, start->position.y + start->prototype->exit_offset);
 	MapNode::Point end_point(destination->position.x + destination->size.x/2, destination->position.y + destination->prototype->entrance_offset);
-	
+
 	// For the special case of Metro, passengers can enter/exit from the middle floor if their destination is on that floor
 	if (start->prototype->icon == 19 && (end_point.y == start_point.y - 1))
 		start_point.y = end_point.y;

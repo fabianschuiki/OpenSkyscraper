@@ -6,7 +6,7 @@
 
 namespace OT {
 	class Person;
-	
+
 	namespace Item {
 		namespace Elevator {
 			class Elevator;
@@ -14,31 +14,31 @@ namespace OT {
 			{
 			public:
 				Elevator * const elevator;
-				
+
 				Queue(Elevator * e);
 				~Queue();
-				
+
 				int floor;
 				Elevator::Direction direction;
 				int width;
-				
+
 				bool called;
 				double callTime;
 				bool answered;
 				double getWaitDuration();
-				
+
 				typedef std::list<Person *> People;
 				People people;
 				void addPerson(Person * p);
 				void removePerson(Person * p);
 				Person * popPerson();
 				void callElevator();
-				
+
 				bool steppingInside;
-				
+
 				virtual void advance(double dt);
 				void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-				virtual void Render(sf::RenderTarget & target) const;
+				virtual void render(sf::RenderTarget & target) const;
 			};
 		}
 	}

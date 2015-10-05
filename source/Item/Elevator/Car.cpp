@@ -15,14 +15,14 @@ const static double kUnmountPeriod = 0.05; //dito, but off the elevator
 void Car::init()
 {
 	sprite.SetImage(app->bitmaps[elevator->carBitmap]);
-	sprite.SetCenter(0, 30);
+	sprite.setOrigin(0, 30);
 	updateSprite();
-	
-	arrivingSound.SetBuffer(app->sounds["simtower/elevator/arriving"]);
-	departingSound.SetBuffer(app->sounds["simtower/elevator/departing"]);
+
+	arrivingSound.setBuffer(app->sounds["simtower/elevator/arriving"]);
+	departingSound.setBuffer(app->sounds["simtower/elevator/departing"]);
 	arrivingPlayed = false;
 	departingPlayed = false;
-	
+
 	direction = Elevator::kNone;
 	startAltitude = altitude;
 	destinationFloor = altitude;
@@ -40,7 +40,7 @@ void Car::setAltitude(double a)
 
 void Car::reposition()
 {
-	SetPosition(0, -altitude * 36 - elevator->GetPosition().y);
+	setPosition(0, -altitude * 36 - elevator->getPosition().y);
 }
 
 void Car::updateSprite()
@@ -51,46 +51,45 @@ void Car::updateSprite()
 	else if (pc <= 1) index = 1;
 	else if (pc <= 3) index = 2;
 	else if (pc == elevator->maxCarCapacity) index = 4;
-	
-	int w = sprite.GetImage()->GetWidth() / 5;
-	int h = sprite.GetImage()->GetHeight();
-	sprite.SetSubRect(sf::IntRect(index*w, 0, (index+1)*w, h));
-	sprite.SetPosition(sf::Vector2f(2, 0));
+
+	int w = sprite.getTexture()->getSize().x / 5;
+	int h = sprite.getTexture()->getSize().y;
+	sprite.setTextureRect(sf::IntRect(index*w, 0, (index+1)*w, h));
+	sprite.setPosition(sf::Vector2f(2, 0));
 }
 
 void Car::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	Render(target);
+	render(target);
 }
 
-void Car::Render(sf::RenderTarget & target) const
+void Car::render(sf::RenderTarget & target) const
 {
-	target.Draw(sprite);
+	target.draw(sprite);
 
 	//Draw the people stepping out of the elevator.
 	Person *p = NULL;
 	if (state == kHauling && (p = nextPassengerToUnmount())) {
 		Sprite s;
 		s.SetImage(app->bitmaps["simtower/elevator/people"]);
-		s.SetCenter(direction == Elevator::kUp ? -elevator->shaft.GetSize().x : 16, 24);
+		s.setOrigin(direction == Elevator::kUp ? -elevator->shaft.getSize().x : 16, 24);
 
 		//Calculate the texture subrect for the person stepping out of the car.
 		int type = p->type;
 		sf::IntRect sr;
-		sr.Left   = type * 32;
-		sr.Right  = sr.Left + 16;
-		sr.Top    = 24;
-		sr.Bottom = 48;
+		sr.left   = type * 32;
+		sr.width  = 16;
+		sr.top    = 24;
+		sr.height = 24;
 		if (direction == Elevator::kUp) {
-			sr.Left  += 16;
-			sr.Right += 16;
+			sr.left  += 16;
 		}
-		
+
 		//Draw the person.
-		s.SetColor(sf::Color::Black);
-		s.SetSubRect(sr);
-		s.SetPosition(elevator->shaft.GetPosition().x, sprite.GetPosition().y);
-		target.Draw(s);
+		s.setColor(sf::Color::Black);
+		s.setTextureRect(sr);
+		s.setPosition(elevator->shaft.getPosition().x, sprite.getPosition().y);
+		target.draw(s);
 	}
 }
 
@@ -121,10 +120,10 @@ void Car::setState(State s)
 void Car::advance(double dt)
 {
 	int passengersBefore = passengers.size();
-	
+
 	//Advance the journey time.
 	journeyTime += game->time.dta / Time::kBaseSpeed;
-	
+
 	//If we're not on our destination floor, we have to move there. Note that due to float/double
 	//imprecision, we can't use a simple comparison, but rather have to check whether the distance
 	//between destination floor and current floor is above a certain treshold which we consider "at
@@ -134,10 +133,10 @@ void Car::advance(double dt)
 		//speed.
 		double a = elevator->maxCarAcceleration;
 		double vmax = elevator->maxCarSpeed;
-		
+
 		//Later we'll also need the distance between the start and destination.
 		double s = fabs(destinationFloor - startAltitude);
-		
+
 		//Now we have to calculate the speed we're able to achieve on this journey. This calculation
 		//uses the constant q which describes the fraction of the distance that should be used for
 		//acceleration. Setting it to 1/3 makes the elevator accelerate in the first third, travel
@@ -149,7 +148,7 @@ void Car::advance(double dt)
 		//speed since it's only allowed to do so in one eighth of the distance.
 		double q = 1.0 / 3;
 		double v = std::min<double>(vmax, sqrt(2 * q * a * s));
-		
+
 		//The next thing we need are two time values. They are somewhat difficult to explain since
 		//they are given rise by the formulae used to calculate the speed. The second constant, t1,
 		//is easily explained. It is the time from the start of the journey at which the elevator
@@ -159,14 +158,14 @@ void Car::advance(double dt)
 		//same location as the other car.
 		double t0 = v / (2 * a);
 		double t1 = (s / v) + 2 * t0;
-		
+
 		//Now we need two points in time in order to calculate the car's position appropriately.
 		//The first one, tacc, describes the time it takes the car to accelerate to its travel
 		//speed. The second, tdec, describes the time at which the elevator has to start decele-
 		//rating in order to stop at the destination floor.
 		double tacc = v / a;
 		double tdec = t1 - tacc;
-		
+
 		//Decide what phase the car is in. There are three phases: acceleration, travel, decele-
 		//ration. Before tacc, the car is still accelerating. Between tacc and tdec, the car is
 		//traveling at speed v. After tdec the car is decelerating until it reaches the destination
@@ -174,10 +173,10 @@ void Car::advance(double dt)
 		unsigned int phase = 0;
 		if (journeyTime > tacc) phase = 1;
 		if (journeyTime > tdec) phase = 2;
-		
+
 		//Abbreviate the journeyTime so we don't have that many letters in our formulae.
 		double t = journeyTime;
-		
+
 		//Calculate the distance from the start based on the phase the car is in. The easiest way
 		//to understand the three equations is to hack them into a graph calculator or some plotting
 		//software on your computer. This gives you a feel of how they work. The basic idea is that
@@ -188,29 +187,29 @@ void Car::advance(double dt)
 		switch (phase) {
 			//Acceleration. This the equation for uniformly accelerated motion from physics 101.
 			case 0: d = 0.5 * a * (t*t); break;
-			
+
 			//Travel. This is the even simpler equation for motion at constant velocity. The
 			//only quirk is the time offset t0 we subtract from t.
 			case 1: d = v * (t - t0); break;
-			
+
 			//Deceleration. Basically the same as the acceleration. Only do we set s as the tar-
 			//get distance and calculate the deceleration backwards in time t is subtracted from
 			//t1, which gives a movement back in time.
 			case 2: d = s - (0.5 * a * (t1 - t)*(t1 - t)); break;
 		}
-		
+
 		//Now we know the distance from the starting point based on the time. All we have to do now
 		//is calculate the actual floor we're on.
 		if (destinationFloor > startAltitude)
 			setAltitude(startAltitude + d);
 		else
 			setAltitude(startAltitude - d);
-		
+
 		//As a security measure, we use t1 to make sure we stop animating the elevator at some
 		//point. Just in case the algorithm blows up, which it shouldn't, but well...
 		if (journeyTime > t1)
 			setAltitude(destinationFloor);
-		
+
 		//Now we also want to play some sounds. If the travel is long enough, we play the departing
 		//sound.
 		if (!departingPlayed) {
@@ -218,14 +217,14 @@ void Car::advance(double dt)
 				//Audio::shared()->play(departingSound);
 			departingPlayed = true;
 		}
-		
+
 		//And as we approach the destination floor we also want the sound to be played.
 		if (!arrivingPlayed && (s - d) < 0.1) {
 			arrivingSound.Play(game);
 			//Audio::shared()->play(arrivingSound);
 			arrivingPlayed = true;
 		}
-		
+
 		//We should probably show the inner workings of the algorithm in the console for debuggin.
 		//DEBUG: remove this log stuff later. Seems to work anyway.
 		char buffer[512];
@@ -234,35 +233,35 @@ void Car::advance(double dt)
 		(phase == 0 ? "accelerating" : (phase == 1 ? "travelling" : "decelerating")));
 		//LOG(DEBUG, buffer);
 	}
-	
+
 	else {
 		//Just to make sure :)
 		setAltitude(destinationFloor);
-		
+
 		//So we're obviously on the destination floor. Quite a few things to do here. First we have
 		//to act according to our current state. So let's do that.
 		//TODO: This needs some heavy documentation!
 		switch (state) {
-			
+
 			case kMoving: {
 				if (direction != Elevator::kNone)
 					setState(kOpeningDoors);
 				else
 					setState(kIdle);
 			} break;
-			
+
 			case kOpeningDoors: {
 				if (journeyTime >= kDoorPeriod) setState(kHauling);
 			} break;
-			
+
 			case kHauling: {
 				Person * p = NULL;
 				bool handled = false;
 				assert(direction != Elevator::kNone);
-				
+
 				//Fetch the queue we're serving
 				Queue * q = elevator->getQueue(destinationFloor, direction);
-				
+
 				//Unhaul
 				if (!handled && nextPassengerToUnmount()) {
 					while (journeyTime >= kUnmountPeriod && (p = nextPassengerToUnmount())) {
@@ -272,7 +271,7 @@ void Car::advance(double dt)
 					}
 					handled = true;
 				}
-				
+
 				//Haul
 				if (!handled && !isFull() && q && !q->people.empty()) {
 					q->steppingInside = true;
@@ -282,7 +281,7 @@ void Car::advance(double dt)
 					}
 					handled = true;
 				}
-				
+
 				//Hauling complete, decide what to do.
 				//TODO: make this time constant adjustable!
 				if (!handled && (journeyTime >= kWaitTime || isFull())) {
@@ -297,7 +296,7 @@ void Car::advance(double dt)
 						setState(kIdle);
 				}
 			} break;
-			
+
 			case kClosingDoors: {
 				if (journeyTime >= kDoorPeriod) {
 					assert(!passengers.empty());
@@ -306,7 +305,7 @@ void Car::advance(double dt)
 			} break;
 		}
 	}
-	
+
 	//Update the car sprite if the number of passengers changed.
 	if (passengersBefore != passengers.size())
 		updateSprite();
@@ -331,10 +330,10 @@ void Car::moveTo(int floor)
 {
 	if (destinationFloor != floor) {
 		destinationFloor = floor;
-		
+
 		arrivingPlayed = false;
 		departingPlayed = false;
-		
+
 		startAltitude = altitude;
 		setState(kMoving);
 	} else {

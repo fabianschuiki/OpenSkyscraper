@@ -6,9 +6,11 @@ namespace OT
 	class Sprite : public sf::Sprite
 	{
 	public:
-		void SetImage(sf::Image& image);
+		void SetImage(const sf::Image& image);
+		void SetImage(const sf::Texture& texture);
+		sf::Vector2u getSize() const { return sf::Vector2u(getTextureRect().width, getTextureRect().height); }
 	protected:
-		virtual void Render(sf::RenderTarget & target) const;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		sf::Texture texture;
 	};

@@ -11,13 +11,13 @@ const static double kTransitionTime = 1.5;
 void Stairlike::init()
 {
 	Item::init();
-	
+
 	animation = 0;
 	frame = 0;
 	layer = 1;
-	
+
 	addSprite(&sprite);
-	
+
 	updateSprite();
 }
 
@@ -25,12 +25,12 @@ void Stairlike::advance(double dt)
 {
 	Item::advance(dt);
 	double dta = game->time.dta / Time::kBaseSpeed;
-	
+
 	for (People::iterator ip = people.begin(); ip != people.end();) {
 		Person * p = *(ip++);
 		if ((transitionTimes[p] += dta) >= kTransitionTime) p->journey.next();
 	}
-	
+
 	if (!people.empty()) {
 		animation = fmod(animation + dta * kTransitionTime, 1);
 		int newFrame = floor(animation * (frameCount-1))+1;
@@ -49,12 +49,11 @@ void Stairlike::advance(double dt)
 
 void Stairlike::updateSprite()
 {
-	int w = sprite.GetImage()->GetWidth() / frameCount;
-	int h = sprite.GetImage()->GetHeight();
-	
-	sprite.SetCenter(0, h);
-	sprite.SetSubRect(sf::IntRect(w*frame, 0, w*(frame+1), h));
-	sprite.Resize(w, h);
+	int w = sprite.getTexture()->getSize().x / frameCount;
+	int h = sprite.getTexture()->getSize().y;
+
+	sprite.setOrigin(0, h);
+	sprite.setTextureRect(sf::IntRect(w*frame, 0, w*(frame+1), h));
 }
 
 bool Stairlike::connectsFloor(int floor) const
