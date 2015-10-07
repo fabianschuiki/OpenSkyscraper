@@ -63,13 +63,13 @@ Game::Game(Application & app)
 	eveningSound.setBuffer(app.sounds["simtower/birds/evening"]);
 
 	//DEBUG: load from disk.
-	tinyxml2::XMLDocument xml;
-	DataManager::Paths p = app.data.paths("default.tower");
-	for (DataManager::Paths::iterator ip = p.begin(); ip != p.end(); ip++) {
-		LOG(DEBUG, "trying %s", (*ip).c_str());
-		if (xml.LoadFile(*ip) == 0) break;
-	}
-	decodeXML(xml);
+	// tinyxml2::XMLDocument xml;
+	// DataManager::Paths p = app.data.paths("default.tower");
+	// for (DataManager::Paths::iterator ip = p.begin(); ip != p.end(); ip++) {
+	// 	LOG(DEBUG, "trying %s", (*ip).c_str());
+	// 	if (xml.LoadFile(*ip) == 0) break;
+	// }
+	// decodeXML(xml);
 }
 
 Game::~Game()
@@ -705,9 +705,14 @@ void Game::addItem(Item::Item * item)
 				addItem(f);
 			}
 			if (!item->canHaulPeople()) {
-				std::multiset<int> &interval = floorItems[item->position.y + i]->interval;
-				interval.insert(item->position.x);
-				interval.insert(item->getRect().maxX());
+				FloorItems::iterator fi = floorItems.find(item->position.y + i);
+				if (fi != floorItems.end()) {
+					std::multiset<int> &interval = fi->second->interval;
+					interval.insert(item->position.x);
+					interval.insert(item->getRect().maxX());
+				} else {
+					LOG(WARNING, "unable to find floorItems[%i]", item->position.y + i);
+				}
 			}
 		}
 	}

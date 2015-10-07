@@ -24,10 +24,10 @@ Application::Application(int argc, char * argv[])
 {
 	assert(App == NULL && "Application initialized multiple times");
 	App = this;
-	
+
 	assert(argc >= 1 && "argv[0] is required");
 	dumpResources = false;
-	
+
 	// Code to retrieve current working directory
 	// May want to move to Boost library for easier path manipulation
 	int buf_size = 128;
@@ -51,7 +51,7 @@ Application::Application(int argc, char * argv[])
 #ifdef __APPLE__
 	path = Path("../MacOS").down(path.name());
 #endif
-	
+
 	//Special debug defaults.
 #ifdef BUILD_DEBUG
 	logger.setLevel(Logger::DEBUG);
@@ -59,7 +59,7 @@ Application::Application(int argc, char * argv[])
 	snprintf(logname, 128, "debug-%li.log", (long int)time(NULL));
 	logger.setOutputPath(/*dir.down(*/logname/*)*/);
 #endif
-	
+
 	//Parse command line arguments.
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "--debug") == 0) {
@@ -75,7 +75,7 @@ Application::Application(int argc, char * argv[])
 			dumpResourcesPath = argv[i+1];
 		}
 	}
-	
+
 	LOG(DEBUG,
 		"constructed\n"
 		"    path     = %s",
@@ -89,26 +89,24 @@ int Application::run()
 {
 	running = true;
 	exitCode = 0;
-	
+
 	if (exitCode == 0) init();
 	if (exitCode == 0) loop();
 	if (exitCode == 0) cleanup();
-	
+
 	running = false;
-	
-	if (exitCode < 0) {
+
+	if (exitCode > 0) {
 		LOG(ERROR, "exitCode = %i", exitCode);
-	} else {
-		LOG(INFO,  "exitCode = %i", exitCode);
 	}
-	
+
 	return exitCode;
 }
 
 void Application::init()
 {
 	data.init();
-	
+
 	/*WindowsNEExecutable exe;
 	DataManager::Paths paths = data.paths("SIMTOWER.EXE");
 	bool success;
@@ -120,38 +118,40 @@ void Application::init()
 	}
 	//TODO: make this dependent on a command line switch --dump-simtower <path>.
 	exe.dump("~/SimTower Raw");*/
-	
+
 	SimTowerLoader * simtower = new SimTowerLoader(this);
 	if (!simtower->load()) {
-		LOG(WARNING, "unable to load SimTower resources");
+		LOG(ERROR, "unable to load SimTower resources");
+		exitCode = 1;
+		return;
 	}
 	if (dumpResources) {
 		simtower->dump(dumpResourcesPath);
 	}
 	delete simtower; simtower = NULL;
 	//exitCode = 1;
-	
+
 	videoMode.width        = 1280;
 	videoMode.height       = 768;
 	videoMode.bitsPerPixel = 32;
-	
+
 	window.create(videoMode, "OpenSkyscraper SFML");
-	
+
 	if (!gui.init(&window)) {
 		LOG(ERROR, "unable to initialize gui");
-		exitCode = -1;
+		exitCode = 1;
 		return;
 	}
 	rootGUI = new GUI("root", &gui);
 #ifdef BUILD_DEBUG
 	Rocket::Debugger::Initialise(rootGUI->context);
 #endif
-	
+
 	//Additional GUI stuff.
 	Rocket::Core::DecoratorInstancer * instancer = new TimeWindowWatchInstancer;
 	Rocket::Core::Factory::RegisterDecoratorInstancer("watch", instancer);
 	instancer->RemoveReference();
-	
+
 	//Load GUI fonts.
 	fonts.loadIntoRocket("Jura-Regular.ttf");
 	fonts.loadIntoRocket("Jura-Medium.ttf");
@@ -159,14 +159,14 @@ void Application::init()
 	fonts.loadIntoRocket("Jura-DemiBold.ttf");
 	fonts.loadIntoRocket("Play-Regular.ttf");
 	fonts.loadIntoRocket("Play-Bold.ttf");
-	
+
 	//DEBUG: load some GUI
 	/*Path rocket = data.paths("debug/rocket").front();
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Bold.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-BoldItalic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Italic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());*/
-	
+
 	Game * game = new Game(*this);
 	pushState(game);
 }
@@ -180,7 +180,7 @@ void Application::loop()
 	double rateDampFactor = 0;
 	double dt_max = 0, dt_min = 0;
 	int dt_maxmin_resetTimer = 0;
-	
+
 	while (window.isOpen() && exitCode == 0 && !states.empty()) {
 		double dt_real = clock.getElapsedTime().asSeconds();
 		//dt_max = (dt_max + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
@@ -195,7 +195,7 @@ void Application::loop()
 		}
 		double dt = std::min<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
 		clock.restart();
-		
+
 		//Update the rate indicator.
 		rateDampFactor = (dt_real * 1);
 		rateDamped = (rateDamped + dt_real * rateDampFactor) / (1 + rateDampFactor);
@@ -207,7 +207,7 @@ void Application::loop()
 				dt_min = dt_real;
 			}
 		}
-		
+
 		//Handle events.
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -250,14 +250,14 @@ void Application::loop()
 				continue;
 			}
 		}
-		
+
 		//Make the current state do its work.
 		if (!states.empty()) {
 			states.top()->advance(dt);
 			states.top()->gui.draw();
 		}
 		rootGUI->draw();
-		
+
 		//Draw the debugging overlays.
 		char dbg[1024];
 		snprintf(dbg, 32, "%.0fHz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
@@ -266,7 +266,7 @@ void Application::loop()
 			strcat(dbg, states.top()->debugString);
 		}
 		rateIndicator.setString(dbg);
-		
+
 		window.setView(window.getDefaultView());
 		sf::FloatRect r = rateIndicator.getLocalBounds();
 		//sf::Shape bg = sf::RectangleShape(r.left, r.top, (r.left + r.width), (r.top + r.height), sf::Color(0, 0, 0, 0.25*255));
@@ -275,7 +275,7 @@ void Application::loop()
 		bg.setPosition(sf::Vector2f(r.left, r.top));
 		window.draw(bg);
 		window.draw(rateIndicator);
-		
+
 		//Swap buffers.
 		window.display();
 	}
@@ -286,7 +286,7 @@ void Application::cleanup()
 	while (!states.empty()) {
 		popState();
 	}
-	
+
 	window.close();
 }
 

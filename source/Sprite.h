@@ -10,7 +10,7 @@ namespace OT
 		void SetImage(const sf::Texture& texture);
 		sf::Vector2u getSize() const { return sf::Vector2u(getTextureRect().width, getTextureRect().height); }
 	protected:
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		// virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		sf::Texture texture;
 	};
