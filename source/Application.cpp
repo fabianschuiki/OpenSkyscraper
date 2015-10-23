@@ -49,6 +49,7 @@ Application::Application(int argc, char * argv[])
 	std::cout << "pwd = " << pwd << '\n';
 	path = Path(pwd);
 	delete pwd;
+	path = Path(argv[0]).up();
 // #ifdef __APPLE__
 // 	path = Path("../MacOS").down(path.name());
 // #endif
