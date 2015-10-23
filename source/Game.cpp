@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "Game.h"
 #include "Item/Lobby.h"
-#include "GL/gl.h"
+#include "OpenGL.h"
 
 #ifdef _WIN32
 #include "Math/Round.h"

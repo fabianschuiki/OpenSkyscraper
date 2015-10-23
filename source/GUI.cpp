@@ -6,7 +6,7 @@
 #include "Application.h"
 #include "GUI.h"
 #include "GUIManager.h"
-#include "GL/gl.h"
+#include "OpenGL.h"
 
 using namespace OT;
 

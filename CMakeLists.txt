@@ -106,7 +106,7 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
 
 # Copy the SFML frameworks into the application bundle on Mac OS X.
 if (APPLE)
-	install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
+	# install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
 endif ()
 
 # libRocket
