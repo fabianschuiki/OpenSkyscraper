@@ -46,11 +46,12 @@ Application::Application(int argc, char * argv[])
 			}
 		}
 	} while(!r_getpwd);
+	std::cout << "pwd = " << pwd << '\n';
 	path = Path(pwd);
 	delete pwd;
-#ifdef __APPLE__
-	path = Path("../MacOS").down(path.name());
-#endif
+// #ifdef __APPLE__
+// 	path = Path("../MacOS").down(path.name());
+// #endif
 
 	//Special debug defaults.
 #ifdef BUILD_DEBUG

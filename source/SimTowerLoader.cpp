@@ -611,12 +611,12 @@ void SimTowerLoader::loadBitmaps()
 	elevQueue.create(9*2*16, 3*24, sf::Color::White);
 	for (int i = 0; i < 8; i++) {
 		for (int n = 0; n < 3; n++) {
-			elevQueue.copy(elevQueueNormal, i*32+16, 0, sf::IntRect(i*80, 12, i*80+16, 36));
-			elevQueue.copy(elevQueueNormal, i*32, 0, sf::IntRect(i*80+64, 12, i*80+80, 36));
-			elevQueue.copy(elevQueueNormal, i*32+16, 24, sf::IntRect(i*80+16, 12, i*80+24, 36));
-			elevQueue.copy(elevQueueNormal, i*32+8, 24, sf::IntRect(i*80+56, 12, i*80+64, 36));
-			elevQueue.copy(elevQueueNormal, i*32+16, 48, sf::IntRect(i*80+24, 12, i*80+40, 36));
-			elevQueue.copy(elevQueueNormal, i*32+0, 48, sf::IntRect(i*80+40, 12, i*80+56, 36));
+			elevQueue.copy(elevQueueNormal, i*32+16, 0, sf::IntRect(i*80, 12, 16, 36));
+			elevQueue.copy(elevQueueNormal, i*32, 0, sf::IntRect(i*80+64, 12, 80, 36));
+			elevQueue.copy(elevQueueNormal, i*32+16, 24, sf::IntRect(i*80+16, 12, 24, 36));
+			elevQueue.copy(elevQueueNormal, i*32+8, 24, sf::IntRect(i*80+56, 12, 64, 36));
+			elevQueue.copy(elevQueueNormal, i*32+16, 48, sf::IntRect(i*80+24, 12, 40, 36));
+			elevQueue.copy(elevQueueNormal, i*32+0, 48, sf::IntRect(i*80+40, 12, 56, 36));
 		}
 	}
 	elevQueue.createMaskFromColor(sf::Color::White);
@@ -764,7 +764,7 @@ void SimTowerLoader::loadOffice(int id, sf::Image & img)
 	unsigned int slices = office.getSize().x / 144;
 	img.create(144, slices*24);
 	for (int i = 0; i < slices; i++) {
-		img.copy(office, 0, i*24, sf::IntRect(i*144, 0, (i+1)*144, 24));
+		img.copy(office, 0, i*24, sf::IntRect(i*144, 0, 144, 24));
 	}
 }
 
@@ -823,8 +823,8 @@ void SimTowerLoader::loadElevators()
 	shaft_narrow.create(32*7, 36);
 	shaft_wide.  create(48*7, 36);
 	for (int i = 0; i < 3; i++) {
-		shaft_narrow.copy(standard_combined[i], i*2*32+32, 0, sf::IntRect(5*32, 0, 7*32, 36));
-		shaft_wide  .copy(express_combined[i],  i*2*48+48, 0, sf::IntRect(5*48, 0, 7*48, 36));
+		shaft_narrow.copy(standard_combined[i], i*2*32+32, 0, sf::IntRect(5*32, 0, 2*32, 36));
+		shaft_wide  .copy(express_combined[i],  i*2*48+48, 0, sf::IntRect(5*48, 0, 2*48, 36));
 	}
 
 	//Render the shafts. The wide shaft requires some copy-pasting of the narrow shaft.
@@ -835,7 +835,7 @@ void SimTowerLoader::loadElevators()
 	shaft_narrow.copy(shaft, 0, 0, sf::IntRect(0, 0, 32, 36));
 	shaft_wide.copy(shaft, 8,  0, sf::IntRect(0,  0, 32, 36));
 	shaft_wide.copy(extension, 0, 0, sf::IntRect(0, 0, 8, 36));
-	shaft_wide.copy(extension, 40, 0, sf::IntRect(8, 0, 16, 36));
+	shaft_wide.copy(extension, 40, 0, sf::IntRect(8, 0, 8, 36));
 
 	//Render the shaft digits.
 	sf::Image rawDigits[2];
@@ -845,7 +845,7 @@ void SimTowerLoader::loadElevators()
 	digits.create(11*12, 2*17);
 	for (int i = 0; i < 10; i++) {
 		for (int n = 0; n < 2; n++) {
-			digits.copy(rawDigits[n], i*11, n*17, sf::IntRect(1+16*i, 16, 1+16*i+11, 33));
+			digits.copy(rawDigits[n], i*11, n*17, sf::IntRect(1+16*i, 16, 11, 33));
 		}
 	}
 
@@ -853,7 +853,7 @@ void SimTowerLoader::loadElevators()
 	loadBitmap(0x87ea, rawFirstDigits[0]);
 	loadBitmap(0x87ed, rawFirstDigits[1]);
 	for (int n = 0; n < 2; n++) {
-		digits.copy(rawFirstDigits[n], 110, n*17, sf::IntRect(36, 16, 47, 33));
+		digits.copy(rawFirstDigits[n], 110, n*17, sf::IntRect(36, 16, 11, 33));
 	}
 
 	digits.createMaskFromColor(sf::Color(25, 25, 25));
@@ -867,7 +867,7 @@ void SimTowerLoader::loadElevatorCar(const sf::Image & img, sf::Image & dst)
 	unsigned int carh = h - 1 - 5;
 	dst.create(carw*5, carh);
 	for (int i = 0; i < 5; i++) {
-		dst.copy(img, i*carw, 0, sf::IntRect(i*w + 2, 5, (i+1)*w - 2, h - 1));
+		dst.copy(img, i*carw, 0, sf::IntRect(i*w + 2, 5, w - 2, h - 1));
 	}
 }
 
@@ -975,8 +975,8 @@ void SimTowerLoader::loadLobbies()
 		loadBitmap(0x89e8 + i, raw);
 		for (int n = 0; n < 3; n++) {
 			int dsty = (n < 2 ? i*36 : i*108+72);
-			segments[n]->copy(raw, 7*8, dsty, sf::IntRect(n*328, 0, (n+1)*328-9*8, 36));
-			segments[n]->copy(raw, 0,   dsty, sf::IntRect((n+1)*328-7*8, 0, (n+1)*328, 36));
+			segments[n]->copy(raw, 7*8, dsty, sf::IntRect(n*328, 0, 328-9*8, 36));
+			//segments[n]->copy(raw, 0,   dsty, sf::IntRect((n+1)*328-7*8, 0, 328, 36));
 		}
 	}
 	sky.createMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
@@ -988,8 +988,8 @@ void SimTowerLoader::loadLobbies()
 		sf::Image * vsegments[] = {&top, &middle};
 		for (int n = 0; n < 2; n++) {
 			int xoff = (n == 1 ? 328 : 0);
-			high.copy(*vsegments[n], 7*8, i*108 + n*36, sf::IntRect(xoff, 0, xoff + 328-9*8, 36));
-			high.copy(*vsegments[n], 0, i*108 + n*36, sf::IntRect(xoff + 328-7*8, 0, xoff + 328, 36));
+			high.copy(*vsegments[n], 7*8, i*108 + n*36, sf::IntRect(xoff, 0, 328-9*8, 36));
+			high.copy(*vsegments[n], 0, i*108 + n*36, sf::IntRect(xoff + 328-7*8, 0, 328, 36));
 		}
 	}
 }

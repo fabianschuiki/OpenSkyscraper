@@ -32,6 +32,7 @@ void DataManager::init()
 	//TODO: there's an issue with climbing up paths that go like ../../, since path.up() will first erase these ../ segments, instead of directly appending to them.
 	//dirs.push_back(path.up(0).down("data"));
 	dirs.push_back(path.up(6).down("data"));
+	dirs.push_back(path.down("data"));
 # endif
 	dirs.push_back(Path("~/Library/Application Support/OpenSkyscraper"));
 	dirs.push_back(Path("/Library/Application Support/OpenSkyscraper"));
