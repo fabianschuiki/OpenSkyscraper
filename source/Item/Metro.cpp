@@ -55,8 +55,8 @@ void Metro::updateSprite()
 		platformIndex = (trainPresent ? 0 : 1);
 	}
 
-	station.setTextureRect(sf::IntRect(stationIndex*240, 0, (stationIndex+1)*240, 66));
-	platform.setTextureRect(sf::IntRect(platformIndex*240, 66, (platformIndex+1)*240, 96));
+	station.setTextureRect(sf::IntRect(stationIndex*240, 0, 240, 66));
+	platform.setTextureRect(sf::IntRect(platformIndex*240, 66, 240, 96));
 }
 
 void Metro::advance(double dt)

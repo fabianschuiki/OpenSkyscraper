@@ -77,7 +77,7 @@ void Office::updateSprite()
 	spriteNeedsUpdate = false;
 	int index_x = (lit ? 0 : 1);
 	int index_y = (occupied ? variant : 6);
-	sprite.setTextureRect(sf::IntRect(index_x*72, index_y*24, (index_x+1)*72, (index_y+1)*24));
+	sprite.setTextureRect(sf::IntRect(index_x*72, index_y*24, 72, 24));
 }
 
 void Office::advance(double dt)

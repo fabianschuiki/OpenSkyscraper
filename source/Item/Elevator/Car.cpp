@@ -54,7 +54,7 @@ void Car::updateSprite()
 
 	int w = sprite.getTexture()->getSize().x / 5;
 	int h = sprite.getTexture()->getSize().y;
-	sprite.setTextureRect(sf::IntRect(index*w, 0, (index+1)*w, h));
+	sprite.setTextureRect(sf::IntRect(index*w, 0, w, h));
 	sprite.setPosition(sf::Vector2f(2, 0));
 }
 

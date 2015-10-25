@@ -29,7 +29,7 @@ void Lobby::init()
 		for (int i = 0; i < 2; i++) {
 			entrances[i].SetImage(App->bitmaps["simtower/deco/entrances"]);
 			entrances[i].setOrigin(56*(1-i), 36);
-			entrances[i].setTextureRect(sf::IntRect(i*56, 0, (i+1)*56, 36));
+			entrances[i].setTextureRect(sf::IntRect(i*56, 0, 56, 36));
 			addSprite(&entrances[i]);
 		}
 	}
@@ -56,7 +56,7 @@ void Lobby::updateSprite()
 	if (game->rating == 2) y = 1;
 	if (game->rating >= 3) y = 2;
 
-	sf::IntRect rect(0, y*36, 0, (y+1)*36);
+	sf::IntRect rect(0, y*36, 0, 36);
 	rect.left = 7*8 - rect.width;
 	overlay.setTextureRect(rect);
 	rect.left += rect.width;

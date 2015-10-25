@@ -46,7 +46,7 @@ void FastFood::updateSprite()
 	spriteNeedsUpdate = false;
 	int index = 3;
 	if (open) index = std::min<int>((int)ceil(people.size() / 5.0), 2);
-	sprite.setTextureRect(sf::IntRect(index*128, variant*24, (index+1)*128, (variant+1)*24));
+	sprite.setTextureRect(sf::IntRect(index*128, variant*24, 128, 24));
 }
 
 void FastFood::advance(double dt)

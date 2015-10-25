@@ -53,7 +53,7 @@ void Stairlike::updateSprite()
 	int h = sprite.getTexture()->getSize().y;
 
 	sprite.setOrigin(0, h);
-	sprite.setTextureRect(sf::IntRect(w*frame, 0, w*(frame+1), h));
+	sprite.setTextureRect(sf::IntRect(w*frame, 0, w, h));
 }
 
 bool Stairlike::connectsFloor(int floor) const

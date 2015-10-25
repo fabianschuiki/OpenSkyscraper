@@ -41,7 +41,7 @@ void PartyHall::updateSprite()
 {
 	spriteNeedsUpdate = false;
 	int index = (open ? 1 : 0);
-	sprite.setTextureRect(sf::IntRect(index*192, 0, (index+1)*192, 60));
+	sprite.setTextureRect(sf::IntRect(index*192, 0, 192, 60));
 }
 
 void PartyHall::advance(double dt)

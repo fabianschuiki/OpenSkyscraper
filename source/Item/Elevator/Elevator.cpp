@@ -46,8 +46,8 @@ void Elevator::updateSprite()
 	int w = getSize().x;
 	int h = getSize().y;
 
-	topMotor.setTextureRect   (sf::IntRect((2*frame+1)*w, 0, (2*frame+2)*w, 36));
-	bottomMotor.setTextureRect(sf::IntRect((2*frame+2)*w, 0, (2*frame+3)*w, 36));
+	topMotor.setTextureRect   (sf::IntRect((2*frame+1)*w, 0, w, 36));
+	bottomMotor.setTextureRect(sf::IntRect((2*frame+2)*w, 0, w, 36));
 	topMotor.setOrigin(0, 36);
 	topMotor.setPosition(topMotor.getPosition().x, -h);
 }
@@ -79,7 +79,7 @@ void Elevator::render(sf::RenderTarget & target) const
 		for (int i = 0; i < len; i++) {
 			int p = 10;
 			if (c[i] >= '0' && c[i] <= '9') p = c[i] - '0';
-			d.setTextureRect(sf::IntRect(p*11, 0, (p+1)*11, 17));
+			d.setTextureRect(sf::IntRect(p*11, 0, 11, 17));
 			d.setPosition(x, d.getPosition().y);
 			target.draw(d);
 			x += 12;

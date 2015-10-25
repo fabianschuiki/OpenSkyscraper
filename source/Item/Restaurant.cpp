@@ -14,15 +14,15 @@ Restaurant::~Restaurant()
 void Restaurant::init()
 {
 	Item::init();
-	
+
 	variant = rand() % 4;
 	open = false;
-	
+
 	sprite.SetImage(App->bitmaps["simtower/restaurant"]);
 	sprite.setOrigin(0, 24);
 	addSprite(&sprite);
 	spriteNeedsUpdate = false;
-	
+
 	updateSprite();
 }
 
@@ -46,7 +46,7 @@ void Restaurant::updateSprite()
 	spriteNeedsUpdate = false;
 	int index = 3;
 	if (open) index = std::min<int>((int)ceil(people.size() / 5.0f), 2);
-	sprite.setTextureRect(sf::IntRect(index*192, variant*24, (index+1)*192, (variant+1)*24));
+	sprite.setTextureRect(sf::IntRect(index*192, variant*24, 192, 24));
 	//sprite.Resize(192, 24);
 	sprite.setScale(192 / sprite.getTextureRect().width, 24 / sprite.getTextureRect().height);
 }
@@ -57,7 +57,7 @@ void Restaurant::advance(double dt)
 	if (game->time.checkHour(17)) {
 		open = true;
 		spriteNeedsUpdate = true;
-		
+
 		//Create new customers for today.
 		int today = 10;
 		clearCustomers();
@@ -68,17 +68,17 @@ void Restaurant::advance(double dt)
 			arrivingCustomers.push(c);
 		}
 	}
-	
+
 	//Close
 	if (game->time.checkHour(23) && open) {
 		open = false;
 		population = customerMetadata.size();
 		game->populationNeedsUpdate = true;
 		spriteNeedsUpdate = true;
-		
+
 		game->transferFunds(population * 400 - 4000, "Income from Restaurant");
 	}
-	
+
 	//Make customers arrive.
 	while (!arrivingCustomers.empty()) {
 		Customer * c = arrivingCustomers.top();
@@ -87,7 +87,7 @@ void Restaurant::advance(double dt)
 			c->journey.set(lobbyRoute);
 		} else break;
 	}
-	
+
 	//Make customers leave once they're done.
 	for (std::list<Person *>::iterator ip = eatingCustomers.begin(); ip != eatingCustomers.end();) {
 		Person * p = *ip;
@@ -105,7 +105,7 @@ void Restaurant::advance(double dt)
 			}
 		} else break;
 	}
-	
+
 	if (spriteNeedsUpdate) updateSprite();
 }
 

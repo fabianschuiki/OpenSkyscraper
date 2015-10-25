@@ -114,11 +114,15 @@ void Sky::draw(sf::RenderTarget & target, sf::RenderStates states) const
 
 void Sky::render(sf::RenderTarget & target) const
 {
-	sf::FloatRect rect = target.getView().getViewport();
+	const sf::View &view = target.getView();
+	sf::Vector2f center = view.getCenter();
+	sf::Vector2f size = view.getSize();
+	sf::Vector2f dmax = center + size/2.f;
+	sf::Vector2f dmin = center - size/2.f;
 
 	//Draw the sky color.
-	int sky_lower = std::max<int>(floor(-(rect.top + rect.height) / 360), -1);
-	int sky_upper = std::min<int>(ceil (-rect.top    / 360), 11);
+	int sky_lower = std::max<int>(floor(-dmax.y / 360), -1);
+	int sky_upper = std::min<int>(ceil (-dmin.y / 360), 11);
 
 	Sprite sky;
 	sky.SetImage(app->bitmaps["simtower/sky"]);
@@ -127,12 +131,11 @@ void Sky::render(sf::RenderTarget & target) const
 			if ((i == 0 && progress == 1) || (i == 1 && progress == 0)) continue;
 
 			int index = (std::min<int>(y + 1, 9) * 6 + (i == 0 ? from : to));
-			sky.setTextureRect(sf::IntRect(index * 32, 0, index * 32 + 32, 360));
-			sky.setScale(32, 360);
+			sky.setTextureRect(sf::IntRect(index * 32, 0,  32, 360));
 			sky.setOrigin(0, 360);
-			sky.setColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
+			sky.setColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1.0 : progress)));
 
-			for (int x = floor(rect.left / 32); x < ceil((rect.left + rect.width) / 32); x++) {
+			for (int x = floor(dmin.x / 32); x < ceil(dmax.x / 32); x++) {
 				sky.setPosition(x * 32, -y * 360);
 				target.draw(sky);
 				game->drawnSprites++;
@@ -143,8 +146,8 @@ void Sky::render(sf::RenderTarget & target) const
 	//Draw the clouds.
 	Sprite cloud;
 	int2 cloudGrid(250, 100);
-	int2 cmin(floor(rect.left / cloudGrid.x)-1, floor(-(rect.top + rect.height) / cloudGrid.y)-1);
-	int2 cmax(ceil((rect.left + rect.width) / cloudGrid.x)+1, ceil(-rect.top / cloudGrid.y)+1);
+	int2 cmin(floor(dmin.x / cloudGrid.x)-1, floor(-dmax.y / cloudGrid.y)-1);
+	int2 cmax(ceil(dmax.x / cloudGrid.x)+1, ceil(-dmin.y / cloudGrid.y)+1);
 	if (cmin.y < 2) cmin.y = 2;
 	for (int x = cmin.x; x <= cmax.x; x++) {
 		for (int y = cmin.y; y <= cmax.y; y++) {
@@ -175,10 +178,10 @@ void Sky::render(sf::RenderTarget & target) const
 				if ((i == 0 && progress == 1) || (i == 1 && progress == 0)) continue;
 				int state = std::min<int>(3, i == 0 ? from : to);
 
-				cloud.setTextureRect(sf::IntRect(0, state*h, w, (state+1)*h));
-				cloud.setScale(w, h);
+				cloud.setTextureRect(sf::IntRect(0, state*h, w, h));
+				// cloud.setScale(w, h);
 				cloud.setOrigin(w/2, h/2);
-				cloud.setColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1-progress : progress)));
+				cloud.setColor(sf::Color(255, 255, 255, 255*(i == 0 ? 1.0 : progress)));
 				cloud.setPosition(position.x, position.y);
 				target.draw(cloud);
 				game->drawnSprites++;
@@ -188,20 +191,22 @@ void Sky::render(sf::RenderTarget & target) const
 
 	//Draw the thunder overlay.
 	if (thunderOverlay > 0) {
-		Sprite s;
-		s.setTextureRect(sf::IntRect(rect.left, rect.top, rect.left + rect.width, -std::max<int>(sky_lower, 0)*360));
-		s.setColor(sf::Color(255, 255, 255, 255*thunderOverlay));
-		s.setPosition(rect.left, rect.top);
+		float miny = std::min<float>(dmin.y, 0.f);
+		float maxy = std::min<float>(dmax.y, 0.f);
+
+		sf::RectangleShape s(sf::Vector2f(size.x, maxy-miny));
+		s.setFillColor(sf::Color(255, 255, 255, 255*thunderOverlay));
+		s.setPosition(sf::Vector2f(dmin.x, miny));
 		target.draw(s);
 		game->drawnSprites++;
 	}
 
 	//Draw the skyline, if in view.
-	if (-(rect.top + rect.height) <= 96 && -rect.top >= 0) {
+	if (-dmax.y <= 96 && -dmin.y >= 0) {
 		Sprite city;
 		city.SetImage(app->bitmaps["simtower/deco/skyline"]);
 		city.setOrigin(0, 55);
-		for (int x = floor(rect.left / 96); x < ceil((rect.left + rect.width) / 96); x++) {
+		for (int x = floor(dmin.x / 96); x < ceil(dmax.x / 96); x++) {
 			city.setPosition(x * 96, 0);
 			target.draw(city);
 			game->drawnSprites++;

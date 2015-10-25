@@ -43,7 +43,7 @@ void Decorations::updateFloor(int y)
 			fsp.minX.SetImage(App->bitmaps["simtower/deco/fireladder"]);
 			fsp.maxX.SetImage(*fsp.minX.getTexture());
 			fsp.minX.setTextureRect(sf::IntRect(0, 0, 24, 36));
-			fsp.maxX.setTextureRect(sf::IntRect(24, 0, 48, 36));
+			fsp.maxX.setTextureRect(sf::IntRect(24, 0, 24, 36));
 			fsp.minX.setOrigin(24, 36);
 			fsp.maxX.setOrigin(0, 36);
 			LOG(DEBUG, "Added fire stairs on floor %i", y);

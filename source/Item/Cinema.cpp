@@ -62,9 +62,9 @@ void Cinema::updateSprite()
 			screenIndex = hallIndex;
 		}
 	}
-	hallSprite.setTextureRect(sf::IntRect(hallIndex*192, 0, (hallIndex+1)*192, 60));
+	hallSprite.setTextureRect(sf::IntRect(hallIndex*192, 0, 192, 60));
 	// hallSprite.resize(192, 60);
-	screenSprite.setTextureRect(sf::IntRect(screenIndex*56, 0, (screenIndex+1)*56, 60));
+	screenSprite.setTextureRect(sf::IntRect(screenIndex*56, 0, 56, 60));
 	// screenSprite.resize(56, 60);
 }
 
