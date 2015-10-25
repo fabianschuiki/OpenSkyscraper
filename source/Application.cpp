@@ -259,11 +259,12 @@ void Application::loop()
 		//Make the current state do its work.
 		glClearColor(0,0,1,0);
 		glClear(GL_COLOR_BUFFER_BIT);
+		window.resetGLStates();
 		if (!states.empty()) {
 			states.top()->advance(dt);
-			// states.top()->gui.draw();
+			states.top()->gui.draw();
 		}
-		// rootGUI->draw();
+		rootGUI->draw();
 
 		//Draw the debugging overlays.
 		char dbg[1024];
