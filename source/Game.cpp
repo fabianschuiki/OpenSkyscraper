@@ -1,3 +1,4 @@
+/* Copyright (c) 2012-2015 Fabian Schuiki */
 #include <cassert>
 #include "Application.h"
 #include "Game.h"
@@ -341,7 +342,7 @@ bool Game::handleEvent(sf::Event & event)
 								if (i->prototype->icon == 0) {
 									gameMap.removeNode(MapNode::Point(i->position.x + i->size.x/2, i->position.y), i);
 									Item::Lobby * l = (Item::Lobby *) i;
-									float diff = 0;
+									int diff = 0;
 									if (toolPosition.x < l->position.x) {
 										diff = l->position.x - toolPosition.x;
 										l->size.x += diff;
@@ -351,10 +352,11 @@ bool Game::handleEvent(sf::Event & event)
 										if (diff < 0) diff = 0;
 										l->size.x += diff;
 									}
+									LOG(INFO, "lobby diff = %d", diff);
 									l->updateSprite();
 									gameMap.addNode(MapNode::Point(i->position.x + i->size.x/2, i->position.y), i);
 									if (diff > 0) {
-										transferFunds(-toolPrototype->price * (diff/4));
+										transferFunds(-toolPrototype->price * 4 / diff);
 										playOnce("simtower/construction/flexible");
 									}
 									existingLobby = true;
@@ -363,6 +365,7 @@ bool Game::handleEvent(sf::Event & event)
 							// Otherwise construct a new lobby
 							if (!existingLobby) {
 								Item::Item * item = itemFactory.make(toolPrototype, toolPosition);
+								LOG(INFO, "created new lobby item %p", item);
 								addItem(item);
 								transferFunds(-toolPrototype->price);
 								playOnce("simtower/construction/normal");
@@ -552,12 +555,13 @@ void Game::advance(double dt)
 	}
 
 	//Draw the remaining items in the building
+	int2 vmin(floor(view.left/8), floor(view.top/32));
+	int2 vmax(ceil((view.left+view.width)/8), ceil((view.top+view.height)/32));
 	for (int layer = 0; layer < 2; layer++) {
 		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 			if ((*i)->layer != layer) continue;
-			const int2 & vp = (*i)->getPosition();
-			const sf::Vector2u & vs = (*i)->getSize();
-			if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) && vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
+			const recti &r = (*i)->getRect();
+			if (r.maxX() >= vmin.x && r.minX() <= vmax.x && r.maxY() >= vmin.y && r.minY() <= vmax.y) {
 				win.draw(**i);
 				if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 			}

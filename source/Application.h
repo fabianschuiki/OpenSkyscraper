@@ -1,3 +1,4 @@
+/* Copyright (c) 2012-2015 Fabian Schuiki */
 #pragma once
 
 #include <SFML/Graphics.hpp>
@@ -30,37 +31,37 @@ namespace OT
 	class Application
 	{
 		friend class State;
-		
+
 	public:
 		Application(int argc, char * argv[]);
-		
+
 		Path getPath() const { return path; }
-		
+
 		Logger logger;
-		
+
 		sf::RenderWindow window;
 		sf::VideoMode videoMode;
-		
+
 		DataManager   data;
 		GUIManager    gui;
 		GUI *         rootGUI;
 		BitmapManager bitmaps;
 		FontManager   fonts;
 		SoundManager  sounds;
-		
+
 		int run();
-		
+
 	private:
 		Path path;
 		void setPath(const Path & p);
-		
+
 		bool running;
 		int exitCode;
-		
+
 		void init();
 		void loop();
 		void cleanup();
-		
+
 		std::stack<State *> states;
 		void pushState(State * state);
 		void popState();
@@ -68,6 +69,6 @@ namespace OT
 		bool dumpResources;
 		Path dumpResourcesPath;
 	};
-	
+
 	extern Application * App;
 }

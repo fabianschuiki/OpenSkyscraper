@@ -1,3 +1,4 @@
+/* Copyright (c) 2012-2015 Fabian Schuiki */
 /**
  *  The bitmaps should be processed and composed according to the following scheme:
  *  - bitmaps that represent different floors of the same item are fused together
@@ -956,7 +957,7 @@ void SimTowerLoader::loadSky(int id, sf::Image & img)
 		}
 		img.copy(tmp, i*32, 0);
 	}
-	rawBitmaps.erase(id);
+	// rawBitmaps.erase(id);
 }
 
 void SimTowerLoader::loadLobbies()
@@ -976,7 +977,7 @@ void SimTowerLoader::loadLobbies()
 		for (int n = 0; n < 3; n++) {
 			int dsty = (n < 2 ? i*36 : i*108+72);
 			segments[n]->copy(raw, 7*8, dsty, sf::IntRect(n*328, 0, 328-9*8, 36));
-			//segments[n]->copy(raw, 0,   dsty, sf::IntRect((n+1)*328-7*8, 0, 328, 36));
+			segments[n]->copy(raw, 0,   dsty, sf::IntRect((n+1)*328-7*8, 0, 7*8, 36));
 		}
 	}
 	sky.createMaskFromColor(sf::Color(0x8C, 0xD6, 0xFF));
@@ -1001,7 +1002,7 @@ void SimTowerLoader::loadBitmap(int id, sf::Image & img)
 		LOG(ERROR, "unable to load bitmap 0x%x from memory", id);
 		return;
 	}
-	rawBitmaps.erase(id);
+	// rawBitmaps.erase(id);
 }
 
 /** Certain bitmaps in SimTower are animated by swapping colors in the color table. The following colors are rotated to achieve animation:
@@ -1034,7 +1035,7 @@ void SimTowerLoader::loadAnimatedBitmap(int id, sf::Image img[3])
 			return;
 		}
 	}
-	rawBitmaps.erase(id);
+	// rawBitmaps.erase(id);
 }
 
 

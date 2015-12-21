@@ -27,7 +27,7 @@ namespace OT {
 			Sprite entrances[2];
 			void updateSprite();
 
-			void render(sf::RenderTarget & target) const;
+			virtual void render(sf::RenderTarget & target) const;
 		};
 	}
 }

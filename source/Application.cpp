@@ -1,3 +1,4 @@
+/* Copyright (c) 2012-2015 Fabian Schuiki */
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -268,32 +269,33 @@ void Application::loop()
 		}
 		rootGUI->draw();
 
-		// //Draw the debugging overlays.
-		// char dbg[1024];
-		// snprintf(dbg, 32, "%.0fHz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
-		// if (!states.empty()) {
-		// 	strcat(dbg, "\n");
-		// 	strcat(dbg, states.top()->debugString);
-		// }
-		// rateIndicator.setString(dbg);
+		window.resetGLStates();
+		// Draw the debugging overlays.
+		char dbg[1024];
+		snprintf(dbg, 32, "%.0fHz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
+		if (!states.empty()) {
+			strcat(dbg, "\n");
+			strcat(dbg, states.top()->debugString);
+		}
+		rateIndicator.setString(dbg);
 
-		// window.setView(window.getDefaultView());
-		// sf::FloatRect r = rateIndicator.getLocalBounds();
-		// sf::RectangleShape bg = sf::RectangleShape(sf::Vector2f(r.width, r.height));
-		// bg.setFillColor(sf::Color(0, 0, 0, 0.25*255));
-		// bg.setPosition(sf::Vector2f(r.left, r.top));
-		// window.draw(bg);
-		// window.draw(rateIndicator);
+		window.setView(window.getDefaultView());
+		sf::FloatRect r = rateIndicator.getLocalBounds();
+		sf::RectangleShape bg = sf::RectangleShape(sf::Vector2f(r.width, r.height));
+		bg.setFillColor(sf::Color(0, 0, 0, 0.25*255));
+		bg.setPosition(sf::Vector2f(r.left, r.top));
+		window.draw(bg);
+		window.draw(rateIndicator);
 
-		// sf::Vector2i mp = sf::Mouse::getPosition(window);
-		// glColor3f(1,0,0);
-		// glBegin(GL_LINES);
-		// glVertex2f(mp.x-10,mp.y);
-		// glVertex2f(mp.x+10,mp.y);
-		// glVertex2f(mp.x,mp.y-10);
-		// glVertex2f(mp.x,mp.y+10);
-		// glEnd();
-		// glColor3f(1,1,1);
+		sf::Vector2i mp = sf::Mouse::getPosition(window);
+		glColor3f(1,0,0);
+		glBegin(GL_LINES);
+		glVertex2f(mp.x-10,mp.y);
+		glVertex2f(mp.x+10,mp.y);
+		glVertex2f(mp.x,mp.y-10);
+		glVertex2f(mp.x,mp.y+10);
+		glEnd();
+		glColor3f(1,1,1);
 
 		//Swap buffers.
 		window.display();

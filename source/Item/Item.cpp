@@ -1,3 +1,4 @@
+/* Copyright (c) 2012-2015 Fabian Schuiki */
 #include <cassert>
 #include <string>
 #include "../Game.h"
@@ -20,8 +21,8 @@ Item::~Item()
 void Item::setPosition(int2 p)
 {
 	if (position != p) {
-		position.x = p.x*8;
-		position.y = -p.y*36;
+		position.x = p.x/**8*/;
+		position.y = -p.y/**36*/;
 	}
 }
 
