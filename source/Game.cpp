@@ -295,7 +295,7 @@ bool Game::handleEvent(sf::Event & event)
 							blockReason = "Only lobbies may be built on the ground floor";
 						}
 
-						// Check obstruction from other buildings
+						// Check obstruction from other buildings.
 						ItemSet itemsNearby;
 						for (int y = 0; !constructionBlocked && y < toolPrototype->size.y; y++) {
 							itemsNearby = itemsByFloor[toolPosition.y + y];

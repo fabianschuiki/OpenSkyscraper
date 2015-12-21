@@ -50,7 +50,7 @@ void Decorations::updateFloor(int y)
 		}
 
 		//Position the fire stairs accordingly.
-		int minFloorX = f->position.x;
+		int minFloorX = f->getRect().minX();
 		int maxFloorX = f->getRect().maxX();
 		fsp.minX.setPosition(minFloorX * 8.0f, -y * 36.0f);
 		fsp.maxX.setPosition(maxFloorX * 8.0f, -y * 36.0f);
@@ -108,9 +108,15 @@ void Decorations::draw(sf::RenderTarget & target, sf::RenderStates states) const
 /** Renders the tower decorations to the given render target. */
 void Decorations::render(sf::RenderTarget & target) const
 {
+	const sf::View &view = target.getView();
+	sf::Vector2f center = view.getCenter();
+	sf::Vector2f size = view.getSize();
+	sf::Vector2f dmax = center + size/2.f;
+	sf::Vector2f dmin = center - size/2.f;
+
 	sf::FloatRect rect = target.getView().getViewport();
-	for (int y = (int)floor(-rect.top-rect.height / 36); y <= ceil(-rect.top / 36); y++) {
-		FireStairs::const_iterator fsi = fireStairs.find(y);
+	for (int y = (int)floor(dmin.y / 36); y <= ceil(dmax.y / 36); y++) {
+		FireStairs::const_iterator fsi = fireStairs.find(-y);
 		if (fsi == fireStairs.end()) continue;
 		target.draw(fsi->second.minX);
 		target.draw(fsi->second.maxX);
@@ -119,17 +125,17 @@ void Decorations::render(sf::RenderTarget & target) const
 	if (craneVisible) target.draw(crane);
 
 	if (tracksVisible) {
-		sf::FloatRect view = target.getView().getViewport();
+		// sf::FloatRect view = target.getView().getViewport();
 		recti rect = game->metroStation->getRect();
 
-		int minx = (int)floor(view.left / 32);
+		int minx = (int)floor(dmin.x / 32);
 		int maxx = 0;
 		Sprite t = track;
 		if (minx < floor(rect.minX() / 4.0f)) {
 			// Render tracks on the left
 			maxx = (int) ceil(rect.minX() / 4.0f);
 			for (int x = minx; x < maxx; x++) {
-				int offl = std::max<int>(0, (int)(view.left - x*32));
+				int offl = std::max<int>(0, (int)(dmin.x - x*32));
 				int offr = std::max<int>(0, (x+1)*4 - rect.minX()) * 8;
 				sf::IntRect sr = track.getTextureRect();
 				sr.left  += offl;
@@ -144,12 +150,12 @@ void Decorations::render(sf::RenderTarget & target) const
 		}
 
 		minx = (int)floor(rect.maxX() / 4.0f);
-		if (minx < floor((view.left+view.width)/ 32)) {
+		if (minx < floor(dmax.x/ 32)) {
 			// Render tracks on the right
-			maxx = (int)ceil((view.left+view.width) / 32);
+			maxx = (int)ceil(dmax.x / 32);
 			for (int x = minx; x < maxx; x++) {
 				int offl = std::max<int>(0, rect.maxX() - x*4) * 8;
-				int offr = std::max<int>(0, (int)((x+1)*32 - view.left-view.width));
+				int offr = std::max<int>(0, (int)((x+1)*32 - dmax.x));
 				sf::IntRect sr = track.getTextureRect();
 				sr.left  += offl;
 				sr.width -= offl+offr;

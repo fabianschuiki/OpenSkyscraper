@@ -22,7 +22,7 @@ void Item::setPosition(int2 p)
 {
 	if (position != p) {
 		position.x = p.x/**8*/;
-		position.y = -p.y/**36*/;
+		position.y = p.y/**36*/;
 	}
 }
 
