@@ -17,6 +17,10 @@ At the moment, you need a `SIMTOWER.EXE` installed somewhere on your system. The
 number of locations for this file. Check the `WindowsNEExecutable.cpp.15, load: from .../SIMTOWER.EXE`
 lines of output for a list of locations.
 
+If you instead wish to use the SIMTOWER.EX_ compressed from the disk, you must build with the optional
+dependency of libmspack. As long as you have it installed in your system when you run "cmake .." then
+it should be picked up.
+
 
 What is being tested?
 ---------------------
