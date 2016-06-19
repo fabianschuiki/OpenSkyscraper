@@ -97,7 +97,7 @@ rectd Item::getMouseRegion()
 {
 	int2 p = getPosition();
 	sf::Vector2u s = getSize();
-	return rectd(p.x, p.y - s.y + 12, s.x, s.y - 12);
+	return rectd(p.x, p.y - (int)s.y + 12, s.x, (int)s.y - 12);
 }
 
 void Item::updateRoutes()
