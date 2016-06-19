@@ -548,7 +548,7 @@ void Game::advance(double dt)
 		const int2 & vp = (*i)->getPosition();
 		const sf::Vector2u & vs = (*i)->getSize();
 		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) &&
-			vp.y >= view.top && vp.y-vs.y <= (view.top + view.height)) {
+			vp.y >= view.top && vp.y-(int)vs.y <= (view.top + view.height)) {
 			win.draw(**i);
 			if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 		}
