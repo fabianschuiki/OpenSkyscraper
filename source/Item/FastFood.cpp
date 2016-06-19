@@ -20,6 +20,7 @@ void FastFood::init()
 
 	sprite.SetImage(App->bitmaps["simtower/fastfood"]);
 	sprite.setOrigin(0, 24);
+	sprite.setPosition(getPosition().x*8, -getPosition().y*36);
 	addSprite(&sprite);
 	spriteNeedsUpdate = false;
 
