@@ -32,12 +32,13 @@ namespace OT {
 			int2 position;
 			int2 size;
 			void setPosition(int2 p);
-			int2 getPosition();
+			int2 getPosition() const;
 			recti getRect() const { return recti(position, size); }
 
 			void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 			virtual void render(sf::RenderTarget & target) const;
-			sf::Vector2u getSize() const { return sf::Vector2u(size.x*8, size.y*36); }
+			sf::Vector2u getSize() const { return sf::Vector2u(size.x, size.y); }
+			sf::Vector2u getSizePixels() const { return sf::Vector2u(size.x*8, size.y*36); }
 
 			virtual rectd getMouseRegion(); //in world pixel
 

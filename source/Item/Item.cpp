@@ -26,7 +26,7 @@ void Item::setPosition(int2 p)
 	}
 }
 
-int2 Item::getPosition()
+int2 Item::getPosition() const
 {
 	return position;
 }
