@@ -3,7 +3,7 @@
 		<style>
 			body {
 				font-family: Play;
-				color: black;
+				background-color: #ddd;
 
 				width: /*431px*/700px;
 				height: 41px;
