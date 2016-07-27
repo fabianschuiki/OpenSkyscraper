@@ -16,10 +16,9 @@ GUI::GUI(std::string name, GUIManager * manager)
 	assert(manager && "GUI requires a GUIManager");
 
 	this->manager = manager;
-	context = Rocket::Core::CreateContext(name.c_str(),
-					Rocket::Core::Vector2i(
-						manager->window->getView().getSize().x,
-						manager->window->getView().getSize().y));
+	unsigned width = manager->window->getView().getSize().x;
+	unsigned height = manager->window->getView().getSize().y;
+	context = Rocket::Core::CreateContext(name.c_str(), Rocket::Core::Vector2i(width, height));
 	assert(context && "unable to initialize context");
 }
 
@@ -63,7 +62,9 @@ void GUI::draw()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0, manager->window->getView().getSize().x, manager->window->getView().getSize().y, 0, -1, 1);
+	unsigned width = manager->window->getView().getSize().x;
+	unsigned height = manager->window->getView().getSize().y;
+	glOrtho(0.0, width, height, 0.0, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();

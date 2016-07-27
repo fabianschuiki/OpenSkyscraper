@@ -54,6 +54,7 @@ void Stairlike::updateSprite()
 
 	sprite.setOrigin(0, h);
 	sprite.setTextureRect(sf::IntRect(w*frame, 0, w, h));
+	sprite.setPosition(getPosition().x*8, -getPosition().y*36);
 }
 
 bool Stairlike::connectsFloor(int floor) const
