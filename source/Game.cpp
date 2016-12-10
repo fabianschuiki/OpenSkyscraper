@@ -525,13 +525,14 @@ void Game::advance(double dt)
 
 	//Prepare the current tool.
 	sf::Vector2f mp = win.mapPixelToCoords(sf::Mouse::getPosition(app.window));
+	mp.y = -mp.y;
 	Item::AbstractPrototype * previousPrototype = toolPrototype;
 	if (selectedTool.find("item-") == 0) {
 		toolPrototype = itemFactory.prototypesById[selectedTool.substr(5)];
-		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2.0), round(-mp.y/36-toolPrototype->size.y/2.0));
+		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2.0), round(mp.y/36-toolPrototype->size.y/2.0));
 	} else {
 		toolPrototype = NULL;
-		toolPosition = int2(floor(mp.x/8), floor(-mp.y/36));
+		toolPosition = int2(floor(mp.x/8), floor(mp.y/36));
 	}
 	if (previousPrototype != toolPrototype) timeWindow.updateTooltip();
 
