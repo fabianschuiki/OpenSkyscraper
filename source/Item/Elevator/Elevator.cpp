@@ -152,11 +152,18 @@ void Elevator::decodeXML(tinyxml2::XMLElement & xml)
 	updateSprite();
 }
 
+/*
+ * This is reimplemented because the elevator contains
+ * the two "operational" components around it in the
+ * vertical direction, and thus has a different mouse
+ * region.
+ */
+
 rectd Elevator::getMouseRegion()
 {
-	int2 p = getPosition();
-	sf::Vector2u s = getSize();
-	return rectd(p.x, p.y - s.y - 36, s.x, s.y + 2*36);
+	int2 p = getPositionPixels();
+	sf::Vector2u s = getSizePixels();
+	return rectd(p.x, p.y - (int)s.y, s.x, s.y*3);
 }
 
 bool Elevator::repositionMotor(int motor, int y)

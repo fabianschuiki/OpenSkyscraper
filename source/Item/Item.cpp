@@ -31,6 +31,11 @@ int2 Item::getPosition() const
 	return position;
 }
 
+int2 Item::getPositionPixels() const
+{
+	return int2(position.x * 8, position.y * 36);
+}
+
 void Item::addSprite(Sprite * sprite)
 {
 	assert(sprite);
@@ -93,11 +98,19 @@ void Item::removePerson(Person * p)
 	people.erase(p);
 }
 
+/*
+ * Returns a rectangle that covers the same region
+ * as this item. To be in-line with the rectd object,
+ * the rectangle has its origin at the lower left
+ * corner of the item on the game screen and its
+ * other point "increases" upwards and to the right
+ */
+
 rectd Item::getMouseRegion()
 {
-	int2 p = getPosition();
-	sf::Vector2u s = getSize();
-	return rectd(p.x, p.y - (int)s.y + 12, s.x, (int)s.y - 12);
+	int2 p = getPositionPixels();
+	sf::Vector2u s = getSizePixels();
+	return rectd(p.x, p.y, s.x, s.y);
 }
 
 void Item::updateRoutes()
