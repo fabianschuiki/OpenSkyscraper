@@ -43,14 +43,15 @@ void Elevator::init()
 
 void Elevator::updateSprite()
 {
-	int w = getSize().x * 8;
-	int h = getSize().y * 36;
+	int w = getSizePixels().x;
+	int h = getSizePixels().y;
 
 	topMotor.setTextureRect   (sf::IntRect((2*frame+1)*w, 0, w, 36));
 	bottomMotor.setTextureRect(sf::IntRect((2*frame+2)*w, 0, w, 36));
 	topMotor.setOrigin(0, 36);
-	topMotor.setPosition(getPosition().x * 8, -h);
-	bottomMotor.setPosition(getPosition().x * 8, 0);
+	topMotor.setPosition(getPositionPixels().x, -(h + getPositionPixels().y));
+	bottomMotor.setPosition(getPositionPixels().x, -getPositionPixels().y);
+	LOG(DEBUG, "top motor (%d, %d); bottom motor (%d, %d)", getPositionPixels().x, -(h - getPositionPixels().y), getPositionPixels().x, -getPositionPixels().y);
 }
 
 void Elevator::render(sf::RenderTarget & target) const
@@ -63,12 +64,13 @@ void Elevator::render(sf::RenderTarget & target) const
 	d.SetImage(app->bitmaps["simtower/elevator/digits"]);
 	d.setOrigin(0, 17);
 
-	int minY = 0;
-	int maxY = size.y-1;
+	int minY = position.y;
+	int maxY = size.y + minY - 1;
 
 	for (int y = minY; y <= maxY; y++) {
-		s.setPosition(getPosition().x*8, -y*36);
-		d.setPosition(getPosition().x*8, -y*36 - 8);
+		LOG(DEBUG, "Creating elevator shaft on floor %d at %d", y, -y*36);
+		s.setPosition(getPositionPixels().x, -y*36);
+		d.setPosition(getPositionPixels().x, -y*36 - 8);
 		target.draw(s);
 
 		int flr = position.y + y;
