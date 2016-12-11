@@ -40,7 +40,9 @@ void Car::setAltitude(double a)
 
 void Car::reposition()
 {
-	setPosition(0, -altitude * 36 - elevator->getPosition().y);
+	//2 and 4 were determined experimentally to center the car in the elevator.
+	//A better method should probably be determined.
+	sprite.setPosition(elevator->getPositionPixels().x + 2, -altitude * 36 - 4);
 }
 
 void Car::updateSprite()
@@ -55,9 +57,7 @@ void Car::updateSprite()
 	int w = sprite.getTexture()->getSize().x / 5;
 	int h = sprite.getTexture()->getSize().y;
 	sprite.setTextureRect(sf::IntRect(index*w, 0, w, h));
-	//2 and 4 were determined experimentally to center the car in the elevator.
-	//A better method should probably be determined.
-	sprite.setPosition(elevator->getPosition().x * 8 + 2, -elevator->getPosition().y * 36 - 4);
+	reposition();
 }
 
 void Car::draw(sf::RenderTarget & target, sf::RenderStates states) const
