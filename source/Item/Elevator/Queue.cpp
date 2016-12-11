@@ -116,8 +116,9 @@ void Queue::render(sf::RenderTarget & target) const
 
 		//Calculate the person's position.
 		sf::Vector2f pos;
-		pos.y = -(floor - elevator->position.y) * 36;
+		pos.y = -(floor * 36);
 		pos.x = (direction == Elevator::kUp ? -x : elevator->size.x * 8 + x);
+		pos.x += elevator->getPositionPixels().x;
 
 		//Decide what color to use based on stress level.
 		sf::Color color = sf::Color::Black;
