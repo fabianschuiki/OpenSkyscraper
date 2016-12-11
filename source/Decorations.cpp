@@ -33,7 +33,7 @@ void Decorations::updateFloor(int y)
 	}
 
 	// Otherwise calculate the width of the floor.
-	else {
+	else if (y > 0) {
 		Item::Item * f = game->floorItems[y];
 
 		//Create a new pair of fire stairs if required.
