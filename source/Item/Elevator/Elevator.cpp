@@ -51,7 +51,6 @@ void Elevator::updateSprite()
 	topMotor.setOrigin(0, 36);
 	topMotor.setPosition(getPositionPixels().x, -(h + getPositionPixels().y));
 	bottomMotor.setPosition(getPositionPixels().x, -getPositionPixels().y);
-	LOG(DEBUG, "top motor (%d, %d); bottom motor (%d, %d)", getPositionPixels().x, -(h - getPositionPixels().y), getPositionPixels().x, -getPositionPixels().y);
 }
 
 void Elevator::render(sf::RenderTarget & target) const
