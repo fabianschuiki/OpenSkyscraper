@@ -68,7 +68,6 @@ void Elevator::render(sf::RenderTarget & target) const
 	int maxY = size.y + minY - 1;
 
 	for (int y = minY; y <= maxY; y++) {
-		LOG(DEBUG, "Creating elevator shaft on floor %d at %d", y, -y*36);
 		s.setPosition(getPositionPixels().x, -y*36);
 		d.setPosition(getPositionPixels().x, -y*36 - 8);
 		target.draw(s);
