@@ -72,7 +72,7 @@ void Elevator::render(sf::RenderTarget & target) const
 		d.setPosition(getPositionPixels().x, -y*36 - 8);
 		target.draw(s);
 
-		int flr = position.y + y;
+		int flr = y;
 		if (!connectsFloor(flr)) continue;
 
 		char c[8];
