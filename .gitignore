@@ -1,6 +1,7 @@
 /build/*
 !/build/default.tower
 build
+Build
 .*
 *~
 !.gitignore
@@ -9,6 +10,8 @@ build
 # Project Files
 *.kdev4
 *.anjuta
+tags
+*.patch
 
 # Documentation
 /doc/source/*
