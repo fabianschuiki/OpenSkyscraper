@@ -9,6 +9,7 @@ using std::string;
 using OT::int2;
 using OT::Person;
 using OT::rectd;
+using OT::recti;
 using OT::Sprite;
 
 
@@ -34,6 +35,11 @@ int2 Item::getPosition() const
 int2 Item::getPositionPixels() const
 {
 	return int2(position.x * 8, position.y * 36);
+}
+
+recti Item::getRect() const
+{
+	return recti(position, size);
 }
 
 void Item::addSprite(Sprite * sprite)
