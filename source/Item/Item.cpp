@@ -39,7 +39,7 @@ int2 Item::getPositionPixels() const
 
 recti Item::getRect() const
 {
-	return recti(position, size);
+	return recti(getPosition(), int2(getSize().x, getSize().y));
 }
 
 void Item::addSprite(Sprite * sprite)
