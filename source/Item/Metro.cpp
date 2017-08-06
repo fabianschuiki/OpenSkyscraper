@@ -56,7 +56,9 @@ void Metro::updateSprite()
 	}
 
 	station.setTextureRect(sf::IntRect(stationIndex*240, 0, 240, 66));
-	platform.setTextureRect(sf::IntRect(platformIndex*240, 66, 240, 96));
+	platform.setTextureRect(sf::IntRect(platformIndex*240, 66, 240, 30));
+	station.setPosition(getPositionPixels().x, -getPositionPixels().y);
+	platform.setPosition(getPositionPixels().x, -getPositionPixels().y);
 }
 
 void Metro::advance(double dt)
