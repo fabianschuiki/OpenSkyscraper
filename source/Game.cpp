@@ -559,7 +559,7 @@ void Game::advance(double dt)
 		const int2 & vp = (*i)->getPositionPixels();
 		const sf::Vector2u & vs = (*i)->getSizePixels();
 		if ((vp.x+vs.x >= view.left) && (vp.x <= (view.left + view.width)) &&
-			(vp.y >= (view.top - view.height)) && ((vp.y + vs.y) <= view.top)) {
+			((vp.y + vs.y) >= (view.top - view.height)) && (vp.y <= view.top)) {
 			win.draw(**i);
 			if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 		}
@@ -572,7 +572,7 @@ void Game::advance(double dt)
 			const int2 & vp = (*i)->getPositionPixels();
 			const sf::Vector2u & vs = (*i)->getSizePixels();
 			if ((vp.x+vs.x >= view.left) && (vp.x <= (view.left + view.width)) &&
-				(vp.y >= (view.top - view.height)) && ((vp.y + vs.y) <= view.top)) {
+				((vp.y + vs.y) >= (view.top - view.height)) && (vp.y <= view.top)) {
 				win.draw(**i);
 				if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 			}
