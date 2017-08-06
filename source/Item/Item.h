@@ -35,6 +35,7 @@ namespace OT {
 			int2 getPosition() const;
 			int2 getPositionPixels() const;
 			recti getRect() const;
+			recti getPixelRect() const;
 
 			void draw(sf::RenderTarget & target, sf::RenderStates states) const;
 			virtual void render(sf::RenderTarget & target) const;

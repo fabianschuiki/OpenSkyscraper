@@ -42,6 +42,11 @@ recti Item::getRect() const
 	return recti(getPosition(), int2(getSize().x, getSize().y));
 }
 
+recti Item::getPixelRect() const
+{
+	return recti(getPositionPixels(), int2(getSizePixels().x, getSizePixels().y));
+}
+
 void Item::addSprite(Sprite * sprite)
 {
 	assert(sprite);
