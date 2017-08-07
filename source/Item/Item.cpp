@@ -9,6 +9,7 @@ using std::string;
 using OT::int2;
 using OT::Person;
 using OT::rectd;
+using OT::recti;
 using OT::Sprite;
 
 
@@ -29,6 +30,21 @@ void Item::setPosition(int2 p)
 int2 Item::getPosition() const
 {
 	return position;
+}
+
+int2 Item::getPositionPixels() const
+{
+	return int2(position.x * 8, position.y * 36);
+}
+
+recti Item::getRect() const
+{
+	return recti(getPosition(), int2(getSize().x, getSize().y));
+}
+
+recti Item::getPixelRect() const
+{
+	return recti(getPositionPixels(), int2(getSizePixels().x, getSizePixels().y));
 }
 
 void Item::addSprite(Sprite * sprite)
@@ -55,7 +71,7 @@ void Item::render(sf::RenderTarget & target) const
 		target.draw(**s);
 	}
 
-	if (!canHaulPeople() && position.y != 0 && prototype->icon != 1 && lobbyRoute.empty()) {
+	if (!canHaulPeople() && position.y != 0 && prototype->icon != ICON_FLOOR && lobbyRoute.empty()) {
 		Sprite noroute;
 		noroute.SetImage(app->bitmaps["noroute.png"]);
 		sf::Vector2u size = noroute.getTexture()->getSize();
@@ -93,11 +109,19 @@ void Item::removePerson(Person * p)
 	people.erase(p);
 }
 
+/*
+ * Returns a rectangle that covers the same region
+ * as this item. To be in-line with the rectd object,
+ * the rectangle has its origin at the lower left
+ * corner of the item on the game screen and its
+ * other point "increases" upwards and to the right
+ */
+
 rectd Item::getMouseRegion()
 {
-	int2 p = getPosition();
-	sf::Vector2u s = getSize();
-	return rectd(p.x, p.y - (int)s.y + 12, s.x, (int)s.y - 12);
+	int2 p = getPositionPixels();
+	sf::Vector2u s = getSizePixels();
+	return rectd(p.x, p.y, s.x, s.y);
 }
 
 void Item::updateRoutes()

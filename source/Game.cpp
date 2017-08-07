@@ -35,6 +35,7 @@ Game::Game(Application & app)
 
 	zoom = 1;
 	poi.y = 200;
+	poi.x = 0;
 
 	draggingElevator = NULL;
 	draggingMotor = 0;
@@ -520,18 +521,28 @@ void Game::advance(double dt)
 	view.height = halfsize.y*2;
 	sf::View cameraView(view);
 	win.setView(cameraView);
-	//sf::FloatRect view = cameraView.GetRect();
-	//win.SetView(sf::View(view));
 
 	//Prepare the current tool.
-	sf::Vector2f mp = win.mapPixelToCoords(sf::Mouse::getPosition(app.window));
+	sf::Vector2f mp = win.mapPixelToCoords(sf::Mouse::getPosition(win));
+	mp.y = -mp.y;
+	/* [TRICKY]
+	 * The view as defined by SFML's sf::View uses a coordinate system that 
+	 * has the origin in the top right corner and grows down and to the right.
+	 * The rest of this application (that is, the positioning of the sprites)
+	 * uses a coordinate system that has the origin in the bottom right corner
+	 * and grows to the right.
+	 * This was incredibly tricky for me to wrap my head around, but the only
+	 * translation from one to the other that is needed is to negate the "top"
+	 * of the view when doing the conditional drawing of on-screen objects.
+	 */
+	view.top = -view.top;
 	Item::AbstractPrototype * previousPrototype = toolPrototype;
 	if (selectedTool.find("item-") == 0) {
 		toolPrototype = itemFactory.prototypesById[selectedTool.substr(5)];
-		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2.0), round(-mp.y/36-toolPrototype->size.y/2.0));
+		toolPosition = int2(round(mp.x/8-toolPrototype->size.x/2.0), round(mp.y/36-toolPrototype->size.y/2.0));
 	} else {
 		toolPrototype = NULL;
-		toolPosition = int2(floor(mp.x/8), floor(-mp.y/36));
+		toolPosition = int2(floor(mp.x/8), floor(mp.y/36));
 	}
 	if (previousPrototype != toolPrototype) timeWindow.updateTooltip();
 
@@ -545,23 +556,23 @@ void Game::advance(double dt)
 
 	//Draw floor items first
 	for (ItemSet::iterator i = itemsByType["floor"].begin(); i != itemsByType["floor"].end(); i++) {
-		const int2 & vp = (*i)->getPosition();
-		const sf::Vector2u & vs = (*i)->getSize();
-		if (vp.x+vs.x >= view.left && vp.x <= (view.left + view.width) &&
-			vp.y >= view.top && vp.y-(int)vs.y <= (view.top + view.height)) {
+		const int2 & vp = (*i)->getPositionPixels();
+		const sf::Vector2u & vs = (*i)->getSizePixels();
+		if ((vp.x+vs.x >= view.left) && (vp.x <= (view.left + view.width)) &&
+			((vp.y + vs.y) >= (view.top - view.height)) && (vp.y <= view.top)) {
 			win.draw(**i);
 			if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 		}
 	}
 
 	//Draw the remaining items in the building
-	int2 vmin(floor(view.left/8), floor(view.top/32));
-	int2 vmax(ceil((view.left+view.width)/8), ceil((view.top+view.height)/32));
 	for (int layer = 0; layer < 2; layer++) {
 		for (ItemSet::iterator i = items.begin(); i != items.end(); i++) {
 			if ((*i)->layer != layer) continue;
-			const recti &r = (*i)->getRect();
-			if (r.maxX() >= vmin.x && r.minX() <= vmax.x && r.maxY() >= vmin.y && r.minY() <= vmax.y) {
+			const int2 & vp = (*i)->getPositionPixels();
+			const sf::Vector2u & vs = (*i)->getSizePixels();
+			if ((vp.x+vs.x >= view.left) && (vp.x <= (view.left + view.width)) &&
+				((vp.y + vs.y) >= (view.top - view.height)) && (vp.y <= view.top)) {
 				win.draw(**i);
 				if ((*i)->getMouseRegion().containsPoint(double2(mp.x, mp.y))) itemBelowCursor = *i;
 			}

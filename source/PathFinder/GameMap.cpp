@@ -216,7 +216,7 @@ MapNode* GameMap::findNode(const MapNode::Point &p, Item::Item *item) {
 }
 
 void GameMap::handleElevatorResize(Item::Elevator::Elevator *draggingElevator, bool draggingElevatorLower, int &draggingElevatorStart) {
-	MapNode::Point p(draggingElevator->position.x + draggingElevator->size.x/2, 0);
+	MapNode::Point p(draggingElevator->getPosition().x + draggingElevator->getSize().x/2, 0);
 	if (draggingElevatorLower) {
 		if (draggingElevatorStart <= draggingElevator->position.y) {
 			// Elevator bottom shifted up

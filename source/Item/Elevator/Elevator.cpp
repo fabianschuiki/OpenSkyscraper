@@ -43,14 +43,14 @@ void Elevator::init()
 
 void Elevator::updateSprite()
 {
-	int w = getSize().x * 8;
-	int h = getSize().y * 36;
+	int w = getSizePixels().x;
+	int h = getSizePixels().y;
 
 	topMotor.setTextureRect   (sf::IntRect((2*frame+1)*w, 0, w, 36));
 	bottomMotor.setTextureRect(sf::IntRect((2*frame+2)*w, 0, w, 36));
 	topMotor.setOrigin(0, 36);
-	topMotor.setPosition(getPosition().x * 8, -h);
-	bottomMotor.setPosition(getPosition().x * 8, 0);
+	topMotor.setPosition(getPositionPixels().x, -(h + getPositionPixels().y));
+	bottomMotor.setPosition(getPositionPixels().x, -getPositionPixels().y);
 }
 
 void Elevator::render(sf::RenderTarget & target) const
@@ -63,15 +63,15 @@ void Elevator::render(sf::RenderTarget & target) const
 	d.SetImage(app->bitmaps["simtower/elevator/digits"]);
 	d.setOrigin(0, 17);
 
-	int minY = 0;
-	int maxY = size.y-1;
+	int minY = position.y;
+	int maxY = size.y + minY - 1;
 
 	for (int y = minY; y <= maxY; y++) {
-		s.setPosition(getPosition().x*8, -y*36);
-		d.setPosition(getPosition().x*8, -y*36 - 8);
+		s.setPosition(getPositionPixels().x, -y*36);
+		d.setPosition(getPositionPixels().x, -y*36 - 8);
 		target.draw(s);
 
-		int flr = position.y + y;
+		int flr = y;
 		if (!connectsFloor(flr)) continue;
 
 		char c[8];
@@ -152,11 +152,18 @@ void Elevator::decodeXML(tinyxml2::XMLElement & xml)
 	updateSprite();
 }
 
+/*
+ * This is reimplemented because the elevator contains
+ * the two "operational" components around it in the
+ * vertical direction, and thus has a different mouse
+ * region.
+ */
+
 rectd Elevator::getMouseRegion()
 {
-	int2 p = getPosition();
-	sf::Vector2u s = getSize();
-	return rectd(p.x, p.y - s.y - 36, s.x, s.y + 2*36);
+	int2 p = getPositionPixels();
+	sf::Vector2u s = getSizePixels();
+	return rectd(p.x, p.y - (int)s.y, s.x, s.y*3);
 }
 
 bool Elevator::repositionMotor(int motor, int y)

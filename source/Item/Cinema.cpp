@@ -66,6 +66,8 @@ void Cinema::updateSprite()
 	// hallSprite.resize(192, 60);
 	screenSprite.setTextureRect(sf::IntRect(screenIndex*56, 0, 56, 60));
 	// screenSprite.resize(56, 60);
+	hallSprite.setPosition(getPositionPixels().x, -getPositionPixels().y);
+	screenSprite.setPosition(getPositionPixels().x, -getPositionPixels().y);
 }
 
 void Cinema::advance(double dt)
