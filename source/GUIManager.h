@@ -20,7 +20,7 @@ namespace OT
 		
 		bool init(sf::RenderWindow * window);
 		
-		Rocket::Core::Input::KeyIdentifier translateKey(sf::Key::Code key);
+		Rocket::Core::Input::KeyIdentifier translateKey(sf::Keyboard::Key key);
 		int getKeyModifiers();
 		
 	protected:

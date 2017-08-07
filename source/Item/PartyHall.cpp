@@ -13,14 +13,14 @@ PartyHall::~PartyHall()
 void PartyHall::init()
 {
 	Item::init();
-	
+
 	open = false;
-	
+
 	sprite.SetImage(App->bitmaps["simtower/partyhall"]);
-	sprite.SetCenter(0, 60);
+	sprite.setOrigin(0, 60);
 	addSprite(&sprite);
 	spriteNeedsUpdate = false;
-	
+
 	updateSprite();
 }
 
@@ -41,8 +41,8 @@ void PartyHall::updateSprite()
 {
 	spriteNeedsUpdate = false;
 	int index = (open ? 1 : 0);
-	sprite.SetSubRect(sf::IntRect(index*192, 0, (index+1)*192, 60));
-	sprite.Resize(192, 60);
+	sprite.setTextureRect(sf::IntRect(index*192, 0, 192, 60));
+	sprite.setPosition(getPositionPixels().x, -getPositionPixels().y);
 }
 
 void PartyHall::advance(double dt)
@@ -52,18 +52,18 @@ void PartyHall::advance(double dt)
 		open = true;
 		spriteNeedsUpdate = true;
 	}
-	
+
 	//Close
 	if (game->time.checkHour(17) && open) {
 		open = false;
 		spriteNeedsUpdate = true;
-		
+
 		//TODO: Specify party hall income.
 		game->transferFunds(10000, "Income from Party Hall");
 	}
-	
+
 	//TODO: Make people arrive at the hall and leave afterwards.
-	
+
 	if (spriteNeedsUpdate) updateSprite();
 }
 

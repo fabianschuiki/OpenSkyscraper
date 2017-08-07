@@ -16,18 +16,18 @@ namespace OT {
 				p->icon  = 0;
 			}
 			virtual ~Lobby();
-			
+
 			virtual void init();
-			
+
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
-			
+
 			Sprite background;
 			Sprite overlay;
 			Sprite entrances[2];
 			void updateSprite();
-			
-			void Render(sf::RenderTarget & target) const;
+
+			virtual void render(sf::RenderTarget & target) const;
 		};
 	}
 }

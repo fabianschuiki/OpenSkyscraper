@@ -17,7 +17,8 @@ namespace OT {
 		void updateCrane();
 		void updateTracks();
 
-		virtual void Render(sf::RenderTarget & target) const;
+		void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+		virtual void render(sf::RenderTarget & target) const;
 
 	private:
 		struct FireStairPair {

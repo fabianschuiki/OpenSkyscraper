@@ -3,77 +3,76 @@
 		<style>
 			body {
 				font-family: Play;
-				color: black;
-				
+				background-color: #ddd;
+
 				width: /*431px*/700px;
 				height: 41px;
-				
+
 				top:   0px;
 				right: 0px;
-				
+
 				background-decorator: tiled-horizontal;
 				background-left-image:   /simtower/ui/time/bg 0px   0px 50px  41px;
 				background-center-image: /simtower/ui/time/bg 50px  0px 300px 41px stretch;
 				background-right-image:  /simtower/ui/time/bg 300px 0px 431px 41px;
 			}
-			
+
 			div#watch {
 				position: absolute;
 				left: 6px;
 				top:  6px;
 				width:  29px;
 				height: 29px;
-				
+
 				background-decorator: watch;
 			}
-			
+
 			div#rating {
 				display: block;
-				
+
 				position: absolute;
 				left: 42px;
 				top:  2px;
-				
+
 				width:  108px;
 				height: 22px;
-				
+
 				background-decorator: image;
 				background-image: /simtower/ui/time/rating;
 			}
-			
+
 			div.stats {
 				font-size: 13px;
 				text-align: right;
-				overflow: hidden;
-				
+
 				position: absolute;
 				right: 6px;
 				width: 80px;
 			}
-			
+
 			div#funds {
 				top: 2px;
 			}
 			div#population {
 				top: 19px;
 			}
-			
+
 			div#message {
-				position: absolute;
 				font-size: 11px;
-				top: 21px;
+
+				position: absolute;
+				top: 22px;
 				height: 20px;
-				padding-left:  42px;
+				padding-left: 42px;
 				padding-right: 130px;
-				overflow: hidden;
 			}
-			
+
 			div.date {
 				font-size: 13px;
-				
+
 				position: absolute;
-				left: 160px;
 				top:  3px;
+				left: 160px;
 			}
 			span#date-weekend {
 				color: #04f;
@@ -81,7 +80,7 @@
 			}
 		</style>
 	</head>
-	
+
 	<body>
 		<div id="watch"></div>
 		<div id="funds" class="stats">$54'324'000</div>

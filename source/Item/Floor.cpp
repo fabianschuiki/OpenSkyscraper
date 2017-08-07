@@ -11,22 +11,26 @@ Floor::~Floor() {}
 void Floor::init()
 {
 	Item::init();
-	
-	layer = -1;
-	
-	background.SetImage(App->bitmaps["simtower/floor"]);
-	background.SetSubRect(sf::IntRect(0, 0, 8, 36));
-	background.SetCenter(0, 36);
-	background.Resize(0, 36);
 
-	ceiling.SetImage(App->bitmaps["simtower/floor"]);
-	ceiling.SetSubRect(sf::IntRect(0, 0, 8, 12));
-	ceiling.Resize(0, 12);
-	ceiling.SetPosition(0, -GetSize().y);
+	layer = -1;
+
+	sf::Texture& floor = App->bitmaps["simtower/floor"];
+	background.SetImage(floor);
+	background.setTextureRect(sf::IntRect(0, 0, 8, 36));
+	background.setOrigin(0, 36);
+	background.setScale(8.0 / floor.getSize().x, 36.0 / floor.getSize().y);
+	background.setOrigin(0, floor.getSize().y);
+	background.setPosition(getPosition().x*8, -getPosition().y*36);
+
+	ceiling.SetImage(floor);
+	ceiling.setTextureRect(sf::IntRect(0, 0, 8, 12));
+	ceiling.setScale(8.0 / floor.getSize().x, 36.0 / floor.getSize().y);
+	ceiling.setOrigin(0, floor.getSize().y);
+	ceiling.setPosition(getPosition().x*8, -getPosition().y*36);
 
 	interval.insert(position.x);
 	interval.insert(getRect().maxX());
-	
+
 	updateSprite();
 }
 
@@ -45,7 +49,7 @@ void Floor::decodeXML(tinyxml2::XMLElement & xml)
 
 void Floor::updateSprite() {}
 
-void Floor::Render(sf::RenderTarget & target) const
+void Floor::render(sf::RenderTarget & target) const
 {
 	bool drawBackground = true;
 	int left = 0;
@@ -61,9 +65,9 @@ void Floor::Render(sf::RenderTarget & target) const
 			right = *i;
 			if(left == right) continue;
 
-			b.Resize((right - left) * 8.0f, 36.0f);
-			b.SetX((left - position.x) * 8.0f);
-			target.Draw(b);
+			b.setScale((right - left) * 8.0f / b.getTextureRect().width, 1);
+			b.setPosition((left * 8.0f), -getPosition().y * 36);
+			target.draw(b);
 		} else {
 			// Draw only ceiling sprite
 			drawBackground = true;
@@ -72,9 +76,9 @@ void Floor::Render(sf::RenderTarget & target) const
 			right = *i;
 			if(left == right) continue;
 
-			c.Resize((right - left) * 8.0f, 12.0f);
-			c.SetX((left - position.x) * 8.0f);
-			target.Draw(c);
+			c.setScale((right - left) * 8.0f / c.getTextureRect().width, 1);
+			c.setPosition((left * 8.0f), -getPosition().y * 36);
+			target.draw(c);
 		}
 
 		game->drawnSprites++;

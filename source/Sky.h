@@ -5,25 +5,26 @@
 #include "Sound.h"
 
 namespace OT {
-	
+
 	class Sky : public GameObject, public sf::Drawable
 	{
 	public:
 		Sky(Game * game);
-		
+
 		int from;
 		int to;
 		double progress;
-		
+
 		bool rainyDay;
 		double rainAnimation;
 		double thunderOverlay;
 
 		void advance(double dt);
-		virtual void Render(sf::RenderTarget & target) const;
-		
+		void draw(sf::RenderTarget & target, sf::RenderStates states) const;
+		virtual void render(sf::RenderTarget & target) const;
+
 		static double cloudNoise(double2 p);
-		
+
 		Sound rainSound;
 		Sound thunderSound;
 		Sound birdsSound;

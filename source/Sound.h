@@ -11,5 +11,6 @@ namespace OT {
 		Game * playingInGame;
 		virtual void Play(Game * game);
 		virtual void Stop();
+		double getDurationDouble();
 	};
 }

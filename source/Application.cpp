@@ -1,3 +1,4 @@
+/* Copyright (c) 2012-2015 Fabian Schuiki */
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
@@ -10,6 +11,7 @@
 #include "Game.h"
 #include "SimTowerLoader.h"
 #include "TimeWindowWatch.h"
+#include "OpenGL.h"
 
 using namespace OT;
 using namespace std;
@@ -24,10 +26,10 @@ Application::Application(int argc, char * argv[])
 {
 	assert(App == NULL && "Application initialized multiple times");
 	App = this;
-	
+
 	assert(argc >= 1 && "argv[0] is required");
 	dumpResources = false;
-	
+
 	// Code to retrieve current working directory
 	// May want to move to Boost library for easier path manipulation
 	int buf_size = 128;
@@ -46,12 +48,14 @@ Application::Application(int argc, char * argv[])
 			}
 		}
 	} while(!r_getpwd);
+	std::cout << "pwd = " << pwd << '\n';
 	path = Path(pwd);
 	delete pwd;
-#ifdef __APPLE__
-	path = Path("../MacOS").down(path.name());
-#endif
-	
+	path = Path(argv[0]).up();
+// #ifdef __APPLE__
+// 	path = Path("../MacOS").down(path.name());
+// #endif
+
 	//Special debug defaults.
 #ifdef BUILD_DEBUG
 	logger.setLevel(Logger::DEBUG);
@@ -59,7 +63,7 @@ Application::Application(int argc, char * argv[])
 	snprintf(logname, 128, "debug-%li.log", (long int)time(NULL));
 	logger.setOutputPath(/*dir.down(*/logname/*)*/);
 #endif
-	
+
 	//Parse command line arguments.
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "--debug") == 0) {
@@ -75,7 +79,7 @@ Application::Application(int argc, char * argv[])
 			dumpResourcesPath = argv[i+1];
 		}
 	}
-	
+
 	LOG(DEBUG,
 		"constructed\n"
 		"    path     = %s",
@@ -89,26 +93,24 @@ int Application::run()
 {
 	running = true;
 	exitCode = 0;
-	
+
 	if (exitCode == 0) init();
 	if (exitCode == 0) loop();
 	if (exitCode == 0) cleanup();
-	
+
 	running = false;
-	
-	if (exitCode < 0) {
+
+	if (exitCode > 0) {
 		LOG(ERROR, "exitCode = %i", exitCode);
-	} else {
-		LOG(INFO,  "exitCode = %i", exitCode);
 	}
-	
+
 	return exitCode;
 }
 
 void Application::init()
 {
 	data.init();
-	
+
 	/*WindowsNEExecutable exe;
 	DataManager::Paths paths = data.paths("SIMTOWER.EXE");
 	bool success;
@@ -120,38 +122,42 @@ void Application::init()
 	}
 	//TODO: make this dependent on a command line switch --dump-simtower <path>.
 	exe.dump("~/SimTower Raw");*/
-	
+
 	SimTowerLoader * simtower = new SimTowerLoader(this);
 	if (!simtower->load()) {
-		LOG(WARNING, "unable to load SimTower resources");
+		LOG(ERROR, "unable to load SimTower resources");
+		exitCode = 1;
+		return;
 	}
 	if (dumpResources) {
 		simtower->dump(dumpResourcesPath);
 	}
 	delete simtower; simtower = NULL;
 	//exitCode = 1;
-	
-	videoMode.Width        = 1280;
-	videoMode.Height       = 768;
-	videoMode.BitsPerPixel = 32;
-	
-	window.Create(videoMode, "OpenSkyscraper SFML");
-	
+
+	videoMode.width        = 1280;
+	videoMode.height       = 768;
+	videoMode.bitsPerPixel = 32;
+
+
+	window.create(videoMode, "OpenSkyscraper SFML");
+	window.setVerticalSyncEnabled(true);
+
 	if (!gui.init(&window)) {
 		LOG(ERROR, "unable to initialize gui");
-		exitCode = -1;
+		exitCode = 1;
 		return;
 	}
 	rootGUI = new GUI("root", &gui);
 #ifdef BUILD_DEBUG
 	Rocket::Debugger::Initialise(rootGUI->context);
 #endif
-	
+
 	//Additional GUI stuff.
 	Rocket::Core::DecoratorInstancer * instancer = new TimeWindowWatchInstancer;
 	Rocket::Core::Factory::RegisterDecoratorInstancer("watch", instancer);
 	instancer->RemoveReference();
-	
+
 	//Load GUI fonts.
 	fonts.loadIntoRocket("Jura-Regular.ttf");
 	fonts.loadIntoRocket("Jura-Medium.ttf");
@@ -159,14 +165,14 @@ void Application::init()
 	fonts.loadIntoRocket("Jura-DemiBold.ttf");
 	fonts.loadIntoRocket("Play-Regular.ttf");
 	fonts.loadIntoRocket("Play-Bold.ttf");
-	
+
 	//DEBUG: load some GUI
 	/*Path rocket = data.paths("debug/rocket").front();
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Bold.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-BoldItalic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Italic.otf").c_str());
 	Rocket::Core::FontDatabase::LoadFontFace(rocket.down("Delicious-Roman.otf").c_str());*/
-	
+
 	Game * game = new Game(*this);
 	pushState(game);
 }
@@ -174,15 +180,15 @@ void Application::init()
 void Application::loop()
 {
 	sf::Clock clock;
-	sf::String rateIndicator("<not available>", fonts["UbuntuMono-Regular.ttf"], 16);
+	sf::Text rateIndicator("<not available>", fonts["UbuntuMono-Regular.ttf"], 16);
 	double rateIndicatorTimer = 0;
 	double rateDamped = 0;
 	double rateDampFactor = 0;
 	double dt_max = 0, dt_min = 0;
 	int dt_maxmin_resetTimer = 0;
-	
-	while (window.IsOpened() && exitCode == 0 && !states.empty()) {
-		double dt_real = clock.GetElapsedTime();
+
+	while (window.isOpen() && exitCode == 0 && !states.empty()) {
+		double dt_real = clock.getElapsedTime().asSeconds();
 		//dt_max = (dt_max + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
 		//dt_min = (dt_min + dt_real * dt_real * 0.5) / (1 + dt_real * 0.5);
 		if (dt_real > dt_max) {
@@ -194,8 +200,8 @@ void Application::loop()
 			dt_maxmin_resetTimer = 0;
 		}
 		double dt = std::min<double>(dt_real, 0.1); //avoids FPS dropping below 10 Hz
-		clock.Reset();
-		
+		clock.restart();
+
 		//Update the rate indicator.
 		rateDampFactor = (dt_real * 1);
 		rateDamped = (rateDamped + dt_real * rateDampFactor) / (1 + rateDampFactor);
@@ -207,20 +213,20 @@ void Application::loop()
 				dt_min = dt_real;
 			}
 		}
-		
+
 		//Handle events.
 		sf::Event event;
-		while (window.GetEvent(event)) {
-			if (event.Type == sf::Event::Resized) {
-				LOG(INFO, "resized (%i, %i)", window.GetWidth(), window.GetHeight());
-				window.GetDefaultView().SetFromRect(sf::FloatRect(0, 0, window.GetWidth(), window.GetHeight()));
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Resized) {
+				LOG(INFO, "resized (%i, %i)", window.getSize().x, window.getSize().y);
+				window.setView(sf::View(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y)));
 			}
-			if (event.Type == sf::Event::KeyPressed) {
-				if (event.Key.Code == sf::Key::Escape) {
+			if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Escape) {
 					exitCode = 1;
 					continue;
 				}
-				if (event.Key.Code == sf::Key::R && event.Key.Control) {
+				if (event.key.code == sf::Keyboard::R && event.key.control) {
 					LOG(IMPORTANT, "reinitializing game");
 					Game * old = (Game *)states.top();
 					popState();
@@ -230,7 +236,7 @@ void Application::loop()
 					continue;
 				}
 #ifdef BUILD_DEBUG
-				if (event.Key.Code == sf::Key::F8) {
+				if (event.key.code == sf::Keyboard::F8) {
 					bool visible = !Rocket::Debugger::IsVisible();
 					LOG(DEBUG, "Rocket::Debugger %s", (visible ? "on" : "off"));
 					Rocket::Debugger::SetVisible(visible);
@@ -244,37 +250,55 @@ void Application::loop()
 				if (states.top()->gui.handleEvent(event))
 					continue;
 			}
-			if (event.Type == sf::Event::Closed) {
+			if (event.type == sf::Event::Closed) {
 				LOG(WARNING, "current state did not handle sf::Event::Closed");
 				exitCode = 1;
 				continue;
 			}
 		}
-		
+
 		//Make the current state do its work.
+		glClearColor(0,0,1,0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		window.resetGLStates();
 		if (!states.empty()) {
 			states.top()->advance(dt);
+			window.resetGLStates();
+			glEnable(GL_TEXTURE_2D);
 			states.top()->gui.draw();
 		}
 		rootGUI->draw();
-		
-		//Draw the debugging overlays.
+
+		window.resetGLStates();
+		// Draw the debugging overlays.
 		char dbg[1024];
 		snprintf(dbg, 32, "%.0fHz [%.0f..%.0f]", 1.0/rateDamped, 1.0/dt_max, 1.0/dt_min);
 		if (!states.empty()) {
 			strcat(dbg, "\n");
 			strcat(dbg, states.top()->debugString);
 		}
-		rateIndicator.SetText(dbg);
-		
-		window.SetView(window.GetDefaultView());
-		sf::FloatRect r = rateIndicator.GetRect();
-		sf::Shape bg = sf::Shape::Rectangle(r.Left, r.Top, r.Right, r.Bottom, sf::Color(0, 0, 0, 0.25*255));
-		window.Draw(bg);
-		window.Draw(rateIndicator);
-		
+		rateIndicator.setString(dbg);
+
+		window.setView(window.getDefaultView());
+		sf::FloatRect r = rateIndicator.getLocalBounds();
+		sf::RectangleShape bg = sf::RectangleShape(sf::Vector2f(r.width, r.height));
+		bg.setFillColor(sf::Color(0, 0, 0, 0.25*255));
+		bg.setPosition(sf::Vector2f(r.left, r.top));
+		window.draw(bg);
+		window.draw(rateIndicator);
+
+		sf::Vector2i mp = sf::Mouse::getPosition(window);
+		glColor3f(1,0,0);
+		glBegin(GL_LINES);
+		glVertex2f(mp.x-10,mp.y);
+		glVertex2f(mp.x+10,mp.y);
+		glVertex2f(mp.x,mp.y-10);
+		glVertex2f(mp.x,mp.y+10);
+		glEnd();
+		glColor3f(1,1,1);
+
 		//Swap buffers.
-		window.Display();
+		window.display();
 	}
 }
 
@@ -283,8 +307,8 @@ void Application::cleanup()
 	while (!states.empty()) {
 		popState();
 	}
-	
-	window.Close();
+
+	window.close();
 }
 
 /** Pushes the given State ontop of the state stack, causing it to receive events. */

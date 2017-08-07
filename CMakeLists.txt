@@ -25,6 +25,8 @@ endif()
 
 add_definitions("-Wno-switch")
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DBUILD_DEBUG")
+
 # Setup the version strings.
 if (NOT VERSION)
 	set(VERSION "dev" CACHE STRING "Version string (e.g. 1.2alpha1 or dev)" FORCE)
@@ -56,7 +58,7 @@ list(APPEND sources thirdparty/tinyxml2/tinyxml2.cpp)
 # Mac OS X
 if (APPLE)
 	add_definitions("-DTARGET_APPLE")
-	
+
 	# Find the paths of all resources.
 	file(GLOB_RECURSE resources RELATIVE ${PROJECT_SOURCE_DIR} data/*)
 
@@ -104,7 +106,7 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
 
 # Copy the SFML frameworks into the application bundle on Mac OS X.
 if (APPLE)
-	install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
+	# install(DIRECTORY ${SFML_LIBRARIES} DESTINATION ${CMAKE_BINARY_DIR}/${EXECUTABLE_NAME}.app/Contents/Frameworks)
 endif ()
 
 # libRocket

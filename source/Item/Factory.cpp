@@ -47,6 +47,7 @@ void Factory::loadPrototypes()
 	register_item(Cinema);
 	register_item(Metro);
 	register_item(Office);
+	#undef register_item
 	
 	for (int i = 0; i < prototypes.size(); i++) {
 		prototypesById[prototypes[i]->id] = prototypes[i];

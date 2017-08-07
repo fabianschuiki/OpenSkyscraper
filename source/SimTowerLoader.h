@@ -24,7 +24,7 @@ namespace OT
 		/// Pointer to the Application instance.
 		Application * const app;
 		SimTowerLoader(Application * app) : app(app) {}
-		
+
 		struct Blob {
 			char * data;
 			int length;
@@ -33,25 +33,25 @@ namespace OT
 		};
 		typedef std::map<int, Blob> Blobs;
 		typedef std::map<Path, sf::Image> Images;
-		
+
 		Blobs rawBitmaps;
 		Blobs rawPalettes;
 		Blobs rawSounds;
-		
+
 		bool load();
 		void dump(Path path);
-		
+
 	private:
 		WindowsNEExecutable exe;
-		
+
 		void prepareBitmaps();
 		void prepareBMPHeader(char * data);
 		void preparePalettes();
 		void loadBitmaps();
-		
+
 		void loadMerged(sf::Image & dst, char dir, ...);
 		void loadMergedByID(sf::Image & dst, char dir, ...);
-		
+
 		void loadCondo(int id, sf::Image & img);
 		void loadOffice(int id, sf::Image & img);
 		void loadFood(int id, sf::Image & img);
@@ -61,11 +61,13 @@ namespace OT
 		void applyReplacementPalette(int palette, Blob & raw);
 		void loadSky(int id, sf::Image & img);
 		void loadLobbies();
-		
+
 		void loadBitmap(int id, sf::Image & img);
 		void loadAnimatedBitmap(int id, sf::Image img[3]);
-		
+
 		void loadSounds();
 		void loadSound(int id, sf::SoundBuffer & snd);
+
+		Images images;
 	};
 }

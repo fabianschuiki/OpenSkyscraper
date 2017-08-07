@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "GUI.h"
 #include "GUIManager.h"
+#include "OpenGL.h"
 
 using namespace OT;
 
@@ -13,9 +14,11 @@ using namespace OT;
 GUI::GUI(std::string name, GUIManager * manager)
 {
 	assert(manager && "GUI requires a GUIManager");
-	
+
 	this->manager = manager;
-	context = Rocket::Core::CreateContext(name.c_str(), Rocket::Core::Vector2i(manager->window->GetWidth(), manager->window->GetHeight()));
+	unsigned width = manager->window->getView().getSize().x;
+	unsigned height = manager->window->getView().getSize().y;
+	context = Rocket::Core::CreateContext(name.c_str(), Rocket::Core::Vector2i(width, height));
 	assert(context && "unable to initialize context");
 }
 
@@ -27,27 +30,29 @@ GUI::~GUI()
 
 bool GUI::handleEvent(sf::Event & event)
 {
-	switch (event.Type) {
+	switch (event.type) {
 		case sf::Event::Resized:
-			this->context->SetDimensions(Rocket::Core::Vector2i(manager->window->GetWidth(), manager->window->GetHeight()));
+			this->context->SetDimensions(Rocket::Core::Vector2i(
+											manager->window->getView().getSize().x,
+											manager->window->getView().getSize().y));
 			return true;
 		case sf::Event::MouseMoved:
-			context->ProcessMouseMove(event.MouseMove.X, event.MouseMove.Y, manager->getKeyModifiers());
+			context->ProcessMouseMove(event.mouseMove.x, event.mouseMove.y, manager->getKeyModifiers());
 			return true;
 		case sf::Event::MouseButtonPressed:
-			context->ProcessMouseButtonDown(event.MouseButton.Button, manager->getKeyModifiers());
+			context->ProcessMouseButtonDown(event.mouseButton.button, manager->getKeyModifiers());
 			return true;
 		case sf::Event::MouseButtonReleased:
-			context->ProcessMouseButtonUp(event.MouseButton.Button, manager->getKeyModifiers());
+			context->ProcessMouseButtonUp(event.mouseButton.button, manager->getKeyModifiers());
 			return true;
 		case sf::Event::MouseWheelMoved:
-			return context->ProcessMouseWheel(event.MouseWheel.Delta, manager->getKeyModifiers());
+			return context->ProcessMouseWheel(event.mouseWheel.delta, manager->getKeyModifiers());
 		case sf::Event::TextEntered:
-			return context->ProcessTextInput(event.Text.Unicode);
+			return context->ProcessTextInput(event.text.unicode);
 		case sf::Event::KeyPressed:
-			return context->ProcessKeyDown(manager->translateKey(event.Key.Code), manager->getKeyModifiers());
+			return context->ProcessKeyDown(manager->translateKey(event.key.code), manager->getKeyModifiers());
 		case sf::Event::KeyReleased:
-			return context->ProcessKeyUp(manager->translateKey(event.Key.Code), manager->getKeyModifiers());
+			return context->ProcessKeyUp(manager->translateKey(event.key.code), manager->getKeyModifiers());
 	}
 	return false;
 }
@@ -57,14 +62,16 @@ void GUI::draw()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0, manager->window->GetWidth(), manager->window->GetHeight(), 0, -1, 1);
+	unsigned width = manager->window->getView().getSize().x;
+	unsigned height = manager->window->getView().getSize().y;
+	glOrtho(0.0, width, height, 0.0, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	
+
 	context->Update();
 	context->Render();
-	
+
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
