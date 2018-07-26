@@ -131,7 +131,7 @@ void Condo::advance(double dt)
 
 bool Condo::updateLighting(double time)
 {
-	LightingConditions newLighting;
+	LightingConditions newLighting = lighting;
 	if ((time < 7.0) || (time > 22.0)) {
 		newLighting = NIGHT;
 	}
@@ -142,12 +142,9 @@ bool Condo::updateLighting(double time)
 		newLighting = LIT;
 	}
 
-	if (newLighting != lighting) {
-		lighting = newLighting;
-	}
-	else {
-		return false;
-	}
+	bool retval = (newLighting != lighting);
+	lighting = newLighting;
+	return retval;
 }
 
 void Condo::addPerson(Person * p)
