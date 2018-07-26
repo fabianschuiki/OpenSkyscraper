@@ -5,7 +5,7 @@
 using namespace OT;
 
 
-Person::Person(Game * game)
+Person::Person(Game * game, Type type)
 :	GameObject(game),
 	journey(this)
 {

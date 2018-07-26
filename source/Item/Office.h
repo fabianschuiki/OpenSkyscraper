@@ -47,7 +47,7 @@ namespace OT {
 			 */
 			class Worker : public Person {
 			public:
-				Worker(Office *item, Person::Type type) : Person(item->game) { this->type = type; }
+				Worker(Office *item, Person::Type type) : Person(item->game, type) {}
 
 				/// When the worker is supposed to arrive at the tower in the morning.
 				double arrivalTime;

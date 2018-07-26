@@ -98,10 +98,8 @@ void Condo::advance(double dt)
 			variant = rand() % 3;
 			spriteNeedsUpdate = true;
 			rentDeposit = rent;
-			//game->populationNeedsUpdate = true;
 			game->transferFunds(rentDeposit, "Occupied Condo's rent deposit");
-			population = (rand() % 4) + 1;
-			game->populationNeedsUpdate = true;
+			createOccupants();
 		}
 	}
 
@@ -111,6 +109,7 @@ void Condo::advance(double dt)
 		// Vacate unattractive offices.
 		if (!isAttractive()) {
 			occupied = false;
+			removeOccupants();
 			spriteNeedsUpdate = true;
 			population = 0;
 			game->populationNeedsUpdate = true;
@@ -122,11 +121,65 @@ void Condo::advance(double dt)
 		}
 	}
 
+	if (occupied && game->time.checkHour(3)) {
+		generateJitters();
+	}
+
+	if (occupied)
+	{
+		moveOccupants();
+	}
+
 	if (updateLighting(game->time.getHour())) {
 		spriteNeedsUpdate = true;
 	}
 
 	if (spriteNeedsUpdate) updateSprite();
+}
+
+void Condo::generateJitters()
+{
+	// Clear the current queues.
+	while (!returnQueue.empty()) returnQueue.pop();
+	while (!departureQueue.empty()) departureQueue.pop();
+
+	for (CondoOccupant* person : occupants)
+	{
+		// It's life. You're more likely to be late than early.
+		person->departureJitter = Math::randd(-0.1, 0.3);
+		person->returnJitter = Math::randd(-0.1, 0.3);
+		returnQueue.push(person);
+		departureQueue.push(person);
+	}
+}
+
+void Condo::moveOccupants()
+{
+	// Occupants leave the building
+	while (!departureQueue.empty()) {
+		CondoOccupant * c = departureQueue.top();
+		if (game->time.hour > c->actualDepartureTime()) {
+			departureQueue.pop();
+			c->journey.set(lobbyRoute);
+		} else break;
+	}
+
+	//Occupants return from their busy days
+	while (!returnQueue.empty()) {
+		CondoOccupant * c = returnQueue.top();
+		if (game->time.hour > c->actualReturnTime() && !lobbyRoute.empty()) {
+			returnQueue.pop();
+			// Find a way home for the Person.
+			const Route &r = game->findRoute(this, game->mainLobby);
+			if (r.empty()) {
+				LOG(DEBUG, "%p has no route to leave his or her Condo", c);
+			} else {
+				LOG(DEBUG, "%p leaving condo", c);
+				c->journey.set(r);
+			}
+		} else break;
+	}
+
 }
 
 bool Condo::updateLighting(double time)
@@ -153,6 +206,65 @@ void Condo::addPerson(Person * p)
 	spriteNeedsUpdate = true;
 }
 
+void Condo::createOccupants()
+{
+	// Each Condo must have at least one adult
+	unsigned numAdults = Math::randi(1, 4);
+	Person::Type adults[] = {
+		Person::kMan,
+		Person::kWoman1,
+		Person::kWoman2
+	};
+
+	for (int i = 0; i < numAdults; ++i)
+	{
+		// Bias towards man because there are 2 women types and one man.
+		// from the rand function, both 0 and 1 mean man, with the other two being the two woman types
+		unsigned gender = std::max(Math::randi(0, 3) - 1, 0);
+
+		// Everyone works or goes to school, which means no activity during the day,
+		// which could be made more realistic by having people who do chores during the day,
+		// such as stay at home Moms or Dads.
+		double leavingTime = Math::randd(7.5, 9.5);
+		double returnTime = Math::randd(17.5, 19.5);
+
+		occupants.insert(new CondoOccupant(this, adults[gender], leavingTime, returnTime));
+	}
+
+	// We generously assume that the kids will never more than double outnumber the number of adults,
+	// and that the total occupancy will not be more than 6
+	unsigned numKids = Math::randi(0, std::min(numAdults * 2, 6u));
+
+	Person::Type kids[] = {
+		Person::kChild,
+		Person::kWomanWithChild1,
+		Person::kWomanWithChild2,
+	};
+
+	for (int i = 0; i < numKids; ++i)
+	{
+		unsigned type = Math::randi(0, 2);
+		// All schools begin and end at the same time.
+		// Some kids have after school care though.
+		double leavingTime = 7.5;
+		double returnTime = (Math::randi(0, 1) == 0) ? 15.5 : 17.5;
+
+		occupants.insert(new CondoOccupant(this, kids[type], leavingTime, returnTime));
+	}
+
+	population = occupants.size();
+	game->populationNeedsUpdate = true;
+}
+
+void Condo::removeOccupants()
+{
+	for (Person* occupant : occupants)
+	{
+		removePerson(occupant);
+		delete occupant;
+	}
+}
+
 void Condo::removePerson(Person * p)
 {
 	Item::removePerson(p);
@@ -163,4 +275,14 @@ void Condo::removePerson(Person * p)
 bool Condo::isAttractive()
 {
 	return !lobbyRoute.empty();
+}
+
+double Condo::CondoOccupant::actualReturnTime() const
+{
+	return departureTime + departureJitter;
+}
+
+double Condo::CondoOccupant::actualDepartureTime() const
+{
+	return returnTime + returnJitter;
 }
