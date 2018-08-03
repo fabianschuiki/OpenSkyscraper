@@ -179,7 +179,6 @@ void Condo::moveOccupants()
 			}
 		} else break;
 	}
-
 }
 
 bool Condo::updateLighting(double time)
