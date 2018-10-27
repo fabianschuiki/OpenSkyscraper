@@ -65,25 +65,25 @@ namespace OT {
 				double actualReturnTime() const;
 				double actualDepartureTime() const;
 			};
-			
+
 			virtual void init();
-			
+
 			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
 			virtual void decodeXML(tinyxml2::XMLElement & xml);
 			bool isAttractive();
-			
+
 			int rent;
 			int rentDeposit;
 			int variant;
 			LightingConditions lighting;
 			bool occupied;
-			
+
 			Sprite sprite;
 			bool spriteNeedsUpdate;
 			void updateSprite();
-			
+
 			virtual void advance(double dt);
-			
+
 			virtual void addPerson(Person * p);
 			virtual void removePerson(Person * p);
 		protected:
