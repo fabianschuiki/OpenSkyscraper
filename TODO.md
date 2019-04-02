@@ -5,9 +5,6 @@ General
 - Cache the result of the KWAJ decompression so the game doesn't decompress SIMTOWER.EX_ everytime it is relaunched.
 
 
-### SFML 2
-Maybe we should move everything to SFML version 2.0.
-
 ### Pausing doesn't affect elevators
 When pausing the game, elevators keep moving as if the game was unpaused. The weird thing is that the elevators react to speedup by moving faster. Why wouldn't they react to the speeddown?
 
