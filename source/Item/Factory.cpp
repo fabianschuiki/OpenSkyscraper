@@ -15,6 +15,7 @@
 #include "Cinema.h"
 #include "Metro.h"
 #include "Office.h"
+#include "Condo.h"
 
 using namespace OT;
 using namespace Item;
@@ -47,6 +48,7 @@ void Factory::loadPrototypes()
 	register_item(Cinema);
 	register_item(Metro);
 	register_item(Office);
+	register_item(Condo);
 	#undef register_item
 	
 	for (int i = 0; i < prototypes.size(); i++) {

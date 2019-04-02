@@ -76,6 +76,12 @@ void Time::advance(double dt)
 	set(absolute + dt * kBaseSpeed * speed_animated);
 }
 
+/** Returns the current time in a fraction of hours in a day. */
+double Time::getHour()
+{
+	return (absoluteToHour(absolute));
+}
+
 /** Returns true if the time has just passed said absolute time. */
 bool Time::check(double a)
 {

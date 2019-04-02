@@ -107,7 +107,7 @@ void Queue::render(sf::RenderTarget & target) const
 		int type = p->type;
 		sf::IntRect sr;
 		sr.left   = type * 32;
-		sr.width  = 16;
+		sr.width  = p->getWidth();
 		sr.top    = (stepping ? 48 : 0);
 		sr.height = 24;
 		if (direction == Elevator::kDown) {

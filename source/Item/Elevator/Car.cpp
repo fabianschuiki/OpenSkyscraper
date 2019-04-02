@@ -9,7 +9,7 @@ using namespace OT::Item::Elevator;
 const static double kDoorPeriod    = 0.1;  //seconds it takes the door to open/close
 const static double kWaitTime      = 0.15; //seconds the elevator waits before closing doors
 const static double kMountPeriod   = 0.05; //seconds it takes for one person to get on the elevator
-const static double kUnmountPeriod = 0.05; //dito, but off the elevator
+const static double kUnmountPeriod = 0.05; //ditto, but off the elevator
 
 
 void Car::init()

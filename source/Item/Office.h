@@ -20,25 +20,15 @@ namespace OT {
 			
 			virtual void init();
 			
-			virtual void encodeXML(tinyxml2::XMLPrinter & xml);
-			virtual void decodeXML(tinyxml2::XMLElement & xml);
+			virtual void encodeXML(tinyxml2::XMLPrinter & xml) override;
+			virtual void decodeXML(tinyxml2::XMLElement & xml) override;
 			
-			int rent;
-			int rentDeposit;
-			bool occupied;
-			int variant;
-			bool lit;
-			
-			Sprite sprite;
-			bool spriteNeedsUpdate;
-			void updateSprite();
-			
-			virtual void advance(double dt);
+			virtual void advance(double dt) override;
 			bool isAttractive();
 
-			virtual void addPerson(Person * p);
+			virtual void addPerson(Person * p) override;
 
-			Path getRandomBackgroundSoundPath();
+			Path getRandomBackgroundSoundPath() override;
 
 			/**
 			 * A Person working in an Office item. The class maintains
@@ -47,7 +37,7 @@ namespace OT {
 			 */
 			class Worker : public Person {
 			public:
-				Worker(Office *item, Person::Type type) : Person(item->game) { this->type = type; }
+				Worker(Office *item, Person::Type type) : Person(item->game, type) {}
 
 				/// When the worker is supposed to arrive at the tower in the morning.
 				double arrivalTime;
@@ -92,12 +82,22 @@ namespace OT {
 					}
 				};
 			};
+
+		protected:
+			void updateSprite();
+			void rescheduleWorkers();
+
+			int rent;
+			int rentDeposit;
+			bool occupied;
+			int variant;
+			bool lit;
+
+			Sprite sprite;
+			bool spriteNeedsUpdate;
 			typedef std::set<Worker *> Workers;
 			Workers workers;
 
-			void rescheduleWorkers();
-
-		private:
 			std::priority_queue<Worker *, std::deque<Worker *>, Worker::arrivesLaterThan> arrivalQueue;
 			std::priority_queue<Worker *, std::deque<Worker *>, Worker::departsLaterThan> departureQueue;
 			std::priority_queue<Worker *, std::deque<Worker *>, Worker::lunchLaterThan> lunchQueue;

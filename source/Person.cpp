@@ -5,13 +5,13 @@
 using namespace OT;
 
 
-Person::Person(Game * game)
+Person::Person(Game * game, Type type)
 :	GameObject(game),
-	journey(this)
+	journey(this),
+	type(type)
 {
 	at     = NULL;
-	type   = kMan;
-	stress = 0;
+	stress = 0.0;
 }
 
 Person::~Person()

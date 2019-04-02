@@ -53,6 +53,7 @@ namespace OT {
 		int quarter;
 		int year;
 		
+		double getHour();
 		bool check(double a);
 		bool checkTick(double p);
 		bool checkHour(double h);
